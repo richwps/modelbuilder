@@ -21,5 +21,15 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>oracle.tablelayout</groupId>
+      <artifactId>oracle.tablelayout</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jgraphx</groupId>
+      <artifactId>jgraphx</artifactId>
+      <version>1.0</version>
+    </dependency>
   </dependencies>
 </project>

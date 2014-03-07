@@ -1,17 +1,28 @@
 package de.hsos.richwps.mb;
 
 import de.hsos.richwps.mb.appview.AppFrame;
+import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 
-/**
- * Hello world!
- *
- */
-public class App 
-{
+
+public class App {
+    
+    private AppFrame frame;
+    private ProcessProvider processProvider;
+
     public static void main( String[] args )
     {
-        //Add JFrame call here
-        System.out.println( "Hello World!" );
-        AppFrame frame = new AppFrame();
+        App app = new App();
     }
+
+    public App() {
+        processProvider = new ProcessProvider();
+        frame = new AppFrame(this);
+        
+    }
+
+    public IProcessProvider getProcessProvider() {
+        return processProvider;
+    }
+
 }
