@@ -6,11 +6,11 @@
 
 package de.hsos.richwps.mb.appview;
 
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuItem;
+import de.hsos.richwps.mb.AppConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -21,21 +21,40 @@ import javax.swing.JMenuItem;
  */
 public class AppMenuBar extends JMenuBar {
 
-    public AppMenuBar() {
+    private final JFrame parent;
+
+    public AppMenuBar(final JFrame parent) {
         super();
-        
-        // TODO just mocked
-        JMenu m = new JMenu("File");
-        JMenuItem mi1 = new JMenuItem("Exit");
-        mi1.addActionListener(new ActionListener() {
+
+        this.parent = parent;
+
+        // TODO additional menus
+        add(getFileMenu());
+    }
+
+    private JMenu getFileMenu() {
+        JMenu mFile = new JMenu("File");
+
+        JMenuItem miPref = new JMenuItem(AppConstants.MENU_FILE_PREFERENCES);
+        miPref.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                // TODO
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        m.add(mi1);
-        add(m);
+
+        JMenuItem miExit = new JMenuItem(AppConstants.MENU_FILE_EXIT);
+        miExit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                parent.dispatchEvent(new WindowEvent(parent, WindowEvent.WINDOW_CLOSING) {});
+            }
+        });
+
+        mFile.add(miPref);
+        mFile.add(miExit);
+
+        return mFile;
     }
-    
     
     
     

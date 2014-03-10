@@ -6,22 +6,39 @@
 
 package de.hsos.richwps.mb;
 
-import java.awt.Dimension;
-import java.awt.Point;
+import java.util.prefs.Preferences;
 
 /**
- *
+ * Provides save/load of app configurations.
  * @author dziegenh
  */
 public class AppConfig {
-    
-    public static final String FRAME_TITLE = "RichWPS ModelBuilder";
-    public static final Dimension FRAME_DEFAULT_SIZE = new Dimension(1422, 800);
-    public static final Point FRAME_DEFAULT_LOCATION = new Point(100, 100);
-    
-    public static final Dimension LEFT_PANEL_MIN_SIZE = new Dimension(200, 200);
-    
-    public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(200, 200);
-    
-    public static final Dimension BOTTOM_TABS_MIN_SIZE = new Dimension(100, 150);
+
+    /**
+     * Config keys which should be used.
+     * Naming convention: (OBJECTNAME)_(TYPE)_(KEYNAME) where TYPE can be:
+     * I (Integer)
+     * L (Long)
+     * F (Float)
+     * D (Double)
+     * S (String)
+     * B (Boolean)
+     */
+    public static enum CONFIG_KEYS {
+        FRAME_I_WIDTH,
+        FRAME_I_HEIGHT,
+        FRAME_I_POSITIONX,
+        FRAME_I_POSITIONY,
+        FRAME_B_MAXIMIZED,
+
+        SEMANTICPROXY_S_URL
+    }
+
+    private static final String APP_CONFIG = "richwps/modelbuilder";
+    private static Preferences app_config = Preferences.userRoot().node(APP_CONFIG);
+
+    public static Preferences getConfig() {
+        return app_config;
+    }
+
 }

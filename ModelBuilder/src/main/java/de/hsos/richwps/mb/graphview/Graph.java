@@ -21,7 +21,7 @@ public class Graph extends mxGraph {
     public Graph() {
         getModel().addListener(null, new mxIEventListener() {
 
-            // TODO find better way to auto-layout and to react on model changes
+            // TODO find a better way to auto-layout and to react on model changes
             public void invoke(Object o, mxEventObject eo) {
                 if(!(o instanceof mxGraphModel) || !o.equals(getModel()))
                     return;

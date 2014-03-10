@@ -4,11 +4,15 @@
  */
 package de.hsos.richwps.mb.appview;
 
-import de.hsos.richwps.mb.App;
 import de.hsos.richwps.mb.AppConfig;
+import de.hsos.richwps.mb.App;
+import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.graphview.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphview.GraphView;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -17,6 +21,8 @@ import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
@@ -51,9 +57,11 @@ public class AppFrame extends JFrame {
         this.app = app;
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setTitle(AppConfig.FRAME_TITLE);
-        setLocation(AppConfig.FRAME_DEFAULT_LOCATION);
-        setSize(AppConfig.FRAME_DEFAULT_SIZE);
+        setTitle(AppConstants.FRAME_TITLE);
+        setLocation(getStartLocation());
+        setSize(getStartSize());
+        if(getStartMaximized())
+            setExtendedState(getExtendedState() | Frame.MAXIMIZED_BOTH);
 
         // init gui
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
@@ -62,7 +70,30 @@ public class AppFrame extends JFrame {
 
         // call after component is visible and has a size
         getLeftPanel().setDividerLocation(.5);
+        // TODO restore divider locations from config
 
+        initDragAndDrop();
+
+        // save frame location, size etc. when closing
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Boolean maximized = (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
+                AppConfig.getConfig().putBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), maximized);
+
+                if(maximized)
+                    setExtendedState(getExtendedState() & ~Frame.MAXIMIZED_BOTH);
+
+                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), getSize().width);
+                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), getSize().height);
+
+                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), getLocation().x);
+                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), getLocation().y);
+            }
+        });
+    }
+
+    private void initDragAndDrop() {
         GraphDropTargetAdapter dropTargetAdapter = new GraphDropTargetAdapter(app.getProcessProvider(), getGraphView(), getGraphView().getGui());
         dropTargetAdapter.getDropTarget().setActive(false);
 
@@ -96,7 +127,7 @@ public class AppFrame extends JFrame {
      * Creates and adds all frame components.
      */
     private void addComponents() {
-        setJMenuBar(new AppMenuBar());
+        setJMenuBar(new AppMenuBar(this));
         add(getToolbar(), "0 0");
         add(getMainPanel(), "0 1");
     }
@@ -150,7 +181,7 @@ public class AppFrame extends JFrame {
     private Component getPropertiesView() {
         // TODO mock
         JLabel mock = new JLabel("Properties");
-        mock.setMinimumSize(AppConfig.PROPERTIES_PANEL_MIN_SIZE);
+        mock.setMinimumSize(AppConstants.PROPERTIES_PANEL_MIN_SIZE);
         return mock;
     }
 
@@ -193,7 +224,7 @@ public class AppFrame extends JFrame {
             leftPanel.add(getServiceSummaryView(), JSplitPane.BOTTOM);
             // expand both components on resize
             leftPanel.setResizeWeight(.5);
-            leftPanel.setMinimumSize(AppConfig.LEFT_PANEL_MIN_SIZE);
+            leftPanel.setMinimumSize(AppConstants.LEFT_PANEL_MIN_SIZE);
         }
 
         return leftPanel;
@@ -238,8 +269,24 @@ public class AppFrame extends JFrame {
     private Component getBottomView() {
         // TODO mock
         JLabel mock = new JLabel("Tabs");
-        mock.setMinimumSize(AppConfig.BOTTOM_TABS_MIN_SIZE);
+        mock.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
         return mock;
+    }
+
+    private Point getStartLocation() {
+        int x = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), AppConstants.FRAME_DEFAULT_LOCATION.x);
+        int y = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), AppConstants.FRAME_DEFAULT_LOCATION.y);
+        return new Point(x, y);
+    }
+    
+    private boolean getStartMaximized() {
+        return AppConfig.getConfig().getBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), AppConstants.FRAME_DEFAULT_MAXIMIZED);
+    }
+
+    private Dimension getStartSize() {
+        int w = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), AppConstants.FRAME_DEFAULT_SIZE.width);
+        int h = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), AppConstants.FRAME_DEFAULT_SIZE.height);
+        return new Dimension(w, h);
     }
 
 }

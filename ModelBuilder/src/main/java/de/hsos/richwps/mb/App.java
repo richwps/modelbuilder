@@ -10,6 +10,7 @@ public class App {
     private AppFrame frame;
     private ProcessProvider processProvider;
 
+
     public static void main( String[] args )
     {
         App app = new App();
