@@ -20,8 +20,9 @@ public class ProcessProvider implements IProcessProvider {
         // TODO mock
         LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
         int p = 1 + (int) (4 * Math.random());
+        int startid = (int) (100*Math.random());
         for (int i = 0; i < p; i++) {
-            ps.add(new ProcessEntity(server, (new Integer(i)).toString()));
+            ps.add(new ProcessEntity(server, (new Integer(startid+i)).toString()));
         }
         return ps;
     }

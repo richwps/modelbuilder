@@ -19,7 +19,6 @@ public class App {
     public App() {
         processProvider = new ProcessProvider();
         frame = new AppFrame(this);
-        
     }
 
     public IProcessProvider getProcessProvider() {

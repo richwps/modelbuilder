@@ -29,7 +29,7 @@ public class GraphView extends JPanel {
 
     public GraphView() {
         super();
-        setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
+       setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
     }
 
     public Component getGui() {
@@ -52,14 +52,21 @@ public class GraphView extends JPanel {
     public Graph getGraph() {
         if (null == graph) {
             graph = new Graph();
+            graph.setCellsDisconnectable(true);
             graph.setAllowDanglingEdges(false);
+            graph.setEdgeLabelsMovable(false);
             graph.setConnectableEdges(false);
             graph.setCellsResizable(false);
+            graph.setCellsDeletable(true);
             graph.setCellsEditable(false);
             graph.setPortsEnabled(true);
             graph.setAllowLoops(false);
+            graph.setMultigraph(false);
+//            graph.getModel().get
 
             mxStylesheet stylesheet = graph.getStylesheet();
+            stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL, "1");
+            graph.setStylesheet(stylesheet);
 
             // TODO process style
             Hashtable<String, Object> processStyle = new Hashtable<String, Object>();
