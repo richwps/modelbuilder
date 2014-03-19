@@ -71,16 +71,24 @@ public class GraphView extends JPanel {
             // TODO process style
             Hashtable<String, Object> processStyle = new Hashtable<String, Object>();
             processStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-            processStyle.put(mxConstants.STYLE_OPACITY, 50);
+            processStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opcatity to 100
             processStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+            processStyle.put(mxConstants.STYLE_FILLCOLOR, "#ffffff"); // changed fill color to white
+            processStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // changed stroke color to black
+            processStyle.put(mxConstants.STYLE_FONTSIZE, 20); // changed font size
+            processStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD); // changed font size
             // ...
             stylesheet.putCellStyle("PROCESS", processStyle);
 
             // TODO port style
             Hashtable<String, Object> portStyle = new Hashtable<String, Object>();
-            portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
-            portStyle.put(mxConstants.STYLE_OPACITY, 50);
+            portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE); // changed shape to rect
+            portStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opacity to 100
             portStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+            portStyle.put(mxConstants.STYLE_FILLCOLOR, "#ffffff"); // changed fill color to white
+            portStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // changed stroke color to black
+            portStyle.put(mxConstants.STYLE_FONTSIZE, 20); // changed font size
+            portStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD); // changed font size
             // ...
             stylesheet.putCellStyle("PORT", portStyle);
         }
@@ -100,19 +108,21 @@ public class GraphView extends JPanel {
 
         try {
             // TODO used by "ports" example, remove if not needed
-            int PORT_DIAMETER = 30;
-            int PORT_RADIUS = PORT_DIAMETER / 2;
+            int PROCESS_WIDTH = 150;
+            int PORT_HEIGHT = 30;
+            int INPUT_PORT_WIDTH = PROCESS_WIDTH/numInputs;
+            int OUTPUT_PORT_WIDTH = PROCESS_WIDTH/numOutputs;
 
             // TODO calculate process dimensions depending on num ports, length of name  etc.
-            mxCell v1 = (mxCell) graph.insertVertex(parent, null, name, 0, 0, 100, 70, "PROCESS");
+            mxCell v1 = (mxCell) graph.insertVertex(parent, null, name, 0, 0, 150, 100, "PROCESS"); // changed height
             v1.setConnectable(false);
 
             // TODO mocked inputs must later be replaced with real input information
             for (int i = 0; i < numInputs; i++) {
                 // TODO calculate width of ports
-                mxGeometry geo1 = new mxGeometry(0, 0, PORT_DIAMETER, PORT_DIAMETER);
+                mxGeometry geo1 = new mxGeometry(0, 0, INPUT_PORT_WIDTH, PORT_HEIGHT); // Changed position offset
                 geo1.setRelative(true);
-                geo1.setOffset(new mxPoint(i * PORT_DIAMETER, 0));
+                geo1.setOffset(new mxPoint(i * INPUT_PORT_WIDTH, 0));
 
                 mxCell port1 = new mxCell(null, geo1, "PORT");
                 port1.setVertex(true);
@@ -123,9 +133,9 @@ public class GraphView extends JPanel {
             // TODO mocked outputs must later be replaced with real output information
             for (int i = 0; i < numOutputs; i++) {
                 // TODO calculate width of ports
-                mxGeometry geo2 = new mxGeometry(0, 1, PORT_DIAMETER, PORT_DIAMETER);
+                mxGeometry geo2 = new mxGeometry(0, 1, OUTPUT_PORT_WIDTH, PORT_HEIGHT); // Changed position offset
                 geo2.setRelative(true);
-                geo2.setOffset(new mxPoint(i * PORT_DIAMETER, -PORT_DIAMETER));
+                geo2.setOffset(new mxPoint(i * OUTPUT_PORT_WIDTH, -PORT_HEIGHT)); // Changed position offset
 
                 mxCell port1 = new mxCell(null, geo2, "PORT");
                 port1.setVertex(true);
