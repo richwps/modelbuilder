@@ -18,7 +18,8 @@ public class Logger {
      * @param o
      */
     public static void log(Object o) {
+        String oString = (null==o) ? "null" : o.toString();
         String micro = (new Long(System.nanoTime())).toString();
-        System.err.println(micro.substring(0, 6) + ": " + o.toString());
+        System.err.println(micro.substring(0, 6) + ": " + oString);
     }
 }

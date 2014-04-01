@@ -5,26 +5,38 @@
  */
 package de.hsos.richwps.mb.semanticProxy.entity;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.util.LinkedList;
+
 /**
  * There is a high propability that this model will be replaced after the
  * ModelBuilder "mock version" is done :) .
  *
  * @author dziegenh
  */
-public class ProcessEntity implements IProcessEntity   {
+public class ProcessEntity implements IProcessEntity, Transferable   {
 
     private String server;
     private String id;
 
-    private int numInputs;
-    private int numOutputs;
+    private LinkedList<ProcessPort> inputPorts;
+    private LinkedList<ProcessPort> outputPorts;
+
+//    private int numInputs;
+//    private int numOutputs;
 
     public ProcessEntity(String server, String id) {
         this.server = server;
         this.id = id;
 
-        this.numInputs = -1;
-        this.numOutputs = -1;
+        this.inputPorts = new LinkedList<ProcessPort>();
+        this.outputPorts = new LinkedList<ProcessPort>();
+
+//        this.numInputs = -1;
+//        this.numOutputs = -1;
     }
     
     @Override
@@ -34,18 +46,12 @@ public class ProcessEntity implements IProcessEntity   {
     
     @Override
     public int getNumInputs() {
-        if(0 > numInputs)
-            numInputs = 1 + (int) (3 * Math.random());
-        
-        return numInputs;
+        return inputPorts.size();
     }
 
     @Override
     public int getNumOutputs() {
-        if(0 > numOutputs)
-            numOutputs = 1 + (int) (3 * Math.random());
-
-        return numOutputs;
+        return outputPorts.size();
     }
 
     @Override
@@ -54,5 +60,27 @@ public class ProcessEntity implements IProcessEntity   {
 //        StringBuilder sb = new StringBuilder();
         return sb.append(server).append('.').append(id).toString();
     }
+
+    public void addInputPort(ProcessPort port) {
+        inputPorts.add(port);
+    }
+
+    public void addOutputPort(ProcessPort port) {
+        outputPorts.add(port);
+    }
+
+    public DataFlavor[] getTransferDataFlavors() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean isDataFlavorSupported(DataFlavor flavor) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
 
 }

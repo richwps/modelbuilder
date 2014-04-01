@@ -29,6 +29,13 @@ public class AppConstants {
     public static final Dimension BOTTOM_TABS_MIN_SIZE = new Dimension(100, 150);
 
 
+    public static final String[] INFOTAB_TITLES = {"Server", "Editor"};
+
     public final static String MENU_FILE_PREFERENCES = "Preferences";
     public final static String MENU_FILE_EXIT = "Exit";
+
+    public static Object TREE_ROOT_NAME = "...";
+    public static Object TREE_PROCESSES_NAME = "Processes";
+    public static Object TREE_DOWNLOADSERVICES_NAME = "Download Services";
+    public static Object TREE_LOCALS_NAME = "Local";
 }

@@ -22,4 +22,8 @@ public interface IProcessEntity {
 
     String toString();
 
+    void addInputPort(ProcessPort port);
+
+    void addOutputPort(ProcessPort port);
+
 }

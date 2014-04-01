@@ -6,7 +6,10 @@
 package de.hsos.richwps.mb.graphview;
 
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
+import de.hsos.richwps.mb.treeview.TransferableProcessEntity;
 import java.awt.Component;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
@@ -33,9 +36,18 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
     }
 
     public void drop(DropTargetDropEvent dtde) {
-
-        // TODO just mocked
-        graphView.createNodeFromProcess(processProvider.getServerProcesses("mock").iterator().next());
+        try {
+            Transferable transferable = dtde.getTransferable();
+            Object transferData = transferable.getTransferData(TransferableProcessEntity.processEntityFlavor);
+            
+            if(transferData instanceof ProcessEntity) {
+                ProcessEntity processEntity = (ProcessEntity) transferData;
+                graphView.createNodeFromProcess(processEntity);
+            }
+            
+        } catch (Exception ex) {
+            // TODO ignore or log ?
+        }
     }
 
 }

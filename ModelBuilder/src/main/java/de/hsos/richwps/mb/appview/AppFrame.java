@@ -4,31 +4,21 @@
  */
 package de.hsos.richwps.mb.appview;
 
-import de.hsos.richwps.mb.AppConfig;
 import de.hsos.richwps.mb.App;
+import de.hsos.richwps.mb.AppConfig;
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.graphview.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphview.GraphView;
+import de.hsos.richwps.mb.infoTabsView.InfoTabs;
+import de.hsos.richwps.mb.treeview.TreeView;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSplitPane;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
 import layout.TableLayout;
 
 /**
@@ -38,7 +28,7 @@ import layout.TableLayout;
 public class AppFrame extends JFrame {
 
     // Components
-    private JTree treeView;
+    private TreeView treeView;
 
     // Comnponent container
     private JSplitPane leftPanel;
@@ -47,6 +37,7 @@ public class AppFrame extends JFrame {
     private JSplitPane centerPanel;
     private GraphView graphView;
     private App app;
+    private InfoTabs infoTabs;
 
     /**
      * Frame setup.
@@ -60,8 +51,9 @@ public class AppFrame extends JFrame {
         setTitle(AppConstants.FRAME_TITLE);
         setLocation(getStartLocation());
         setSize(getStartSize());
-        if(getStartMaximized())
+        if (isStartMaximized()) {
             setExtendedState(getExtendedState() | Frame.MAXIMIZED_BOTH);
+        }
 
         // init gui
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
@@ -72,8 +64,6 @@ public class AppFrame extends JFrame {
         getLeftPanel().setDividerLocation(.5);
         // TODO restore divider locations from config
 
-        initDragAndDrop();
-
         // save frame location, size etc. when closing
         addWindowListener(new WindowAdapter() {
             @Override
@@ -81,44 +71,15 @@ public class AppFrame extends JFrame {
                 Boolean maximized = (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
                 AppConfig.getConfig().putBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), maximized);
 
-                if(maximized)
+                if (maximized) {
                     setExtendedState(getExtendedState() & ~Frame.MAXIMIZED_BOTH);
+                }
 
                 AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), getSize().width);
                 AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), getSize().height);
 
                 AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), getLocation().x);
                 AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), getLocation().y);
-            }
-        });
-    }
-
-    private void initDragAndDrop() {
-        GraphDropTargetAdapter dropTargetAdapter = new GraphDropTargetAdapter(app.getProcessProvider(), getGraphView(), getGraphView().getGui());
-        dropTargetAdapter.getDropTarget().setActive(false);
-
-        // activate graph droptarget when user starts dragging a treeView node
-        DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(getTreeView(), DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
-            public void dragGestureRecognized(DragGestureEvent dge) {
-                getGraphView().getGui().getDropTarget().setActive(true);
-            }
-        });
-        // deactivate graph drop target when dragging ends
-        DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceListener() {
-            public void dragEnter(DragSourceDragEvent dsde) {
-            }
-
-            public void dragOver(DragSourceDragEvent dsde) {
-            }
-
-            public void dropActionChanged(DragSourceDragEvent dsde) {
-            }
-
-            public void dragExit(DragSourceEvent dse) {
-            }
-
-            public void dragDropEnd(DragSourceDropEvent dsde) {
-                getGraphView().getGui().getDropTarget().setActive(false);
             }
         });
     }
@@ -133,25 +94,6 @@ public class AppFrame extends JFrame {
     }
 
     /**
-     * The server/process tree (north-west of the frame).
-     *
-     * @return
-     */
-    public JTree getTreeView() {
-        if (null == treeView) {
-            // TODO mock
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-            root.add(new DefaultMutableTreeNode("server 1"));
-            root.add(new DefaultMutableTreeNode("server x"));
-            treeView = new JTree(root);
-            treeView.setDragEnabled(true);
-            treeView.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-        }
-
-        return treeView;
-    }
-
-    /**
      * The summary component (south-west of the frame).
      *
      * @return
@@ -162,15 +104,20 @@ public class AppFrame extends JFrame {
     }
 
     /**
-     * The graph component.
+     * The InfoTabs component.
      *
      * @return
      */
-    public GraphView getGraphView() {
-        if (null == graphView) {
-            graphView = new GraphView();
+    public InfoTabs getInfoTabsView() {
+        if (null == infoTabs) {
+            infoTabs = new InfoTabs();
+            for (int tabIdx = 0; tabIdx < InfoTabs.TABS.values().length; tabIdx++) {
+//                Object tabName = InfoTabs.TABS.values()[tabIdx];
+                infoTabs.addTab(AppConstants.INFOTAB_TITLES[tabIdx]);
+            }
+
         }
-        return graphView;
+        return infoTabs;
     }
 
     /**
@@ -220,7 +167,7 @@ public class AppFrame extends JFrame {
     private JSplitPane getLeftPanel() {
         if (null == leftPanel) {
             leftPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-            leftPanel.add(getTreeView(), JSplitPane.TOP);
+            leftPanel.add(getTreeViewGui(), JSplitPane.TOP);
             leftPanel.add(getServiceSummaryView(), JSplitPane.BOTTOM);
             // expand both components on resize
             leftPanel.setResizeWeight(.5);
@@ -257,7 +204,7 @@ public class AppFrame extends JFrame {
     private Component getCenterPanel() {
         if (null == centerPanel) {
             centerPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-            centerPanel.add(getGraphView().getGui(), JSplitPane.TOP);
+            centerPanel.add(getGraphViewGui(), JSplitPane.TOP);
             centerPanel.add(getBottomView(), JSplitPane.BOTTOM);
             // only expand the graph panel on resize
             centerPanel.setResizeWeight(1);
@@ -268,9 +215,9 @@ public class AppFrame extends JFrame {
 
     private Component getBottomView() {
         // TODO mock
-        JLabel mock = new JLabel("Tabs");
-        mock.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
-        return mock;
+//        JLabel mock = new JLabel("Tabs");
+//        mock.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
+        return getInfoTabsView();
     }
 
     private Point getStartLocation() {
@@ -278,8 +225,8 @@ public class AppFrame extends JFrame {
         int y = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), AppConstants.FRAME_DEFAULT_LOCATION.y);
         return new Point(x, y);
     }
-    
-    private boolean getStartMaximized() {
+
+    private boolean isStartMaximized() {
         return AppConfig.getConfig().getBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), AppConstants.FRAME_DEFAULT_MAXIMIZED);
     }
 
@@ -287,6 +234,14 @@ public class AppFrame extends JFrame {
         int w = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), AppConstants.FRAME_DEFAULT_SIZE.width);
         int h = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), AppConstants.FRAME_DEFAULT_SIZE.height);
         return new Dimension(w, h);
+    }
+
+    private Component getTreeViewGui() {
+        return app.getTreeViewGui();
+    }
+
+    private Component getGraphViewGui() {
+        return app.getGraphViewGui();
     }
 
 }

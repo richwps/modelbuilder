@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.graphview;
 
 import com.mxgraph.model.mxCell;
@@ -19,21 +18,34 @@ public class GraphModel extends mxGraphModel {
         super();
     }
 
-
     boolean isInput(Object o) {
-        if(!isVertex(o))
+        if (!isVertex(o)) {
             return false;
+        }
 
         // TODO badly mocked!! Improve when ProcessDescription Model exists!!!
-        return ((mxCell) o).getValue().toString().contains("In ");
+        String value = ((mxCell) o).getValue().toString();
+        return value.length() > 2 && value.substring(0, 3).equals("In ");
     }
 
     boolean isOutput(Object o) {
-        if(!isVertex(o))
+        if (!isVertex(o)) {
             return false;
+        }
 
         // TODO badly mocked!! Improve when ProcessDescription Model exists!!!
-        return ((mxCell) o).getValue().toString().contains("Out ");
+        String value = ((mxCell) o).getValue().toString();
+        return value.length() > 3 && value.substring(0, 4).equals("Out ");
+    }
+
+    /**
+     * Return true if the cell is a process vertex (i.e. no edge and no port),.
+     *
+     * @param cell
+     * @return
+     */
+    boolean isProcess(Object o) {
+        return isVertex(o) && !isInput(o) && !isOutput(o);
     }
 
 }
