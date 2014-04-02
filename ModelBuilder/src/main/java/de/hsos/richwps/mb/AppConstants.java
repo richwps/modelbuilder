@@ -43,4 +43,5 @@ public class AppConstants {
     public final static String CARD_MULTI_PROCESS_SELECTION = "(multiple elements selected)";
     public final static String PROPERTIES_INPUTS_TITLE = "Inputs";
     public final static String PROPERTIES_OUTPUTS_TITLE = "Outputs";
+    public final static String PROPERTIES_PANEL_TITLE = "Properties";
 }

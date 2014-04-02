@@ -6,6 +6,7 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.util.List;
@@ -15,25 +16,29 @@ import javax.swing.JPanel;
  *
  * @author dziegenh
  */
-public class PropertiesView extends JPanel {
+public class PropertiesView extends TitledComponent {
 
     private final int cardGHap = 10;
     private MultiProcessCard multiProcessCard;
     private SingleProcessCard singleProcessCard;
     private JPanel voidCard;
+    private JPanel contentPanel;
 
     protected static enum CARDS {
 
         NO_SELECTION, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
     }
 
-    public PropertiesView() {
-        super();
+    public PropertiesView(String title) {
+        // TODO move String to config/constants
+        super(title, new JPanel());
 
-        setLayout(new CardLayout(cardGHap, cardGHap));
-        add(getVoidCard(), CARDS.NO_SELECTION.name());
-        add(getSingleProcessCard(), CARDS.PROCESS_SINGLE_SELECTION.name());
-        add(getMultiProcessesCard(), CARDS.PROCESS_MULTI_SELECTION.name());
+        contentPanel = (JPanel) getComponent(1);
+
+        contentPanel.setLayout(new CardLayout(cardGHap, cardGHap));
+        contentPanel.add(getVoidCard(), CARDS.NO_SELECTION.name());
+        contentPanel.add(getSingleProcessCard(), CARDS.PROCESS_SINGLE_SELECTION.name());
+        contentPanel.add(getMultiProcessesCard(), CARDS.PROCESS_MULTI_SELECTION.name());
 //        add(new JLabel(""));
     }
 
@@ -41,22 +46,22 @@ public class PropertiesView extends JPanel {
 
         if(1 == processes.size()) {
             getSingleProcessCard().setProcess(processes.get(0));
-            getCardLayout().show(this, CARDS.PROCESS_SINGLE_SELECTION.name());
+            getCardLayout().show(getContentPanel(), CARDS.PROCESS_SINGLE_SELECTION.name());
         }
 
         else if(1 < processes.size()) {
             getMultiProcessesCard().setProcesses(processes);
-            getCardLayout().show(this, CARDS.PROCESS_MULTI_SELECTION.name());
+            getCardLayout().show(getContentPanel(), CARDS.PROCESS_MULTI_SELECTION.name());
         }
         
         else {
-            getCardLayout().show(this, CARDS.NO_SELECTION.name());
+            getCardLayout().show(getContentPanel(), CARDS.NO_SELECTION.name());
         }
 
     }
 
     protected CardLayout getCardLayout() {
-        return (CardLayout) getLayout();
+        return (CardLayout) getContentPanel().getLayout();
     }
 
 
@@ -82,5 +87,9 @@ public class PropertiesView extends JPanel {
         }
 
         return multiProcessCard;
+    }
+
+    protected JPanel getContentPanel() {
+        return contentPanel;
     }
 }

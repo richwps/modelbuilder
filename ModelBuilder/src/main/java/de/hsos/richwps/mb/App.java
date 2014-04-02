@@ -155,7 +155,7 @@ public class App {
 
     protected PropertiesView getPropertiesView() {
         if(null == propertiesView) {
-            propertiesView = new PropertiesView();
+            propertiesView = new PropertiesView(AppConstants.PROPERTIES_PANEL_TITLE);
             getGraphView().addSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     propertiesView.setSelectedProcesses(getGraphView().getSelection());

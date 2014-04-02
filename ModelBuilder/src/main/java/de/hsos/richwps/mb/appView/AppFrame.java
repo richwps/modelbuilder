@@ -9,6 +9,7 @@ import de.hsos.richwps.mb.AppConfig;
 import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.treeView.TreeView;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -100,7 +101,7 @@ public class AppFrame extends JFrame {
      */
     private Component getServiceSummaryView() {
         // TODO mock
-        return new JLabel();
+        return new TitledComponent("Overview", new JLabel("..."));
     }
 
     /**
