@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphview.layout;
+package de.hsos.richwps.mb.graphView.layout;
 
 import com.mxgraph.analysis.StructuralException;
 import com.mxgraph.analysis.mxAnalysisGraph;
@@ -13,8 +13,8 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.view.mxGraph;
-import de.hsos.richwps.mb.graphview.Graph;
-import de.hsos.richwps.mb.graphview.GraphModel;
+import de.hsos.richwps.mb.graphView.Graph;
+import de.hsos.richwps.mb.graphView.GraphModel;
 import java.util.Arrays;
 
 /**

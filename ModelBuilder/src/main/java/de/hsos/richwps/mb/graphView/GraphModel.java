@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphview;
+package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;

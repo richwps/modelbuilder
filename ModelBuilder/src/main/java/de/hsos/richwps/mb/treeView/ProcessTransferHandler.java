@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.treeview;
+package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import java.awt.datatransfer.DataFlavor;
@@ -51,6 +51,9 @@ public class ProcessTransferHandler extends TransferHandler {
             Object pathComponent = selectionPath.getLastPathComponent();
             if(pathComponent instanceof DefaultMutableTreeNode) {
                 Object userObject = ((DefaultMutableTreeNode) pathComponent).getUserObject();
+                if(!(userObject instanceof ProcessEntity))
+                    return null;
+
                 return new TransferableProcessEntity((ProcessEntity) userObject);
             }
 //            return selectionPath;

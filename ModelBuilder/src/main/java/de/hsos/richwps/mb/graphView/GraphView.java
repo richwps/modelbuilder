@@ -3,20 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphview;
+package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxPoint;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import layout.TableLayout;
 
 /**
@@ -27,10 +36,13 @@ public class GraphView extends JPanel {
 
     private Graph graph;
     private mxGraphComponent graphComponent;
+    private LinkedList<ListSelectionListener> selectionListener;
+    private ActionListener saveActionListener;
 
     public GraphView() {
         super();
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
+        selectionListener = new LinkedList<ListSelectionListener>();
     }
 
     public Component getGui() {
@@ -42,7 +54,6 @@ public class GraphView extends JPanel {
             graphComponent.setToolTips(true);
             graphComponent.setBorder(new EmptyBorder(0, 0, 0, 0));
             graphComponent.getViewport().setBackground(Color.WHITE);
-
 
             // TODO replace with eventlistener - graph should not know graphcomponent!
             graph.setGraphComponent(graphComponent);
@@ -103,6 +114,17 @@ public class GraphView extends JPanel {
             portStyle.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_MIDDLE); // changed textlabel v-align
             portStyle.put(mxConstants.STYLE_SPACING_TOP, 5); // changed textlabel v-align
             stylesheet.putCellStyle("PORT", portStyle);
+
+            // selection listener adapter
+            graph.getSelectionModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
+                public void invoke(Object o, mxEventObject eo) {
+                    ListSelectionEvent event = new ListSelectionEvent(graph, 0, graph.getSelectionCount(), true);
+                    for (ListSelectionListener listener : selectionListener) {
+                        listener.valueChanged(event);
+                    }
+                }
+
+            });
         }
 
         return graph;
@@ -127,7 +149,7 @@ public class GraphView extends JPanel {
             int OUTPUT_PORT_WIDTH = PROCESS_WIDTH / numOutputs;
 
             // TODO calculate process dimensions depending on num ports, length of name  etc.
-            mxCell v1 = (mxCell) graph.insertVertex(parent, null, name, 0, 0, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
+            mxCell v1 = (mxCell) graph.insertVertex(parent, null, process, 0, 0, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
             v1.setConnectable(false);
 
             // TODO mocked inputs must later be replaced with real input information
@@ -159,6 +181,49 @@ public class GraphView extends JPanel {
         } finally {
             graph.getModel().endUpdate();
         }
+
+    }
+
+    public void addSelectionListener(ListSelectionListener listener) {
+        selectionListener.add(listener);
+    }
+
+    public void removeSelectionListener(ListSelectionListener listener) {
+        selectionListener.remove(listener);
+    }
+
+    public List<IProcessEntity> getSelection() {
+        Object[] cells = getGraph().getSelectionCells();
+        List<IProcessEntity> processes = new LinkedList<IProcessEntity>();
+        for (Object cell : cells) {
+            Object cellValue = getGraph().getModel().getValue(cell);
+            if (cellValue != null && cellValue instanceof IProcessEntity) {
+                processes.add((IProcessEntity) cellValue);
+            }
+        }
+
+        return processes;
+    }
+
+    public ActionListener getSaveActionListener() {
+        if (null == saveActionListener) {
+            saveActionListener = new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    String filename = e.getActionCommand();
+de.hsos.richwps.mb.Logger.log(filename);
+//                    mxCodec codec = new mxCodec();
+//                    String xml = mxXmlUtils.getXml(codec.encode(graph.getModel()));
+//                    try {
+//                        mxUtils.writeFile(xml, filename);
+//                    } catch (IOException ex) {
+//                        Logger.getLogger(GraphView.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+                }
+            };
+        }
+
+        return saveActionListener;
     }
 
 }

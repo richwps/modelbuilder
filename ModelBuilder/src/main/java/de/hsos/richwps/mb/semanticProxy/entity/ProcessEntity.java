@@ -10,6 +10,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * There is a high propability that this model will be replaced after the
@@ -19,6 +20,8 @@ import java.util.LinkedList;
  */
 public class ProcessEntity implements IProcessEntity, Transferable   {
 
+    private String title;
+    private String owsAbstract;
     private String server;
     private String id;
 
@@ -38,7 +41,15 @@ public class ProcessEntity implements IProcessEntity, Transferable   {
 //        this.numInputs = -1;
 //        this.numOutputs = -1;
     }
-    
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setOwsAbstract(String owsAbstract) {
+        this.owsAbstract = owsAbstract;
+    }
+
     @Override
     public String getServer() { return server; }
     @Override
@@ -69,6 +80,14 @@ public class ProcessEntity implements IProcessEntity, Transferable   {
         outputPorts.add(port);
     }
 
+    public List<ProcessPort> getInputPorts() {
+        return inputPorts;
+    }
+
+    public List<ProcessPort> getOutputPorts() {
+        return outputPorts;
+    }
+
     public DataFlavor[] getTransferDataFlavors() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -79,6 +98,14 @@ public class ProcessEntity implements IProcessEntity, Transferable   {
 
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getOwsAbstract() {
+        return owsAbstract;
     }
 
 

@@ -1,13 +1,14 @@
 package de.hsos.richwps.mb;
 
-import de.hsos.richwps.mb.appview.AppFrame;
-import de.hsos.richwps.mb.graphview.GraphDropTargetAdapter;
-import de.hsos.richwps.mb.graphview.GraphView;
+import de.hsos.richwps.mb.appView.AppFrame;
+import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
+import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.treeview.ProcessTransferHandler;
-import de.hsos.richwps.mb.treeview.TreeView;
+import de.hsos.richwps.mb.treeView.ProcessTransferHandler;
+import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -18,6 +19,8 @@ import java.awt.dnd.DragSourceDropEvent;
 import java.awt.dnd.DragSourceEvent;
 import java.awt.dnd.DragSourceListener;
 import javax.swing.JTree;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class App {
@@ -33,9 +36,11 @@ public class App {
 
     private TreeView treeView;
     private GraphView graphView;
+    private PropertiesView propertiesView;
 
     public App() {
         frame = new AppFrame(this);
+        frame.getAppMenuBar().addSaveActionListener(getGraphView().getSaveActionListener());
         initDragAndDrop();
     }
 
@@ -148,4 +153,20 @@ public class App {
         return getGraphView().getGui();
     }
 
+    protected PropertiesView getPropertiesView() {
+        if(null == propertiesView) {
+            propertiesView = new PropertiesView();
+            getGraphView().addSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent e) {
+                    propertiesView.setSelectedProcesses(getGraphView().getSelection());
+                }
+            });
+        }
+
+        return propertiesView;
+    }
+
+    public Component getPropertiesViewGui() {
+        return getPropertiesView();
+    }
 }

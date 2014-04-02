@@ -25,7 +25,10 @@ public class ProcessProvider implements IProcessProvider {
         int startid = (int) (100*Math.random());
         for (int i = 0; i < p; i++) {
 
-            ProcessEntity proc = new ProcessEntity(server, ""+(startid+i));
+            String procId = ""+(startid+i);
+            ProcessEntity proc = new ProcessEntity(server, procId);
+            proc.setTitle("Title of " + procId);
+            proc.setOwsAbstract("Abstract of " + procId);
 
             int numIn = (int) (1+3*Math.random());
             int numOut = (int) (1+3*Math.random());

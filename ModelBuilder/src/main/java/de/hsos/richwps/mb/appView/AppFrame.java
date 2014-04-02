@@ -2,14 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.appview;
+package de.hsos.richwps.mb.appView;
 
 import de.hsos.richwps.mb.App;
 import de.hsos.richwps.mb.AppConfig;
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.graphview.GraphView;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
-import de.hsos.richwps.mb.treeview.TreeView;
+import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -35,9 +34,10 @@ public class AppFrame extends JFrame {
     private JSplitPane mainPanel;
     private JSplitPane centerAndRightPanel;
     private JSplitPane centerPanel;
-    private GraphView graphView;
     private App app;
     private InfoTabs infoTabs;
+    private Component propertiesView;
+    private AppMenuBar appMenuBar;
 
     /**
      * Frame setup.
@@ -88,7 +88,7 @@ public class AppFrame extends JFrame {
      * Creates and adds all frame components.
      */
     private void addComponents() {
-        setJMenuBar(new AppMenuBar(this));
+        setJMenuBar(getAppMenuBar());
         add(getToolbar(), "0 0");
         add(getMainPanel(), "0 1");
     }
@@ -126,10 +126,12 @@ public class AppFrame extends JFrame {
      * @return
      */
     private Component getPropertiesView() {
-        // TODO mock
-        JLabel mock = new JLabel("Properties");
-        mock.setMinimumSize(AppConstants.PROPERTIES_PANEL_MIN_SIZE);
-        return mock;
+        if (null == propertiesView) {
+            propertiesView = app.getPropertiesViewGui();
+            propertiesView.setMinimumSize(AppConstants.PROPERTIES_PANEL_MIN_SIZE);
+        }
+
+        return propertiesView;
     }
 
     /**
@@ -244,4 +246,11 @@ public class AppFrame extends JFrame {
         return app.getGraphViewGui();
     }
 
+    public AppMenuBar getAppMenuBar() {
+        if (null == appMenuBar) {
+            appMenuBar = new AppMenuBar(this);
+
+        }
+        return appMenuBar;
+    }
 }

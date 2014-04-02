@@ -33,9 +33,14 @@ public class AppConstants {
 
     public final static String MENU_FILE_PREFERENCES = "Preferences";
     public final static String MENU_FILE_EXIT = "Exit";
+    public final static String MENU_FILE_SAVE = "Save";
 
     public static Object TREE_ROOT_NAME = "...";
     public static Object TREE_PROCESSES_NAME = "Processes";
     public static Object TREE_DOWNLOADSERVICES_NAME = "Download Services";
     public static Object TREE_LOCALS_NAME = "Local";
+
+    public final static String CARD_MULTI_PROCESS_SELECTION = "(multiple elements selected)";
+    public final static String PROPERTIES_INPUTS_TITLE = "Inputs";
+    public final static String PROPERTIES_OUTPUTS_TITLE = "Outputs";
 }

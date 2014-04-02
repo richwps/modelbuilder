@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphview;
+package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.analysis.mxAnalysisGraph;
 import com.mxgraph.analysis.mxGraphProperties;
@@ -16,7 +16,7 @@ import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
-import de.hsos.richwps.mb.graphview.layout.GraphWorkflowLayout;
+import de.hsos.richwps.mb.graphView.layout.GraphWorkflowLayout;
 import java.util.List;
 import java.util.Map;
 

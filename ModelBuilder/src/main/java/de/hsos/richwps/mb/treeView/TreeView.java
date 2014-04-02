@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.treeview;
+package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import javax.swing.JTree;

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.hsos.richwps.mb.graphview;
+package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.mxGraphComponent;
