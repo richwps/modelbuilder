@@ -15,6 +15,8 @@ import java.util.Collection;
  */
 public interface IProcessProvider {
 
+    ProcessEntity getProcessEntity(String server, String identifier);
+
     Collection<String> getAllServer();
 
     Collection<ProcessEntity> getServerProcesses(String server);

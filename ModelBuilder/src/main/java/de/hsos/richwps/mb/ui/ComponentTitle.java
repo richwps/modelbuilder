@@ -6,7 +6,9 @@
 
 package de.hsos.richwps.mb.ui;
 
+import de.hsos.richwps.mb.AppConstants;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -54,7 +56,21 @@ public class ComponentTitle extends JLabel {
         // TODO move magic numbers to config/constants
         setBorder(new EmptyBorder(5,5,5,5));
     }
-    
+
+    public void setFontStyle(int fontStyle, boolean keepOtherStyles) {
+        Font font = getFont();
+        int newStyle = keepOtherStyles ? font.getStyle() & fontStyle : fontStyle;
+        setFont(font.deriveFont(newStyle));
+    }
+
+    public void setBold() {
+        setFontStyle(Font.BOLD, false);
+    }
+
+    public void setItalic() {
+        setFontStyle(Font.ITALIC, false);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -63,12 +79,12 @@ public class ComponentTitle extends JLabel {
         int h = getHeight();
         // TODO move magic numbers to config/constants
         Color color1 = Color.WHITE;
-        Color color2 = Color.lightGray;
+        Color color2 = AppConstants.bgColor;
         GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
         g2d.setPaint(gp);
         g2d.fillRect(0, 0, w, h);
-//        g.setColor(bgColor);
-//        setBackground(bgColor);
+        g2d.setColor(AppConstants.bgColor.darker());
+        g2d.drawLine(0, h-1, w, h-1);
         super.paintComponent(g);
     }
 

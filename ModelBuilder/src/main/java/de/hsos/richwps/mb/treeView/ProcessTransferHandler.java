@@ -6,6 +6,7 @@
 package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import javax.swing.JComponent;
@@ -26,16 +27,13 @@ public class ProcessTransferHandler extends TransferHandler {
         super();
     }
 
-
-
-
     @Override
     public boolean canImport(TransferSupport support) {
 
 //        Logger.log("can imp " + support);
-
-        if(support.getComponent() instanceof JTree)
+        if (support.getComponent() instanceof JTree) {
             return false;
+        }
 //        return support.isDataFlavorSupported(TreeView.getProcessDataFlavor());#
         return true;
     }
@@ -43,39 +41,40 @@ public class ProcessTransferHandler extends TransferHandler {
     @Override
     protected Transferable createTransferable(JComponent c) {
 
-        if(c instanceof JTree) {
+        if (c instanceof JTree) {
             JTree tree = (JTree) c;
             TreePath selectionPath = tree.getSelectionPath();
-            if(null == selectionPath)
+            if (null == selectionPath) {
                 return null;
-            Object pathComponent = selectionPath.getLastPathComponent();
-            if(pathComponent instanceof DefaultMutableTreeNode) {
-                Object userObject = ((DefaultMutableTreeNode) pathComponent).getUserObject();
-                if(!(userObject instanceof ProcessEntity))
-                    return null;
-
-                return new TransferableProcessEntity((ProcessEntity) userObject);
             }
-//            return selectionPath;
+            Object pathComponent = selectionPath.getLastPathComponent();
+            if (pathComponent instanceof DefaultMutableTreeNode) {
+                Object userObject = ((DefaultMutableTreeNode) pathComponent).getUserObject();
+
+                if (userObject instanceof ProcessEntity) {
+                    return new TransferableProcessEntity((ProcessEntity) userObject);
+                }
+
+                else if (userObject instanceof ProcessPort) {
+                    return new TransferableProcessPort((ProcessPort) userObject);
+                }
+            }
         }
 
         return null;
-//        return new StringSelection(c.getSelection());
     }
 
     @Override
-    protected void exportDone(JComponent source, Transferable data, int action) {
-//        Logger.log("exp done");
-
+    protected void exportDone(JComponent source, Transferable data, int action
+    ) {
         if (action == MOVE) {
 //            c.removeSelection();
         }
     }
 
-
-
     @Override
-    public int getSourceActions(JComponent c) {
+    public int getSourceActions(JComponent c
+    ) {
         return TransferHandler.COPY_OR_MOVE;
     }
 
@@ -84,10 +83,7 @@ public class ProcessTransferHandler extends TransferHandler {
             return false;
         }
 
-        System.out.println("imported !");
-
         return true;
     }
-    
 
 }

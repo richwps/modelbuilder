@@ -9,6 +9,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,42 +19,72 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class ProcessEntity implements IProcessEntity, Transferable   {
+public class ProcessEntity implements IProcessEntity, Transferable, Serializable {
 
     private String title;
     private String owsAbstract;
     private String server;
-    private String id;
+    private String identifier;
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
+    private String toolTipText;
 
-//    private int numInputs;
-//    private int numOutputs;
+    public ProcessEntity() {
+        this("", "");
+    }
 
-    public ProcessEntity(String server, String id) {
+    public ProcessEntity(String server, String identifier) {
         this.server = server;
-        this.id = id;
+        this.identifier = identifier;
 
         this.inputPorts = new LinkedList<ProcessPort>();
         this.outputPorts = new LinkedList<ProcessPort>();
-
-//        this.numInputs = -1;
-//        this.numOutputs = -1;
     }
 
+    public void setInputPorts(LinkedList<ProcessPort> ports) {
+        this.inputPorts = ports;
+    }
+
+    public void setOutputPorts(LinkedList<ProcessPort> ports) {
+        this.outputPorts = ports;
+    }
+
+    /**
+     * Sets the title and resets the toolTipText.
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
+        toolTipText = null;
     }
 
+    /**
+     * Sets the identifier and resets the toolTipText.
+     * @param identifier
+     */
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+        toolTipText = null;
+    }
+
+    /**
+     * Sets the abstract and resets the toolTipText.
+     * @param owsAbstract 
+     */
     public void setOwsAbstract(String owsAbstract) {
         this.owsAbstract = owsAbstract;
+        toolTipText = null;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
     }
 
     @Override
     public String getServer() { return server; }
     @Override
-    public String getId() { return id; }
+    public String getIdentifier() { return identifier; }
     
     @Override
     public int getNumInputs() {
@@ -67,16 +98,18 @@ public class ProcessEntity implements IProcessEntity, Transferable   {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(server.length() + id.length() + 1);
-//        StringBuilder sb = new StringBuilder();
-        return sb.append(server).append('.').append(id).toString();
+        return getTitle();
+//        StringBuilder sb = new StringBuilder(server.length() + identifier.length() + 1);
+//        return sb.append(server).append('.').append(identifier).toString();
     }
 
     public void addInputPort(ProcessPort port) {
+        port.setInput(true);
         inputPorts.add(port);
     }
 
     public void addOutputPort(ProcessPort port) {
+        port.setOutput(true);
         outputPorts.add(port);
     }
 
@@ -108,6 +141,17 @@ public class ProcessEntity implements IProcessEntity, Transferable   {
         return owsAbstract;
     }
 
+    public String getToolTipText() {
+        if(null == toolTipText) {
+            // length of vars + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
+            int sbCapacity = getTitle().length() + getIdentifier().length() + getOwsAbstract().length() + 13 + 7 + 4 + 8;
+            StringBuilder sb = new StringBuilder(sbCapacity);
+            sb.append("<html><b>").append(getTitle()).append("</b><br>").append(getIdentifier()).append("<br><hr>").append(getOwsAbstract()).append("</html>");
+            toolTipText = sb.toString();
+        }
+
+        return toolTipText;
+    }
 
 
 }

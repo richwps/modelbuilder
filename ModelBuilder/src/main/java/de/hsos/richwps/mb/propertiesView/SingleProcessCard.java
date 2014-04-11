@@ -28,7 +28,7 @@ public class SingleProcessCard extends JPanel {
     void setProcess(IProcessEntity process) {
         removeAll();
 
-        add(new JLabel(process.getId()));
+        add(new JLabel(process.getIdentifier()));
         add(new JLabel(process.getTitle()));
 
         JPanel inputPanel = new JPanel();

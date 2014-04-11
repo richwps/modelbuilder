@@ -6,12 +6,15 @@
 
 package de.hsos.richwps.mb.appView;
 
-import javax.swing.JDialog;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  *
  * @author dziegenh
  */
-public class SaveDialog extends JDialog {
+public interface IAppActionHandler extends ActionListener {
+
+    public void actionPerformed(ActionEvent e);
 
 }

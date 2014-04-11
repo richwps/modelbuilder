@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.ui;
 
-import javax.swing.JComponent;
+import java.awt.Component;
 import javax.swing.JPanel;
 import layout.TableLayout;
 
@@ -16,12 +15,39 @@ import layout.TableLayout;
  */
 public class TitledComponent extends JPanel {
 
-    public TitledComponent(String title, JComponent component) {
-        ComponentTitle componentTitle = new ComponentTitle(title);
-        // TODO move magic numbers to config/constants
-        setLayout(new TableLayout(new double[][] {{TableLayout.FILL},{25, TableLayout.FILL}}));
-        add(componentTitle, "0 0");
-        add(component, "0 1");
+    private ComponentTitle componentTitle;
+
+    /**
+     * Creates a {@link ComponentTitle} and places it above the component.
+     * If the title is null, no ComponentTitle will be created.
+     */
+    public TitledComponent(String title, Component component) {
+        if (null != title) {
+            componentTitle = new ComponentTitle(title);
+            // TODO move magic number to config/constants
+            setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {25, TableLayout.FILL}}));
+            add(componentTitle, "0 0");
+            add(component, "0 1");
+
+        } else {
+            setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
+            add(component, "0 0");
+        }
+    }
+
+    public void setTitle(String title) {
+        if(null == componentTitle)
+            componentTitle = new ComponentTitle(title);
+        else
+            componentTitle.setText(title);
+    }
+
+    public void setTitleItalic() {
+        componentTitle.setItalic();
+    }
+
+    public void setTitleBold() {
+        componentTitle.setBold();
     }
 
 

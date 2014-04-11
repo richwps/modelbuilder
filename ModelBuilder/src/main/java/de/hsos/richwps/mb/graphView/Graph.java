@@ -17,6 +17,8 @@ import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.graphView.layout.GraphWorkflowLayout;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public class Graph extends mxGraph {
     private GraphWorkflowLayout graphWorkflowLayout;
     private mxCell tempCreatedEdge;
     private mxGraphComponent graphComponent;
+    private boolean autoLayout = true;
 
     public Graph() {
         super(new GraphModel());
@@ -52,8 +55,14 @@ public class Graph extends mxGraph {
     @Override
     public mxRectangle graphModelChanged(mxIGraphModel igm, List<mxUndoableEdit.mxUndoableChange> list) {
         mxRectangle ret = super.graphModelChanged(igm, list);
-        layout();
+        if (autoLayout) {
+            layout();
+        }
         return ret;
+    }
+
+    public void setAutoLayout(boolean autoLayout) {
+        this.autoLayout = autoLayout;
     }
 
     @Override
@@ -75,6 +84,7 @@ public class Graph extends mxGraph {
 
     GraphWorkflowLayout getGraphWorkflowLayout() {
         if (null == graphWorkflowLayout) {
+            // TODO move magic numbers to config/constants
             graphWorkflowLayout = new GraphWorkflowLayout(this);
             graphWorkflowLayout.setCellGap(10);
             graphWorkflowLayout.setGraphComponentGap(50);
@@ -114,7 +124,15 @@ public class Graph extends mxGraph {
      */
     @Override
     public String getToolTipForCell(Object cell) {
-        if (model.isEdge(cell)) {
+        Object value = model.getValue(cell);
+
+        if (null != value) {
+            if (value instanceof ProcessPort) {
+                return ((ProcessPort) value).getToolTipText();
+            } else if (value instanceof ProcessEntity) {
+                return ((ProcessEntity) value).getToolTipText();
+            }
+        } else if (model.isEdge(cell)) {
             return convertValueToString(model.getTerminal(cell, true)) + " -> "
                     + convertValueToString(model.getTerminal(cell, false));
         }
@@ -194,7 +212,9 @@ public class Graph extends mxGraph {
 
         // TODO layout doesn't always update ?!!
         if (graphModel.isProcess(cell) || graphModel.isEdge(cell)) {
-            layout();
+            if (autoLayout) {
+                layout();
+            }
         }
 
         return returnValue;
@@ -207,6 +227,7 @@ public class Graph extends mxGraph {
     public void setModel(mxIGraphModel igm) {
         // Explicite cast to provoke an exception if the given model is not a GraphModel
         GraphModel gm = (GraphModel) igm;
+        ag = null;
 
         super.setModel(igm);
     }
@@ -238,4 +259,9 @@ public class Graph extends mxGraph {
     void setGraphComponent(mxGraphComponent graphComponent) {
         this.graphComponent = graphComponent;
     }
+
+    boolean isAutoLayout() {
+        return autoLayout;
+    }
+
 }

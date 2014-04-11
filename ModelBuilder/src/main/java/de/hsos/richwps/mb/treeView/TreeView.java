@@ -6,6 +6,7 @@ package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -22,12 +23,9 @@ public class TreeView {
         this.processProvider = processProvider;
     
         tree = new JTree(root);
-
         tree.setRootVisible(false);
         tree.setDragEnabled(true);
-
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
-//        tree.setTransferHandler(new ProcessTransferHandler());
     }
 
     public JTree getGui() {
@@ -39,6 +37,14 @@ public class TreeView {
         for (int i = 0; i < tree.getRowCount(); i++) {
             tree.expandRow(i);
         }
+    }
+
+    public DefaultMutableTreeNode getSelectedNode() {
+        Object path = tree.getSelectionPath().getLastPathComponent();
+        if(path instanceof DefaultMutableTreeNode)
+            return (DefaultMutableTreeNode) path;
+
+        return null;
     }
 
 }

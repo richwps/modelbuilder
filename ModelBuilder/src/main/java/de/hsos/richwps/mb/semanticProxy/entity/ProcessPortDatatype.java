@@ -6,7 +6,6 @@
 
 package de.hsos.richwps.mb.semanticProxy.entity;
 
-
 public enum ProcessPortDatatype {
     LITERAL,
     COMPLEX

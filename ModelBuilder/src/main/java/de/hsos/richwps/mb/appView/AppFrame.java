@@ -7,8 +7,9 @@ package de.hsos.richwps.mb.appView;
 import de.hsos.richwps.mb.App;
 import de.hsos.richwps.mb.AppConfig;
 import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.appView.menu.AppMenuBar;
+import de.hsos.richwps.mb.appView.toolbar.AppToolbar;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
-import de.hsos.richwps.mb.treeView.TreeView;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -17,7 +18,7 @@ import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import layout.TableLayout;
 
@@ -26,9 +27,6 @@ import layout.TableLayout;
  * @author dziegenh
  */
 public class AppFrame extends JFrame {
-
-    // Components
-    private TreeView treeView;
 
     // Comnponent container
     private JSplitPane leftPanel;
@@ -39,6 +37,12 @@ public class AppFrame extends JFrame {
     private InfoTabs infoTabs;
     private Component propertiesView;
     private AppMenuBar appMenuBar;
+    private TitledComponent treeViewGui;
+
+    private IAppActionHandler actionHandler;
+    private AppToolbar toolbar;
+    private TitledComponent graphViewGui;
+    private JPanel serviceSummaryView;
 
     /**
      * Frame setup.
@@ -46,7 +50,10 @@ public class AppFrame extends JFrame {
     public AppFrame(App app) {
         super();
 
+        // TODO Inversion of Control: AppFrame should not know class App!
         this.app = app;
+
+        this.actionHandler = app.getActionHandler();
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle(AppConstants.FRAME_TITLE);
@@ -101,7 +108,28 @@ public class AppFrame extends JFrame {
      */
     private Component getServiceSummaryView() {
         // TODO mock
-        return new TitledComponent("Overview", new JLabel("..."));
+        if (null == serviceSummaryView) {
+            serviceSummaryView = new JPanel();
+//            mxGraph graph = new mxGraph();
+//            Object parent = graph.getDefaultParent();
+//
+//            graph.getModel().beginUpdate();
+//            try {
+//                Object v1 = graph.insertVertex(parent, null, "Hello", 20, 20, 80,
+//                        30);
+//                Object v2 = graph.insertVertex(parent, null, "World!", 240, 150,
+//                        80, 30);
+//                graph.insertEdge(parent, null, "Edge", v1, v2);
+//            } finally {
+//                graph.getModel().endUpdate();
+//            }
+//
+//            mxGraphComponent graphComponent = new mxGraphComponent(graph);
+//            serviceSummaryView.add(graphComponent);
+        }
+
+        return serviceSummaryView;
+//        return new TitledComponent(AppConstants.OVERVIEW_TITLE, new JLabel(""));
     }
 
     /**
@@ -112,10 +140,15 @@ public class AppFrame extends JFrame {
     public InfoTabs getInfoTabsView() {
         if (null == infoTabs) {
             infoTabs = new InfoTabs();
-            for (int tabIdx = 0; tabIdx < InfoTabs.TABS.values().length; tabIdx++) {
-//                Object tabName = InfoTabs.TABS.values()[tabIdx];
-                infoTabs.addTab(AppConstants.INFOTAB_TITLES[tabIdx]);
+            infoTabs.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
+            for (String[] tabData : AppConstants.INFOTABS) {
+                infoTabs.addTab(tabData[0], tabData[1]);
             }
+
+            infoTabs.output("server", "** connecting RichWPS-server...");
+            infoTabs.output("server", "** server connection established.");
+            infoTabs.output("server", "** requesting processes...");
+            infoTabs.output("server", "** processes received.");
 
         }
         return infoTabs;
@@ -140,9 +173,14 @@ public class AppFrame extends JFrame {
      *
      * @return
      */
-    private Component getToolbar() {
+    private AppToolbar getToolbar() {
+        if (null == toolbar) {
+            toolbar = new AppToolbar(actionHandler);
+        }
+
+        return toolbar;
         // TODO mock
-        return new JLabel("Toolbar?");
+//        return new JLabel("Toolbar?");
     }
 
     /**
@@ -217,22 +255,22 @@ public class AppFrame extends JFrame {
     }
 
     private Component getBottomView() {
-        // TODO mock
-//        JLabel mock = new JLabel("Tabs");
-//        mock.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
         return getInfoTabsView();
     }
 
+    // TODO move to App
     private Point getStartLocation() {
         int x = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), AppConstants.FRAME_DEFAULT_LOCATION.x);
         int y = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), AppConstants.FRAME_DEFAULT_LOCATION.y);
         return new Point(x, y);
     }
 
+    // TODO move to App
     private boolean isStartMaximized() {
         return AppConfig.getConfig().getBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), AppConstants.FRAME_DEFAULT_MAXIMIZED);
     }
 
+    // TODO move to App
     private Dimension getStartSize() {
         int w = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), AppConstants.FRAME_DEFAULT_SIZE.width);
         int h = AppConfig.getConfig().getInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), AppConstants.FRAME_DEFAULT_SIZE.height);
@@ -240,17 +278,30 @@ public class AppFrame extends JFrame {
     }
 
     private Component getTreeViewGui() {
-        return app.getTreeViewGui();
+        if (null == treeViewGui) {
+            treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, app.getTreeViewGui());
+        }
+
+        return treeViewGui;
     }
 
-    private Component getGraphViewGui() {
-        return app.getGraphViewGui();
+    public void setGraphViewTitle(String title) {
+        getGraphViewGui().setTitle(title);
+        getGraphViewGui().setTitleBold();
+    }
+
+    private TitledComponent getGraphViewGui() {
+        if (null == graphViewGui) {
+            graphViewGui = new TitledComponent(AppConstants.EDITOR_DEFAULT_TITLE, app.getGraphViewGui());
+            graphViewGui.setTitleItalic();
+        }
+
+        return graphViewGui;
     }
 
     public AppMenuBar getAppMenuBar() {
         if (null == appMenuBar) {
-            appMenuBar = new AppMenuBar(this);
-
+            appMenuBar = new AppMenuBar(actionHandler);
         }
         return appMenuBar;
     }
