@@ -27,7 +27,7 @@ public class AppMenuBar extends JMenuBar {
 
     public static enum MENUS {FILE, EDIT}
     public static enum MENU_ITEMS {
-        FILE_NEW, FILE_LOAD, FILE_SAVE, FILE_PREFERENCES, FILE_EXIT,
+        FILE_NEW, FILE_LOAD, FILE_SAVE, FILE_SAVEAS, FILE_PREFERENCES, FILE_EXIT,
         EDIT_UNDO, EDIT_REDO, EDIT_LAYOUT
     }
 

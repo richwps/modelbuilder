@@ -17,6 +17,8 @@ import java.io.File;
  */
 public class AppConstants {
 
+    public static boolean GRAPH_AUTOLAYOUT = true;
+
     private final static String FSEP = File.separator;
 
     public final static String RESOURCES_DIR = "src" + FSEP + "main" + FSEP + "resources";
@@ -54,6 +56,7 @@ public class AppConstants {
         {"FILE_NEW", "New"},
         {"FILE_LOAD", "Open"},
         {"FILE_SAVE", "Save"},
+        {"FILE_SAVEAS", "Save as"},
         {"FILE_PREFERENCES", "Preferences"},
         {"FILE_EXIT", "Exit"},
 
@@ -75,16 +78,26 @@ public class AppConstants {
     public static Object TREE_DOWNLOADSERVICES_NAME = "Download Services";
     public static Object TREE_LOCALS_NAME = "Local";
 
+    // Properties View
     public final static String CARD_MULTI_PROCESS_SELECTION = "(multiple elements selected)";
+    public final static String PROPERTIES_PROCESS_TITLE = "Process";
     public final static String PROPERTIES_INPUTS_TITLE = "Inputs";
     public final static String PROPERTIES_OUTPUTS_TITLE = "Outputs";
     public final static String PROPERTIES_PANEL_TITLE = "Properties";
+    public final static String PROCESS_IDENTIFIER_LABEL = "Identifier";
+    public final static String PROCESS_ABSTRACT_LABEL = "Identifier";
+    public final static String PROCESS_TITLE_LABEL = "Identifier";
+    public final static String PORT_IDENTIFIER_LABEL = "Identifier";
+    public final static String PORT_ABSTRACT_LABEL = "Identifier";
+    public final static String PORT_TITLE_LABEL = "Identifier";
+    public final static String PORT_DATATYPE_LABEL = "Datatype";
 
     public final static String TREE_VIEW_TITLE = null;
     public final static String OVERVIEW_TITLE = null;
     public final static String EDITOR_DEFAULT_TITLE = "(untitled)";
 
-    // TODO get color from lookAndFeel
+    // TODO get color from lookAndFeel / UIManager
+    @Deprecated
     public final static Color bgColor = new Color(222,227,250); // alt: (0xd0e0ff);
 
     // Messages
@@ -106,12 +119,16 @@ public class AppConstants {
     /**
      * UIManager keys.
      */
+    public final static String ICON_MBLOGO_KEY = "rwps_icon_mblogo";
+    // Actions
     public final static String ICON_NEW_KEY = "rwps_icon_new";
     public final static String ICON_OPEN_KEY = "rwps_icon_load";
     public final static String ICON_SAVE_KEY = "rwps_icon_save";
+    public final static String ICON_SAVEAS_KEY = "rwps_icon_saveas";
     public final static String ICON_EXIT_KEY = "rwps_icon_exit";
     public final static String ICON_PREFERENCES_KEY = "rwps_icon_prefs";
     public final static String ICON_UNDO_KEY = "rwps_icon_undo";
     public final static String ICON_REDO_KEY = "rwps_icon_redo";
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
+
 }

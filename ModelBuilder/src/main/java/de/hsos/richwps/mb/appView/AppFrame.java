@@ -66,7 +66,6 @@ public class AppFrame extends JFrame {
         // init gui
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
         addComponents();
-        setVisible(true);
 
         // call after component is visible and has a size
         getLeftPanel().setDividerLocation(.5);

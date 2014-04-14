@@ -26,6 +26,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.Arrays;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +47,7 @@ public class App {
     private ProcessTransferHandler processTransferHandler;
 
     public static void main(String[] args) {
-        App app = new App();
+        App app = new App(args);
     }
 
     private TreeView treeView;
@@ -54,7 +55,7 @@ public class App {
     private PropertiesView propertiesView;
     private AppActionHandler actionHandler;
 
-    public App() {
+    public App(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -67,23 +68,36 @@ public class App {
 //            Graphics2D g = splash.createGraphics();
 //            renderSplashScreen(g);
 
-            // TODO move icon loader
+            if (Arrays.asList(args).contains("graph_editable")) {
+                AppConstants.GRAPH_AUTOLAYOUT = false;
+            }
+
+            // TODO move/create icon loader
             String iconDir = AppConstants.RES_ICONS_DIR + File.separator;
+            // Logo
+            UIManager.put(AppConstants.ICON_MBLOGO_KEY, new ImageIcon(iconDir + "mb_logo.png", "mb logo icon"));
+            // File icons
             UIManager.put(AppConstants.ICON_NEW_KEY, new ImageIcon(iconDir + "document-new-6.png", "new icon"));
             UIManager.put(AppConstants.ICON_OPEN_KEY, new ImageIcon(iconDir + "document-open-2.png", "open icon"));
             UIManager.put(AppConstants.ICON_SAVE_KEY, new ImageIcon(iconDir + "document-save-5.png", "save icon"));
+            UIManager.put(AppConstants.ICON_SAVEAS_KEY, new ImageIcon(iconDir + "document-save-as-4.png", "save as icon"));
             UIManager.put(AppConstants.ICON_PREFERENCES_KEY, new ImageIcon(iconDir + "system-settings.png", "prefs icon"));
             UIManager.put(AppConstants.ICON_EXIT_KEY, new ImageIcon(iconDir + "dialog-close-2.png", "exit icon"));
-
+            // Edit Icons
             UIManager.put(AppConstants.ICON_UNDO_KEY, new ImageIcon(iconDir + "arrow-undo.png", "undo icon"));
             UIManager.put(AppConstants.ICON_REDO_KEY, new ImageIcon(iconDir + "arrow-redo.png", "redo icon"));
             UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
 
             frame = new AppFrame(this);
+            frame.setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
 
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
-//            initDragAndDrop();
+            if (AppConstants.GRAPH_AUTOLAYOUT) {
+                initDragAndDrop();
+            }
+
+            frame.setVisible(true);
         }
     }
 

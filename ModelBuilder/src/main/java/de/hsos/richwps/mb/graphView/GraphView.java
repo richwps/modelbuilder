@@ -22,6 +22,7 @@ import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
@@ -108,16 +109,18 @@ public class GraphView extends JPanel {
             graph.setPortsEnabled(true);
             graph.setAllowLoops(false);
             graph.setMultigraph(false);
-            graph.setAutoLayout(false);
+            graph.setAutoLayout(AppConstants.GRAPH_AUTOLAYOUT);
             graph.setCellsMovable(!graph.isAutoLayout());
 
             // size (ratio) of the interactive port part (in percent relative to port size)
-            mxConstants.DEFAULT_HOTSPOT = .5;
+            mxConstants.DEFAULT_HOTSPOT = graph.isAutoLayout() ? 1 : .5;
 
             mxStylesheet stylesheet = graph.getStylesheet();
             stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL, "1");
             stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_STROKECOLOR, "000000");
-            stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_TOPTOBOTTOM);
+
+            Object edgeStyle = graph.isAutoLayout() ? mxConstants.NONE : mxConstants.EDGESTYLE_TOPTOBOTTOM;
+            stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_EDGE, edgeStyle);
 //            stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_OPACITY, 50);
             graph.setStylesheet(stylesheet);
 

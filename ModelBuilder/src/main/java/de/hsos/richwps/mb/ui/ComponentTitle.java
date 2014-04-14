@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.ui;
 
 import de.hsos.richwps.mb.AppConstants;
@@ -18,13 +17,15 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+
 /**
  *
  * @author dziegenh
  */
 public class ComponentTitle extends JLabel {
 
-    private Color bgColor;
+    private Color gradientColor2;
+    private Color gradientColor1;
 
     public ComponentTitle() {
         this("", null, SwingConstants.LEFT);
@@ -38,8 +39,8 @@ public class ComponentTitle extends JLabel {
         this(title, null, horizontalAlignment);
     }
 
-    public ComponentTitle(Icon image) {
-        this("", image, SwingConstants.LEFT);
+    public ComponentTitle(Icon icon) {
+        this("", icon, SwingConstants.LEFT);
     }
 
     public ComponentTitle(Icon image, int horizontalAlignment) {
@@ -48,13 +49,22 @@ public class ComponentTitle extends JLabel {
 
     public ComponentTitle(String title, Icon icon, int horizontalAlignment) {
         super(title, icon, horizontalAlignment);
-        this.bgColor = new Color(0, true);
         init();
     }
 
     private void init() {
         // TODO move magic numbers to config/constants
-        setBorder(new EmptyBorder(5,5,5,5));
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        gradientColor1 = Color.WHITE;
+        gradientColor2 = AppConstants.bgColor;
+    }
+
+    public void setGradientColor1(Color color) {
+        gradientColor1 = color;
+    }
+
+    public void setGradientColor2(Color color) {
+        gradientColor2 = color;
     }
 
     public void setFontStyle(int fontStyle, boolean keepOtherStyles) {
@@ -77,14 +87,16 @@ public class ComponentTitle extends JLabel {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         int w = getWidth();
         int h = getHeight();
-        // TODO move magic numbers to config/constants
-        Color color1 = Color.WHITE;
-        Color color2 = AppConstants.bgColor;
-        GradientPaint gp = new GradientPaint(0, 0, color1, 0, h, color2);
+        GradientPaint gp = new GradientPaint(0, 0, gradientColor1, 0, h, gradientColor2);
         g2d.setPaint(gp);
         g2d.fillRect(0, 0, w, h);
-        g2d.setColor(AppConstants.bgColor.darker());
-        g2d.drawLine(0, h-1, w, h-1);
+        // TODO let user decide if there should be any top/bottom border.
+        // top border
+//        g2d.setColor(gradientColor1);
+//        g2d.drawLine(0, 0, w, 0);
+        // bottom border
+        g2d.setColor(gradientColor2.darker());
+        g2d.drawLine(0, h - 1, w, h - 1);
         super.paintComponent(g);
     }
 

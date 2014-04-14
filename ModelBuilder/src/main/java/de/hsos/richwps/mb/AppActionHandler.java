@@ -57,6 +57,9 @@ public class AppActionHandler implements IAppActionHandler {
             case FILE_SAVE:
                 doSaveModel();
                 break;
+            case FILE_SAVEAS:
+                doSaveModelAs();
+                break;
             case FILE_PREFERENCES:
                 doPreferencesDialog();
                 break;
@@ -79,7 +82,7 @@ public class AppActionHandler implements IAppActionHandler {
         }
     }
 
-    private void doSaveModel() {
+    private void doSaveModelAs() {
         JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
 
@@ -111,7 +114,11 @@ public class AppActionHandler implements IAppActionHandler {
                 if (state == JFileChooser.APPROVE_OPTION) {
                     String filename = fc.getSelectedFile().getPath();
                     getGraphView().loadGraphFromXml(filename);
-//                    app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
+                    String graphName = getGraphView().getCurrentGraphName();
+                    if(null == graphName) {
+                        graphName = "";
+                    }
+                    app.getFrame().setGraphViewTitle(graphName);
                 }
 
             } catch (Exception ex) {
@@ -181,5 +188,9 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doLayout() {
         getGraphView().layoutGraph();
+    }
+
+    private void doSaveModel() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

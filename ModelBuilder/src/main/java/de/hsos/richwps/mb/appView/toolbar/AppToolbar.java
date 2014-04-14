@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.appView.toolbar;
 
+import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.appView.IAppActionHandler;
 import de.hsos.richwps.mb.appView.action.LayoutAction;
 import de.hsos.richwps.mb.appView.action.LoadAction;
@@ -13,6 +13,7 @@ import de.hsos.richwps.mb.appView.action.NewAction;
 import de.hsos.richwps.mb.appView.action.PreferencesAction;
 import de.hsos.richwps.mb.appView.action.RedoAction;
 import de.hsos.richwps.mb.appView.action.SaveAction;
+import de.hsos.richwps.mb.appView.action.SaveAsAction;
 import de.hsos.richwps.mb.appView.action.UndoAction;
 import javax.swing.JToolBar;
 
@@ -23,13 +24,13 @@ import javax.swing.JToolBar;
 public class AppToolbar extends JToolBar {
 
 //    private IAppActionHandler actionHandler;
-
     public AppToolbar(IAppActionHandler actionHandler) {
         setFloatable(false);
 
         add(new NewAction(actionHandler));
         add(new LoadAction(actionHandler));
         add(new SaveAction(actionHandler));
+        add(new SaveAsAction(actionHandler));
 
         addSeparator();
 
@@ -37,16 +38,15 @@ public class AppToolbar extends JToolBar {
 //        add(new ExitAction(actionHandler));
 
         addSeparator();
-        
+
         add(new UndoAction(actionHandler));
         add(new RedoAction(actionHandler));
-        
-        addSeparator();
 
-        add(new LayoutAction(actionHandler));
+        if (!AppConstants.GRAPH_AUTOLAYOUT) {
+            addSeparator();
+            add(new LayoutAction(actionHandler));
+        }
 
     }
 
-
-    
 }

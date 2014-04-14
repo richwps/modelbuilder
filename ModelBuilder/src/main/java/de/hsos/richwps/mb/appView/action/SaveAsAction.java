@@ -14,11 +14,10 @@ import de.hsos.richwps.mb.appView.menu.AppMenuBar;
  *
  * @author dziegenh
  */
-public class SaveAction extends AppAbstractAction {
+public class SaveAsAction extends AppAbstractAction {
 
-    public SaveAction(IAppActionHandler actionHandler) {
-        super(actionHandler, AppMenuBar.MENU_ITEMS.FILE_SAVE, AppConstants.ICON_SAVE_KEY);
-        setEnabled(false);
+    public SaveAsAction(IAppActionHandler actionHandler) {
+        super(actionHandler, AppMenuBar.MENU_ITEMS.FILE_SAVEAS, AppConstants.ICON_SAVEAS_KEY);
     }
 
 }
