@@ -5,15 +5,23 @@
  */
 package de.hsos.richwps.mb;
 
-import de.hsos.richwps.mb.appView.IAppActionHandler;
-import de.hsos.richwps.mb.appView.menu.AppMenuBar;
+import de.hsos.richwps.mb.appActions.AppActionProvider;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.DO_LAYOUT;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.EXIT_APP;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.LOAD_MODEL;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.NEW_MODEL;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.SAVE_MODEL;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS;
+import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
+import de.hsos.richwps.mb.appActions.IAppActionHandler;
 import de.hsos.richwps.mb.graphView.GraphView;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -33,41 +41,38 @@ import layout.TableLayout;
 public class AppActionHandler implements IAppActionHandler {
 
     private App app;
-//    private AppFrame frame;
 
     public AppActionHandler(App app) {
         this.app = app;
-//        this.frame = app.getFrame();
     }
 
     public void actionPerformed(ActionEvent e) {
 
-        if (!app.getFrame().getAppMenuBar().isMenuItem(e.getSource())) {
+        if (!app.isAppAction(e.getSource())) {
             return;
         }
 
-        AppMenuBar.MENU_ITEMS item = (AppMenuBar.MENU_ITEMS) e.getSource();
+        AppActionProvider.APP_ACTIONS item = (AppActionProvider.APP_ACTIONS) e.getSource();
         switch (item) {
-            case FILE_NEW:
+            case NEW_MODEL:
                 doNewModel();
                 break;
-            case FILE_LOAD:
+            case LOAD_MODEL:
                 doLoadModel();
                 break;
-            case FILE_SAVE:
+            case SAVE_MODEL:
                 doSaveModel();
                 break;
-            case FILE_SAVEAS:
+            case SAVE_MODEL_AS:
                 doSaveModelAs();
                 break;
-            case FILE_PREFERENCES:
+            case SHOW_PREFERENCES:
                 doPreferencesDialog();
                 break;
-            case FILE_EXIT:
+            case EXIT_APP:
                 doExit();
                 break;
-
-            case EDIT_LAYOUT:
+            case DO_LAYOUT:
                 doLayout();
                 break;
             default:
@@ -83,6 +88,9 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doSaveModelAs() {
+
+        // TODO check for missing ProcessEntities !!!
+
         JFileChooser fc = new JFileChooser();
         fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
 
@@ -115,14 +123,18 @@ public class AppActionHandler implements IAppActionHandler {
                     String filename = fc.getSelectedFile().getPath();
                     getGraphView().loadGraphFromXml(filename);
                     String graphName = getGraphView().getCurrentGraphName();
-                    if(null == graphName) {
+                    if (null == graphName) {
                         graphName = "";
                     }
+                    app.setCurrentModelFilename(filename);
                     app.getFrame().setGraphViewTitle(graphName);
+                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                 }
 
             } catch (Exception ex) {
+                Logger.getLogger(AppActionHandler.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(app.getFrame(), AppConstants.LOAD_MODEL_FAILED);
+                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
             }
         }
     }
@@ -175,10 +187,13 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doExit() {
+//        app.getFrame().dispatchEvent(new WindowEvent(app.getFrame(), WindowEvent.WINDOW_CLOSING) {});
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
-            app.getFrame().dispatchEvent(new WindowEvent(app.getFrame(), WindowEvent.WINDOW_CLOSING) {
-            });
+            app.getFrame().dispose();
+            System.exit(0);
+//            app.getFrame().dispatchEvent(new WindowEvent(app.getFrame(), WindowEvent.WINDOW_CLOSING) {
+//            });
         }
     }
 
@@ -191,6 +206,22 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doSaveModel() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        // TODO check for missing ProcessEntities !!!
+
+        
+        String filename = app.getCurrentModelFilename();
+        if (null == filename || filename.isEmpty()) {
+            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
+            return;
+        }
+
+        try {
+            getGraphView().saveGraphToXml(filename);
+        } catch (Exception ex) {
+            Logger.getLogger(AppActionHandler.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
+        }
+
     }
 }

@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb;
 
+import de.hsos.richwps.mb.appActions.AppActionProvider;
+import de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.appView.AppFrame;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
@@ -12,7 +14,10 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.treeView.ProcessTransferHandler;
 import de.hsos.richwps.mb.treeView.TreeView;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -25,12 +30,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
@@ -40,11 +48,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class App {
+    private AppActionProvider actionProvider;
 
     private AppFrame frame;
     private ProcessProvider processProvider;
 
     private ProcessTransferHandler processTransferHandler;
+
+    private String currentModelFilename = null;
 
     public static void main(String[] args) {
         App app = new App(args);
@@ -53,7 +64,11 @@ public class App {
     private TreeView treeView;
     private GraphView graphView;
     private PropertiesView propertiesView;
-    private AppActionHandler actionHandler;
+//    private AppActionHandler actionHandler;
+    private JLabel graphDndProxy;
+
+
+    GraphDropTargetAdapter dropTargetAdapter;
 
     public App(String[] args) {
         try {
@@ -90,15 +105,30 @@ public class App {
 
             frame = new AppFrame(this);
             frame.setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
+            
+            // Delegate windows closing action
+            frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    getActionProvider().fire(APP_ACTIONS.EXIT_APP);
+                }
+
+            });
 
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
-            if (AppConstants.GRAPH_AUTOLAYOUT) {
-                initDragAndDrop();
-            }
+            initDragAndDrop();
 
             frame.setVisible(true);
         }
+    }
+
+    public String getCurrentModelFilename() {
+        return currentModelFilename;
+    }
+
+    public void setCurrentModelFilename(String name) {
+        this.currentModelFilename = name;
     }
 
     public IProcessProvider getProcessProvider() {
@@ -116,21 +146,19 @@ public class App {
         return processTransferHandler;
     }
 
-    GraphDropTargetAdapter dropTargetAdapter;
-
     private void initDragAndDrop() {
-//        final GraphDropTargetAdapter dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphViewGui());
-//        dropTargetAdapter.getDropTarget().setActive(false);
-//        dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
-
         // activate graph droptarget when user starts dragging a treeView node
         DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(getTreeView().getGui(), DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
             public void dragGestureRecognized(DragGestureEvent dge) {
                 try {
-
-                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphViewGui());
+                    de.hsos.richwps.mb.Logger.log("create DnD");
+                    if (null != dropTargetAdapter) {
+                        return;
+                    }
+                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphDndProxy());
+                    dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
                     dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
-//                getGraphViewGui().getDropTarget().setActive(true);
+                    getGraphDndProxy().setVisible(true);
                 } catch (TooManyListenersException ex) {
                     Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -152,13 +180,36 @@ public class App {
 
             public void dragDropEnd(DragSourceDropEvent dsde) {
                 dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
+                getGraphDndProxy().setVisible(false);
                 dropTargetAdapter = null;
-
-//                getGraphViewGui().getDropTarget().setActive(false);
             }
         });
 
         getTreeViewGui().setTransferHandler(getProcessTransferHandler());
+    }
+
+    /**
+     * Returns an overlay panel for the graph.
+     *
+     * @return
+     */
+    public Component getGraphDndProxy() {
+        if (null == graphDndProxy) {
+            graphDndProxy = new JLabel(" ") {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Color tmpColor = g.getColor();
+                    g.setColor(getBackground());
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                    g.setColor(tmpColor);
+                    super.paintComponent(g);
+                }
+
+            };
+            graphDndProxy.setBackground(new Color(0f, 1f, 0f, .1f));
+            graphDndProxy.setVisible(false);
+        }
+        return graphDndProxy;
     }
 
     /**
@@ -168,7 +219,7 @@ public class App {
      */
     protected TreeView getTreeView() {
         if (null == treeView) {
-            // TODO mock
+            // TODO mock; to be replaced when semantic proxy exists
             IProcessProvider processProvider = getProcessProvider();
             DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
             DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
@@ -204,9 +255,9 @@ public class App {
 
                             Object nodeObject = node.getUserObject();
                             if (nodeObject instanceof ProcessEntity) {
-                                getGraphView().createNodeFromProcess((IProcessEntity) nodeObject);
+                                getGraphView().createNodeFromProcess((IProcessEntity) nodeObject, new Point(0, 0));
                             } else if (nodeObject instanceof ProcessPort) {
-                                getGraphView().createNodeFromPort((ProcessPort) nodeObject);
+                                getGraphView().createNodeFromPort((ProcessPort) nodeObject, new Point(0, 0));
                             }
                         }
                     }
@@ -285,16 +336,36 @@ public class App {
         return getPropertiesView();
     }
 
-    // TODO make privat
-    public AppActionHandler getActionHandler() {
-        if (null == actionHandler) {
-            actionHandler = new AppActionHandler(this);
-        }
-
-        return actionHandler;
-    }
-
     public AppFrame getFrame() {
         return frame;
+    }
+
+    public AppActionProvider getActionProvider() {
+        if(null == actionProvider) {
+            AppActionHandler actionHandler = new AppActionHandler(this);
+            actionProvider = new AppActionProvider(actionHandler);
+        }
+
+        return actionProvider;
+    }
+
+    /**
+     * Return the visible caption String for the given item.
+     *
+     * @param item
+     * @return
+     */
+    public static String getMenuItemCaption(APP_ACTIONS item) {
+        String itemString = item.name();
+        for (String[] itemCaption : AppConstants.MENU_ITEM_CAPTIONS) {
+            if (itemCaption[0].equals(itemString)) {
+                return itemCaption[1];
+            }
+        }
+        return "";
+    }
+
+    boolean isAppAction(Object source) {
+        return getActionProvider().isAppAction(source);
     }
 }

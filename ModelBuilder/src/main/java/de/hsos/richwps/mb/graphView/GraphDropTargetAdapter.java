@@ -42,7 +42,8 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
         try {
             Object transferProcess = transferable.getTransferData(TransferableProcessEntity.processEntityFlavor);
             ProcessEntity processEntity = (ProcessEntity) transferProcess;
-            graphView.createNodeFromProcess(processEntity);
+            graphView.createNodeFromProcess(processEntity, dtde.getLocation());
+
         } catch (Exception ex) {
             // TODO ignore or log ?
         }
@@ -50,7 +51,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
         try {
             Object transferPort = transferable.getTransferData(TransferableProcessPort.processPortFlavor);
             ProcessPort processPort = (ProcessPort) transferPort;
-            graphView.createNodeFromPort(processPort);
+            graphView.createNodeFromPort(processPort, dtde.getLocation());
         } catch (Exception ex) {
             // TODO ignore or log ?
         }

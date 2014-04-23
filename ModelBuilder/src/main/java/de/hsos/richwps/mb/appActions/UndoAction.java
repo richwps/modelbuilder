@@ -4,11 +4,9 @@
  * and open the template in the editor.
  */
 
-package de.hsos.richwps.mb.appView.action;
+package de.hsos.richwps.mb.appActions;
 
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.appView.IAppActionHandler;
-import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 
 /**
  *
@@ -17,7 +15,7 @@ import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 public class UndoAction extends AppAbstractAction {
 
     public UndoAction(IAppActionHandler actionHandler) {
-        super(actionHandler, AppMenuBar.MENU_ITEMS.EDIT_UNDO, AppConstants.ICON_UNDO_KEY);
+        super(actionHandler, AppActionProvider.APP_ACTIONS.UNDO, AppConstants.ICON_UNDO_KEY);
         setEnabled(false);
     }
 

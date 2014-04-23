@@ -53,16 +53,16 @@ public class AppConstants {
      * the keys refer to MenuBar enum.
      */
     public static final String[][] MENU_ITEM_CAPTIONS = new String[][] {
-        {"FILE_NEW", "New"},
-        {"FILE_LOAD", "Open"},
-        {"FILE_SAVE", "Save"},
-        {"FILE_SAVEAS", "Save as"},
-        {"FILE_PREFERENCES", "Preferences"},
-        {"FILE_EXIT", "Exit"},
+        {"NEW_MODEL", "New"},
+        {"LOAD_MODEL", "Open"},
+        {"SAVE_MODEL", "Save"},
+        {"SAVE_MODEL_AS", "Save as"},
+        {"SHOW_PREFERENCES", "Preferences"},
+        {"EXIT_APP", "Exit"},
 
-        {"EDIT_UNDO", "Undo"},
-        {"EDIT_REDO", "Redo"},
-        {"EDIT_LAYOUT", "Layout"},
+        {"UNDO", "Undo"},
+        {"REDO", "Redo"},
+        {"DO_LAYOUT", "Layout"},
     };
 
     /**

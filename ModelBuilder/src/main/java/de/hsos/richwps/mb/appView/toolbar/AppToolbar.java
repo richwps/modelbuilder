@@ -6,15 +6,7 @@
 package de.hsos.richwps.mb.appView.toolbar;
 
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.appView.IAppActionHandler;
-import de.hsos.richwps.mb.appView.action.LayoutAction;
-import de.hsos.richwps.mb.appView.action.LoadAction;
-import de.hsos.richwps.mb.appView.action.NewAction;
-import de.hsos.richwps.mb.appView.action.PreferencesAction;
-import de.hsos.richwps.mb.appView.action.RedoAction;
-import de.hsos.richwps.mb.appView.action.SaveAction;
-import de.hsos.richwps.mb.appView.action.SaveAsAction;
-import de.hsos.richwps.mb.appView.action.UndoAction;
+import de.hsos.richwps.mb.appActions.AppActionProvider;
 import javax.swing.JToolBar;
 
 /**
@@ -23,28 +15,26 @@ import javax.swing.JToolBar;
  */
 public class AppToolbar extends JToolBar {
 
-//    private IAppActionHandler actionHandler;
-    public AppToolbar(IAppActionHandler actionHandler) {
+    public AppToolbar(AppActionProvider actionProvider) {
         setFloatable(false);
 
-        add(new NewAction(actionHandler));
-        add(new LoadAction(actionHandler));
-        add(new SaveAction(actionHandler));
-        add(new SaveAsAction(actionHandler));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.NEW_MODEL));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.LOAD_MODEL));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS));
 
         addSeparator();
 
-        add(new PreferencesAction(actionHandler));
-//        add(new ExitAction(actionHandler));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES));
 
         addSeparator();
 
-        add(new UndoAction(actionHandler));
-        add(new RedoAction(actionHandler));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDO));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.REDO));
 
         if (!AppConstants.GRAPH_AUTOLAYOUT) {
             addSeparator();
-            add(new LayoutAction(actionHandler));
+            add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DO_LAYOUT));
         }
 
     }

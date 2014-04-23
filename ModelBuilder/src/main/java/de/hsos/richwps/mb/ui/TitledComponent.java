@@ -7,6 +7,7 @@ package de.hsos.richwps.mb.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,6 +31,12 @@ public class TitledComponent extends JPanel {
     private boolean folded = false;
     private LabelIconClickAdapter icon;
     private LabelIconClickAdapter clickAdapter;
+    private int titleHeight;
+
+    /**
+     * Stored for unfolding/uncollapsing the content.
+     */
+    private Dimension contentSize;
 
     /**
      * Creates a {@link ComponentTitle} and places it above the component. If
@@ -61,10 +68,13 @@ public class TitledComponent extends JPanel {
      */
     public TitledComponent(String title, Component component, int titleHeight, boolean foldable) {
         this.foldable = foldable;
+        this.titleHeight = titleHeight;
 
         if (null != title) {
             componentTitle = new ComponentTitle(title);
-            setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {titleHeight, TableLayout.FILL}}));
+            // height needs to be preferred to enable collapsing.
+            double contentHeight = foldable ? TableLayout.PREFERRED : TableLayout.FILL;
+            setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {titleHeight, contentHeight}}));
             add(componentTitle, "0 0");
             add(component, "0 1");
 
@@ -95,22 +105,15 @@ public class TitledComponent extends JPanel {
 
         if(folded) {
             clickAdapter.setIcon(UIManager.getIcon("Tree.collapsedIcon"));
+            contentSize = getComponent(1).getPreferredSize();
+            getComponent(1).setPreferredSize(new Dimension(0, 0));
 
         } else {
             clickAdapter.setIcon(UIManager.getIcon("Tree.expandedIcon"));
+            getComponent(1).setPreferredSize(contentSize);
         }
 
-//        getLayout().removeLayoutComponent(getComponent(1));
-//        remove(getComponent(1));
-//        TableLayout layout = (TableLayout) getLayout();
-//        layout.invalidateLayout(this);
-//        invalidate();
-//        validate();
-//        validateTree();
-
-//        getParent().validate();
         getComponent(1).setVisible(!folded);
-
     }
 
     public void setTitle(String title) {

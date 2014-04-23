@@ -4,11 +4,10 @@
  * and open the template in the editor.
  */
 
-package de.hsos.richwps.mb.appView.action;
+package de.hsos.richwps.mb.appActions;
 
+import de.hsos.richwps.mb.App;
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.appView.IAppActionHandler;
-import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 
 /**
  *
@@ -17,7 +16,7 @@ import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 public class RedoAction extends AppAbstractAction {
 
     public RedoAction(IAppActionHandler actionHandler) {
-        super(actionHandler, AppMenuBar.MENU_ITEMS.EDIT_REDO, AppConstants.ICON_REDO_KEY);
+        super(actionHandler, AppActionProvider.APP_ACTIONS.REDO, AppConstants.ICON_REDO_KEY);
         setEnabled(false);
     }
 

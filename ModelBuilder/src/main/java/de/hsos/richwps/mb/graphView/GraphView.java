@@ -29,6 +29,7 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
@@ -63,18 +64,15 @@ public class GraphView extends JPanel {
         if (null == graphComponent) {
             Graph graph = getGraph();
 
-
             graphComponent = new GraphComponent(graph);
             graphComponent.setToolTips(true);
             graphComponent.setBorder(new EmptyBorder(0, 0, 0, 0));
             graphComponent.getViewport().setBackground(Color.WHITE);
 
 //            graphComponent.setConn
-
 //            CellMarker cellMarker = new CellMarker(graphComponent);
 //            cellMarker.setHotspotEnabled(true);
 //            graphComponent.getConnectionHandler().setMarker(cellMarker);
-
             // TODO replace with eventlistener - graph should not know graphcomponent!
             graph.setGraphComponent(graphComponent);
         }
@@ -188,7 +186,7 @@ public class GraphView extends JPanel {
     }
 
     // TODO mocked controller method
-    public void createNodeFromProcess(IProcessEntity process) {
+    public void createNodeFromProcess(IProcessEntity process, Point location) {
         Graph graph = getGraph();
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
@@ -205,7 +203,7 @@ public class GraphView extends JPanel {
             double OUTPUT_PORT_WIDTH = PROCESS_WIDTH / (double) numOutputs;
 
             // TODO calculate process dimensions depending on num ports, length of name  etc.
-            mxCell v1 = (mxCell) graph.insertVertex(parent, null, process, 0, 0, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
+            mxCell v1 = (mxCell) graph.insertVertex(parent, null, process, location.x, location.y, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
             v1.setConnectable(false);
 
             int i = 0;
@@ -251,7 +249,7 @@ public class GraphView extends JPanel {
 
     }
 
-    public void createNodeFromPort(ProcessPort port) {
+    public void createNodeFromPort(ProcessPort port, Point location) {
         Graph graph = getGraph();
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
@@ -262,8 +260,8 @@ public class GraphView extends JPanel {
             int PORT_HEIGHT = 45;
 
             String style = port.isInput() ? "PROCESS" : "PROCESS_OUTPUT";
-            mxCell v1 = (mxCell) graph.insertVertex(parent, null, port, 0, 0, PORT_WIDTH, PORT_HEIGHT, style);
-            
+            mxCell v1 = (mxCell) graph.insertVertex(parent, null, port, location.x, location.y, PORT_WIDTH, PORT_HEIGHT, style);
+
         } finally {
             graph.getModel().endUpdate();
         }
@@ -300,6 +298,7 @@ public class GraphView extends JPanel {
 
     public void saveGraphToXml(String filename) throws IOException, CloneNotSupportedException {
         mxCodec codec = new mxCodec();
+        // TODO check for missing ProcessEntities !!!
         String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel().cloneMxgraphModel()));
         mxUtils.writeFile(xml, filename);
 
@@ -319,8 +318,12 @@ public class GraphView extends JPanel {
             mxICell child = defaultParent.getChildAt(i);
 
             if (graphModel.isProcess(child)) {
-                ProcessEntity loadedProcess = (ProcessEntity) child.getValue();
-                ProcessEntity process = processProvider.getProcessEntity(loadedProcess.getServer(), loadedProcess.getIdentifier());
+
+                ProcessEntity process = null;
+                if (child.getValue() instanceof ProcessEntity) {
+                    ProcessEntity loadedProcess = (ProcessEntity) child.getValue();
+                    process = processProvider.getProcessEntity(loadedProcess.getServer(), loadedProcess.getIdentifier());
+                }
 
                 if (null == process) {
                     // TODO log "process xyz not found"
@@ -357,6 +360,5 @@ public class GraphView extends JPanel {
     public void layoutGraph() {
         getGraph().layout();
     }
-
 
 }

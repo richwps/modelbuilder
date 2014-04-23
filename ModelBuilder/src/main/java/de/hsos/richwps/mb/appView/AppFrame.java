@@ -7,6 +7,7 @@ package de.hsos.richwps.mb.appView;
 import de.hsos.richwps.mb.App;
 import de.hsos.richwps.mb.AppConfig;
 import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.appActions.AppActionProvider;
 import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 import de.hsos.richwps.mb.appView.toolbar.AppToolbar;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
@@ -39,7 +40,7 @@ public class AppFrame extends JFrame {
     private AppMenuBar appMenuBar;
     private TitledComponent treeViewGui;
 
-    private IAppActionHandler actionHandler;
+    private AppActionProvider actionProvider;
     private AppToolbar toolbar;
     private TitledComponent graphViewGui;
     private JPanel serviceSummaryView;
@@ -53,9 +54,9 @@ public class AppFrame extends JFrame {
         // TODO Inversion of Control: AppFrame should not know class App!
         this.app = app;
 
-        this.actionHandler = app.getActionHandler();
+        this.actionProvider = app.getActionProvider();
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setTitle(AppConstants.FRAME_TITLE);
         setLocation(getStartLocation());
         setSize(getStartSize());
@@ -109,26 +110,9 @@ public class AppFrame extends JFrame {
         // TODO mock
         if (null == serviceSummaryView) {
             serviceSummaryView = new JPanel();
-//            mxGraph graph = new mxGraph();
-//            Object parent = graph.getDefaultParent();
-//
-//            graph.getModel().beginUpdate();
-//            try {
-//                Object v1 = graph.insertVertex(parent, null, "Hello", 20, 20, 80,
-//                        30);
-//                Object v2 = graph.insertVertex(parent, null, "World!", 240, 150,
-//                        80, 30);
-//                graph.insertEdge(parent, null, "Edge", v1, v2);
-//            } finally {
-//                graph.getModel().endUpdate();
-//            }
-//
-//            mxGraphComponent graphComponent = new mxGraphComponent(graph);
-//            serviceSummaryView.add(graphComponent);
         }
 
         return serviceSummaryView;
-//        return new TitledComponent(AppConstants.OVERVIEW_TITLE, new JLabel(""));
     }
 
     /**
@@ -144,6 +128,7 @@ public class AppFrame extends JFrame {
                 infoTabs.addTab(tabData[0], tabData[1]);
             }
 
+            // TODO mocked !
             infoTabs.output("server", "** connecting RichWPS-server...");
             infoTabs.output("server", "** server connection established.");
             infoTabs.output("server", "** requesting processes...");
@@ -174,12 +159,10 @@ public class AppFrame extends JFrame {
      */
     private AppToolbar getToolbar() {
         if (null == toolbar) {
-            toolbar = new AppToolbar(actionHandler);
+            toolbar = new AppToolbar(actionProvider);
         }
 
         return toolbar;
-        // TODO mock
-//        return new JLabel("Toolbar?");
     }
 
     /**
@@ -293,6 +276,10 @@ public class AppFrame extends JFrame {
         if (null == graphViewGui) {
             graphViewGui = new TitledComponent(AppConstants.EDITOR_DEFAULT_TITLE, app.getGraphViewGui());
             graphViewGui.setTitleItalic();
+            // Add proxy layer with minimum z index.
+            graphViewGui.add(app.getGraphDndProxy(), "0 1");
+            app.getGraphDndProxy().setLocation(0, 0);
+            graphViewGui.setComponentZOrder(app.getGraphDndProxy(), 0);
         }
 
         return graphViewGui;
@@ -300,7 +287,7 @@ public class AppFrame extends JFrame {
 
     public AppMenuBar getAppMenuBar() {
         if (null == appMenuBar) {
-            appMenuBar = new AppMenuBar(actionHandler);
+            appMenuBar = new AppMenuBar(actionProvider);
         }
         return appMenuBar;
     }

@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.appView.action;
+package de.hsos.richwps.mb.appActions;
 
-import de.hsos.richwps.mb.appView.IAppActionHandler;
 import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -31,7 +30,7 @@ public abstract class AppAbstractAction extends AbstractAction {
         this.actionSource = actionSource;
     }
 
-    public AppAbstractAction(IAppActionHandler actionHandler, AppMenuBar.MENU_ITEMS item, String iconKey) {
+    public AppAbstractAction(IAppActionHandler actionHandler, AppActionProvider.APP_ACTIONS item, String iconKey) {
         this(actionHandler, item);
 
         String name = AppMenuBar.getMenuItemCaption(item);
@@ -51,6 +50,11 @@ public abstract class AppAbstractAction extends AbstractAction {
         }
 
         actionHandler.actionPerformed(e);
+    }
+
+    public void fireActionPerformed() {
+        ActionEvent e = new ActionEvent(actionSource, (int) (Integer.MAX_VALUE * Math.random()), "");
+        actionPerformed(e);
     }
 
 }

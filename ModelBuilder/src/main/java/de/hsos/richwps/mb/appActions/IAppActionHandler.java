@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.hsos.richwps.mb.appView;
+package de.hsos.richwps.mb.appActions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
