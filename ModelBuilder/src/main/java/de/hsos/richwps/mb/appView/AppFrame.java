@@ -110,6 +110,7 @@ public class AppFrame extends JFrame {
         // TODO mock
         if (null == serviceSummaryView) {
             serviceSummaryView = new JPanel();
+//            serviceSummaryView.add(new TitledComponent("mock", new MultilineLabel("mock mock mockingbird")));
         }
 
         return serviceSummaryView;
@@ -121,8 +122,10 @@ public class AppFrame extends JFrame {
      * @return
      */
     public InfoTabs getInfoTabsView() {
+        // TODO move init to App !!
         if (null == infoTabs) {
             infoTabs = new InfoTabs();
+            infoTabs.setTextColor(AppConstants.INFOTABS_TEXTCOLOR);
             infoTabs.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
             for (String[] tabData : AppConstants.INFOTABS) {
                 infoTabs.addTab(tabData[0], tabData[1]);
@@ -213,6 +216,8 @@ public class AppFrame extends JFrame {
             centerAndRightPanel.add(getPropertiesView(), JSplitPane.RIGHT);
             // only expand the center panel on resize
             centerAndRightPanel.setResizeWeight(1);
+            // TODO Resizing the panel is disabled because of buggy behaviours of SingleProcessCard
+            centerAndRightPanel.setEnabled(false);
         }
 
         return centerAndRightPanel;

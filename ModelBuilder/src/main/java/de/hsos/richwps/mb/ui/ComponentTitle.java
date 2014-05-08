@@ -56,7 +56,7 @@ public class ComponentTitle extends JLabel {
         // TODO move magic numbers to config/constants
         setBorder(new EmptyBorder(5, 5, 5, 5));
         gradientColor1 = Color.WHITE;
-        gradientColor2 = AppConstants.bgColor;
+        gradientColor2 = AppConstants.bgColor;  // TODO get color from UIManager
     }
 
     public void setGradientColor1(Color color) {

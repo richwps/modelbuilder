@@ -43,6 +43,8 @@ public class AppConstants {
     public static final Dimension BOTTOM_TABS_MIN_SIZE = new Dimension(100, 150);
 
 
+    public static final Color INFOTABS_TEXTCOLOR = Color.GRAY;
+
     // Array of {tabId, tabTitle}-elements
     public static final String[][] INFOTABS = new String[][] {
         {"server", "RichWPS-Server"},
@@ -109,6 +111,8 @@ public class AppConstants {
     public final static String CONFIRM_DELETE_CELLS = "Do you really want to delete the selected elements?";
     public final static String CONFIRM_EXIT = "Do you really want to close the application?\nAny changes of the current model will be lost.";
     public final static String CONFIRM_EXIT_TITLE = "Exit";
+    public final static String CONFIRM_OVERWRITE_FILE_TITLE = "File already exists";
+    public final static String CONFIRM_OVERWRITE_FILE = "Overwrite the selected file?";
 
     public final static String LOAD_MODEL_FAILED = "An error occured while loading the model.";
     public final static String SAVE_MODEL_FAILED = "An error occured while saving the model.";

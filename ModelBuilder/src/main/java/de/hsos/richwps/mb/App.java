@@ -43,11 +43,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class App {
+
     private AppActionProvider actionProvider;
 
     private AppFrame frame;
@@ -67,7 +69,6 @@ public class App {
 //    private AppActionHandler actionHandler;
     private JLabel graphDndProxy;
 
-
     GraphDropTargetAdapter dropTargetAdapter;
 
     public App(String[] args) {
@@ -82,7 +83,6 @@ public class App {
 //            final SplashScreen splash = SplashScreen.getSplashScreen();
 //            Graphics2D g = splash.createGraphics();
 //            renderSplashScreen(g);
-
             if (Arrays.asList(args).contains("graph_editable")) {
                 AppConstants.GRAPH_AUTOLAYOUT = false;
             }
@@ -105,7 +105,7 @@ public class App {
 
             frame = new AppFrame(this);
             frame.setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
-            
+
             // Delegate windows closing action
             frame.addWindowListener(new WindowAdapter() {
                 @Override
@@ -151,7 +151,6 @@ public class App {
         DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(getTreeView().getGui(), DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
             public void dragGestureRecognized(DragGestureEvent dge) {
                 try {
-                    de.hsos.richwps.mb.Logger.log("create DnD");
                     if (null != dropTargetAdapter) {
                         return;
                     }
@@ -236,8 +235,20 @@ public class App {
             downloadServices.add(new DefaultMutableTreeNode(""));
 
             DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
-            local.add(new DefaultMutableTreeNode(new ProcessPort(ProcessPortDatatype.COMPLEX)));
-            local.add(new DefaultMutableTreeNode(new ProcessPort(ProcessPortDatatype.LITERAL)));
+            // Outputs
+            ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX);
+            ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL);
+            cOut.setOutput(true);
+            lOut.setOutput(true);
+            local.add(new DefaultMutableTreeNode(cOut));
+            local.add(new DefaultMutableTreeNode(lOut));
+            // inputs
+            ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX);
+            ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL);
+            cIn.setOutput(false);
+            lIn.setOutput(false);
+            local.add(new DefaultMutableTreeNode(cIn));
+            local.add(new DefaultMutableTreeNode(lIn));
 
             root.add(processesNode);
             root.add(downloadServices);
@@ -263,6 +274,8 @@ public class App {
                     }
                 }
             });
+
+            treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
         }
 
         return treeView;
@@ -325,6 +338,8 @@ public class App {
             getGraphView().addSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     propertiesView.setSelectedProcesses(getGraphView().getSelectedProcesses());
+                    de.hsos.richwps.mb.Logger.log("asdfdfjhgkj");
+
                 }
             });
         }
@@ -341,7 +356,7 @@ public class App {
     }
 
     public AppActionProvider getActionProvider() {
-        if(null == actionProvider) {
+        if (null == actionProvider) {
             AppActionHandler actionHandler = new AppActionHandler(this);
             actionProvider = new AppActionProvider(actionHandler);
         }

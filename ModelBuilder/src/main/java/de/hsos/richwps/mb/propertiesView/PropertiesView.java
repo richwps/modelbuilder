@@ -26,7 +26,6 @@ public class PropertiesView extends TitledComponent {
     private JPanel contentPanel;
 
     protected static enum CARDS {
-
         NO_SELECTION, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
     }
 
@@ -44,8 +43,21 @@ public class PropertiesView extends TitledComponent {
     public void setSelectedProcesses(List<IProcessEntity> processes) {
 
         if (1 == processes.size()) {
-            getSingleProcessCard().setProcess(processes.get(0));
+            Component tmp = singleProcessCard;
+            boolean processFolded = singleProcessCard.isProcessPanelFolded();
+            boolean inputsFolded = singleProcessCard.isInputsPanelFolded();
+            boolean outputsFolded = singleProcessCard.isOutputsPanelFolded();
+            singleProcessCard = new SingleProcessCard(new JPanel());
+            singleProcessCard.setProcess(processes.get(0));
+            // TODO Bug !! height of inputsPanel is sometimes wrong if it's folded and the user unfolds it!!
+//            singleProcessCard.setProcessPanelFolded(processFolded);
+//            singleProcessCard.setInputsPanelFolded(inputsFolded);
+//            singleProcessCard.setOutputsPanelFolded(outputsFolded);
+            contentPanel.remove(tmp);
+            contentPanel.add(singleProcessCard, CARDS.PROCESS_SINGLE_SELECTION.name());
             getCardLayout().show(getContentPanel(), CARDS.PROCESS_SINGLE_SELECTION.name());
+
+
         } else if (1 < processes.size()) {
             getMultiProcessesCard().setProcesses(processes);
             getCardLayout().show(getContentPanel(), CARDS.PROCESS_MULTI_SELECTION.name());
@@ -63,56 +75,6 @@ public class PropertiesView extends TitledComponent {
         if (null == voidCard) {
             voidCard = new JPanel();
             return voidCard;
-            
-//            voidCard = new JPanel(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, 20, TableLayout.PREFERRED, 20, TableLayout.PREFERRED}}));
-//
-//            class ComponentTitleSetup {
-//
-//                final Color col1 = new Color(0x505050);
-//                final Color col2 = new Color(0x808090);
-//                final Color fontColor = Color.WHITE;
-//
-//                void setupComponentTitle(TitledComponent titledCompoment) {
-//                    titledCompoment.setTitleGradientColor1(col1);
-//                    titledCompoment.setTitleGradientColor2(col2);
-//                    titledCompoment.setTitleFontColor(fontColor);
-//                }
-//            }
-//            final int headerHeight = 20;
-//            ComponentTitleSetup titleSetup = new ComponentTitleSetup();
-//            TableModel mockTM = new DefaultTableModel(2, 2);
-//            mockTM.setValueAt("Name", 0, 0);
-//            mockTM.setValueAt("MSRLD5selection", 0, 1);
-//            mockTM.setValueAt("Abstract", 1, 0);
-//            mockTM.setValueAt("Selection of MSRLD data.", 1, 1);
-//            JTable jTable = new JTable(mockTM);
-//            TitledComponent procPanel = new TitledComponent("Process", jTable, headerHeight);
-//            titleSetup.setupComponentTitle(procPanel);
-//
-//            voidCard.add(procPanel, "0 0");
-//
-//            mockTM = new DefaultTableModel(2, 2);
-//            mockTM.setValueAt("MSRL-D5 Daten", 0, 0);
-//            mockTM.setValueAt("Complex", 0, 1);
-//            mockTM.setValueAt("Bewertungsjahr", 1, 0);
-//            mockTM.setValueAt("Literal", 1, 1);
-//            jTable = new JTable(mockTM);
-//            procPanel = new TitledComponent("Inputs", jTable, headerHeight);
-//            titleSetup.setupComponentTitle(procPanel);
-//            voidCard.add(procPanel, "0 2");
-//
-//            mockTM = new DefaultTableModel(3, 2);
-//            mockTM.setValueAt("relevant Algea", 0, 0);
-//            mockTM.setValueAt("Complex", 0, 1);
-//            mockTM.setValueAt("relevant Seagras", 1, 0);
-//            mockTM.setValueAt("Complex", 1, 1);
-//            mockTM.setValueAt("relevant Zears", 2, 0);
-//            mockTM.setValueAt("Complex", 2, 1);
-//            jTable = new JTable(mockTM);
-//
-//            procPanel = new TitledComponent("Outputs", jTable, headerHeight);
-//            titleSetup.setupComponentTitle(procPanel);
-//            voidCard.add(procPanel, "0 4");
         }
         return voidCard;
     }
@@ -136,4 +98,5 @@ public class PropertiesView extends TitledComponent {
     protected JPanel getContentPanel() {
         return contentPanel;
     }
+
 }

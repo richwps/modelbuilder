@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.infoTabsView;
 
+import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -21,11 +21,11 @@ public class InfoTabPanel extends JPanel {
 
     public InfoTabPanel() {
 
-        TableLayout fillLayout = new TableLayout(new double[][] {{TableLayout.FILL},{TableLayout.FILL}});
-
+        TableLayout fillLayout = new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}});
 
         textArea = new JTextArea();
-        textArea.setEnabled(false);
+//        textArea.setEnabled(false);
+        textArea.setEditable(false);
 //        textArea.
 
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -33,6 +33,14 @@ public class InfoTabPanel extends JPanel {
 
         setLayout(fillLayout);
         add(scrollPane, "0 0");
+    }
+
+    void setFontSize(float size) {
+        textArea.setFont(textArea.getFont().deriveFont(size));
+    }
+
+    void setTextColor(Color color) {
+        textArea.setForeground(color);
     }
 
     void appendOutput(String text) {

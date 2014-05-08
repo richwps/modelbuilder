@@ -28,7 +28,7 @@ public class TitledComponent extends JPanel {
     // TODO move magic number to config/constants
     public static int DEFAULT_TITLE_HEIGHT = 25;
     private boolean foldable;
-    private boolean folded = false;
+    private boolean isFolded = false;
     private LabelIconClickAdapter icon;
     private LabelIconClickAdapter clickAdapter;
     private int titleHeight;
@@ -73,7 +73,7 @@ public class TitledComponent extends JPanel {
         if (null != title) {
             componentTitle = new ComponentTitle(title);
             // height needs to be preferred to enable collapsing.
-            double contentHeight = foldable ? TableLayout.PREFERRED : TableLayout.FILL;
+            double contentHeight = foldable ? TableLayout.MINIMUM : TableLayout.FILL;
             setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {titleHeight, contentHeight}}));
             add(componentTitle, "0 0");
             add(component, "0 1");
@@ -89,6 +89,18 @@ public class TitledComponent extends JPanel {
                         toggleFolding();
                     }
                 });
+
+                // TODO add doubleclick-listener to ComponentTitle
+                componentTitle.addMouseListener(new MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (2 == e.getClickCount()) {
+                            toggleFolding();
+                        }
+                    }
+
+                });
             }
 
         } else {
@@ -97,23 +109,38 @@ public class TitledComponent extends JPanel {
         }
     }
 
+    public void fold() {
+        if (!isFolded) {
+            toggleFolding();
+        }
+    }
+
+    public void unfold() {
+        if (isFolded) {
+            toggleFolding();
+        }
+    }
+
     public void toggleFolding() {
-        if(!foldable)
+        if (!foldable) {
             return;
+        }
 
-        folded = !folded;
+        isFolded = !isFolded;
 
-        if(folded) {
+        if (isFolded) {
             clickAdapter.setIcon(UIManager.getIcon("Tree.collapsedIcon"));
             contentSize = getComponent(1).getPreferredSize();
-            getComponent(1).setPreferredSize(new Dimension(0, 0));
+            getComponent(1).setMinimumSize(new Dimension(0, 0));
+//            setPreferredSize(new Dimension(getPreferredSize().width, titleHeight));
 
         } else {
             clickAdapter.setIcon(UIManager.getIcon("Tree.expandedIcon"));
-            getComponent(1).setPreferredSize(contentSize);
+//            setPreferredSize(new Dimension(getPreferredSize().width, titleHeight+contentSize.height));
+            getComponent(1).setMinimumSize(contentSize);
         }
 
-        getComponent(1).setVisible(!folded);
+        getComponent(1).setVisible(!isFolded);
     }
 
     public void setTitle(String title) {
@@ -146,5 +173,36 @@ public class TitledComponent extends JPanel {
 
     public void setTitleInsets(Insets insets) {
         componentTitle.setBorder(new EmptyBorder(insets));
+    }
+
+    public void setComponent(Component component) {
+        // no title => component has index 0
+        if (null == componentTitle) {
+            remove(0);
+            add(component, "0 0");
+
+            // title exists => component index is "1"
+        } else {
+            // TODO ??? store and update component's size if folded
+            if (isFolded) {
+                contentSize = component.getPreferredSize();
+                component.setMinimumSize(new Dimension(0, 0));
+            }
+            remove(1);
+            add(component, "0 1");
+        }
+
+    }
+
+    public boolean isFolded() {
+        return isFolded;
+    }
+
+    public void setFolded(boolean folded) {
+        if (folded) {
+            fold();
+        } else {
+            unfold();
+        }
     }
 }
