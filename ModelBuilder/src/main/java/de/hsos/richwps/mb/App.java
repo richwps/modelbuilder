@@ -338,7 +338,6 @@ public class App {
             getGraphView().addSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     propertiesView.setSelectedProcesses(getGraphView().getSelectedProcesses());
-                    de.hsos.richwps.mb.Logger.log("asdfdfjhgkj");
 
                 }
             });
