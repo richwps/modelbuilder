@@ -18,14 +18,6 @@ public class GraphComponent extends mxGraphComponent {
 
     public GraphComponent(mxGraph mxgrph) {
         super((Graph) mxgrph);
-
-//        this.graphControl = new GraphControl();
-//        addListener(null, new mxEventSource.mxIEventListener() {
-//
-//            public void invoke(Object o, mxEventObject eo) {
-//                Logger.log(eo);
-//            }
-//        });
     }
 
     @Override
@@ -33,23 +25,6 @@ public class GraphComponent extends mxGraphComponent {
         // custom connection handler is necessary to use the extended anonymous cellMarker class.
         return new GraphConnectionHandler(this);
     }
-
-
-
-
-
-//    public class GraphControl extends mxGraphComponent.mxGraphControl {
-//
-//        @Override
-//        public JToolTip createToolTip() {
-////            JToolTip toolTip = super.createToolTip();
-////            toolTip.set
-//            return super.createToolTip();
-//        }
-//
-//    }
-//
-
 
     Graph getTheGraph() {
         return (Graph) graph;

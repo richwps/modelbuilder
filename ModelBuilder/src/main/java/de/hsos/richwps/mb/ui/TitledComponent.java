@@ -132,11 +132,9 @@ public class TitledComponent extends JPanel {
             clickAdapter.setIcon(UIManager.getIcon("Tree.collapsedIcon"));
             contentSize = getComponent(1).getPreferredSize();
             getComponent(1).setMinimumSize(new Dimension(0, 0));
-//            setPreferredSize(new Dimension(getPreferredSize().width, titleHeight));
 
         } else {
             clickAdapter.setIcon(UIManager.getIcon("Tree.expandedIcon"));
-//            setPreferredSize(new Dimension(getPreferredSize().width, titleHeight+contentSize.height));
             getComponent(1).setMinimumSize(contentSize);
         }
 

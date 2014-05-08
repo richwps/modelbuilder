@@ -110,7 +110,6 @@ public class AppFrame extends JFrame {
         // TODO mock
         if (null == serviceSummaryView) {
             serviceSummaryView = new JPanel();
-//            serviceSummaryView.add(new TitledComponent("mock", new MultilineLabel("mock mock mockingbird")));
         }
 
         return serviceSummaryView;

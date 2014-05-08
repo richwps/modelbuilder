@@ -197,13 +197,10 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doExit() {
-//        app.getFrame().dispatchEvent(new WindowEvent(app.getFrame(), WindowEvent.WINDOW_CLOSING) {});
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             app.getFrame().dispose();
             System.exit(0);
-//            app.getFrame().dispatchEvent(new WindowEvent(app.getFrame(), WindowEvent.WINDOW_CLOSING) {
-//            });
         }
     }
 

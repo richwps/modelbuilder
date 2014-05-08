@@ -24,12 +24,9 @@ public class InfoTabPanel extends JPanel {
         TableLayout fillLayout = new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}});
 
         textArea = new JTextArea();
-//        textArea.setEnabled(false);
         textArea.setEditable(false);
-//        textArea.
 
         JScrollPane scrollPane = new JScrollPane(textArea);
-//        scrollPane.setLayout(fillLayout);
 
         setLayout(fillLayout);
         add(scrollPane, "0 0");

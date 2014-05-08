@@ -63,7 +63,6 @@ public class GraphWorkflowLayout extends mxGraphLayout {
 
         // Abort if there is any structural error.
         try {
-//            getSinkAndSourceVertices(ag, sinkVertices, sourceVertices);
             sinkVertices = mxGraphStructure.getSinkVertices(ag);
             sourceVertices = mxGraphStructure.getSourceVertices(ag);
         } catch (StructuralException ex) {
@@ -112,16 +111,11 @@ public class GraphWorkflowLayout extends mxGraphLayout {
 
                 for (Object cell : levelCells) {
 
-                    CellInfo ci = layoutComponent.getCellInfo(cell);
-
-                    // TODO just dev: show cell info as value
-//                     .setValue(cell, model.getValue(cell));
                     mxGeometry geom = model.getGeometry(cell);
                     geom = (mxGeometry) geom.clone();
                     geom.setX(renderX + levelX);
 
-                    // TODO MOCK!! calculate REAL values for gaps and positions!!
-                    geom.setY(levelY); //150 * layoutComponent.getCellLevel(cell, useMax));
+                    geom.setY(levelY);
                     levelX += geom.getWidth() + cellGap;
 
                     model.setGeometry(cell, geom);
@@ -208,7 +202,4 @@ public class GraphWorkflowLayout extends mxGraphLayout {
         this.graphComponentGap = graphComponentGap;
     }
 
-//    private void getSinkAndSourceVertices(mxAnalysisGraph ag, Object[] sinkVertices, Object[] sourceVertices) {
-//        for(graph.get)
-//    }
 }

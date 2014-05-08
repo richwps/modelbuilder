@@ -66,7 +66,6 @@ public class App {
     private TreeView treeView;
     private GraphView graphView;
     private PropertiesView propertiesView;
-//    private AppActionHandler actionHandler;
     private JLabel graphDndProxy;
 
     GraphDropTargetAdapter dropTargetAdapter;

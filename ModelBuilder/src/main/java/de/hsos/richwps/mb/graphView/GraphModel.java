@@ -44,10 +44,6 @@ public class GraphModel extends mxGraphModel {
         }
 
         return false;
-
-        // TODO badly mocked!! Improve when ProcessDescription Model exists!!!
-//        String value = ((mxCell) o).getValue().toString();
-//        return value.length() > 2 && value.substring(0, 3).equals("In ");
     }
 
     boolean isOutput(Object o) {
@@ -60,8 +56,6 @@ public class GraphModel extends mxGraphModel {
         }
 
         return false;
-//        String value = ((mxCell) o).getValue().toString();
-//        return value.length() > 3 && value.substring(0, 4).equals("Out ");
     }
 
     /**

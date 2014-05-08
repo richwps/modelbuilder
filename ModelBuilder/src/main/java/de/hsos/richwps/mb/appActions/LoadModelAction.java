@@ -6,7 +6,6 @@
 
 package de.hsos.richwps.mb.appActions;
 
-import de.hsos.richwps.mb.App;
 import de.hsos.richwps.mb.AppConstants;
 
 /**

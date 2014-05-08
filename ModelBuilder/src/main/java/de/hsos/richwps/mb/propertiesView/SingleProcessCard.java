@@ -66,7 +66,6 @@ public class SingleProcessCard extends JScrollPane {
         this.contentPanel = contentPanel;
 
         addComponentListener(new ComponentAdapter() {
-
             @Override
             public void componentShown(ComponentEvent e) {
 
@@ -79,8 +78,8 @@ public class SingleProcessCard extends JScrollPane {
                     // TODO replace the following random magic number with a calculated value
                     panelSize.height += 100;   //getHorizontalScrollBar().getHeight();
                     contentPanel.setPreferredSize(panelSize);
-
                     contentPanel.revalidate();
+
                     // scroll to top
                     getViewport().setViewPosition(new Point(0, 0));
                 }
@@ -89,26 +88,6 @@ public class SingleProcessCard extends JScrollPane {
         });
     }
 
-    boolean isProcessPanelFolded() {
-        if (null == processPanel) {
-            return false;
-        }
-        return processPanel.isFolded();
-    }
-
-    boolean isInputsPanelFolded() {
-        if (null == inputsPanel) {
-            return false;
-        }
-        return inputsPanel.isFolded();
-    }
-
-    boolean isOutputsPanelFolded() {
-        if (null == outputsPanel) {
-            return false;
-        }
-        return outputsPanel.isFolded();
-    }
 
     /**
      * Updates UI after a process has been set.
@@ -119,11 +98,6 @@ public class SingleProcessCard extends JScrollPane {
         setProccessPanelData(process);
         setInputPanelData(process);
         setOutputPanelData(process);
-
-//        scrollRectToVisible(new Rectangle(contentPanel.getX(), contentPanel.getY(), contentPanel.getWidth(), contentPanel.getHeight()));
-//        getViewport().setViewPosition(new Point(contentPanel.getX(),contentPanel.getHeight()));
-//            JScrollBar verticalScrollBar = getVerticalScrollBar();
-//    verticalScrollBar.setValue(verticalScrollBar.getMinimum());
     }
 
     /**
@@ -220,8 +194,6 @@ public class SingleProcessCard extends JScrollPane {
         processPanel.add(createHeadLabel("Abstract"), "0 " + y);
         processPanel.add(processAbstractLabel, "1 " + y);
 
-//        String processTitle = AppConstants.PROPERTIES_PROCESS_TITLE;
-//        return createTitledComponent(processTitle, processPanel);
         return processPanel;
     }
 
@@ -252,24 +224,6 @@ public class SingleProcessCard extends JScrollPane {
         return border;
     }
 
-    /**
-     * Creates and returns an input overview panel.
-     *
-     * @param process
-     * @return
-     */
-//    private TitledComponent createInputPanel(IProcessEntity process) {
-//        List<ProcessPort> ports = process.getInputPorts();
-//        String title = AppConstants.PROPERTIES_INPUTS_TITLE + " (" + ports.size() + ")";
-//        JPanel panel = createPortsPanel();
-//        // title must be set by caller.
-//        return new TitledComponent("", panel);
-//    }
-    private TitledComponent createOutputPanel(IProcessEntity process) {
-        return new TitledComponent("000", new JLabel("mock"));
-//        return createPortsPanel(AppConstants.PROPERTIES_OUTPUTS_TITLE, process.getOutputPorts());
-    }
-
     private JPanel createPortsPanel(List<ProcessPort> ports) {
         // TODO calculate/get the magic number !!
         int panelRows = 4 * ports.size();
@@ -278,10 +232,10 @@ public class SingleProcessCard extends JScrollPane {
         double P = TableLayout.PREFERRED;
 
         if (0 < panelRows) {
-            double[][] layoutSize = new double[2][];//{{CULUMN_1_WIDTH, TableLayout.FILL}, {P, propertyBorderThickness, P, propertyBorderThickness, P}};
+            double[][] layoutSize = new double[2][];
             int panelRowsPlusBorders = 2 * panelRows - 1;
             layoutSize[0] = new double[]{COLUMN_1_WIDTH, TableLayout.FILL};
-            layoutSize[1] = new double[panelRowsPlusBorders];// additional rows for borders // {COLUMN_1_WIDTH, TableLayout.FILL};
+            layoutSize[1] = new double[panelRowsPlusBorders];// additional rows for borders
             for (int r = 0; r < panelRowsPlusBorders; r++) {
                 layoutSize[1][r] = (1 == r % 2) ? propertyBorderThickness : P;
             }
@@ -299,26 +253,8 @@ public class SingleProcessCard extends JScrollPane {
         }
 
         return portsPanel;
-//        return createTitledComponent(title, portsPanel);
     }
 
-    /**
-     * Creates and returns an output overview panel.
-     *
-     * @param process
-     * @return
-     */
-//    private JPanel createOutputPanel(IProcessEntity process) {
-//        JPanel outputPanel = new JPanel();
-//        String outputTitle = AppConstants.PROPERTIES_OUTPUTS_TITLE + " (" + process.getNumOutputs() + ")";
-//        outputPanel.setBorder(new TitledBorder(outputTitle));
-//        GridLayout grid = new GridLayout(0, 1);
-//        outputPanel.setLayout(grid);
-//        for (ProcessPort outport : process.getOutputPorts()) {
-//            outputPanel.add(createPortPanel(outport));
-//        }
-//        return outputPanel;
-//    }
     /**
      * Returns rowOffset + number of added rows.
      *
@@ -396,4 +332,24 @@ public class SingleProcessCard extends JScrollPane {
         outputsPanel.setFolded(outputsFolded);
     }
 
+    boolean isProcessPanelFolded() {
+        if (null == processPanel) {
+            return false;
+        }
+        return processPanel.isFolded();
+    }
+
+    boolean isInputsPanelFolded() {
+        if (null == inputsPanel) {
+            return false;
+        }
+        return inputsPanel.isFolded();
+    }
+
+    boolean isOutputsPanelFolded() {
+        if (null == outputsPanel) {
+            return false;
+        }
+        return outputsPanel.isFolded();
+    }
 }

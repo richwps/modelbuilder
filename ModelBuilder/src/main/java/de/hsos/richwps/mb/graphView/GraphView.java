@@ -119,7 +119,6 @@ public class GraphView extends JPanel {
 
             Object edgeStyle = graph.isAutoLayout() ? mxConstants.NONE : mxConstants.EDGESTYLE_TOPTOBOTTOM;
             stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_EDGE, edgeStyle);
-//            stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_OPACITY, 50);
             graph.setStylesheet(stylesheet);
 
             // TODO move to config/constants

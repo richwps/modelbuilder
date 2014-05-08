@@ -229,7 +229,6 @@ public class TitledBorderWithSpacing extends TitledBorder {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g.drawString(getTitle(), textLoc.x, textLoc.y);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
-//        SwingUtilities2.drawString(jc, g, getTitle(), textLoc.x, textLoc.y);
 
         g.setFont(font);
         g.setColor(color);

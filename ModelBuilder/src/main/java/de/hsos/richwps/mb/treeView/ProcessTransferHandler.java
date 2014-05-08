@@ -30,11 +30,9 @@ public class ProcessTransferHandler extends TransferHandler {
     @Override
     public boolean canImport(TransferSupport support) {
 
-//        Logger.log("can imp " + support);
         if (support.getComponent() instanceof JTree) {
             return false;
         }
-//        return support.isDataFlavorSupported(TreeView.getProcessDataFlavor());#
         return true;
     }
 
@@ -62,14 +60,6 @@ public class ProcessTransferHandler extends TransferHandler {
         }
 
         return null;
-    }
-
-    @Override
-    protected void exportDone(JComponent source, Transferable data, int action
-    ) {
-        if (action == MOVE) {
-//            c.removeSelection();
-        }
     }
 
     @Override
