@@ -33,8 +33,8 @@ public class AppEventController {
         // TODO inform all observers
     }
 
-    public void fireAppEvent(String message, Object source) {
-        fireAppEvent(new AppEvent(message, source));
+    public void fireAppEvent(String message, String command, Object source) {
+        fireAppEvent(new AppEvent(message, command, source));
     }
 
 }
