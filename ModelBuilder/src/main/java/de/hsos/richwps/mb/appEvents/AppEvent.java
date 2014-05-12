@@ -6,7 +6,7 @@
 package de.hsos.richwps.mb.appEvents;
 
 /**
- *
+ * Model class used by the AppEvent-Service.
  * @author dziegenh
  */
 public class AppEvent {
@@ -26,9 +26,27 @@ public class AppEvent {
      */
     private String message;
 
-    public AppEvent(String message, String command, Object source) {
+    /**
+     * Shortcut constructor, sets command to null.
+     * @param message
+     * @param source
+     */
+    public AppEvent(String message, Object source) {
+        this(message, source, null);
+    }
+
+    /**
+     * Main constructor.
+     * @param message
+     * @param source
+     * @param command
+     */
+    public AppEvent(String message, Object source, String command) {
         if (null == source) {
             throw new IllegalArgumentException("source must not be null");
+        }
+        if (null == message) {
+            throw new IllegalArgumentException("message must not be null");
         }
 
         this.message = message;
@@ -36,16 +54,38 @@ public class AppEvent {
         this.source = source;
     }
 
+    /**
+     * The AppEvent message.
+     *
+     * @return
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Internal event command.
+     *
+     * @return
+     */
     public String getCommand() {
         return command;
     }
 
+    /**
+     * Source of the event.
+     *
+     * @return
+     */
     public Object getSource() {
         return source;
     }
+
+    @Override
+    public String toString() {
+        return "AppEvent[source=" + source + ", command="+command+", message="+message+"]";
+    }
+
+
 
 }
