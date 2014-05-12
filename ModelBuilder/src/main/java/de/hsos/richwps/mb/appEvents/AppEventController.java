@@ -62,14 +62,6 @@ public class AppEventController {
     }
 
     /**
-     * Inform observers about an AppEvent.
-     * @param e
-     */
-    public void fireAppEvent(AppEvent e) {
-        // TODO inform all observers
-    }
-
-    /**
      * Shortcut method.
      * @param message
      * @param source
@@ -77,6 +69,14 @@ public class AppEventController {
      */
     public void fireAppEvent(String message, Object source, String command) {
         fireAppEvent(new AppEvent(message, source, command));
+    }
+
+    /**
+     * Inform observers about an AppEvent.
+     * @param e
+     */
+    public void fireAppEvent(AppEvent e) {
+        // TODO inform all observers
     }
 
 }

@@ -10,7 +10,6 @@ import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.appActions.AppActionProvider;
 import de.hsos.richwps.mb.appView.menu.AppMenuBar;
 import de.hsos.richwps.mb.appView.toolbar.AppToolbar;
-import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,7 +34,7 @@ public class AppFrame extends JFrame {
     private JSplitPane centerAndRightPanel;
     private JSplitPane centerPanel;
     private App app;
-    private InfoTabs infoTabs;
+    private Component infoTabs;
     private Component propertiesView;
     private AppMenuBar appMenuBar;
     private TitledComponent treeViewGui;
@@ -120,21 +119,10 @@ public class AppFrame extends JFrame {
      *
      * @return
      */
-    public InfoTabs getInfoTabsView() {
-        // TODO move init to App !!
+    public Component getInfoTabsView() {
+                // TODO move init to App !!
         if (null == infoTabs) {
-            infoTabs = new InfoTabs();
-            infoTabs.setTextColor(AppConstants.INFOTABS_TEXTCOLOR);
-            infoTabs.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
-            for (String[] tabData : AppConstants.INFOTABS) {
-                infoTabs.addTab(tabData[0], tabData[1]);
-            }
-
-            // TODO mocked !
-            infoTabs.output("server", "** connecting RichWPS-server...");
-            infoTabs.output("server", "** server connection established.");
-            infoTabs.output("server", "** requesting processes...");
-            infoTabs.output("server", "** processes received.");
+            infoTabs = app.getInfoTabGui();
 
         }
         return infoTabs;

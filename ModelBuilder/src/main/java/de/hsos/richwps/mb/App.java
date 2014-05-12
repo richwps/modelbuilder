@@ -2,9 +2,13 @@ package de.hsos.richwps.mb;
 
 import de.hsos.richwps.mb.appActions.AppActionProvider;
 import de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS;
+import de.hsos.richwps.mb.appEvents.AppEvent;
+import de.hsos.richwps.mb.appEvents.AppEventController;
+import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.appView.AppFrame;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
@@ -69,6 +73,7 @@ public class App {
     private JLabel graphDndProxy;
 
     GraphDropTargetAdapter dropTargetAdapter;
+    private InfoTabs infoTabs;
 
     public App(String[] args) {
         try {
@@ -380,5 +385,39 @@ public class App {
 
     boolean isAppAction(Object source) {
         return getActionProvider().isAppAction(source);
+    }
+
+    private InfoTabs getInfoTabs() {
+        if (null == infoTabs) {
+            infoTabs = new InfoTabs();
+            infoTabs.setTextColor(AppConstants.INFOTABS_TEXTCOLOR);
+            infoTabs.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
+            for (String[] tabData : AppConstants.INFOTABS) {
+                infoTabs.addTab(tabData[0], tabData[1]);
+            }
+
+            AppEventController.getInstance().registerObserver(new IAppEventObserver() {
+                public void eventOccured(AppEvent e) {
+                    // TODO check if command equals an entry of AppConstants.INFOTABS
+                    // TODO if so, output message to that tab.
+                }
+            });
+
+            // TODO just mocked test events !
+            AppEventController.getInstance().fireAppEvent("** connecting RichWPS-server...", this, AppConstants.INFOTABS[0][0]);
+            AppEventController.getInstance().fireAppEvent("** server connection established.", this, AppConstants.INFOTABS[0][0]);
+            AppEventController.getInstance().fireAppEvent("** requesting processes...", this, AppConstants.INFOTABS[0][0]);
+            AppEventController.getInstance().fireAppEvent("** processes received.", this, AppConstants.INFOTABS[0][0]);
+//            infoTabs.output("server", "** connecting RichWPS-server...");
+//            infoTabs.output("server", "** server connection established.");
+//            infoTabs.output("server", "** requesting processes...");
+//            infoTabs.output("server", "** processes received.");
+
+        }
+        return infoTabs;
+    }
+
+    public Component getInfoTabGui() {
+        return getInfoTabs();
     }
 }
