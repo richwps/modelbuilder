@@ -75,6 +75,10 @@ public class AppActionHandler implements IAppActionHandler {
             case DO_LAYOUT:
                 doLayout();
                 break;
+            case DEPLOY:
+                doDeploy();
+                break;
+
             default:
             // do nothing
         }
@@ -228,5 +232,10 @@ public class AppActionHandler implements IAppActionHandler {
             JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
         }
 
+    }
+
+    private void doDeploy() {
+        // TODO mocked !!!
+        de.hsos.richwps.mb.Logger.log("Deploy! Create DSL n stuff");
     }
 }

@@ -7,7 +7,6 @@ package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import javax.swing.JComponent;
 import javax.swing.JTree;
@@ -20,8 +19,6 @@ import javax.swing.tree.TreePath;
  * @author dziegenh
  */
 public class ProcessTransferHandler extends TransferHandler {
-
-    private static DataFlavor processDataFlavor;
 
     public ProcessTransferHandler() {
         super();
@@ -68,6 +65,7 @@ public class ProcessTransferHandler extends TransferHandler {
         return TransferHandler.COPY_OR_MOVE;
     }
 
+    @Override
     public boolean importData(TransferHandler.TransferSupport info) {
         if (!info.isDrop()) {
             return false;

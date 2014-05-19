@@ -120,7 +120,7 @@ public class AppFrame extends JFrame {
      * @return
      */
     public Component getInfoTabsView() {
-                // TODO move init to App !!
+        // TODO move init to App !!
         if (null == infoTabs) {
             infoTabs = app.getInfoTabGui();
 
@@ -203,7 +203,7 @@ public class AppFrame extends JFrame {
             centerAndRightPanel.add(getPropertiesView(), JSplitPane.RIGHT);
             // only expand the center panel on resize
             centerAndRightPanel.setResizeWeight(1);
-            // TODO Resizing the panel is disabled because of buggy behaviours of SingleProcessCard
+            // TODO Resizing the panel is disabled because of buggy behaviours in SingleProcessCard
             centerAndRightPanel.setEnabled(false);
         }
 

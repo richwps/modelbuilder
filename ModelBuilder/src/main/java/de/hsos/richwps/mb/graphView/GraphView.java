@@ -13,6 +13,7 @@ import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
@@ -27,6 +28,7 @@ import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
@@ -67,9 +69,8 @@ public class GraphView extends JPanel {
             graphComponent = new GraphComponent(graph);
             graphComponent.setToolTips(true);
             graphComponent.setBorder(new EmptyBorder(0, 0, 0, 0));
-            graphComponent.getViewport().setBackground(Color.WHITE);
+            graphComponent.getViewport().setBackground(Color.WHITE); // TODO move value to config/constants !!
 
-//            graphComponent.setConn
 //            CellMarker cellMarker = new CellMarker(graphComponent);
 //            cellMarker.setHotspotEnabled(true);
 //            graphComponent.getConnectionHandler().setMarker(cellMarker);
@@ -179,6 +180,13 @@ public class GraphView extends JPanel {
             mxCodecRegistry.addPackage("de.hsos.richwps.mb.semanticProxy.entity");
             mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
             mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessPort()));
+
+            // TODO move magic numbers etc. to config !!
+            mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
+            float strokeWidth = 1.5f;
+            mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(strokeWidth,
+			BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[] {
+					3*strokeWidth, 3*strokeWidth }, 0.0f);
         }
 
         return graph;

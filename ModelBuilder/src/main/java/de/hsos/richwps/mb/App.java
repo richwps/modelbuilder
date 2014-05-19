@@ -18,9 +18,10 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.treeView.ProcessTransferHandler;
 import de.hsos.richwps.mb.treeView.TreeView;
-import java.awt.Color;
+import de.hsos.richwps.mb.ui.DndProxyLabel;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
-import java.awt.Graphics;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
@@ -36,7 +37,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Arrays;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
@@ -51,6 +51,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 
 public class App {
 
@@ -86,31 +87,21 @@ public class App {
             // TODO create splashScreen class and move code
 //            final SplashScreen splash = SplashScreen.getSplashScreen();
 //            Graphics2D g = splash.createGraphics();
-//            renderSplashScreen(g);
+//            renderSplashScreen(g); 
+
+            // Interpret program arguments.
             if (Arrays.asList(args).contains("graph_editable")) {
                 AppConstants.GRAPH_AUTOLAYOUT = false;
             }
 
-            // TODO move/create icon loader
-            String iconDir = AppConstants.RES_ICONS_DIR + File.separator;
-            // Logo
-            UIManager.put(AppConstants.ICON_MBLOGO_KEY, new ImageIcon(iconDir + "mb_logo.png", "mb logo icon"));
-            // File icons
-            UIManager.put(AppConstants.ICON_NEW_KEY, new ImageIcon(iconDir + "document-new-6.png", "new icon"));
-            UIManager.put(AppConstants.ICON_OPEN_KEY, new ImageIcon(iconDir + "document-open-2.png", "open icon"));
-            UIManager.put(AppConstants.ICON_SAVE_KEY, new ImageIcon(iconDir + "document-save-5.png", "save icon"));
-            UIManager.put(AppConstants.ICON_SAVEAS_KEY, new ImageIcon(iconDir + "document-save-as-4.png", "save as icon"));
-            UIManager.put(AppConstants.ICON_PREFERENCES_KEY, new ImageIcon(iconDir + "system-settings.png", "prefs icon"));
-            UIManager.put(AppConstants.ICON_EXIT_KEY, new ImageIcon(iconDir + "dialog-close-2.png", "exit icon"));
-            // Edit Icons
-            UIManager.put(AppConstants.ICON_UNDO_KEY, new ImageIcon(iconDir + "arrow-undo.png", "undo icon"));
-            UIManager.put(AppConstants.ICON_REDO_KEY, new ImageIcon(iconDir + "arrow-redo.png", "redo icon"));
-            UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
+            // Load icons etc. into UIManager
+            AppRessourcesLoader.loadAll();
 
+            // Create frame.
             frame = new AppFrame(this);
             frame.setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
 
-            // Delegate windows closing action
+            // Delegate frame closing action
             frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
@@ -119,11 +110,19 @@ public class App {
 
             });
 
+            // Set ToolTip dismiss delay.
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
             initDragAndDrop();
 
             frame.setVisible(true);
+
+            // TODO move to config provider !
+            // Validate frame location and reset it if necessary.
+            Dimension screenSize = UiHelper.getMultiMonitorScreenSize();
+            if (frame.getX() > screenSize.width || frame.getY() > screenSize.height) {
+                frame.setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
+            }
         }
     }
 
@@ -167,6 +166,7 @@ public class App {
                 }
             }
         });
+
         // deactivate graph drop target when dragging ends
         DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceListener() {
             public void dragEnter(DragSourceDragEvent dsde) {
@@ -198,18 +198,7 @@ public class App {
      */
     public Component getGraphDndProxy() {
         if (null == graphDndProxy) {
-            graphDndProxy = new JLabel(" ") {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    Color tmpColor = g.getColor();
-                    g.setColor(getBackground());
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                    g.setColor(tmpColor);
-                    super.paintComponent(g);
-                }
-
-            };
-            graphDndProxy.setBackground(new Color(0f, 1f, 0f, .1f));
+            graphDndProxy = new DndProxyLabel();
             graphDndProxy.setVisible(false);
         }
         return graphDndProxy;
@@ -280,6 +269,10 @@ public class App {
             });
 
             treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
+            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
+            cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
+
+            treeView.getGui().setCellRenderer(cellRenderer);
         }
 
         return treeView;
@@ -295,7 +288,7 @@ public class App {
     }
 
     /**
-     * The graph.
+     * The graph. Binds a key listener to it on creation.
      *
      * @return
      */
@@ -392,6 +385,8 @@ public class App {
             infoTabs = new InfoTabs();
             infoTabs.setTextColor(AppConstants.INFOTABS_TEXTCOLOR);
             infoTabs.setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
+
+            // Create/add tabs
             for (String[] tabData : AppConstants.INFOTABS) {
                 infoTabs.addTab(tabData[0], tabData[1]);
             }
@@ -408,10 +403,10 @@ public class App {
             AppEventController.getInstance().fireAppEvent("** server connection established.", this, AppConstants.INFOTABS[0][0]);
             AppEventController.getInstance().fireAppEvent("** requesting processes...", this, AppConstants.INFOTABS[0][0]);
             AppEventController.getInstance().fireAppEvent("** processes received.", this, AppConstants.INFOTABS[0][0]);
-//            infoTabs.output("server", "** connecting RichWPS-server...");
-//            infoTabs.output("server", "** server connection established.");
-//            infoTabs.output("server", "** requesting processes...");
-//            infoTabs.output("server", "** processes received.");
+            infoTabs.output("server", "** connecting RichWPS-server...");
+            infoTabs.output("server", "** server connection established.");
+            infoTabs.output("server", "** requesting processes...");
+            infoTabs.output("server", "** processes received.");
 
         }
         return infoTabs;

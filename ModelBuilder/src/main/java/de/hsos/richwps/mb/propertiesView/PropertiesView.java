@@ -18,7 +18,6 @@ import javax.swing.JPanel;
  */
 public class PropertiesView extends TitledComponent {
 
-    // TODO move magic number to config/constants. Create setter !
     private final int cardGap = 0;
     private MultiProcessCard multiProcessCard;
     private SingleProcessCard singleProcessCard;
@@ -26,6 +25,7 @@ public class PropertiesView extends TitledComponent {
     private JPanel contentPanel;
 
     protected static enum CARDS {
+
         NO_SELECTION, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
     }
 
@@ -42,25 +42,33 @@ public class PropertiesView extends TitledComponent {
 
     public void setSelectedProcesses(List<IProcessEntity> processes) {
 
+        // show single process card
         if (1 == processes.size()) {
-            Component tmp = singleProcessCard;
+
+            // store panel foldings
             boolean processFolded = singleProcessCard.isProcessPanelFolded();
             boolean inputsFolded = singleProcessCard.isInputsPanelFolded();
             boolean outputsFolded = singleProcessCard.isOutputsPanelFolded();
+
+            // create new card and replace the old one
+            Component tmp = singleProcessCard;
             singleProcessCard = new SingleProcessCard(new JPanel());
             singleProcessCard.setProcess(processes.get(0));
-            // TODO Bug !! height of inputsPanel is sometimes wrong if it's folded and the user unfolds it!!
-//            singleProcessCard.setProcessPanelFolded(processFolded);
-//            singleProcessCard.setInputsPanelFolded(inputsFolded);
-//            singleProcessCard.setOutputsPanelFolded(outputsFolded);
             contentPanel.remove(tmp);
             contentPanel.add(singleProcessCard, CARDS.PROCESS_SINGLE_SELECTION.name());
             getCardLayout().show(getContentPanel(), CARDS.PROCESS_SINGLE_SELECTION.name());
 
+            // recall panel foldings
+            singleProcessCard.setProcessPanelFolded(processFolded);
+            singleProcessCard.setInputsPanelFolded(inputsFolded);
+            singleProcessCard.setOutputsPanelFolded(outputsFolded);
 
+            // multiple processes selected => show multi card
         } else if (1 < processes.size()) {
             getMultiProcessesCard().setProcesses(processes);
             getCardLayout().show(getContentPanel(), CARDS.PROCESS_MULTI_SELECTION.name());
+
+            // nothing selected => show "void" card
         } else {
             getCardLayout().show(getContentPanel(), CARDS.NO_SELECTION.name());
         }

@@ -11,9 +11,7 @@ import com.mxgraph.view.mxCellState;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
 import javax.swing.Popup;
-import javax.swing.PopupFactory;
 
 /**
  *
@@ -53,11 +51,15 @@ public class GraphConnectionHandler extends mxConnectionHandler {
                                 }
                             } else {
                                 Point loc = getGraphModel().getGeometry(parent).getPoint();
-                                if (null == tipWindow) {
-                                    PopupFactory popupFactory = PopupFactory.getSharedInstance();
-                                    tipWindow = popupFactory.getPopup(gc, new JLabel("asdfg"), loc.x, loc.y);
-                                }
-                                tipWindow.show();
+                                Point gLoc = getTheGraphCompoment().getLocationOnScreen();
+                                loc.translate(gLoc.x, gLoc.y);
+//
+//                                if (null == tipWindow) {
+//                                    PopupFactory popupFactory = PopupFactory.getSharedInstance();
+//                                    // TODO loc is relative to screen, not relative to the frame !!
+//                                    tipWindow = popupFactory.getPopup(gc, new JLabel("asdfg"), loc.x, loc.y);
+//                                }
+//                                tipWindow.show();
                             }
                         }
 

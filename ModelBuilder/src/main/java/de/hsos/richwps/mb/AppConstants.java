@@ -98,9 +98,12 @@ public class AppConstants {
     public final static String OVERVIEW_TITLE = null;
     public final static String EDITOR_DEFAULT_TITLE = "(untitled)";
 
-    // TODO get color from lookAndFeel / UIManager
+    // TODO move & get colors from lookAndFeel / UIManager
     @Deprecated
     public final static Color bgColor = new Color(222,227,250); // alt: (0xd0e0ff);
+    @Deprecated
+    public final static Color SELECTION_BG_COLOR = new Color(0xa0ace5); // 0xabb6f1);
+
 
     // Messages
     public final static String CONFIRM_NEW_MODEL_TITLE = "Create new model?";
@@ -134,5 +137,5 @@ public class AppConstants {
     public final static String ICON_UNDO_KEY = "rwps_icon_undo";
     public final static String ICON_REDO_KEY = "rwps_icon_redo";
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
-
+    public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
 }

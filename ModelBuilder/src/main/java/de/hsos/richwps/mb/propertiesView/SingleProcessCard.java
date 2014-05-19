@@ -14,7 +14,7 @@ import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ComponentAdapter;
@@ -40,7 +40,6 @@ public class SingleProcessCard extends JScrollPane {
     private double propertyBorderThickness = 1; // property row: height of the bottom border
     private final int COLUMN_1_WIDTH = 56;      // fixed width of first column ("header")
     private int titleHeight = 20;               // height of titles ("process", "inputs" etc.)
-
     protected Insets labelInsets = new Insets(2, 5, 2, 5);
 
     protected Color headLabelBgColor = UIManager.getColor("Panel.background");
@@ -64,30 +63,34 @@ public class SingleProcessCard extends JScrollPane {
 
         contentPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.MINIMUM, TableLayout.MINIMUM, TableLayout.MINIMUM}}));
         this.contentPanel = contentPanel;
+        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         addComponentListener(new ComponentAdapter() {
             @Override
+            // Scroll to top after component changed
             public void componentShown(ComponentEvent e) {
+                getViewport().setViewPosition(new Point(0, 0));
+            }
 
-                // following lines must be called AFTER the card is visible!
-                if (getVerticalScrollBar().getHeight() > 0) {
-
-                    // adjust panel size in order to remove the horizontal scrollbar
-                    Dimension panelSize = contentPanel.getSize();
-                    panelSize.width -= getVerticalScrollBar().getWidth();
-                    // TODO replace the following random magic number with a calculated value
-                    panelSize.height += 100;   //getHorizontalScrollBar().getHeight();
-                    contentPanel.setPreferredSize(panelSize);
-                    contentPanel.revalidate();
-
-                    // scroll to top
-                    getViewport().setViewPosition(new Point(0, 0));
+            @Override
+            // Set content panel width to match the viewport.
+            // Otherwise, when resizing the panel to a smaller width, the
+            // panel width would not adjust and the horizontal scrollbar appears
+            public void componentResized(ComponentEvent e) {
+                if (getViewport().getWidth() < contentPanel.getPreferredSize().width) {
+//                    processPanel.setMinimumSize(new Dimension(getViewport().getWidth(), processPanel.getPreferredSize().height));
+//                    inputsPanel.setMinimumSize(new Dimension(getViewport().getWidth(), inputsPanel.getPreferredSize().height));
+//                    outputsPanel.setMinimumSize(new Dimension(getViewport().getWidth(), outputsPanel.getPreferredSize().height));
+//                    doLayout();
+//                    contentPanel.setPreferredSize(new Dimension(getViewport().getWidth(), 100));
+//                    contentPanel.setPreferredSize(new Dimension(getViewport().getWidth(), 100));
                 }
+                contentPanel.revalidate();
+                contentPanel.repaint();
             }
 
         });
     }
-
 
     /**
      * Updates UI after a process has been set.
@@ -176,17 +179,18 @@ public class SingleProcessCard extends JScrollPane {
 
         processIdentifierLabel = createBodyLabel(process.getIdentifier());
         processTitleLabel = createBodyLabel(process.getTitle());
+        processTitleLabel.setFont(processTitleLabel.getFont().deriveFont(Font.BOLD));
         processAbstractLabel = createBodyLabel(process.getOwsAbstract());
 
         int y = 0;
-        processPanel.add(createHeadLabel(AppConstants.PROCESS_IDENTIFIER_LABEL), "0 " + y);
-        processPanel.add(processIdentifierLabel, "1 " + y);
+        processPanel.add(createHeadLabel("Title"), "0 " + y);
+        processPanel.add(processTitleLabel, "1 " + y);
         y++;
         processPanel.add(createColumn1Border(), "0 " + y);
         processPanel.add(createColumn2Border(), "1 " + y);
         y++;
-        processPanel.add(createHeadLabel("Title"), "0 " + y);
-        processPanel.add(processTitleLabel, "1 " + y);
+        processPanel.add(createHeadLabel(AppConstants.PROCESS_IDENTIFIER_LABEL), "0 " + y);
+        processPanel.add(processIdentifierLabel, "1 " + y);
         y++;
         processPanel.add(createColumn1Border(), "0 " + y);
         processPanel.add(createColumn2Border(), "1 " + y);
@@ -265,14 +269,16 @@ public class SingleProcessCard extends JScrollPane {
      */
     private int createPortPanel(ProcessPort port, Container parent, int rowOffset) {
 
-        parent.add(createHeadLabel("Identifier"), "0 " + rowOffset);
-        parent.add(createBodyLabel(port.getOwsIdentifier()), "1 " + rowOffset++);
+        MultilineLabel titleLabel = createBodyLabel(port.getOwsTitle());
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
+        parent.add(createHeadLabel("Title"), "0 " + rowOffset);
+        parent.add(titleLabel, "1 " + rowOffset++);
 
         parent.add(createColumn1Border(), "0 " + rowOffset);
         parent.add(createColumn2Border(), "1 " + rowOffset++);
 
-        parent.add(createHeadLabel("Title"), "0 " + rowOffset);
-        parent.add(createBodyLabel(port.getOwsTitle()), "1 " + rowOffset++);
+        parent.add(createHeadLabel("Identifier"), "0 " + rowOffset);
+        parent.add(createBodyLabel(port.getOwsIdentifier()), "1 " + rowOffset++);
 
         parent.add(createColumn1Border(), "0 " + rowOffset);
         parent.add(createColumn2Border(), "1 " + rowOffset++);
@@ -306,7 +312,9 @@ public class SingleProcessCard extends JScrollPane {
      * @return
      */
     private MultilineLabel createBodyLabel(String text) {
-        return createMultilineLabel(text, bodyLabelBgColor);
+        MultilineLabel label = createMultilineLabel(text, bodyLabelBgColor);
+        label.setFocusable(true);
+        return label;
     }
 
     private MultilineLabel createMultilineLabel(String text, Color background) {
@@ -352,4 +360,5 @@ public class SingleProcessCard extends JScrollPane {
         }
         return outputsPanel.isFolded();
     }
+
 }
