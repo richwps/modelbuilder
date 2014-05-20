@@ -54,7 +54,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             createNodesFromTransferObject(transferObjects, dtde.getLocation());
 
         } catch (Exception ex) {
-            // TODO ignore or log ?
+            // ignore
         }
 
         try {
@@ -62,7 +62,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             createNodesFromTransferObject(transferProcess, dtde.getLocation());
 
         } catch (Exception ex) {
-            // TODO ignore or log ?
+            // ignore
         }
 
         try {
@@ -70,7 +70,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             createNodesFromTransferObject(transferPort, dtde.getLocation());
 
         } catch (Exception ex) {
-            // TODO ignore or log ?
+            // ignore
         }
 
         graphView.setCellsSelected(createdNodes.toArray());

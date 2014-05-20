@@ -403,10 +403,10 @@ public class App {
             AppEventController.getInstance().fireAppEvent("** server connection established.", this, AppConstants.INFOTABS[0][0]);
             AppEventController.getInstance().fireAppEvent("** requesting processes...", this, AppConstants.INFOTABS[0][0]);
             AppEventController.getInstance().fireAppEvent("** processes received.", this, AppConstants.INFOTABS[0][0]);
-            infoTabs.output("server", "** connecting RichWPS-server...");
-            infoTabs.output("server", "** server connection established.");
-            infoTabs.output("server", "** requesting processes...");
-            infoTabs.output("server", "** processes received.");
+//            infoTabs.output("server", "** connecting RichWPS-server...");
+//            infoTabs.output("server", "** server connection established.");
+//            infoTabs.output("server", "** requesting processes...");
+//            infoTabs.output("server", "** processes received.");
 
         }
         return infoTabs;
