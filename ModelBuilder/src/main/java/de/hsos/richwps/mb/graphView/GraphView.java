@@ -55,6 +55,10 @@ public class GraphView extends JPanel {
     private LinkedList<ListSelectionListener> selectionListener;
     private IProcessProvider processProvider;
 
+    // TODO move values to config/constants
+    private int PORT_WIDTH = 45;
+    private int PORT_HEIGHT = 45;
+
     public GraphView(IProcessProvider processProvider) {
         super();
         this.processProvider = processProvider;
@@ -98,6 +102,12 @@ public class GraphView extends JPanel {
     public Graph getGraph() {
         if (null == graph) {
             graph = new Graph();
+
+            // TODO move to config/constants
+            int fontSize = 16;
+            int spacing = 4;
+
+            // graph setup
             graph.setCellsDisconnectable(true);
             graph.setAllowDanglingEdges(false);
             graph.setEdgeLabelsMovable(false);
@@ -111,21 +121,18 @@ public class GraphView extends JPanel {
             graph.setAutoLayout(AppConstants.GRAPH_AUTOLAYOUT);
             graph.setCellsMovable(!graph.isAutoLayout());
 
-            // size (ratio) of the interactive port part (in percent relative to port size)
+            // size (ratio) of the connectable port part (in percent relative to port size)
             mxConstants.DEFAULT_HOTSPOT = graph.isAutoLayout() ? 1 : .5;
 
+            // EDGE STYLE
             mxStylesheet stylesheet = graph.getStylesheet();
             stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL, "1");
             stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_STROKECOLOR, "000000");
-
             Object edgeStyle = graph.isAutoLayout() ? mxConstants.NONE : mxConstants.EDGESTYLE_TOPTOBOTTOM;
             stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_EDGE, edgeStyle);
             graph.setStylesheet(stylesheet);
 
-            // TODO move to config/constants
-            int fontSize = 16;
-            int spacing = 4;
-
+            // PROCESS STYLE
             Hashtable<String, Object> processStyle = new Hashtable<String, Object>();
             processStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
             processStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opcatity to 100
@@ -139,6 +146,11 @@ public class GraphView extends JPanel {
             processStyle.put(mxConstants.STYLE_SPACING_TOP, spacing); // changed textlabel v-align
             stylesheet.putCellStyle("PROCESS", processStyle);
 
+            // GLOBAL INPUT PORT STYLE
+            Hashtable<String, Object> processInputStyle = (Hashtable<String, Object>) processStyle.clone();
+            stylesheet.putCellStyle("PROCESS_INPUT", processInputStyle);
+
+            // GLOBAL OUTPUT PORT STYLE
             Hashtable<String, Object> processOutputStyle = new Hashtable<String, Object>();
             processOutputStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
             processOutputStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opcatity to 100
@@ -152,6 +164,7 @@ public class GraphView extends JPanel {
             processOutputStyle.put(mxConstants.STYLE_SPACING_TOP, spacing); // changed textlabel v-align
             stylesheet.putCellStyle("PROCESS_OUTPUT", processOutputStyle);
 
+            // PROCESS (SUB-) PORT STYLE
             Hashtable<String, Object> portStyle = new Hashtable<String, Object>();
             portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE); // changed shape to rect
             portStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opacity to 100
@@ -173,7 +186,6 @@ public class GraphView extends JPanel {
                         listener.valueChanged(event);
                     }
                 }
-
             });
 
             // TODO refactor when the real Process Model is implemented!
@@ -185,21 +197,23 @@ public class GraphView extends JPanel {
             mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
             float strokeWidth = 1.5f;
             mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(strokeWidth,
-			BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[] {
-					3*strokeWidth, 3*strokeWidth }, 0.0f);
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{
+                        3 * strokeWidth, 3 * strokeWidth}, 0.0f);
         }
-
+        
         return graph;
     }
 
     // TODO mocked controller method
-    public void createNodeFromProcess(IProcessEntity process, Point location) {
+    public mxCell createNodeFromProcess(IProcessEntity process, Point location) {
         Graph graph = getGraph();
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
 
         int numInputs = process.getNumInputs();
         int numOutputs = process.getNumOutputs();
+
+        mxCell processCell = null;
 
         try {
             // TODO move to config/constants
@@ -210,8 +224,8 @@ public class GraphView extends JPanel {
             double OUTPUT_PORT_WIDTH = PROCESS_WIDTH / (double) numOutputs;
 
             // TODO calculate process dimensions depending on num ports, length of name  etc.
-            mxCell v1 = (mxCell) graph.insertVertex(parent, null, process, location.x, location.y, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
-            v1.setConnectable(false);
+            processCell = (mxCell) graph.insertVertex(parent, null, process, location.x, location.y, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
+            processCell.setConnectable(false);
 
             int i = 0;
             int curX = 0;
@@ -226,7 +240,7 @@ public class GraphView extends JPanel {
                 port1.setVertex(true);
 //                port1.setValue("In " + (i + 1));   // later, ports will have names!
                 port1.setValue(pIn);
-                graph.addCell(port1, v1);
+                graph.addCell(port1, processCell);
 
                 curX += curPortWidth;
                 i++;
@@ -244,7 +258,7 @@ public class GraphView extends JPanel {
                 port1.setVertex(true);
 //                port1.setValue("Out " + (i + 1));   // later, ports will have names!
                 port1.setValue(pOut);
-                graph.addCell(port1, v1);
+                graph.addCell(port1, processCell);
 
                 curX += curPortWidth;
                 i++;
@@ -254,24 +268,30 @@ public class GraphView extends JPanel {
             graph.getModel().endUpdate();
         }
 
+        return processCell;
     }
 
-    public void createNodeFromPort(ProcessPort port, Point location) {
+    public mxCell createNodeFromPort(ProcessPort port, Point location) {
+        
+        // This method handles global ports only
+        if(!port.isGlobal())
+            return null;
+
         Graph graph = getGraph();
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
 
-        try {
-            // TODO move values to config/constants
-            int PORT_WIDTH = 45;
-            int PORT_HEIGHT = 45;
+        mxCell portCell = null;
 
-            String style = port.isInput() ? "PROCESS" : "PROCESS_OUTPUT";
-            mxCell v1 = (mxCell) graph.insertVertex(parent, null, port, location.x, location.y, PORT_WIDTH, PORT_HEIGHT, style);
+        try {
+            String style = port.isGlobalInput() ? "PROCESS_INPUT" : "PROCESS_OUTPUT";
+            portCell = (mxCell) graph.insertVertex(parent, null, port, location.x, location.y, PORT_WIDTH, PORT_HEIGHT, style);
 
         } finally {
             graph.getModel().endUpdate();
         }
+
+        return portCell;
     }
 
     public void addSelectionListener(ListSelectionListener listener) {
@@ -366,6 +386,11 @@ public class GraphView extends JPanel {
 
     public void layoutGraph() {
         getGraph().layout();
+    }
+
+    void setCellsSelected(Object[] cells) {
+        getGraph().clearSelection();
+        getGraph().setSelectionCells(cells);
     }
 
 }

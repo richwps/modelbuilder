@@ -45,7 +45,7 @@ public class GraphConnectionHandler extends mxConnectionHandler {
                             Object parent = getGraphModel().getParent(cell);
 
                             // TODO popups don't work !!
-                            if (null == parent) {
+                            if (null == parent || null == getGraphModel().getGeometry(parent)) {
                                 if (null != tipWindow) {
                                     tipWindow.hide();
                                 }

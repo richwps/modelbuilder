@@ -16,8 +16,8 @@ import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.treeView.ProcessTransferHandler;
 import de.hsos.richwps.mb.treeView.TreeView;
+import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.DndProxyLabel;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
@@ -60,7 +60,7 @@ public class App {
     private AppFrame frame;
     private ProcessProvider processProvider;
 
-    private ProcessTransferHandler processTransferHandler;
+    private TreenodeTransferHandler processTransferHandler;
 
     private String currentModelFilename = null;
 
@@ -141,9 +141,9 @@ public class App {
         return processProvider;
     }
 
-    protected ProcessTransferHandler getProcessTransferHandler() {
+    protected TreenodeTransferHandler getProcessTransferHandler() {
         if (null == processTransferHandler) {
-            processTransferHandler = new ProcessTransferHandler();
+            processTransferHandler = new TreenodeTransferHandler();
         }
 
         return processTransferHandler;
@@ -229,17 +229,17 @@ public class App {
 
             DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
             // Outputs
-            ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX);
-            ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL);
-            cOut.setOutput(true);
-            lOut.setOutput(true);
+            ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
+            ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+            cOut.setGlobalOutput(true);
+            lOut.setGlobalOutput(true);
             local.add(new DefaultMutableTreeNode(cOut));
             local.add(new DefaultMutableTreeNode(lOut));
             // inputs
-            ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX);
-            ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL);
-            cIn.setOutput(false);
-            lIn.setOutput(false);
+            ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
+            ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+            cIn.setGlobalOutput(false);
+            lIn.setGlobalOutput(false);
             local.add(new DefaultMutableTreeNode(cIn));
             local.add(new DefaultMutableTreeNode(lIn));
 

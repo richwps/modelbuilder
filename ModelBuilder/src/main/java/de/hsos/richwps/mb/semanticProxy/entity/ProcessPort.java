@@ -21,13 +21,28 @@ public class ProcessPort implements Serializable {
 
     private String toolTipText = null;
 
-    private boolean input;
+    private boolean flowInput;
+
+    private boolean global;
 
     public ProcessPort() {
     }
 
-    public ProcessPort(ProcessPortDatatype processPortDatatype) {
+    public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
         this.datatype = processPortDatatype.name();
+        this.global = global;
+    }
+
+    public ProcessPort(ProcessPortDatatype processPortDatatype) {
+        this(processPortDatatype, false);
+    }
+
+    public boolean isGlobal() {
+        return global;
+    }
+
+    public void setGlobal(boolean global) {
+        this.global = global;
     }
 
     /**
@@ -40,20 +55,65 @@ public class ProcessPort implements Serializable {
         return datatype;
     }
 
-    public void setInput(boolean isInput) {
-        input = isInput;
+    public void setFlowInput(boolean isInput) {
+        flowInput = isInput;
     }
 
-    public boolean isInput() {
-        return input;
+    /**
+     * True if the port receives data.
+     * @return
+     */
+    public boolean isFlowInput() {
+        return flowInput;
     }
 
-    public boolean isOutput() {
-        return !input;
+    /**
+     * True if the port sends data.
+     * @return
+     */
+    public boolean isFlowOutput() {
+        return !flowInput;
     }
 
-    public void setOutput(boolean isOutput) {
-        input = !isOutput;
+    /**
+     * A global process input is a local flow output.
+     *
+     * @return
+     */
+    public boolean isGlobalInput() {
+        return global && !isFlowInput();
+    }
+    
+    /**
+     * A global process output is a local flow input.
+     * @return
+     */
+    public boolean isGlobalOutput() {
+        return global && !isFlowOutput();
+    }
+
+    public void setFlowOutput(boolean isOutput) {
+        flowInput = !isOutput;
+    }
+
+    /**
+     * Sets global to true; flowInput depending on the parameter.
+     * Note: a global process output is a local flow input.
+     * @param isOutput
+     */
+    public void setGlobalOutput(boolean isOutput) {
+        this.global = true;
+        this.flowInput = isOutput;
+    }
+
+    /**
+     * Sets global to true; flowInput depending on the parameter.
+     * Note: a global process input is a local flow output.
+     * @param isOutput
+     */
+    public void setGlobalInput(boolean isInput) {
+        this.global = true;
+        this.flowInput = !isInput;
     }
 
     /**
@@ -128,7 +188,6 @@ public class ProcessPort implements Serializable {
             if(null == getOwsTitle() || null == getOwsAbstract() || null == getOwsIdentifier()) {
                 return "";
             }
-
 
             // length of vars + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
             int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 13 + 7 + 4 + 8;

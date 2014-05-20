@@ -104,12 +104,12 @@ public class ProcessEntity implements IProcessEntity, Transferable, Serializable
     }
 
     public void addInputPort(ProcessPort port) {
-        port.setInput(true);
+        port.setFlowInput(true);
         inputPorts.add(port);
     }
 
     public void addOutputPort(ProcessPort port) {
-        port.setOutput(true);
+        port.setFlowOutput(true);
         outputPorts.add(port);
     }
 

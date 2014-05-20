@@ -5,9 +5,9 @@
  */
 package de.hsos.richwps.mb.treeView;
 
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.awt.datatransfer.Transferable;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
@@ -18,9 +18,9 @@ import javax.swing.tree.TreePath;
  *
  * @author dziegenh
  */
-public class ProcessTransferHandler extends TransferHandler {
+public class TreenodeTransferHandler extends TransferHandler {
 
-    public ProcessTransferHandler() {
+    public TreenodeTransferHandler() {
         super();
     }
 
@@ -38,22 +38,23 @@ public class ProcessTransferHandler extends TransferHandler {
 
         if (c instanceof JTree) {
             JTree tree = (JTree) c;
-            TreePath selectionPath = tree.getSelectionPath();
-            if (null == selectionPath) {
+            TreePath[] selectionPaths = tree.getSelectionPaths();
+
+            if (null == selectionPaths) {
                 return null;
             }
-            Object pathComponent = selectionPath.getLastPathComponent();
-            if (pathComponent instanceof DefaultMutableTreeNode) {
-                Object userObject = ((DefaultMutableTreeNode) pathComponent).getUserObject();
 
-                if (userObject instanceof ProcessEntity) {
-                    return new TransferableProcessEntity((ProcessEntity) userObject);
-                }
-
-                else if (userObject instanceof ProcessPort) {
-                    return new TransferableProcessPort((ProcessPort) userObject);
+            // add all selected treeNodes to the transfer data array
+            List<Object> data = new LinkedList<Object>();
+            for (TreePath selectionPath : selectionPaths) {
+                Object pathComponent = selectionPath.getLastPathComponent();
+                if (pathComponent instanceof DefaultMutableTreeNode) {
+                    Object userObject = ((DefaultMutableTreeNode) pathComponent).getUserObject();
+                    data.add(userObject);
                 }
             }
+
+            return new TransferableTreeNodes(data.toArray());
         }
 
         return null;

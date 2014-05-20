@@ -174,8 +174,8 @@ public class Graph extends mxGraph {
             Object targetParent = graphModel.getParent(target);
 
             boolean sameParent = (sourceParent != null && targetParent != null) && sourceParent.equals(targetParent);
-            boolean inputToInput = graphModel.isInput(source) && graphModel.isInput(target);
-            boolean outputToOutput = graphModel.isOutput(source) && graphModel.isOutput(target);
+            boolean inputToInput = graphModel.isFlowInput(source) && graphModel.isFlowInput(target);
+            boolean outputToOutput = graphModel.isFlowOutput(source) && graphModel.isFlowOutput(target);
 
             // TODO this doesn't work !!!
             boolean inputAlreadyUsed = false; //mxGraphModel.getIncomingEdges(model, targetParent).length > 0;
@@ -189,7 +189,7 @@ public class Graph extends mxGraph {
 
             } else {
                 // check direction and reverse it if necessery
-                if (graphModel.isOutput(target)) {
+                if (graphModel.isFlowOutput(target)) {
                     Object tmp = target;
                     target = source;
                     source = tmp;

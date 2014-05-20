@@ -34,25 +34,25 @@ public class GraphModel extends mxGraphModel {
     }
 
 
-    boolean isInput(Object o) {
+    boolean isFlowInput(Object o) {
         if (!isVertex(o)) {
             return false;
         }
 
         if(getValue(o) instanceof ProcessPort) {
-            return ((ProcessPort) getValue(o)).isInput();
+            return ((ProcessPort) getValue(o)).isFlowInput();
         }
 
         return false;
     }
 
-    boolean isOutput(Object o) {
+    boolean isFlowOutput(Object o) {
         if (!isVertex(o)) {
             return false;
         }
 
         if(getValue(o) instanceof ProcessPort) {
-            return ((ProcessPort) getValue(o)).isOutput();
+            return ((ProcessPort) getValue(o)).isFlowOutput();
         }
 
         return false;
@@ -65,7 +65,7 @@ public class GraphModel extends mxGraphModel {
      * @return
      */
     boolean isProcess(Object o) {
-        return isVertex(o) && !isInput(o) && !isOutput(o);
+        return isVertex(o) && !isFlowInput(o) && !isFlowOutput(o);
     }
 
 
