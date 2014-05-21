@@ -17,7 +17,7 @@ import java.io.File;
  */
 public class AppConstants {
 
-    public static boolean GRAPH_AUTOLAYOUT = true;
+    public static boolean GRAPH_AUTOLAYOUT = false;
 
     private final static String FSEP = File.separator;
 

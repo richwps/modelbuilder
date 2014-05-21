@@ -77,4 +77,15 @@ public class GraphModel extends mxGraphModel {
         this.name = name;
     }
 
+    boolean isGlobalPort(Object o) {
+        if( !isVertex(o) )
+            return false;
+
+        if(getValue(o) instanceof ProcessPort) {
+            return ((ProcessPort) getValue(o)).isGlobal();
+        }
+
+        return false;
+    }
+
 }

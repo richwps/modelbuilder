@@ -10,12 +10,15 @@ import com.mxgraph.analysis.mxGraphProperties;
 import com.mxgraph.analysis.mxGraphStructure;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
+import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.appEvents.AppEventController;
 import de.hsos.richwps.mb.graphView.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
@@ -152,9 +155,15 @@ public class Graph extends mxGraph {
      * Create temporary edge.
      */
     @Override
-    public Object createEdge(Object o, String string, Object o1, Object o2, Object o3, String string1) {
-        tempCreatedEdge = (mxCell) super.createEdge(o, string, o1, o2, o3, string1);
-        return tempCreatedEdge;
+    public Object createEdge(Object parent, String id, Object value,
+            Object source, Object target, String style) {
+        mxCell edge = new GraphEdge(value, new mxGeometry(), style);
+
+        edge.setId(id);
+        edge.setEdge(true);
+        edge.getGeometry().setRelative(true);
+
+        return edge;
     }
 
     /**
@@ -170,39 +179,78 @@ public class Graph extends mxGraph {
         //Edge added?
         if (model.isEdge(cell)) {
 
-            Object sourceParent = graphModel.getParent(source);
-            Object targetParent = graphModel.getParent(target);
+            // check direction and reverse it if necessery (target must be an input port)
+            if (graphModel.isFlowOutput(target)) {
+                Object tmp = target;
+                target = source;
+                source = tmp;
+            }
+
+            GraphEdge edge = null;
+
+            if (cell instanceof GraphEdge) {
+                edge = (GraphEdge) cell;
+                edge.setSourcePortCell((mxCell) source);
+                edge.setTargetPortCell((mxCell) target);
+            }
+
+            // Parents are used to retrieve incoming and outgoing edges.
+            Object sourceParent;
+            Object targetParent;
+
+            // Global ports don't have a parent process => use themself to retrieve edges.
+            if (getGraphModel().isGlobalPort(source)) {
+                sourceParent = source;
+            } else {
+                sourceParent = graphModel.getParent(source);
+            }
+            if (getGraphModel().isGlobalPort(target)) {
+                targetParent = target;
+            } else {
+                targetParent = graphModel.getParent(target);
+            }
 
             boolean sameParent = (sourceParent != null && targetParent != null) && sourceParent.equals(targetParent);
             boolean inputToInput = graphModel.isFlowInput(source) && graphModel.isFlowInput(target);
             boolean outputToOutput = graphModel.isFlowOutput(source) && graphModel.isFlowOutput(target);
 
-            // TODO this doesn't work !!!
-            boolean inputAlreadyUsed = false; //mxGraphModel.getIncomingEdges(model, targetParent).length > 0;
+            // if necessary, check if desired target port is alread used.
+            boolean inputAlreadyUsed = false;
+            if (!allowOutsToInMulticast() && !inputToInput && !outputToOutput && null != edge) {
+                Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, targetParent);
+                for (Object in : targetIncomingEdges) {
+                    if (in instanceof GraphEdge) {
+                        GraphEdge inEdge = (GraphEdge) in;
+                        boolean sameTargetPortCell = inEdge.getTargetPortCell().equals(edge.getTargetPortCell());
+                        boolean differentEdges = !inEdge.equals(edge);
+                        if (sameTargetPortCell && differentEdges) {
+                            inputAlreadyUsed = true;
+                        }
+                    }
+                }
+            }
 
-            // Disable connections from input to output of the same process.
-            // Disable connections In<->In and Out<->Out.
+            // Disable invalid connections.
             if (sameParent || inputToInput || outputToOutput || inputAlreadyUsed) {
                 super.addCell(cell);
                 graphModel.remove(cell);
                 returnValue = null;
 
             } else {
-                // check direction and reverse it if necessery
-                if (graphModel.isFlowOutput(target)) {
-                    Object tmp = target;
-                    target = source;
-                    source = tmp;
-                }
-
                 // user superclass to add cell
                 returnValue = super.addCell(cell, o1, intgr, source, target);
             }
 
             // Detect and remove cycle connections if necessary.
-            if (mxGraphStructure.isCyclicDirected(getAnalysisGraph())) {
+            if (!isAllowLoops() && mxGraphStructure.isCyclicDirected(getAnalysisGraph())) {
                 graphModel.remove(cell);
                 returnValue = null;
+            }
+
+            if(null == returnValue) {
+                // TODO use AppEvents
+                Logger.log("Invalid connection!");
+                AppEventController.getInstance().fireAppEvent("Invalid connection!", this, null);
             }
 
         } else {
@@ -210,7 +258,6 @@ public class Graph extends mxGraph {
             returnValue = super.addCell(cell, o1, intgr, source, target);
         }
 
-        // TODO layout doesn't always update ?!!
         if (graphModel.isProcess(cell) || graphModel.isEdge(cell)) {
             if (autoLayout) {
                 layout();
@@ -220,6 +267,21 @@ public class Graph extends mxGraph {
         return returnValue;
     }
 
+//    mxCell[] getConnectedInputPorts(Object process) {
+//        if (!getGraphModel().isProcess(process)) {
+//            return null;
+//        }
+//
+//        Object[] incomingEdges = mxGraphModel.getIncomingEdges(getModel(), process);
+//        for (Object edge : incomingEdges) {
+//            mxGeometry geom = getGraphModel().getGeometry(edge);
+//            mxPoint target = geom.getTargetPoint();
+//            graphComponent.getCellAt((int) target.getX(), (int) target.getY());
+//            Logger.log("7nmj89");
+//        }
+//
+//        return null;
+//    }
     /**
      * Only GraphModel instances are accepted.
      */
@@ -262,6 +324,34 @@ public class Graph extends mxGraph {
 
     boolean isAutoLayout() {
         return autoLayout;
+    }
+
+    /**
+     * Returns true if an output can be connected to multiple inputs.
+     *
+     * @return
+     */
+    boolean allowInsToOutMulticast() {
+        return false;
+    }
+
+    /**
+     * Returns true if multiple outputs can be connected to the same input.
+     *
+     * @return
+     */
+    boolean allowOutsToInMulticast() {
+        return false;
+    }
+
+    /**
+     * Returns true if a process output can be connected to an input of the same
+     * process.s
+     *
+     * @return
+     */
+    boolean allowSingleFeedbackLoop() {
+        return false;
     }
 
 }

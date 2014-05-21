@@ -116,6 +116,7 @@ public class GraphView extends JPanel {
             graph.setCellsDeletable(true);
             graph.setCellsEditable(false);
             graph.setPortsEnabled(true);
+            graph.setDropEnabled(false);
             graph.setAllowLoops(false);
             graph.setMultigraph(false);
             graph.setAutoLayout(AppConstants.GRAPH_AUTOLAYOUT);
