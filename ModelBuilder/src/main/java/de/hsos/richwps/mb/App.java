@@ -393,8 +393,15 @@ public class App {
 
             AppEventController.getInstance().registerObserver(new IAppEventObserver() {
                 public void eventOccured(AppEvent e) {
-                    // TODO check if command equals an entry of AppConstants.INFOTABS
-                    // TODO if so, output message to that tab.
+                    String command = e.getCommand();
+                    String message = e.getMessage();
+                    
+                    for(String[] infoTab : AppConstants.INFOTABS){
+                        String tabId = infoTab[0];
+                        if(tabId.equals(command)){
+                            infoTabs.output(tabId, message);
+                        }
+                    }
                 }
             });
 
