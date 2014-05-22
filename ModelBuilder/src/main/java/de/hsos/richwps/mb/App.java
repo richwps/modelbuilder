@@ -1,5 +1,9 @@
 package de.hsos.richwps.mb;
 
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
+import com.mxgraph.util.mxUndoableEdit;
+import de.hsos.richwps.mb.appActions.AppAbstractAction;
 import de.hsos.richwps.mb.appActions.AppActionProvider;
 import de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.appEvents.AppEvent;
@@ -62,7 +66,11 @@ public class App {
 
     private TreenodeTransferHandler processTransferHandler;
 
+    private AppUndoManager undoManager;
+            
+    // TODO move to model (which has to be created...)
     private String currentModelFilename = null;
+
 
     public static void main(String[] args) {
         App app = new App(args);
@@ -124,6 +132,25 @@ public class App {
                 frame.setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
             }
         }
+    }
+
+    AppUndoManager getUndoManager() {
+        if(null == undoManager) {
+            undoManager = new AppUndoManager();
+            undoManager.addChangeListener(new AppUndoManager.UndoManagerChangeListener() {
+                public void changed() {
+                    AppAbstractAction undoAction = getActionProvider().getAction(APP_ACTIONS.UNDO);
+                    undoAction.setName("Undo " + undoManager.getPresentationName());
+                    undoAction.setEnabled(undoManager.canUndo());
+
+                    AppAbstractAction redoAction = getActionProvider().getAction(APP_ACTIONS.REDO);
+                    redoAction.setName("Redo " + undoManager.getPresentationName());
+                    redoAction.setEnabled(undoManager.canRedo());
+                }
+            });
+        }
+
+        return undoManager;
     }
 
     public String getCurrentModelFilename() {
@@ -315,6 +342,18 @@ public class App {
                             break;
                     }
                 }
+            });
+
+            graphView.addUndoEventListener(new mxEventSource.mxIEventListener() {
+                public void invoke(Object o, mxEventObject eo) {
+                    de.hsos.richwps.mb.Logger.log(eo);
+                    Object editProperty = eo.getProperty("edit");
+                    if(eo.getProperty("edit") instanceof mxUndoableEdit) {
+                        mxUndoableEdit edit = (mxUndoableEdit) editProperty;
+                        getUndoManager().addEdit(new AppUndoableEdit(graphView, edit, "Graph edit"));
+                    }
+                }
+
             });
         }
         return graphView;

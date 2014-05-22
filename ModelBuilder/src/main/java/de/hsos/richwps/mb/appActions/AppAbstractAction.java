@@ -57,4 +57,9 @@ public abstract class AppAbstractAction extends AbstractAction {
         actionPerformed(e);
     }
 
+    public void setName(String name) {
+        putValue(Action.NAME, name);
+        putValue(Action.SHORT_DESCRIPTION, name);
+    }
+
 }

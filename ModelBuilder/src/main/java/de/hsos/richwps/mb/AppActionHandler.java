@@ -78,6 +78,9 @@ public class AppActionHandler implements IAppActionHandler {
             case DEPLOY:
                 doDeploy();
                 break;
+            case UNDO:
+                doUndo();
+                break;
 
             default:
             // do nothing
@@ -237,5 +240,9 @@ public class AppActionHandler implements IAppActionHandler {
     private void doDeploy() {
         // TODO mocked !!!
         de.hsos.richwps.mb.Logger.log("Deploy! Create DSL n stuff");
+    }
+
+    private void doUndo() {
+        app.getUndoManager().undo();
     }
 }

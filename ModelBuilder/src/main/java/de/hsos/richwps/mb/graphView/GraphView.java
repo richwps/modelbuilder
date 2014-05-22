@@ -19,9 +19,11 @@ import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxPoint;
+import com.mxgraph.util.mxUndoManager;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
+import com.mxgraph.view.mxMultiplicity;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
@@ -54,10 +56,16 @@ public class GraphView extends JPanel {
     private mxGraphComponent graphComponent;
     private LinkedList<ListSelectionListener> selectionListener;
     private IProcessProvider processProvider;
+    private mxUndoManager undoManager;
+
+
 
     // TODO move values to config/constants
-    private int PORT_WIDTH = 45;
-    private int PORT_HEIGHT = 45;
+    private int PROCESS_WIDTH = 210;
+    private int PROCESS_HEIGHT = 90;
+    private int PROCESS_PORT_HEIGHT = 30;
+    private int GLOBAL_PORT_WIDTH = 45;
+    private int GLOBAL_PORT_HEIGHT = 45;
 
     public GraphView(IProcessProvider processProvider) {
         super();
@@ -66,6 +74,35 @@ public class GraphView extends JPanel {
         selectionListener = new LinkedList<ListSelectionListener>();
     }
 
+    public void addUndoEventListener(mxEventSource.mxIEventListener listener) {
+//        getUndoManager().addListener(mxEvent.ADD, listener);
+        getGraph().getModel().addListener(mxEvent.CHANGE, listener);
+    }
+
+//    public void removeUndoEventListener(mxEventSource.mxIEventListener listener) {
+//        getUndoManager().removeListener(listener, null);
+//    }
+
+
+//    private mxUndoManager getUndoManager() {
+//        if (null == undoManager) {
+//            this.undoManager = new mxUndoManager();
+//            getGraph().getModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
+//
+//                public void invoke(Object o, mxEventObject eo) {
+////                    eo.getProperty("edit")
+//                    Logger.log(eo);
+////                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//                }
+//            }); // addUndoableEditListener(undoManager);
+//        }
+//        return undoManager;
+//    }
+
+    /**
+     * Lazy graph init.
+     * @return
+     */
     private mxGraphComponent getGraphComponent() {
         if (null == graphComponent) {
             Graph graph = getGraph();
@@ -86,7 +123,7 @@ public class GraphView extends JPanel {
     }
 
     /**
-     * Blackboxed getter.
+     * Blackboxed component getter.
      *
      * @return
      */
@@ -200,12 +237,18 @@ public class GraphView extends JPanel {
             mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(strokeWidth,
                     BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{
                         3 * strokeWidth, 3 * strokeWidth}, 0.0f);
+
+//          boolean source, String type, String attr,
+//          String value, int min, String max,
+//          Collection<String> validNeighbors, String countError,
+//          String typeError, boolean validNeighborsAllowed
+            mxMultiplicity mxMultiplicity = new mxMultiplicity(true, "", "", "", 0, "1", null, "", "", true);
+            graph.setMultiplicities(new mxMultiplicity[]{mxMultiplicity});
         }
-        
+
         return graph;
     }
 
-    // TODO mocked controller method
     public mxCell createNodeFromProcess(IProcessEntity process, Point location) {
         Graph graph = getGraph();
         Object parent = graph.getDefaultParent();
@@ -218,9 +261,6 @@ public class GraphView extends JPanel {
 
         try {
             // TODO move to config/constants
-            int PROCESS_WIDTH = 210;
-            int PROCESS_HEIGHT = 90;
-            int PORT_HEIGHT = 30;
             double INPUT_PORT_WIDTH = PROCESS_WIDTH / (double) numInputs;
             double OUTPUT_PORT_WIDTH = PROCESS_WIDTH / (double) numOutputs;
 
@@ -233,7 +273,7 @@ public class GraphView extends JPanel {
             for (ProcessPort pIn : process.getInputPorts()) {
                 int curPortWidth = (int) ((i % 2 == 0) ? Math.floor(INPUT_PORT_WIDTH) : Math.ceil(INPUT_PORT_WIDTH));
 
-                mxGeometry geo1 = new mxGeometry(0, 0, curPortWidth, PORT_HEIGHT); // Changed position offset
+                mxGeometry geo1 = new mxGeometry(0, 0, curPortWidth, PROCESS_PORT_HEIGHT); // Changed position offset
                 geo1.setRelative(true);
                 geo1.setOffset(new mxPoint(curX, 0));
 
@@ -251,9 +291,9 @@ public class GraphView extends JPanel {
             curX = 0;
             for (ProcessPort pOut : process.getOutputPorts()) {
                 int curPortWidth = (int) ((i % 2 == 0) ? Math.floor(OUTPUT_PORT_WIDTH) : Math.ceil(OUTPUT_PORT_WIDTH));
-                mxGeometry geo2 = new mxGeometry(0, 1, curPortWidth, PORT_HEIGHT); // Changed position offset
+                mxGeometry geo2 = new mxGeometry(0, 1, curPortWidth, PROCESS_PORT_HEIGHT); // Changed position offset
                 geo2.setRelative(true);
-                geo2.setOffset(new mxPoint(curX, -PORT_HEIGHT)); // Changed position offset
+                geo2.setOffset(new mxPoint(curX, -PROCESS_PORT_HEIGHT)); // Changed position offset
 
                 mxCell port1 = new mxCell(null, geo2, "PORT");
                 port1.setVertex(true);
@@ -273,10 +313,11 @@ public class GraphView extends JPanel {
     }
 
     public mxCell createNodeFromPort(ProcessPort port, Point location) {
-        
+
         // This method handles global ports only
-        if(!port.isGlobal())
+        if (!port.isGlobal()) {
             return null;
+        }
 
         Graph graph = getGraph();
         Object parent = graph.getDefaultParent();
@@ -286,7 +327,7 @@ public class GraphView extends JPanel {
 
         try {
             String style = port.isGlobalInput() ? "PROCESS_INPUT" : "PROCESS_OUTPUT";
-            portCell = (mxCell) graph.insertVertex(parent, null, port, location.x, location.y, PORT_WIDTH, PORT_HEIGHT, style);
+            portCell = (mxCell) graph.insertVertex(parent, null, port, location.x, location.y, GLOBAL_PORT_WIDTH, GLOBAL_PORT_HEIGHT, style);
 
         } finally {
             graph.getModel().endUpdate();

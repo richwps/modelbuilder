@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.hsos.richwps.mb;
 
 /**
  * Simple output to System.err.
  * Used for development issues (no need for a "real" logger).
  * @author dziegenh
+ * @deprecated just for dev!!
  */
 public class Logger {
 

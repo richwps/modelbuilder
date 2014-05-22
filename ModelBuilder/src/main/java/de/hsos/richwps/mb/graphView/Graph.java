@@ -35,7 +35,7 @@ public class Graph extends mxGraph {
 
     private mxAnalysisGraph ag;
     private GraphWorkflowLayout graphWorkflowLayout;
-    private mxCell tempCreatedEdge;
+//    private mxCell tempCreatedEdge;
     private mxGraphComponent graphComponent;
     private boolean autoLayout = true;
 
@@ -61,6 +61,7 @@ public class Graph extends mxGraph {
         if (autoLayout) {
             layout();
         }
+        
         return ret;
     }
 
@@ -81,8 +82,21 @@ public class Graph extends mxGraph {
 
     @Override
     // TODO this method is used in combination with the red/green cell markers -> check if it can be used to indicate our connection rules.
-    public String getEdgeValidationError(Object o, Object o1, Object o2) {
-        return super.getEdgeValidationError(o, o1, o2); //To change body of generated methods, choose Tools | Templates.
+    public String getEdgeValidationError(Object edge, Object source, Object target) {
+
+        boolean inputOccupied = (getGraphModel().isFlowInput(source) && isInputPortUsed(source))
+                || (getGraphModel().isFlowInput(target) && isInputPortUsed(target));
+        if (!allowOutsToInMulticast() && inputOccupied) {
+            return "";
+        }
+
+        boolean outputOccupied = (getGraphModel().isFlowOutput(source) && isOutputPortUsed(source))
+                || (getGraphModel().isFlowOutput(target) && isOutputPortUsed(target));
+        if (!allowOutToInsMulticast() && outputOccupied) {
+            return "";
+        }
+
+        return super.getEdgeValidationError(edge, source, target);
     }
 
     GraphWorkflowLayout getGraphWorkflowLayout() {
@@ -157,6 +171,7 @@ public class Graph extends mxGraph {
     @Override
     public Object createEdge(Object parent, String id, Object value,
             Object source, Object target, String style) {
+
         mxCell edge = new GraphEdge(value, new mxGeometry(), style);
 
         edge.setId(id);
@@ -164,6 +179,46 @@ public class Graph extends mxGraph {
         edge.getGeometry().setRelative(true);
 
         return edge;
+    }
+
+    boolean isInputPortUsed(Object o) {
+        Object parent;
+        if (getGraphModel().isGlobalPort(o)) {
+            parent = o;
+        } else {
+            parent = getModel().getParent(o);
+        }
+        Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, parent);
+        for (Object in : targetIncomingEdges) {
+            if (in instanceof GraphEdge) {
+                GraphEdge inEdge = (GraphEdge) in;
+                if (inEdge.getTargetPortCell().equals(o)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    boolean isOutputPortUsed(Object o) {
+        Object parent;
+        if (getGraphModel().isGlobalPort(o)) {
+            parent = o;
+        } else {
+            parent = getModel().getParent(o);
+        }
+        Object[] sourceOutgoingEdges = mxGraphModel.getOutgoingEdges(model, parent);
+        for (Object out : sourceOutgoingEdges) {
+            if (out instanceof GraphEdge) {
+                GraphEdge outEdge = (GraphEdge) out;
+                if (outEdge.getSourcePortCell().equals(o)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -247,7 +302,7 @@ public class Graph extends mxGraph {
                 returnValue = null;
             }
 
-            if(null == returnValue) {
+            if (null == returnValue) {
                 // TODO use AppEvents
                 Logger.log("Invalid connection!");
                 AppEventController.getInstance().fireAppEvent("Invalid connection!", this, null);
@@ -331,7 +386,7 @@ public class Graph extends mxGraph {
      *
      * @return
      */
-    boolean allowInsToOutMulticast() {
+    boolean allowOutToInsMulticast() {
         return false;
     }
 
