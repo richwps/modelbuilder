@@ -7,7 +7,7 @@ import de.hsos.richwps.mb.appActions.AppAbstractAction;
 import de.hsos.richwps.mb.appActions.AppActionProvider;
 import de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.appEvents.AppEvent;
-import de.hsos.richwps.mb.appEvents.AppEventController;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.appView.AppFrame;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
@@ -430,7 +430,7 @@ public class App {
                 infoTabs.addTab(tabData[0], tabData[1]);
             }
 
-            AppEventController.getInstance().registerObserver(new IAppEventObserver() {
+            AppEventService.getInstance().registerObserver(new IAppEventObserver() {
                 public void eventOccured(AppEvent e) {
                     String command = e.getCommand();
                     String message = e.getMessage();
@@ -445,19 +445,19 @@ public class App {
             });
 
             // TODO just mocked test events !
-            AppEventController.getInstance().fireAppEvent("** connecting RichWPS-server...", this, AppConstants.INFOTABS[0][0]);
-            AppEventController.getInstance().fireAppEvent("** server connection established.", this, AppConstants.INFOTABS[0][0]);
-            AppEventController.getInstance().fireAppEvent("** requesting processes...", this, AppConstants.INFOTABS[0][0]);
-            AppEventController.getInstance().fireAppEvent("** processes received.", this, AppConstants.INFOTABS[0][0]);
-//            infoTabs.output("server", "** connecting RichWPS-server...");
-//            infoTabs.output("server", "** server connection established.");
-//            infoTabs.output("server", "** requesting processes...");
-//            infoTabs.output("server", "** processes received.");
+            AppEventService.getInstance().fireAppEvent("** connecting RichWPS-server...", this, AppConstants.INFOTABS[0][0]);
+            AppEventService.getInstance().fireAppEvent("** server connection established.", this, AppConstants.INFOTABS[0][0]);
+            AppEventService.getInstance().fireAppEvent("** requesting processes...", this, AppConstants.INFOTABS[0][0]);
+            AppEventService.getInstance().fireAppEvent("** processes received.", this, AppConstants.INFOTABS[0][0]);
 
         }
         return infoTabs;
     }
 
+    /**
+     * Blackboxed component getter for InfoTabs.
+     * @return
+     */
     public Component getInfoTabGui() {
         return getInfoTabs();
     }

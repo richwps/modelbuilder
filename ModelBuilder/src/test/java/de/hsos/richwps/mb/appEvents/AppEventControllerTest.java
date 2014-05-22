@@ -13,7 +13,7 @@ import junit.framework.TestCase;
  */
 public class AppEventControllerTest extends TestCase {
 
-    private AppEventController instance;
+    private AppEventService instance;
 
     public AppEventControllerTest(String testName) {
         super(testName);
@@ -22,7 +22,7 @@ public class AppEventControllerTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        this.instance = AppEventController.getInstance();
+        this.instance = AppEventService.getInstance();
     }
 
     /**
@@ -30,8 +30,8 @@ public class AppEventControllerTest extends TestCase {
      */
     public void testGetInstance() {
         System.out.println("getInstance");
-        AppEventController expResult = instance;
-        AppEventController result = AppEventController.getInstance();
+        AppEventService expResult = instance;
+        AppEventService result = AppEventService.getInstance();
         assertEquals(expResult, result);
     }
 

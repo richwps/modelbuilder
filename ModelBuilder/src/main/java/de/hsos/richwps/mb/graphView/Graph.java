@@ -17,8 +17,7 @@ import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
-import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.appEvents.AppEventController;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
@@ -234,11 +233,15 @@ public class Graph extends mxGraph {
         //Edge added?
         if (model.isEdge(cell)) {
 
+            String errorMessage = "Invalid connection";
+
             // check direction and reverse it if necessery (target must be an input port)
             if (graphModel.isFlowOutput(target)) {
                 Object tmp = target;
                 target = source;
                 source = tmp;
+
+                AppEventService.getInstance().fireAppEvent("Reversed direction of connection", this, "editor");
             }
 
             GraphEdge edge = null;
@@ -291,6 +294,16 @@ public class Graph extends mxGraph {
                 graphModel.remove(cell);
                 returnValue = null;
 
+                if(sameParent) {
+                    AppEventService.getInstance().fireAppEvent("Feedback connection loops are not allowed.", this, "editor");
+                }
+                if(inputToInput || outputToOutput) {
+                    AppEventService.getInstance().fireAppEvent("An input port must be connected to an output port.", this, "editor");
+                }
+                if(inputAlreadyUsed) {
+                    AppEventService.getInstance().fireAppEvent("Port is already connected.", this, "editor");
+                }
+
             } else {
                 // user superclass to add cell
                 returnValue = super.addCell(cell, o1, intgr, source, target);
@@ -303,9 +316,8 @@ public class Graph extends mxGraph {
             }
 
             if (null == returnValue) {
-                // TODO use AppEvents
-                Logger.log("Invalid connection!");
-                AppEventController.getInstance().fireAppEvent("Invalid connection!", this, null);
+                // TODO let App set the eventCommand which is to be used ("editor") !!
+//                AppEventService.getInstance().fireAppEvent("Invalid connection!", this, "editor");
             }
 
         } else {

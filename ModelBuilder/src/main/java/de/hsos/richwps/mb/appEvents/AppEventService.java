@@ -12,12 +12,12 @@ import java.util.List;
  * Singleton class for managing AppEvents and -Observers.
  * @author dziegenh
  */
-public class AppEventController {
+public class AppEventService {
 
     /**
      * Singleton instance.
      */
-    private static AppEventController instance;
+    private static AppEventService instance;
 
     /**
      * Registered AppEvent-Observers.
@@ -27,7 +27,7 @@ public class AppEventController {
     /**
      * Hidden for singleton use.
      */
-    private AppEventController() {
+    private AppEventService() {
         observers = new LinkedList<IAppEventObserver>();
     }
 
@@ -35,9 +35,9 @@ public class AppEventController {
      * Singleton access.
      * @return
      */
-    public static AppEventController getInstance() {
+    public static AppEventService getInstance() {
         if (null == instance) {
-            instance = new AppEventController();
+            instance = new AppEventService();
         }
 
         return instance;
