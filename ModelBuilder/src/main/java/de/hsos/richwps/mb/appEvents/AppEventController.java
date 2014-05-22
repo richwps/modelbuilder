@@ -76,7 +76,9 @@ public class AppEventController {
      * @param e
      */
     public void fireAppEvent(AppEvent e) {
-        // TODO inform all observers
+        for(IAppEventObserver observer : observers){
+            observer.eventOccured(e);
+        }
     }
 
 }
