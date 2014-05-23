@@ -68,16 +68,18 @@ public class AppUndoManager extends UndoManager {
     @Override
     public synchronized void undo() throws CannotUndoException {
         super.undo();
-
-        // TODO BUG: this call comes too early...
         notifyListeners();
     }
 
     @Override
     public synchronized void redo() throws CannotRedoException {
         super.redo();
+        notifyListeners();
+    }
 
-        // TODO BUG: this call comes too early...
+    @Override
+    public synchronized void discardAllEdits() {
+        super.discardAllEdits();
         notifyListeners();
     }
 

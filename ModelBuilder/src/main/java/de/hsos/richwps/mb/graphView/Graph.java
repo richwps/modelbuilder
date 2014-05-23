@@ -60,7 +60,7 @@ public class Graph extends mxGraph {
         if (autoLayout) {
             layout();
         }
-        
+
         return ret;
     }
 
@@ -241,7 +241,7 @@ public class Graph extends mxGraph {
                 target = source;
                 source = tmp;
 
-                AppEventService.getInstance().fireAppEvent("Reversed direction of connection", this, "editor");
+//                AppEventService.getInstance().fireAppEvent("Reversed direction of connection", this, "editor");
             }
 
             GraphEdge edge = null;
@@ -294,13 +294,13 @@ public class Graph extends mxGraph {
                 graphModel.remove(cell);
                 returnValue = null;
 
-                if(sameParent) {
+                if (sameParent) {
                     AppEventService.getInstance().fireAppEvent("Feedback connection loops are not allowed.", this, "editor");
                 }
-                if(inputToInput || outputToOutput) {
+                if (inputToInput || outputToOutput) {
                     AppEventService.getInstance().fireAppEvent("An input port must be connected to an output port.", this, "editor");
                 }
-                if(inputAlreadyUsed) {
+                if (inputAlreadyUsed) {
                     AppEventService.getInstance().fireAppEvent("Port is already connected.", this, "editor");
                 }
 
@@ -313,6 +313,8 @@ public class Graph extends mxGraph {
             if (!isAllowLoops() && mxGraphStructure.isCyclicDirected(getAnalysisGraph())) {
                 graphModel.remove(cell);
                 returnValue = null;
+
+                AppEventService.getInstance().fireAppEvent("Connection loops are not allowed.", this, "editor");
             }
 
             if (null == returnValue) {

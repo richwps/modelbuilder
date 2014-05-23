@@ -94,41 +94,10 @@ public class AppActionHandler implements IAppActionHandler {
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             getGraphView().newGraph();
+            app.getUndoManager().discardAllEdits();
         }
     }
 
-    private void doSaveModelAs() {
-
-        // TODO check for missing ProcessEntities !!!
-        JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
-
-        int state = fc.showSaveDialog(app.getFrame());
-        if (state == JFileChooser.APPROVE_OPTION) {
-
-            if (fc.getSelectedFile().exists()) {
-                int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_OVERWRITE_FILE, AppConstants.CONFIRM_OVERWRITE_FILE_TITLE, JOptionPane.YES_NO_OPTION);
-                if (choice != JOptionPane.YES_OPTION) {
-                    return;
-                }
-            }
-
-            String filename = fc.getSelectedFile().getPath();
-            if (!filename.toLowerCase().endsWith(".xml")) {
-                filename = filename.concat(".xml");
-            }
-
-            try {
-                getGraphView().saveGraphToXml(filename);
-                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
-                app.setCurrentModelFilename(filename);
-                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
-            } catch (Exception ex) {
-                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
-                JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
-            }
-        }
-    }
 
     private void doLoadModel() {
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_LOAD_MODEL, AppConstants.CONFIRM_LOAD_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
@@ -149,6 +118,7 @@ public class AppActionHandler implements IAppActionHandler {
                     app.setCurrentModelFilename(filename);
                     app.getFrame().setGraphViewTitle(graphName);
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
+                    app.getUndoManager().discardAllEdits();
                 }
 
             } catch (Exception ex) {
@@ -240,13 +210,45 @@ public class AppActionHandler implements IAppActionHandler {
 
     }
 
+    private void doSaveModelAs() {
+
+        // TODO check for missing ProcessEntities !!!
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
+
+        int state = fc.showSaveDialog(app.getFrame());
+        if (state == JFileChooser.APPROVE_OPTION) {
+
+            if (fc.getSelectedFile().exists()) {
+                int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_OVERWRITE_FILE, AppConstants.CONFIRM_OVERWRITE_FILE_TITLE, JOptionPane.YES_NO_OPTION);
+                if (choice != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+
+            String filename = fc.getSelectedFile().getPath();
+            if (!filename.toLowerCase().endsWith(".xml")) {
+                filename = filename.concat(".xml");
+            }
+
+            try {
+                getGraphView().saveGraphToXml(filename);
+                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
+                app.setCurrentModelFilename(filename);
+                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
+            } catch (Exception ex) {
+                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
+                JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
+            }
+        }
+    }
+
     private void doDeploy() {
         // TODO mocked !!!
         de.hsos.richwps.mb.Logger.log("Deploy! Create DSL n stuff");
     }
 
     private void doUndo() {
-//        app.getUndoManager().end();
         app.getUndoManager().undo();
     }
 
