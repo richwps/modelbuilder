@@ -81,6 +81,9 @@ public class AppActionHandler implements IAppActionHandler {
             case UNDO:
                 doUndo();
                 break;
+            case REDO:
+                doRedo();
+                break;
 
             default:
             // do nothing
@@ -243,6 +246,11 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doUndo() {
+//        app.getUndoManager().end();
         app.getUndoManager().undo();
+    }
+
+    private void doRedo() {
+        app.getUndoManager().redo();
     }
 }

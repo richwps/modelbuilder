@@ -76,7 +76,7 @@ public class GraphView extends JPanel {
 
     public void addUndoEventListener(mxEventSource.mxIEventListener listener) {
 //        getUndoManager().addListener(mxEvent.ADD, listener);
-        getGraph().getModel().addListener(mxEvent.CHANGE, listener);
+        getGraph().getModel().addListener(mxEvent.UNDO, listener);
     }
 
 //    public void removeUndoEventListener(mxEventSource.mxIEventListener listener) {

@@ -21,20 +21,15 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
     private Object source;
     private Object action;
 
-    boolean significant;
-
-    // TODO dev!!!
-    public AppUndoManager aum;
-
     public AppUndoableEdit(Object source, Object action) {
         this(source, action, "");
     }
 
     public AppUndoableEdit(Object source, Object action, String presentationName) {
+        super();
         this.source = source;
         this.action = action;
         this.presentationName = presentationName;
-        this.significant = true;
     }
 
     public void setPresentationName(String name) {
@@ -55,24 +50,23 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
             edit.undo();
         }
 
-        significant = false;
+        // TODO ...
+//        if(action instanceof ...)
 
-//        if(action instanceof )
-
-        // TODO dev!!!
-        aum.notifyListeners();
     }
 
     @Override
-    public boolean isSignificant() {
-        return significant;
+    public void redo() throws CannotUndoException {
+        super.redo();
+
+        if(action instanceof mxUndoableEdit) {
+            mxUndoableEdit edit = (mxUndoableEdit) action;
+            edit.redo();
+        }
+
+        // TODO ...
+//        if(action instanceof ...)
     }
-
-
-
-
-
-
 
 
 }

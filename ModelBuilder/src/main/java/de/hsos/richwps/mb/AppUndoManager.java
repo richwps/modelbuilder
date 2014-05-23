@@ -54,11 +54,10 @@ public class AppUndoManager extends UndoManager {
 
     @Override
     public synchronized boolean addEdit(UndoableEdit edit) {
-        if( !(edit instanceof AppUndoableEdit) ) {
-            throw new IllegalArgumentException("The edit must be an instance of AppUndoableEdit.");
-        }
-        ((AppUndoableEdit) edit).aum = this;
-
+//        if( !(edit instanceof AppUndoableEdit) ) {
+//            throw new IllegalArgumentException("The edit must be an instance of AppUndoableEdit.");
+//        }
+        
         boolean result = super.addEdit(edit);
 
         notifyListeners();
@@ -69,14 +68,17 @@ public class AppUndoManager extends UndoManager {
     @Override
     public synchronized void undo() throws CannotUndoException {
         super.undo();
-//        notifyListeners();
+
+        // TODO BUG: this call comes too early...
+        notifyListeners();
     }
 
     @Override
     public synchronized void redo() throws CannotRedoException {
         super.redo();
 
-//        notifyListeners();
+        // TODO BUG: this call comes too early...
+        notifyListeners();
     }
 
     
