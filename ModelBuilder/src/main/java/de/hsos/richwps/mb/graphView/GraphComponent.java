@@ -17,7 +17,7 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 
 /**
- * Only accepts the custom graph.
+ * Only accepts our custom graph.
  *
  * @author dziegenh
  */
@@ -48,7 +48,7 @@ public class GraphComponent extends mxGraphComponent {
                     if (g.hitClip(bounds.x, bounds.y, bounds.width, bounds.height)) {
                         Graphics2D g2 = (Graphics2D) g;
 
-                        // Override old border with background color
+                        // Hide existing border using the background color
                         g.setColor(getViewport().getBackground());
                         g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
@@ -67,5 +67,6 @@ public class GraphComponent extends mxGraphComponent {
 
         return super.createHandler(state);
     }
+
 
 }

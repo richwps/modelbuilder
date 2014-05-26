@@ -88,4 +88,8 @@ public class GraphModel extends mxGraphModel {
         return false;
     }
 
+    boolean arePortTypesCompatible(ProcessPort p1, ProcessPort p2) {
+        return p1.getDatatype().equals(p2.getDatatype());
+    }
+
 }

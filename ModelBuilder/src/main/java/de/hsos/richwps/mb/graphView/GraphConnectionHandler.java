@@ -8,6 +8,7 @@ package de.hsos.richwps.mb.graphView;
 import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxCellState;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -113,5 +114,18 @@ public class GraphConnectionHandler extends mxConnectionHandler {
     GraphComponent getTheGraphCompoment() {
         return (GraphComponent) graphComponent;
     }
+
+    @Override
+    public void mouseReleased(MouseEvent me) {
+        if(null != error && error.length() > 0) {
+            AppEventService.getInstance().fireAppEvent(error, graphComponent.getGraph());
+        }
+
+        // Reset error msg to avoid a message box popping up.
+        error = null;
+        super.mouseReleased(me);
+    }
+
+
 
 }

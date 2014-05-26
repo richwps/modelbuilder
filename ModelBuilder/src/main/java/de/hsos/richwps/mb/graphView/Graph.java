@@ -16,7 +16,7 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxStylesheet;
+import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
@@ -40,18 +40,6 @@ public class Graph extends mxGraph {
 
     public Graph() {
         super(new GraphModel());
-    }
-
-    public Graph(mxIGraphModel igm) {
-        super((GraphModel) igm);
-    }
-
-    public Graph(mxStylesheet m) {
-        super(new GraphModel(), m);
-    }
-
-    public Graph(mxIGraphModel igm, mxStylesheet m) {
-        super((GraphModel) igm, m);
     }
 
     @Override
@@ -83,16 +71,97 @@ public class Graph extends mxGraph {
     // TODO this method is used in combination with the red/green cell markers -> check if it can be used to indicate our connection rules.
     public String getEdgeValidationError(Object edge, Object source, Object target) {
 
+        GraphModel graphModel = getGraphModel();
+        // check direction and reverse it if necessery (target must be an input port)
+        if (graphModel.isFlowOutput(target)) {
+            Object tmp = target;
+            target = source;
+            source = tmp;
+        }
+
         boolean inputOccupied = (getGraphModel().isFlowInput(source) && isInputPortUsed(source))
                 || (getGraphModel().isFlowInput(target) && isInputPortUsed(target));
         if (!allowOutsToInMulticast() && inputOccupied) {
-            return "";
+            return AppConstants.GRAPH_ERROR_INPUT_OCCUPIED;
         }
 
         boolean outputOccupied = (getGraphModel().isFlowOutput(source) && isOutputPortUsed(source))
                 || (getGraphModel().isFlowOutput(target) && isOutputPortUsed(target));
         if (!allowOutToInsMulticast() && outputOccupied) {
-            return "";
+            return AppConstants.GRAPH_ERROR_OUTPUT_OCCUPIED;
+        }
+
+        GraphEdge graphEdge = null;
+
+        if (edge instanceof GraphEdge) {
+            graphEdge = (GraphEdge) edge;
+        }
+
+        // Parents are used to retrieve incoming and outgoing edges.
+        Object sourceParent;
+        Object targetParent;
+
+        // Global ports don't have a parent process => use themself to retrieve edges.
+        if (getGraphModel().isGlobalPort(source)) {
+            sourceParent = source;
+        } else {
+            sourceParent = graphModel.getParent(source);
+        }
+        if (getGraphModel().isGlobalPort(target)) {
+            targetParent = target;
+        } else {
+            targetParent = graphModel.getParent(target);
+        }
+
+        // same parent?
+        boolean sameParent = (sourceParent != null && targetParent != null) && sourceParent.equals(targetParent);
+        if (sameParent) {
+            return AppConstants.GRAPH_ERROR_SINGLE_FEEDBACK;
+        }
+
+        // in-to-in or out-to-out?
+        boolean inputToInput = graphModel.isFlowInput(source) && graphModel.isFlowInput(target);
+        if (inputToInput) {
+            return AppConstants.GRAPH_ERROR_IN_TO_IN;
+        }
+        boolean outputToOutput = graphModel.isFlowOutput(source) && graphModel.isFlowOutput(target);
+        if (outputToOutput) {
+            return AppConstants.GRAPH_ERROR_OUT_TO_OUT;
+        }
+
+        // desired target port already used?
+//        boolean inputAlreadyUsed = false;
+//        if (!allowOutsToInMulticast() && !inputToInput && !outputToOutput && null != graphEdge) {
+//            Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, targetParent);
+//            for (Object in : targetIncomingEdges) {
+//                if (in instanceof GraphEdge) {
+//                    GraphEdge inEdge = (GraphEdge) in;
+//                    boolean sameTargetPortCell = inEdge.getTargetPortCell().equals(graphEdge.getTargetPortCell());
+//                    boolean differentEdges = !inEdge.equals(graphEdge);
+//                    if (sameTargetPortCell && differentEdges) {
+//                        inputAlreadyUsed = true;
+//                    }
+//                }
+//            }
+//        }
+//        if (inputAlreadyUsed) {
+//            return "Port is already connected";
+//        }
+
+        // port types compatible?
+        {
+            Object v1 = graphModel.getValue(source);
+            Object v2 = graphModel.getValue(target);
+            if( (null != v1 && null != v2)
+                && (v1 instanceof ProcessPort && v2 instanceof ProcessPort)) {
+                
+                ProcessPort p1 = (ProcessPort) v1;
+                ProcessPort p2 = (ProcessPort) v2;
+                boolean compatible = graphModel.arePortTypesCompatible(p1, p2);
+                if(!compatible) {
+                    return AppConstants.GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE;
+                }
+            }
         }
 
         return super.getEdgeValidationError(edge, source, target);
@@ -117,9 +186,9 @@ public class Graph extends mxGraph {
         getGraphWorkflowLayout().execute(null);
         getGraphModel().endUpdate();
 
-//        fireEvent(new mxEventObject(mxEvent.REPAINT));
-        // TODO replace with eventlistener - graph should not know graphcomponent!
-        graphComponent.refresh();
+        // TODO check if refresh is still necessary.
+        // TODO if so: replace with eventlistener - graph should not know graphcomponent!
+//        graphComponent.refresh();
     }
 
     /**
@@ -172,7 +241,6 @@ public class Graph extends mxGraph {
             Object source, Object target, String style) {
 
         mxCell edge = new GraphEdge(value, new mxGeometry(), style);
-
         edge.setId(id);
         edge.setEdge(true);
         edge.getGeometry().setRelative(true);
@@ -211,7 +279,8 @@ public class Graph extends mxGraph {
         for (Object out : sourceOutgoingEdges) {
             if (out instanceof GraphEdge) {
                 GraphEdge outEdge = (GraphEdge) out;
-                if (outEdge.getSourcePortCell().equals(o)) {
+                mxCell sourcePort = outEdge.getSourcePortCell();
+                if (null != sourcePort && sourcePort.equals(o)) {
                     return true;
                 }
             }
@@ -225,15 +294,13 @@ public class Graph extends mxGraph {
      * of connected ports etc.).
      */
     @Override
-    public Object addCell(Object cell, Object o1, Integer intgr, Object source, Object target) {
-        Object returnValue;// = super.addCell(cell, o1, intgr, source, target);
+    public Object addCell(Object cell, Object parent, Integer index, Object source, Object target) {
+        Object returnValue;
 
         GraphModel graphModel = getGraphModel();
 
         //Edge added?
         if (model.isEdge(cell)) {
-
-            String errorMessage = "Invalid connection";
 
             // check direction and reverse it if necessery (target must be an input port)
             if (graphModel.isFlowOutput(target)) {
@@ -244,87 +311,36 @@ public class Graph extends mxGraph {
 //                AppEventService.getInstance().fireAppEvent("Reversed direction of connection", this, "editor");
             }
 
-            GraphEdge edge = null;
+//            String error = getEdgeValidationError(cell, source, target);
+//            if (null != error) {
+//                // TODO check if add/remove is still necessary (for auto-layout)
+////                super.addCell(cell);
+////                graphModel.remove(cell);
+//                returnValue = null;
+//                AppEventService.getInstance().fireAppEvent(error, this);
+//
+//            } else {
+                returnValue = super.addCell(cell, parent, index, source, target);
+                GraphEdge graphEdge = null;
 
-            if (cell instanceof GraphEdge) {
-                edge = (GraphEdge) cell;
-                edge.setSourcePortCell((mxCell) source);
-                edge.setTargetPortCell((mxCell) target);
-            }
-
-            // Parents are used to retrieve incoming and outgoing edges.
-            Object sourceParent;
-            Object targetParent;
-
-            // Global ports don't have a parent process => use themself to retrieve edges.
-            if (getGraphModel().isGlobalPort(source)) {
-                sourceParent = source;
-            } else {
-                sourceParent = graphModel.getParent(source);
-            }
-            if (getGraphModel().isGlobalPort(target)) {
-                targetParent = target;
-            } else {
-                targetParent = graphModel.getParent(target);
-            }
-
-            boolean sameParent = (sourceParent != null && targetParent != null) && sourceParent.equals(targetParent);
-            boolean inputToInput = graphModel.isFlowInput(source) && graphModel.isFlowInput(target);
-            boolean outputToOutput = graphModel.isFlowOutput(source) && graphModel.isFlowOutput(target);
-
-            // if necessary, check if desired target port is alread used.
-            boolean inputAlreadyUsed = false;
-            if (!allowOutsToInMulticast() && !inputToInput && !outputToOutput && null != edge) {
-                Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, targetParent);
-                for (Object in : targetIncomingEdges) {
-                    if (in instanceof GraphEdge) {
-                        GraphEdge inEdge = (GraphEdge) in;
-                        boolean sameTargetPortCell = inEdge.getTargetPortCell().equals(edge.getTargetPortCell());
-                        boolean differentEdges = !inEdge.equals(edge);
-                        if (sameTargetPortCell && differentEdges) {
-                            inputAlreadyUsed = true;
-                        }
-                    }
+                // set the edge's source and target port
+                if (cell instanceof GraphEdge) {
+                    graphEdge = (GraphEdge) cell;
+                    graphEdge.setSourcePortCell((mxCell) source);
+                    graphEdge.setTargetPortCell((mxCell) target);
                 }
-            }
-
-            // Disable invalid connections.
-            if (sameParent || inputToInput || outputToOutput || inputAlreadyUsed) {
-                super.addCell(cell);
-                graphModel.remove(cell);
-                returnValue = null;
-
-                if (sameParent) {
-                    AppEventService.getInstance().fireAppEvent("Feedback connection loops are not allowed.", this, "editor");
-                }
-                if (inputToInput || outputToOutput) {
-                    AppEventService.getInstance().fireAppEvent("An input port must be connected to an output port.", this, "editor");
-                }
-                if (inputAlreadyUsed) {
-                    AppEventService.getInstance().fireAppEvent("Port is already connected.", this, "editor");
-                }
-
-            } else {
-                // user superclass to add cell
-                returnValue = super.addCell(cell, o1, intgr, source, target);
-            }
+//            }
 
             // Detect and remove cycle connections if necessary.
             if (!isAllowLoops() && mxGraphStructure.isCyclicDirected(getAnalysisGraph())) {
                 graphModel.remove(cell);
                 returnValue = null;
-
-                AppEventService.getInstance().fireAppEvent("Connection loops are not allowed.", this, "editor");
-            }
-
-            if (null == returnValue) {
-                // TODO let App set the eventCommand which is to be used ("editor") !!
-//                AppEventService.getInstance().fireAppEvent("Invalid connection!", this, "editor");
+                AppEventService.getInstance().fireAppEvent("Connection loops are not allowed.", this);
             }
 
         } else {
             // Object is not an edge -> delegate to superclass
-            returnValue = super.addCell(cell, o1, intgr, source, target);
+            returnValue = super.addCell(cell, parent, index, source, target);
         }
 
         if (graphModel.isProcess(cell) || graphModel.isEdge(cell)) {
@@ -371,7 +387,7 @@ public class Graph extends mxGraph {
     }
 
     /**
-     * Provides the AnalysisGraph needed by the layout class.
+     * Provides the AnalysisGraph needed by the workflow-layout class.
      *
      * @return
      */
@@ -401,7 +417,7 @@ public class Graph extends mxGraph {
      * @return
      */
     boolean allowOutToInsMulticast() {
-        return false;
+        return AppConstants.GRAPH_ALLOW_OUT_TO_INS;
     }
 
     /**
@@ -410,17 +426,17 @@ public class Graph extends mxGraph {
      * @return
      */
     boolean allowOutsToInMulticast() {
-        return false;
+        return AppConstants.GRAPH_ALLOW_OUTS_TO_IN;
     }
 
     /**
      * Returns true if a process output can be connected to an input of the same
-     * process.s
+     * process.
      *
      * @return
      */
     boolean allowSingleFeedbackLoop() {
-        return false;
+        return AppConstants.GRAPH_ALLOW_SINGLE_FEEDBACK_LOOPS;
     }
 
 }

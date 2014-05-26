@@ -70,14 +70,30 @@ public class AppEventControllerTest extends TestCase {
     /**
      * Test of fireAppEvent method, of class AppEventController.
      */
-    public void testFireAppEvent_3args() {
+    public void testFireAppEvent_2args() {
         System.out.println("fireAppEvent");
-        String message = "Event message 2.";
-        Object source =  new String("_3args Source");
+        String message = "Event message 3.";
+        Object source =  new String("_2args Source");
         String command = "test command";
+
         instance.registerObserver(createObserver());
-        instance.fireAppEvent(message, source, command);
+        instance.addSourceCommand(source, command);
+        instance.fireAppEvent(message, source);
     }
+//
+//    /**
+//     * Test of fireAppEvent method, of class AppEventController.
+//     */
+//    public void testFireAppEvent_3args() {
+//        System.out.println("fireAppEvent");
+//        String message = "Event message 2.";
+//        Object source =  new String("_3args Source");
+//        String command = "test command";
+//        instance.registerObserver(createObserver());
+//        instance.fireAppEvent(message, source, command);
+//    }
+
+
 
     private IAppEventObserver createObserver() {
         IAppEventObserver observer = new IAppEventObserver() {

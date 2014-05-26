@@ -315,7 +315,7 @@ public class App {
     }
 
     /**
-     * The graph. Binds a key listener to it on creation.
+     * The graph. Lazy init, binds listeners to it on creation.
      *
      * @return
      */
@@ -344,9 +344,9 @@ public class App {
                 }
             });
 
+            // Add undoable graph edits to the UndoManager.
             graphView.addUndoEventListener(new mxEventSource.mxIEventListener() {
                 public void invoke(Object o, mxEventObject eo) {
-                    de.hsos.richwps.mb.Logger.log(eo);
                     Object editProperty = eo.getProperty("edit");
                     if(eo.getProperty("edit") instanceof mxUndoableEdit) {
                         mxUndoableEdit edit = (mxUndoableEdit) editProperty;
@@ -355,6 +355,10 @@ public class App {
                 }
 
             });
+
+            // register graph components for the event service.
+            AppEventService.getInstance().addSourceCommand(graphView, AppConstants.INFOTAB_ID_EDITOR);
+            AppEventService.getInstance().addSourceCommand(graphView.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
         }
         return graphView;
     }
@@ -443,12 +447,6 @@ public class App {
                     }
                 }
             });
-
-            // TODO just mocked test events !
-            AppEventService.getInstance().fireAppEvent("** connecting RichWPS-server...", this, AppConstants.INFOTABS[0][0]);
-            AppEventService.getInstance().fireAppEvent("** server connection established.", this, AppConstants.INFOTABS[0][0]);
-            AppEventService.getInstance().fireAppEvent("** requesting processes...", this, AppConstants.INFOTABS[0][0]);
-            AppEventService.getInstance().fireAppEvent("** processes received.", this, AppConstants.INFOTABS[0][0]);
 
         }
         return infoTabs;

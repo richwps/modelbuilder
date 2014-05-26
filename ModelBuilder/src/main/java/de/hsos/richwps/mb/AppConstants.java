@@ -18,6 +18,14 @@ import java.io.File;
 public class AppConstants {
 
     public static boolean GRAPH_AUTOLAYOUT = false;
+    // true if multiple outputs can be connected to the same input
+    public static boolean GRAPH_ALLOW_OUTS_TO_IN = false;
+    // true if an output can be connected to multiple inputs
+    public static boolean GRAPH_ALLOW_OUT_TO_INS = true;
+    // true if the graph may contain loops
+    public static boolean GRAPH_ALLOW_FEEDBACK_LOOPS = false;
+    // true if a process output can be connected to an input of the same process
+    public static boolean GRAPH_ALLOW_SINGLE_FEEDBACK_LOOPS = false;
 
     private final static String FSEP = File.separator;
 
@@ -46,9 +54,11 @@ public class AppConstants {
     public static final Color INFOTABS_TEXTCOLOR = Color.GRAY;
 
     // Array of {tabId, tabTitle}-elements
+    public final static String INFOTAB_ID_SERVER = "server";
+    public final static String INFOTAB_ID_EDITOR = "editor";
     public static final String[][] INFOTABS = new String[][] {
-        {"server", "RichWPS-Server"},
-        {"editor", "Problems"}
+        {INFOTAB_ID_SERVER, "RichWPS-Server"},
+        {INFOTAB_ID_EDITOR, "Problems"}
     };
 
     /**
@@ -121,6 +131,10 @@ public class AppConstants {
     public final static String SAVE_MODEL_FAILED = "An error occured while saving the model.";
 
 
+
+
+
+
     public final static int TOOLTIP_DISMISS_DELAY = Integer.MAX_VALUE;
 
     /**
@@ -138,4 +152,12 @@ public class AppConstants {
     public final static String ICON_REDO_KEY = "rwps_icon_redo";
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
+
+
+    public static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
+    public static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";
+    public static String GRAPH_ERROR_SINGLE_FEEDBACK = "Feedback connection loops are not allowed";
+    public static String GRAPH_ERROR_IN_TO_IN = "An input port must be connected to an output port";
+    public static String GRAPH_ERROR_OUT_TO_OUT = "An output port must be connected to an input port";
+    public static String GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE = "Port types are not compatible";
 }

@@ -5,14 +5,18 @@
  */
 package de.hsos.richwps.mb.appEvents;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Singleton class for managing AppEvents and -Observers.
+ *
  * @author dziegenh
  */
 public class AppEventService {
+
+    private HashMap<Object, String> sourceCommands;
 
     /**
      * Singleton instance.
@@ -31,8 +35,21 @@ public class AppEventService {
         observers = new LinkedList<IAppEventObserver>();
     }
 
+    private HashMap<Object, String> getSourceCommands() {
+        if (null == sourceCommands) {
+            sourceCommands = new HashMap<Object, String>();
+        }
+
+        return sourceCommands;
+    }
+
+    public void addSourceCommand(Object source, String command) {
+        getSourceCommands().put(source, command);
+    }
+
     /**
      * Singleton access.
+     *
      * @return
      */
     public static AppEventService getInstance() {
@@ -45,6 +62,7 @@ public class AppEventService {
 
     /**
      * Register an observer for AppEvents.
+     *
      * @param observer
      * @return
      */
@@ -54,6 +72,7 @@ public class AppEventService {
 
     /**
      * Remove an AppEvent-observer.
+     *
      * @param observer
      * @return
      */
@@ -63,20 +82,36 @@ public class AppEventService {
 
     /**
      * Shortcut method.
+     *
      * @param message
      * @param source
      * @param command
      */
-    public void fireAppEvent(String message, Object source, String command) {
-        fireAppEvent(new AppEvent(message, source, command));
+//    public void fireAppEvent(String message, Object source, String command) {
+//        fireAppEvent(new AppEvent(message, source, command));
+//    }
+
+    /**
+     * Shortcut method.
+     *
+     * @param message
+     * @param source
+     * @param command
+     */
+    public void fireAppEvent(String message, Object source) {
+        String command = getSourceCommands().get(source);
+        if (null != command) {
+            fireAppEvent(new AppEvent(message, source, command));
+        }
     }
 
     /**
      * Inform observers about an AppEvent.
+     *
      * @param e
      */
     public void fireAppEvent(AppEvent e) {
-        for(IAppEventObserver observer : observers){
+        for (IAppEventObserver observer : observers) {
             observer.eventOccured(e);
         }
     }

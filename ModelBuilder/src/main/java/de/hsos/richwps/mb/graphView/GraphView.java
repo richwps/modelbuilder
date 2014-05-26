@@ -23,7 +23,6 @@ import com.mxgraph.util.mxUndoManager;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
-import com.mxgraph.view.mxMultiplicity;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
@@ -74,30 +73,13 @@ public class GraphView extends JPanel {
         selectionListener = new LinkedList<ListSelectionListener>();
     }
 
+    /**
+     * Adds an listener for mxEvent.UNDO events to the model.
+     * @param listener
+     */
     public void addUndoEventListener(mxEventSource.mxIEventListener listener) {
-//        getUndoManager().addListener(mxEvent.ADD, listener);
         getGraph().getModel().addListener(mxEvent.UNDO, listener);
     }
-
-//    public void removeUndoEventListener(mxEventSource.mxIEventListener listener) {
-//        getUndoManager().removeListener(listener, null);
-//    }
-
-
-//    private mxUndoManager getUndoManager() {
-//        if (null == undoManager) {
-//            this.undoManager = new mxUndoManager();
-//            getGraph().getModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
-//
-//                public void invoke(Object o, mxEventObject eo) {
-////                    eo.getProperty("edit")
-//                    Logger.log(eo);
-////                    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//                }
-//            }); // addUndoableEditListener(undoManager);
-//        }
-//        return undoManager;
-//    }
 
     /**
      * Lazy graph init.
@@ -154,7 +136,7 @@ public class GraphView extends JPanel {
             graph.setCellsEditable(false);
             graph.setPortsEnabled(true);
             graph.setDropEnabled(false);
-            graph.setAllowLoops(false);
+            graph.setAllowLoops(AppConstants.GRAPH_ALLOW_FEEDBACK_LOOPS);
             graph.setMultigraph(false);
             graph.setAutoLayout(AppConstants.GRAPH_AUTOLAYOUT);
             graph.setCellsMovable(!graph.isAutoLayout());
@@ -237,13 +219,6 @@ public class GraphView extends JPanel {
             mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(strokeWidth,
                     BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{
                         3 * strokeWidth, 3 * strokeWidth}, 0.0f);
-
-//          boolean source, String type, String attr,
-//          String value, int min, String max,
-//          Collection<String> validNeighbors, String countError,
-//          String typeError, boolean validNeighborsAllowed
-            mxMultiplicity mxMultiplicity = new mxMultiplicity(true, "", "", "", 0, "1", null, "", "", true);
-            graph.setMultiplicities(new mxMultiplicity[]{mxMultiplicity});
         }
 
         return graph;
