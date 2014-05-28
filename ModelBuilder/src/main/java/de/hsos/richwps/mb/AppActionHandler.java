@@ -244,8 +244,8 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doDeploy() {
-        // TODO mocked !!!
-        de.hsos.richwps.mb.Logger.log("Deploy! Create DSL n stuff");
+        // TODO just an example: get the graph etc. and hand it to the deployment package.
+        app.getGraphView().getGraph();
     }
 
     private void doUndo() {
