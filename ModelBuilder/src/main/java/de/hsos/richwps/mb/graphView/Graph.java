@@ -12,7 +12,6 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxIGraphModel;
-import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
@@ -34,8 +33,7 @@ public class Graph extends mxGraph {
 
     private mxAnalysisGraph ag;
     private GraphWorkflowLayout graphWorkflowLayout;
-//    private mxCell tempCreatedEdge;
-    private mxGraphComponent graphComponent;
+//    private mxGraphComponent graphComponent;
     private boolean autoLayout = true;
 
     public Graph() {
@@ -403,9 +401,9 @@ public class Graph extends mxGraph {
     }
 
     // TODO replace with eventlistener - graph should not know graphcomponent!
-    void setGraphComponent(mxGraphComponent graphComponent) {
-        this.graphComponent = graphComponent;
-    }
+//    void setGraphComponent(mxGraphComponent graphComponent) {
+//        this.graphComponent = graphComponent;
+//    }
 
     boolean isAutoLayout() {
         return autoLayout;

@@ -98,7 +98,7 @@ public class GraphView extends JPanel {
 //            cellMarker.setHotspotEnabled(true);
 //            graphComponent.getConnectionHandler().setMarker(cellMarker);
             // TODO replace with eventlistener - graph should not know graphcomponent!
-            graph.setGraphComponent(graphComponent);
+//            graph.setGraphComponent(graphComponent);
         }
 
         return graphComponent;

@@ -134,8 +134,9 @@ public class AppConstants {
 
 
 
-
+    
     public final static int TOOLTIP_DISMISS_DELAY = Integer.MAX_VALUE;
+    public final static int TOOLTIP_INITIAL_DELAY = 0;
 
     /**
      * UIManager keys.
@@ -160,4 +161,9 @@ public class AppConstants {
     public static String GRAPH_ERROR_IN_TO_IN = "An input port must be connected to an output port";
     public static String GRAPH_ERROR_OUT_TO_OUT = "An output port must be connected to an input port";
     public static String GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE = "Port types are not compatible";
+
+    /**
+     * Used for error messages, e.g. in ToolTips
+     */
+    public static Color ERROR_MESSAGE_COLOR = Color.RED;
 }

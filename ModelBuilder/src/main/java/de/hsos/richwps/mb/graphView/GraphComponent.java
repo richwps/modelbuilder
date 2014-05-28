@@ -11,10 +11,13 @@ import com.mxgraph.swing.handler.mxVertexHandler;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
+import de.hsos.richwps.mb.AppConstants;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import javax.swing.JToolTip;
 
 /**
  * Only accepts our custom graph.
@@ -23,8 +26,16 @@ import java.awt.Stroke;
  */
 public class GraphComponent extends mxGraphComponent {
 
+    private JToolTip toolTip;
+    private String errorMsgColor;
+
     public GraphComponent(mxGraph mxgrph) {
         super((Graph) mxgrph);
+
+        // init tooltip
+        toolTip = new JToolTip();
+        int errorColor = AppConstants.ERROR_MESSAGE_COLOR.getRGB();
+        errorMsgColor = Integer.toHexString(errorColor).substring(2);
     }
 
     @Override
@@ -66,6 +77,47 @@ public class GraphComponent extends mxGraphComponent {
         }
 
         return super.createHandler(state);
+    }
+
+    Component getConnectionToolTip(Object source, Object target, String error) {
+
+        // no tooltip if there is no content
+        boolean noError = (null == error || error.length() < 1);
+        if (null == target && noError) {
+            return null;
+        }
+
+        // TODO update init capacity when the length of a typical tooltip is known
+        StringBuilder sb = new StringBuilder(255);
+
+        if(null != target) {
+            // get target cell tooltip and remove closing html tag.
+            String targetTooltip = getGraph().getToolTipForCell(target);
+            sb.append(targetTooltip.substring(0, targetTooltip.lastIndexOf("</html>")));
+
+            // only append an horizontal line if an error msg follows
+            if(!noError) {
+                sb.append("<hr>");
+            }
+            
+        } else {
+            // insert opening html tag if there is no target tooltip
+            sb.append("<html>");
+        }
+
+        // Append error message
+        if (!noError) {
+            sb.append("<b><span style=\"color:#");
+            sb.append(errorMsgColor);
+            sb.append("\">Error: ");
+            sb.append(error);
+            sb.append("</b></span>");
+        }
+
+        sb.append("</html>");
+        toolTip.setTipText(sb.toString());
+        
+        return toolTip;
     }
 
 

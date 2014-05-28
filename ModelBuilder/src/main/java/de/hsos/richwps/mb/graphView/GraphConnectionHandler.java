@@ -10,9 +10,11 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxCellState;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.Popup;
+import javax.swing.PopupFactory;
 
 /**
  *
@@ -21,6 +23,17 @@ import javax.swing.Popup;
 public class GraphConnectionHandler extends mxConnectionHandler {
 
     private GraphModel graphModel;
+    private Popup tipWindow;
+
+    private Object target;
+//    private Object targetParent;
+
+    private void hideToolTip() {
+        if (null != tipWindow) {
+            tipWindow.hide();
+            tipWindow = null;
+        }
+    }
 
     public GraphConnectionHandler(final mxGraphComponent gc) {
         super(gc);
@@ -30,42 +43,27 @@ public class GraphConnectionHandler extends mxConnectionHandler {
              *
              */
             private static final long serialVersionUID = 103433247310526381L;
-            private Popup tipWindow;
 
             // Overrides to return cell at location only if valid (so that
             // there is no highlight for invalid cells that have no error
             // message when the mouse is released)
             protected Object getCell(MouseEvent e) {
-                Object cell = super.getCell(e);
+                target = super.getCell(e);
 
                 if (isConnecting()) {
                     if (source != null) {
-                        error = validateConnection(source.getCell(), cell);
+                        error = validateConnection(source.getCell(), target);
+                        if (null != target) {
+//                            if (getGraphModel().isProcess(target)) {
+//                                targetParent = getGraphModel().getParent(target);
+//                            } else {
+//                                targetParent = target;
+//                            }
 
-                        if (null != cell) {
-                            Object parent = getGraphModel().getParent(cell);
-
-                            // TODO popups don't work !!
-                            if (null == parent || null == getGraphModel().getGeometry(parent)) {
-                                if (null != tipWindow) {
-                                    tipWindow.hide();
-                                }
-                            } else {
-                                Point loc = getGraphModel().getGeometry(parent).getPoint();
-                                Point gLoc = getTheGraphCompoment().getLocationOnScreen();
-                                loc.translate(gLoc.x, gLoc.y);
-//
-//                                if (null == tipWindow) {
-//                                    PopupFactory popupFactory = PopupFactory.getSharedInstance();
-//                                    // TODO loc is relative to screen, not relative to the frame !!
-//                                    tipWindow = popupFactory.getPopup(gc, new JLabel("asdfg"), loc.x, loc.y);
-//                                }
-//                                tipWindow.show();
-                            }
                         }
 
                         if (error != null && error.length() == 0) {
-                            cell = null;
+                            target = null;
 
                             // Enables create target inside groups
                             if (createTarget) {
@@ -74,11 +72,11 @@ public class GraphConnectionHandler extends mxConnectionHandler {
                         }
 
                     }
-                } else if (!isValidSource(cell)) {
-                    cell = null;
+                } else if (!isValidSource(target)) {
+                    target = null;
                 }
 
-                return cell;
+                return target;
             }
 
             // Sets the highlight color according to isValidConnection
@@ -117,8 +115,13 @@ public class GraphConnectionHandler extends mxConnectionHandler {
 
     @Override
     public void mouseReleased(MouseEvent me) {
-        if(null != error && error.length() > 0) {
+        if (null != error && error.length() > 0) {
             AppEventService.getInstance().fireAppEvent(error, graphComponent.getGraph());
+        }
+
+        if (null != tipWindow) {
+            tipWindow.hide();
+            tipWindow = null;
         }
 
         // Reset error msg to avoid a message box popping up.
@@ -126,6 +129,34 @@ public class GraphConnectionHandler extends mxConnectionHandler {
         super.mouseReleased(me);
     }
 
+    @Override
+    public void mouseDragged(MouseEvent me) {
+        Object tmpTarget = target;
 
+        super.mouseDragged(me);
+
+        if (tmpTarget != target) {
+            hideToolTip();
+        }
+
+        if (isConnecting()) {
+            updateToolTip(me.getLocationOnScreen());
+        }
+    }
+
+    void updateToolTip(Point loc) {
+
+        if (null == tipWindow && null != source) {
+            
+            Component toolTip = getTheGraphCompoment().getConnectionToolTip(source, target, error);
+            if (null == toolTip) {
+                return;
+            }
+            
+            PopupFactory popupFactory = PopupFactory.getSharedInstance();
+            tipWindow = popupFactory.getPopup(getTheGraphCompoment(), toolTip, loc.x, loc.y);
+            tipWindow.show();
+        }
+    }
 
 }

@@ -118,7 +118,8 @@ public class App {
 
             });
 
-            // Set ToolTip dismiss delay.
+            // Setup ToolTip.
+            ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
             initDragAndDrop();
