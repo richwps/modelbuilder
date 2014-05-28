@@ -145,18 +145,17 @@ public class Graph extends mxGraph {
 //        if (inputAlreadyUsed) {
 //            return "Port is already connected";
 //        }
-
         // port types compatible?
         {
             Object v1 = graphModel.getValue(source);
             Object v2 = graphModel.getValue(target);
-            if( (null != v1 && null != v2)
-                && (v1 instanceof ProcessPort && v2 instanceof ProcessPort)) {
-                
+            if ((null != v1 && null != v2)
+                    && (v1 instanceof ProcessPort && v2 instanceof ProcessPort)) {
+
                 ProcessPort p1 = (ProcessPort) v1;
                 ProcessPort p2 = (ProcessPort) v2;
                 boolean compatible = graphModel.arePortTypesCompatible(p1, p2);
-                if(!compatible) {
+                if (!compatible) {
                     return AppConstants.GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE;
                 }
             }
@@ -257,7 +256,8 @@ public class Graph extends mxGraph {
         for (Object in : targetIncomingEdges) {
             if (in instanceof GraphEdge) {
                 GraphEdge inEdge = (GraphEdge) in;
-                if (inEdge.getTargetPortCell().equals(o)) {
+                mxCell targetCell = inEdge.getTargetPortCell();
+                if (null != targetCell && targetCell.equals(o)) {
                     return true;
                 }
             }
@@ -318,15 +318,15 @@ public class Graph extends mxGraph {
 //                AppEventService.getInstance().fireAppEvent(error, this);
 //
 //            } else {
-                returnValue = super.addCell(cell, parent, index, source, target);
-                GraphEdge graphEdge = null;
+            returnValue = super.addCell(cell, parent, index, source, target);
+            GraphEdge graphEdge = null;
 
-                // set the edge's source and target port
-                if (cell instanceof GraphEdge) {
-                    graphEdge = (GraphEdge) cell;
-                    graphEdge.setSourcePortCell((mxCell) source);
-                    graphEdge.setTargetPortCell((mxCell) target);
-                }
+            // set the edge's source and target port
+            if (cell instanceof GraphEdge) {
+                graphEdge = (GraphEdge) cell;
+                graphEdge.setSourcePortCell((mxCell) source);
+                graphEdge.setTargetPortCell((mxCell) target);
+            }
 //            }
 
             // Detect and remove cycle connections if necessary.
@@ -350,21 +350,6 @@ public class Graph extends mxGraph {
         return returnValue;
     }
 
-//    mxCell[] getConnectedInputPorts(Object process) {
-//        if (!getGraphModel().isProcess(process)) {
-//            return null;
-//        }
-//
-//        Object[] incomingEdges = mxGraphModel.getIncomingEdges(getModel(), process);
-//        for (Object edge : incomingEdges) {
-//            mxGeometry geom = getGraphModel().getGeometry(edge);
-//            mxPoint target = geom.getTargetPoint();
-//            graphComponent.getCellAt((int) target.getX(), (int) target.getY());
-//            Logger.log("7nmj89");
-//        }
-//
-//        return null;
-//    }
     /**
      * Only GraphModel instances are accepted.
      */
@@ -404,7 +389,6 @@ public class Graph extends mxGraph {
 //    void setGraphComponent(mxGraphComponent graphComponent) {
 //        this.graphComponent = graphComponent;
 //    }
-
     boolean isAutoLayout() {
         return autoLayout;
     }

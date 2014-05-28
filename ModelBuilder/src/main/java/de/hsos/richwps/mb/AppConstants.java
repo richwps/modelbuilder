@@ -17,6 +17,10 @@ import java.io.File;
  */
 public class AppConstants {
 
+    /**
+     * GRAPH handling
+     */
+    // true if the graph should auto-layout after user edits
     public static boolean GRAPH_AUTOLAYOUT = false;
     // true if multiple outputs can be connected to the same input
     public static boolean GRAPH_ALLOW_OUTS_TO_IN = false;
@@ -27,10 +31,14 @@ public class AppConstants {
     // true if a process output can be connected to an input of the same process
     public static boolean GRAPH_ALLOW_SINGLE_FEEDBACK_LOOPS = false;
 
+    /**
+     * Ressources
+     */
     private final static String FSEP = File.separator;
-
+    /**
+     *
+     */
     public final static String RESOURCES_DIR = "src" + FSEP + "main" + FSEP + "resources";
-
     /**
      * Full path to icons folder.
      */
@@ -39,15 +47,15 @@ public class AppConstants {
 
     public final static String SEMANTICPROXY_DEFAULT_URL = "xyz://";
 
+    /**
+     * Frame
+     */
     public static final String FRAME_TITLE = "RichWPS ModelBuilder";
     public static final Dimension FRAME_DEFAULT_SIZE = new Dimension(1422, 800);
     public static final Point FRAME_DEFAULT_LOCATION = new Point(100, 100);
     public static final boolean FRAME_DEFAULT_MAXIMIZED = false;
-    
     public static final Dimension LEFT_PANEL_MIN_SIZE = new Dimension(200, 200);
-    
     public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(200, 200);
-    
     public static final Dimension BOTTOM_TABS_MIN_SIZE = new Dimension(100, 150);
 
 
@@ -115,7 +123,9 @@ public class AppConstants {
     public final static Color SELECTION_BG_COLOR = new Color(0xa0ace5); // 0xabb6f1);
 
 
-    // Messages
+    /**
+     * Messages
+     */
     public final static String CONFIRM_NEW_MODEL_TITLE = "Create new model?";
     public final static String CONFIRM_NEW_MODEL = "Create new model?\nAny changes of the current model will be lost.";
     public final static String CONFIRM_LOAD_MODEL_TITLE = "Continue?";
@@ -130,13 +140,11 @@ public class AppConstants {
     public final static String LOAD_MODEL_FAILED = "An error occured while loading the model.";
     public final static String SAVE_MODEL_FAILED = "An error occured while saving the model.";
 
-
-
-
-
-    
+    /**
+     * ToolTips
+     */
     public final static int TOOLTIP_DISMISS_DELAY = Integer.MAX_VALUE;
-    public final static int TOOLTIP_INITIAL_DELAY = 0;
+    public final static int TOOLTIP_INITIAL_DELAY = 400;
 
     /**
      * UIManager keys.

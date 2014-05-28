@@ -81,25 +81,32 @@ public class GraphComponent extends mxGraphComponent {
 
     Component getConnectionToolTip(Object source, Object target, String error) {
 
+        String targetTooltip = "";
+
+        // get target cell tooltip
+        if (null != target) {
+            targetTooltip = getGraph().getToolTipForCell(target);
+        }
+
         // no tooltip if there is no content
         boolean noError = (null == error || error.length() < 1);
-        if (null == target && noError) {
+        boolean toolttipEmpty = targetTooltip.length() < 1;
+        if (toolttipEmpty && noError) {
             return null;
         }
 
         // TODO update init capacity when the length of a typical tooltip is known
         StringBuilder sb = new StringBuilder(255);
 
-        if(null != target) {
-            // get target cell tooltip and remove closing html tag.
-            String targetTooltip = getGraph().getToolTipForCell(target);
+        if (!toolttipEmpty) {
+            // remove closing html tag.
             sb.append(targetTooltip.substring(0, targetTooltip.lastIndexOf("</html>")));
 
             // only append an horizontal line if an error msg follows
-            if(!noError) {
+            if (!noError) {
                 sb.append("<hr>");
             }
-            
+
         } else {
             // insert opening html tag if there is no target tooltip
             sb.append("<html>");
@@ -116,9 +123,8 @@ public class GraphComponent extends mxGraphComponent {
 
         sb.append("</html>");
         toolTip.setTipText(sb.toString());
-        
+
         return toolTip;
     }
-
 
 }
