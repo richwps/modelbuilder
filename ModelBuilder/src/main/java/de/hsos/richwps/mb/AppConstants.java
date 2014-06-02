@@ -83,6 +83,7 @@ public class AppConstants {
         {"UNDO", "Undo"},
         {"REDO", "Redo"},
         {"DO_LAYOUT", "Layout"},
+        {"DEPLOY", "Deploy"},
     };
 
     /**
