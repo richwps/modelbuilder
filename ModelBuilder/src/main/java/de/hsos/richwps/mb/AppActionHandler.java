@@ -146,7 +146,7 @@ public class AppActionHandler implements IAppActionHandler {
         JLabel urlLabel = new JLabel("Semantic Proxy URL:");
         urlLabel.setBorder(mockBorder);
 
-        final JTextArea urlField = new JTextArea(AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), "http://"));
+        final JTextArea urlField = new JTextArea(AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL));
         urlField.setBorder(mockBorder);
 
         JButton okButton = new JButton("Ok");

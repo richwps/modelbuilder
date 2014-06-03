@@ -67,10 +67,9 @@ public class App {
     private TreenodeTransferHandler processTransferHandler;
 
     private AppUndoManager undoManager;
-            
+
     // TODO move to model (which has to be created...)
     private String currentModelFilename = null;
-
 
     public static void main(String[] args) {
         App app = new App(args);
@@ -105,6 +104,15 @@ public class App {
             // Load icons etc. into UIManager
             AppRessourcesLoader.loadAll();
 
+            // Optional Debug Logging.
+            if (AppConstants.DEBUG_MODE) {
+                AppEventService.getInstance().registerObserver(new IAppEventObserver() {
+                    public void eventOccured(AppEvent e) {
+                        de.hsos.richwps.mb.Logger.log(e);
+                    }
+                });
+            }
+
             // Create frame.
             frame = new AppFrame(this);
             frame.setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
@@ -123,6 +131,11 @@ public class App {
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
             initDragAndDrop();
+            
+            // 1) connect to SemanticProxy
+            getProcessProvider().connect();
+            // 2) fill tree with services etc. received from SP
+            fillTree();
 
             frame.setVisible(true);
 
@@ -136,7 +149,7 @@ public class App {
     }
 
     AppUndoManager getUndoManager() {
-        if(null == undoManager) {
+        if (null == undoManager) {
             undoManager = new AppUndoManager();
             undoManager.addChangeListener(new AppUndoManager.UndoManagerChangeListener() {
                 public void changed() {
@@ -162,9 +175,11 @@ public class App {
         this.currentModelFilename = name;
     }
 
-    public IProcessProvider getProcessProvider() {
+    ProcessProvider getProcessProvider() {
         if (null == processProvider) {
-            processProvider = new ProcessProvider();
+            String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
+            processProvider = new ProcessProvider(url);
+            AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
         }
         return processProvider;
     }
@@ -240,43 +255,10 @@ public class App {
     protected TreeView getTreeView() {
         if (null == treeView) {
             // TODO mock; to be replaced when semantic proxy exists
-            IProcessProvider processProvider = getProcessProvider();
             DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
-            DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
 
-            for (String server : processProvider.getAllServer()) {
-                DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
-                for (ProcessEntity process : processProvider.getServerProcesses(server)) {
-                    serverNode.add(new DefaultMutableTreeNode(process));
-                }
-                processesNode.add(serverNode);
-            }
-
-            DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
-            downloadServices.add(new DefaultMutableTreeNode(""));
-
-            DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
-            // Outputs
-            ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-            ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-            cOut.setGlobalOutput(true);
-            lOut.setGlobalOutput(true);
-            local.add(new DefaultMutableTreeNode(cOut));
-            local.add(new DefaultMutableTreeNode(lOut));
-            // inputs
-            ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-            ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-            cIn.setGlobalOutput(false);
-            lIn.setGlobalOutput(false);
-            local.add(new DefaultMutableTreeNode(cIn));
-            local.add(new DefaultMutableTreeNode(lIn));
-
-            root.add(processesNode);
-            root.add(downloadServices);
-            root.add(local);
-
-            treeView = new TreeView(getProcessProvider(), root);
-            treeView.expandAll();
+            treeView = new TreeView(root);
+//            treeView.expandAll();
 
             treeView.getGui().addMouseListener(new MouseAdapter() {
                 @Override
@@ -304,6 +286,53 @@ public class App {
         }
 
         return treeView;
+    }
+
+    void fillTree() {
+        IProcessProvider processProvider = getProcessProvider();
+
+        // Remove existing child-nodes from root
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
+        root.removeAllChildren();
+
+        // Create and fill Process node
+        DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
+        for (String server : processProvider.getAllServer()) {
+            DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
+            for (ProcessEntity process : processProvider.getServerProcesses(server)) {
+                serverNode.add(new DefaultMutableTreeNode(process));
+            }
+            processesNode.add(serverNode);
+        }
+
+        // Create and fill download services node
+        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
+        downloadServices.add(new DefaultMutableTreeNode(""));
+
+        // Create and fill local elements node
+        DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
+        // Outputs
+        ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
+        ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+        cOut.setGlobalOutput(true);
+        lOut.setGlobalOutput(true);
+        local.add(new DefaultMutableTreeNode(cOut));
+        local.add(new DefaultMutableTreeNode(lOut));
+        // inputs
+        ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
+        ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+        cIn.setGlobalOutput(false);
+        lIn.setGlobalOutput(false);
+        local.add(new DefaultMutableTreeNode(cIn));
+        local.add(new DefaultMutableTreeNode(lIn));
+
+        // add all child nodes to root
+        root.add(processesNode);
+        root.add(downloadServices);
+        root.add(local);
+
+        getTreeView().getGui().updateUI();
+        getTreeView().expandAll();
     }
 
     /**
@@ -349,7 +378,7 @@ public class App {
             graphView.addUndoEventListener(new mxEventSource.mxIEventListener() {
                 public void invoke(Object o, mxEventObject eo) {
                     Object editProperty = eo.getProperty("edit");
-                    if(eo.getProperty("edit") instanceof mxUndoableEdit) {
+                    if (eo.getProperty("edit") instanceof mxUndoableEdit) {
                         mxUndoableEdit edit = (mxUndoableEdit) editProperty;
                         getUndoManager().addEdit(new AppUndoableEdit(graphView, edit, "Graph edit"));
                     }
@@ -439,10 +468,10 @@ public class App {
                 public void eventOccured(AppEvent e) {
                     String command = e.getCommand();
                     String message = e.getMessage();
-                    
-                    for(String[] infoTab : AppConstants.INFOTABS){
+
+                    for (String[] infoTab : AppConstants.INFOTABS) {
                         String tabId = infoTab[0];
-                        if(tabId.equals(command)){
+                        if (tabId.equals(command)) {
                             infoTabs.output(tabId, message);
                         }
                     }
@@ -455,6 +484,7 @@ public class App {
 
     /**
      * Blackboxed component getter for InfoTabs.
+     *
      * @return
      */
     public Component getInfoTabGui() {

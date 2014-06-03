@@ -5,9 +5,14 @@
  */
 package de.hsos.richwps.mb.semanticProxy.boundary;
 
+import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
+import de.hsos.richwps.sp.client.Network;
+import de.hsos.richwps.sp.client.SPClient;
+import de.hsos.richwps.sp.client.WPS;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -16,6 +21,35 @@ import java.util.LinkedList;
  * @author dziegenh
  */
 public class ProcessProvider implements IProcessProvider {
+
+    private String url;
+    private final SPClient spClient;
+    private Network net;
+    private WPS[] wpss;
+
+    public ProcessProvider(String url) {
+        spClient = SPClient.getInstance();
+        spClient.setRootURL(url);
+
+        this.url = url;
+        this.wpss = new WPS[]{};
+    }
+
+    /**
+     * Connects to the SemanticProxy using the url field.
+     * @return
+     */
+    public boolean connect() {
+        try {
+            net = spClient.getNetwork();
+        } catch (Exception ex) {
+            net = null;
+            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_NOT_REACHABLE, this);
+            return false;
+        }
+
+        return true;
+    }
 
     @Override
     public ProcessEntity getProcessEntity(String server, String identifier) {
@@ -30,6 +64,21 @@ public class ProcessProvider implements IProcessProvider {
 
     @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
+
+        for (WPS wps : wpss) {
+            if (server.equals(wps.getEndpoint())) {
+                LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
+                ProcessEntity pe = null;
+                for (de.hsos.richwps.sp.client.Process p : wps.getProcesses()) {
+                    pe = new ProcessEntity(server, p.getIdentifier());
+                    pe.setOwsAbstract(p.getAbstract());
+                    pe.setTitle(p.getTitle());
+                    ps.add(pe);
+                }
+
+                return ps;
+            }
+        }
 
         LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
 
@@ -94,7 +143,7 @@ public class ProcessProvider implements IProcessProvider {
 
             ps.add(process);
         }
-        
+
         // SelectReportingArea
         {
             process = new ProcessEntity(server, "net.disy.wps.lkn.processes.SelectReportingArea");
@@ -196,7 +245,7 @@ public class ProcessProvider implements IProcessProvider {
             port.setOwsTitle(".");
             port.setOwsAbstract("None.");
             process.addOutputPort(port);
-            
+
             port = new ProcessPort(ProcessPortDatatype.COMPLEX);
             port.setOwsIdentifier("existingTopographyYears");
             port.setOwsTitle(".");
@@ -302,7 +351,18 @@ public class ProcessProvider implements IProcessProvider {
     public Collection<String> getAllServer() {
         // TODO mocked
         LinkedList<String> l = new LinkedList<String>();
-        l.add("Server 1");
+        l.add("MockServer 1");
+
+        if (null != net) {
+            wpss = net.getWPSs();
+            for (WPS wps : wpss) {
+                l.add(wps.getEndpoint());
+            }
+        }
+
+        // TODO replace String with formatable AppConstant
+        AppEventService.getInstance().fireAppEvent("Received " + l.size() + " servers.", this);
+
         return l;
     }
 

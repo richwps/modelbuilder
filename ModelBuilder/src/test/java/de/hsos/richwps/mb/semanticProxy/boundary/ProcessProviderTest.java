@@ -16,8 +16,23 @@ import junit.framework.TestCase;
  */
 public class ProcessProviderTest extends TestCase {
 
+    private String url = "http://localhost:4567/semanticproxy/resources";
+    private ProcessProvider instance;
+
+
     public ProcessProviderTest(String testName) {
         super(testName);
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        instance = new ProcessProvider(url);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        instance = null;
+        super.tearDown();
     }
 
     /**
@@ -26,7 +41,6 @@ public class ProcessProviderTest extends TestCase {
     public void testGetServerProcesses() {
         System.out.println("getServerProcesses");
         String server = "";
-        ProcessProvider instance = new ProcessProvider();
         Collection<ProcessEntity> result = instance.getServerProcesses(server);
         assertFalse(result.isEmpty());
     }
@@ -36,7 +50,6 @@ public class ProcessProviderTest extends TestCase {
      */
     public void testGetAllServer() {
         System.out.println("getAllServer");
-        ProcessProvider instance = new ProcessProvider();
         Collection<String> result = instance.getAllServer();
         assertFalse(result.isEmpty());
     }

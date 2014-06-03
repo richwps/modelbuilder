@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb;
 
 import java.awt.Color;
@@ -16,6 +15,8 @@ import java.io.File;
  * @author dziegenh
  */
 public class AppConstants {
+
+    final static boolean DEBUG_MODE = true;
 
     /**
      * GRAPH handling
@@ -44,8 +45,8 @@ public class AppConstants {
      */
     public final static String RES_ICONS_DIR = RESOURCES_DIR + FSEP + "icons";
 
-
-    public final static String SEMANTICPROXY_DEFAULT_URL = "xyz://";
+    public final static String SEMANTICPROXY_DEFAULT_URL = "http://localhost:4567/semanticproxy/resources";
+    public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. (Proxy down or wrong URL?)";
 
     /**
      * Frame
@@ -58,41 +59,39 @@ public class AppConstants {
     public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(200, 200);
     public static final Dimension BOTTOM_TABS_MIN_SIZE = new Dimension(100, 150);
 
-
     public static final Color INFOTABS_TEXTCOLOR = Color.GRAY;
 
     // Array of {tabId, tabTitle}-elements
     public final static String INFOTAB_ID_SERVER = "server";
     public final static String INFOTAB_ID_EDITOR = "editor";
-    public static final String[][] INFOTABS = new String[][] {
+    public final static String INFOTAB_ID_SEMANTICPROXY = "semanticproxy";
+    public static final String[][] INFOTABS = new String[][]{
+        {INFOTAB_ID_EDITOR, "Model"},
+        {INFOTAB_ID_SEMANTICPROXY, "SemanticProxy"},
         {INFOTAB_ID_SERVER, "RichWPS-Server"},
-        {INFOTAB_ID_EDITOR, "Problems"}
     };
 
     /**
      * the keys refer to MenuBar enum.
      */
-    public static final String[][] MENU_ITEM_CAPTIONS = new String[][] {
+    public static final String[][] MENU_ITEM_CAPTIONS = new String[][]{
         {"NEW_MODEL", "New"},
         {"LOAD_MODEL", "Open"},
         {"SAVE_MODEL", "Save"},
         {"SAVE_MODEL_AS", "Save as"},
         {"SHOW_PREFERENCES", "Preferences"},
         {"EXIT_APP", "Exit"},
-
         {"UNDO", "Undo"},
         {"REDO", "Redo"},
         {"DO_LAYOUT", "Layout"},
-        {"DEPLOY", "Deploy"},
-    };
+        {"DEPLOY", "Deploy"},};
 
     /**
      * the keys refer to MenuBar enum.
      */
-    public static final String[][] MENU_CAPTIONS = new String[][] {
+    public static final String[][] MENU_CAPTIONS = new String[][]{
         {"FILE", "File"},
-        {"EDIT", "Edit"},
-    };
+        {"EDIT", "Edit"},};
 
     public static Object TREE_ROOT_NAME = "...";
     public static Object TREE_PROCESSES_NAME = "Processes";
@@ -119,10 +118,9 @@ public class AppConstants {
 
     // TODO move & get colors from lookAndFeel / UIManager
     @Deprecated
-    public final static Color bgColor = new Color(222,227,250); // alt: (0xd0e0ff);
+    public final static Color bgColor = new Color(222, 227, 250); // alt: (0xd0e0ff);
     @Deprecated
     public final static Color SELECTION_BG_COLOR = new Color(0xa0ace5); // 0xabb6f1);
-
 
     /**
      * Messages
@@ -163,7 +161,6 @@ public class AppConstants {
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
 
-
     public static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
     public static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";
     public static String GRAPH_ERROR_SINGLE_FEEDBACK = "Feedback connection loops are not allowed";
@@ -175,4 +172,5 @@ public class AppConstants {
      * Used for error messages, e.g. in ToolTips
      */
     public static Color ERROR_MESSAGE_COLOR = Color.RED;
+
 }

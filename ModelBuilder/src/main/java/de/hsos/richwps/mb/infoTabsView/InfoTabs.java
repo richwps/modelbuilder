@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.LinkedList;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -20,13 +22,23 @@ public class InfoTabs extends JTabbedPane {
 
     private String newline = System.getProperty("line.separator");
 
-    private Color textColor;
+    private Color contentTextColor;
     private float fontSize = 11f;
+
+    private Color DEFAULT_FG_COLOR = Color.GRAY;
+    private Color SELECTED_FG_COLOR = Color.BLACK;
 
     public InfoTabs() {
         super();
 
         tabIds = new LinkedList<String>();
+
+        // Reset tab appearance when it gains the focus.
+        addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setForegroundAt(getSelectedIndex(), DEFAULT_FG_COLOR);
+            }
+        });
     }
 
     public void setFontSize(float size) {
@@ -44,15 +56,16 @@ public class InfoTabs extends JTabbedPane {
      * @param color
      */
     public void setTextColor(Color color) {
-        this.textColor = color;
+        this.contentTextColor = color;
     }
 
     public void addTab(String tabId, String title) {
         tabIds.add(tabId);
         InfoTabPanel infoTabPanel = new InfoTabPanel();
-        infoTabPanel.setTextColor(textColor);
+        infoTabPanel.setTextColor(contentTextColor);
         infoTabPanel.setFontSize(fontSize);
         add(title, infoTabPanel);
+        setForegroundAt(getIndex(tabId), DEFAULT_FG_COLOR);
     }
 
     /**
@@ -62,8 +75,14 @@ public class InfoTabs extends JTabbedPane {
      * @param value
      */
     public void output(String tabId, Object value) {
-        getInfoTabPanel(tabId).appendOutput(value.toString());
-        getInfoTabPanel(tabId).appendOutput(newline);
+        InfoTabPanel infoTabPanel = getInfoTabPanel(tabId);
+
+        infoTabPanel.appendOutput(value.toString());
+        infoTabPanel.appendOutput(newline);
+
+        if (!getSelectedComponent().equals(infoTabPanel)) {
+            setForegroundAt(getIndex(tabId), SELECTED_FG_COLOR);
+        }
     }
 
     /**
