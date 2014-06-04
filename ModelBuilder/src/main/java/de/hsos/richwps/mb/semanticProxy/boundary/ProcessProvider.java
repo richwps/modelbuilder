@@ -51,6 +51,10 @@ public class ProcessProvider implements IProcessProvider {
         return true;
     }
 
+    public boolean isConnected() {
+        return null != net;
+    }
+
     @Override
     public ProcessEntity getProcessEntity(String server, String identifier) {
         for (ProcessEntity process : getServerProcesses(server)) {
@@ -349,9 +353,7 @@ public class ProcessProvider implements IProcessProvider {
 
     @Override
     public Collection<String> getAllServer() {
-        // TODO mocked
         LinkedList<String> l = new LinkedList<String>();
-        l.add("MockServer 1");
 
         if (null != net) {
             wpss = net.getWPSs();
@@ -362,6 +364,10 @@ public class ProcessProvider implements IProcessProvider {
 
         // TODO replace String with formatable AppConstant
         AppEventService.getInstance().fireAppEvent("Received " + l.size() + " servers.", this);
+
+
+        // TODO mocked!! remove when SP works+delivers useable data
+        l.add("MockServer 1");
 
         return l;
     }

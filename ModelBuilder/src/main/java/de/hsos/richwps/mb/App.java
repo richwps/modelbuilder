@@ -10,11 +10,11 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.appView.AppFrame;
+import de.hsos.richwps.mb.appView.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
@@ -22,6 +22,7 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.treeView.TreeView;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
+import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.DndProxyLabel;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
@@ -48,7 +49,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTree;
+import javax.swing.JPanel;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -56,6 +57,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import layout.TableLayout;
 
 public class App {
 
@@ -82,6 +84,8 @@ public class App {
 
     GraphDropTargetAdapter dropTargetAdapter;
     private InfoTabs infoTabs;
+    private AppTreeToolbar treeViewToolbar;
+    private JPanel treeViewPanel;
 
     public App(String[] args) {
         try {
@@ -131,10 +135,8 @@ public class App {
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
             initDragAndDrop();
-            
-            // 1) connect to SemanticProxy
-            getProcessProvider().connect();
-            // 2) fill tree with services etc. received from SP
+
+            // connect to SP and fill tree with services etc. received from SP
             fillTree();
 
             frame.setVisible(true);
@@ -231,7 +233,7 @@ public class App {
             }
         });
 
-        getTreeViewGui().setTransferHandler(getProcessTransferHandler());
+        getTreeView().getGui().setTransferHandler(getProcessTransferHandler());
     }
 
     /**
@@ -289,15 +291,24 @@ public class App {
     }
 
     void fillTree() {
-        IProcessProvider processProvider = getProcessProvider();
+        ProcessProvider processProvider = getProcessProvider();
+
+        if (!processProvider.isConnected()) {
+            // cancel if SP is unreachable, but the tree has already some content => avoid clearing the tree
+            if (!processProvider.connect() && !getTreeView().isEmpty()) {
+                return;
+            }
+        }
 
         // Remove existing child-nodes from root
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
+
         root.removeAllChildren();
 
         // Create and fill Process node
         DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
-        for (String server : processProvider.getAllServer()) {
+        for (String server
+                : processProvider.getAllServer()) {
             DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
             for (ProcessEntity process : processProvider.getServerProcesses(server)) {
                 serverNode.add(new DefaultMutableTreeNode(process));
@@ -307,6 +318,7 @@ public class App {
 
         // Create and fill download services node
         DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
+
         downloadServices.add(new DefaultMutableTreeNode(""));
 
         // Create and fill local elements node
@@ -314,6 +326,7 @@ public class App {
         // Outputs
         ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+
         cOut.setGlobalOutput(true);
         lOut.setGlobalOutput(true);
         local.add(new DefaultMutableTreeNode(cOut));
@@ -321,6 +334,7 @@ public class App {
         // inputs
         ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+
         cIn.setGlobalOutput(false);
         lIn.setGlobalOutput(false);
         local.add(new DefaultMutableTreeNode(cIn));
@@ -328,7 +342,9 @@ public class App {
 
         // add all child nodes to root
         root.add(processesNode);
+
         root.add(downloadServices);
+
         root.add(local);
 
         getTreeView().getGui().updateUI();
@@ -336,12 +352,21 @@ public class App {
     }
 
     /**
-     * The tree GUI component
+     * The tree GUI component.
      *
      * @return
      */
-    public JTree getTreeViewGui() {
-        return getTreeView().getGui();
+    public JPanel getTreeViewGui() {
+        if (null == treeViewPanel) {
+            treeViewPanel = new JPanel();
+            treeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+            treeViewToolbar = new AppTreeToolbar(getActionProvider());
+            treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
+            treeViewPanel.add(treeViewToolbar, "0 0");
+            treeViewPanel.add(getTreeView().getGui(), "0 1");
+
+        }
+        return treeViewPanel;
     }
 
     /**

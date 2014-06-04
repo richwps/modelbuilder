@@ -19,7 +19,8 @@ public class AppActionProvider {
     public static enum APP_ACTIONS {
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, SHOW_PREFERENCES, EXIT_APP,
         UNDO, REDO, DO_LAYOUT,
-        DEPLOY
+        DEPLOY,
+        RELOAD_PROCESSES
     }
 
     private IAppActionHandler actionHandler;

@@ -84,7 +84,8 @@ public class AppConstants {
         {"UNDO", "Undo"},
         {"REDO", "Redo"},
         {"DO_LAYOUT", "Layout"},
-        {"DEPLOY", "Deploy"},};
+        {"DEPLOY", "Deploy"},
+        {"RELOAD_PROCESSES", "Reload processes"},};
 
     /**
      * the keys refer to MenuBar enum.
@@ -112,7 +113,7 @@ public class AppConstants {
     public final static String PORT_TITLE_LABEL = "Identifier";
     public final static String PORT_DATATYPE_LABEL = "Datatype";
 
-    public final static String TREE_VIEW_TITLE = null;
+    public final static String TREE_VIEW_TITLE = null;//"Modelling Elements";
     public final static String OVERVIEW_TITLE = null;
     public final static String EDITOR_DEFAULT_TITLE = "(untitled)";
 
@@ -160,10 +161,13 @@ public class AppConstants {
     public final static String ICON_REDO_KEY = "rwps_icon_redo";
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
+    public final static String ICON_INFO_KEY = "richwps_icon_info";
+    public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
+    public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
 
     public static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
     public static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";
-    public static String GRAPH_ERROR_SINGLE_FEEDBACK = "Feedback connection loops are not allowed";
+    public static String GRAPH_ERROR_SINGLE_FEEDBACK = "Connecting an input to an output of the same process is not possible"; //"Feedback connection loops are not allowed";
     public static String GRAPH_ERROR_IN_TO_IN = "An input port must be connected to an output port";
     public static String GRAPH_ERROR_OUT_TO_OUT = "An output port must be connected to an input port";
     public static String GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE = "Port types are not compatible";

@@ -46,6 +46,9 @@ public class AppRessourcesLoader {
 
         // to be sorted...
         UIManager.put(AppConstants.ICON_DEPLOY_KEY, new ImageIcon(iconDir + "server-go.png", "deploy icon"));
+        UIManager.put(AppConstants.ICON_INFO_KEY, new ImageIcon(iconDir + "dialog-information-4.png", "info icon"));
+        UIManager.put(AppConstants.ICON_RELOAD_KEY, new ImageIcon(iconDir + "database-refresh.png", "reload icon"));
+        UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
     }
 
 }

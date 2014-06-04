@@ -221,6 +221,10 @@ public class AppFrame extends JFrame {
             centerPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
             centerPanel.add(getGraphViewGui(), JSplitPane.TOP);
             centerPanel.add(getBottomView(), JSplitPane.BOTTOM);
+
+            // disable border => there is already another surrounding splitpane/border
+            centerPanel.setBorder(null);
+            
             // only expand the graph panel on resize
             centerPanel.setResizeWeight(1);
         }

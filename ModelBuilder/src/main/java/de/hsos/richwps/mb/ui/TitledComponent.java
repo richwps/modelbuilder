@@ -26,7 +26,7 @@ public class TitledComponent extends JPanel {
     private ComponentTitle componentTitle;
 
     // TODO move magic number to config/constants
-    public static int DEFAULT_TITLE_HEIGHT = 25;
+    public static int DEFAULT_TITLE_HEIGHT = 24;
     private boolean foldable;
     private boolean isFolded = false;
     private LabelIconClickAdapter icon;

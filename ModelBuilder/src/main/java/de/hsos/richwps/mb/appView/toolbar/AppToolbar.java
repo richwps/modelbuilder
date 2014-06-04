@@ -25,10 +25,6 @@ public class AppToolbar extends JToolBar {
 
         addSeparator();
 
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES));
-
-        addSeparator();
-
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDO));
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.REDO));
 

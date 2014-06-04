@@ -5,10 +5,13 @@
  */
 package de.hsos.richwps.mb.infoTabsView;
 
+import de.hsos.richwps.mb.AppConstants;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.LinkedList;
+import javax.swing.Icon;
 import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -36,7 +39,8 @@ public class InfoTabs extends JTabbedPane {
         // Reset tab appearance when it gains the focus.
         addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                setForegroundAt(getSelectedIndex(), DEFAULT_FG_COLOR);
+                setTabStatus(getSelectedIndex(), true);
+//                setForegroundAt(getSelectedIndex(), DEFAULT_FG_COLOR);
             }
         });
     }
@@ -65,7 +69,7 @@ public class InfoTabs extends JTabbedPane {
         infoTabPanel.setTextColor(contentTextColor);
         infoTabPanel.setFontSize(fontSize);
         add(title, infoTabPanel);
-        setForegroundAt(getIndex(tabId), DEFAULT_FG_COLOR);
+        setTabStatus(getIndex(tabId), true);
     }
 
     /**
@@ -81,7 +85,7 @@ public class InfoTabs extends JTabbedPane {
         infoTabPanel.appendOutput(newline);
 
         if (!getSelectedComponent().equals(infoTabPanel)) {
-            setForegroundAt(getIndex(tabId), SELECTED_FG_COLOR);
+            setTabStatus(getIndex(tabId), false);
         }
     }
 
@@ -107,6 +111,16 @@ public class InfoTabs extends JTabbedPane {
      */
     protected int getIndex(String tabId) {
         return tabIds.indexOf(tabId);
+    }
+
+
+    protected void setTabStatus(int index, boolean defaultStatus) {
+        // TODO let icon or icon key be set by app
+        Icon icon = defaultStatus ? null : UIManager.getIcon(AppConstants.ICON_INFO_KEY);
+        Color color = defaultStatus ? DEFAULT_FG_COLOR : SELECTED_FG_COLOR;
+
+        setForegroundAt(index, color);
+        setIconAt(index, icon);
     }
 
 }

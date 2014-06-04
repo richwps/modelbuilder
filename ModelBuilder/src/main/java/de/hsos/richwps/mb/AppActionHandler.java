@@ -84,6 +84,9 @@ public class AppActionHandler implements IAppActionHandler {
             case REDO:
                 doRedo();
                 break;
+            case RELOAD_PROCESSES:
+                doReloadProcesses();
+                break;
 
             default:
             // do nothing
@@ -254,5 +257,9 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doRedo() {
         app.getUndoManager().redo();
+    }
+
+    private void doReloadProcesses() {
+        app.fillTree();
     }
 }

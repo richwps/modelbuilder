@@ -6,6 +6,7 @@ package de.hsos.richwps.mb.treeView;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -44,6 +45,11 @@ public class TreeView {
             return (DefaultMutableTreeNode) path;
 
         return null;
+    }
+
+    public boolean isEmpty() {
+        TreeModel model = getGui().getModel();
+        return model.getChildCount(model.getRoot()) > 0;
     }
 
 }
