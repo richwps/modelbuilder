@@ -367,7 +367,7 @@ public class ProcessProvider implements IProcessProvider {
 
 
         // TODO mocked!! remove when SP works+delivers useable data
-        l.add("MockServer 1");
+        l.add("Server 1");
 
         return l;
     }

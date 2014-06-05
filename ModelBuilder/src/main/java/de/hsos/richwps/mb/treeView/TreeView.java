@@ -49,7 +49,7 @@ public class TreeView {
 
     public boolean isEmpty() {
         TreeModel model = getGui().getModel();
-        return model.getChildCount(model.getRoot()) > 0;
+        return model.getChildCount(model.getRoot()) <= 0;
     }
 
 }
