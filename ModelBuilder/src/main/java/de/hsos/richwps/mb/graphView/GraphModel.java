@@ -15,6 +15,7 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
  * @author dziegenh
  */
 public class GraphModel extends mxGraphModel {
+
     private String name;
 
     public GraphModel() {
@@ -33,13 +34,12 @@ public class GraphModel extends mxGraphModel {
         return clone;
     }
 
-
     boolean isFlowInput(Object o) {
         if (!isVertex(o)) {
             return false;
         }
 
-        if(getValue(o) instanceof ProcessPort) {
+        if (getValue(o) instanceof ProcessPort) {
             return ((ProcessPort) getValue(o)).isFlowInput();
         }
 
@@ -51,7 +51,7 @@ public class GraphModel extends mxGraphModel {
             return false;
         }
 
-        if(getValue(o) instanceof ProcessPort) {
+        if (getValue(o) instanceof ProcessPort) {
             return ((ProcessPort) getValue(o)).isFlowOutput();
         }
 
@@ -68,7 +68,6 @@ public class GraphModel extends mxGraphModel {
         return isVertex(o) && !isFlowInput(o) && !isFlowOutput(o);
     }
 
-
     public String getName() {
         return name;
     }
@@ -78,10 +77,11 @@ public class GraphModel extends mxGraphModel {
     }
 
     boolean isGlobalPort(Object o) {
-        if( !isVertex(o) )
+        if (!isVertex(o)) {
             return false;
+        }
 
-        if(getValue(o) instanceof ProcessPort) {
+        if (getValue(o) instanceof ProcessPort) {
             return ((ProcessPort) getValue(o)).isGlobal();
         }
 
@@ -90,6 +90,56 @@ public class GraphModel extends mxGraphModel {
 
     boolean arePortTypesCompatible(ProcessPort p1, ProcessPort p2) {
         return p1.getDatatype().equals(p2.getDatatype());
+    }
+
+    boolean isOutputPortUsed(Object o, Graph graph) {
+        Object parent;
+
+        GraphModel model = (GraphModel) ((null == graph) ? this : graph.getModel());
+        
+        if (model.isGlobalPort(o)) {
+            parent = o;
+        } else {
+            parent = model.getParent(o);
+        }
+
+
+        Object[] sourceOutgoingEdges = mxGraphModel.getOutgoingEdges(model, parent);
+        for (Object out : sourceOutgoingEdges) {
+            if (out instanceof GraphEdge) {
+                GraphEdge outEdge = (GraphEdge) out;
+                mxCell sourcePort = outEdge.getSourcePortCell();
+                if (null != sourcePort && sourcePort.equals(o)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    boolean isInputPortUsed(Object o, Graph graph) {
+        Object parent;
+        
+        GraphModel model = (GraphModel) ((null == graph) ? this : graph.getModel());
+
+        if (model.isGlobalPort(o)) {
+            parent = o;
+        } else {
+            parent = model.getParent(o);
+        }
+
+
+        Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, parent);
+        for (Object in : targetIncomingEdges) {
+            if (in instanceof GraphEdge) {
+                GraphEdge inEdge = (GraphEdge) in;
+                mxCell targetCell = inEdge.getTargetPortCell();
+                if (null != targetCell && targetCell.equals(o)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

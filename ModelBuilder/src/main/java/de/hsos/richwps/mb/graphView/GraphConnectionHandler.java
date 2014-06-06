@@ -73,7 +73,9 @@ public class GraphConnectionHandler extends mxConnectionHandler {
 
                     }
                 } else if (!isValidSource(target)) {
-                    target = null;
+                    if (!getGraphModel().isFlowInput(target)) {
+                        target = null;
+                    }
                 }
 
                 return target;
@@ -92,6 +94,13 @@ public class GraphConnectionHandler extends mxConnectionHandler {
             // target selection
             protected Color getMarkerColor(MouseEvent e, mxCellState state,
                     boolean isValid) {
+                if (state != null && isHighlighting() && !isConnecting()) {
+                    boolean flowInput = getGraphModel().isFlowInput(state.getCell());
+                    // TODO marker is red, but connecting is still possible !!
+                    if (flowInput && getGraphModel().isInputPortUsed(state.getCell(), null)) {
+                        isValid = false;
+                    }
+                }
                 return (isHighlighting() || isConnecting()) ? super
                         .getMarkerColor(e, state, isValid) : null;
             }
@@ -147,12 +156,12 @@ public class GraphConnectionHandler extends mxConnectionHandler {
     void updateToolTip(Point loc) {
 
         if (null == tipWindow && null != source) {
-            
+
             Component toolTip = getTheGraphCompoment().getConnectionToolTip(source, target, error);
             if (null == toolTip) {
                 return;
             }
-            
+
             PopupFactory popupFactory = PopupFactory.getSharedInstance();
             tipWindow = popupFactory.getPopup(getTheGraphCompoment(), toolTip, loc.x, loc.y);
             tipWindow.show();

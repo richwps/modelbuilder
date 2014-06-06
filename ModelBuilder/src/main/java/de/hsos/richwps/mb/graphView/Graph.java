@@ -10,7 +10,6 @@ import com.mxgraph.analysis.mxGraphProperties;
 import com.mxgraph.analysis.mxGraphStructure;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
-import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
@@ -55,18 +54,17 @@ public class Graph extends mxGraph {
     }
 
     @Override
-    // TODO this method is used in combination with the red/green cell markers -> check if it can be used to indicate our connection rules.
-    // be careful: method is also called while connecting cells => don't do complex calculations here
     public boolean isValidSource(Object o) {
         // a used input port is not a valid source
-//        if(getGraphModel().isInput(o) && getGraphModel().getEdgeCount(o) > 0)
-//            return false;
+        if(getGraphModel().isInputPortUsed(o, this))
+            return false;
 
         return super.isValidSource(o);
     }
 
+
+
     @Override
-    // TODO this method is used in combination with the red/green cell markers -> check if it can be used to indicate our connection rules.
     public String getEdgeValidationError(Object edge, Object source, Object target) {
 
         GraphModel graphModel = getGraphModel();
@@ -77,14 +75,14 @@ public class Graph extends mxGraph {
             source = tmp;
         }
 
-        boolean inputOccupied = (getGraphModel().isFlowInput(source) && isInputPortUsed(source))
-                || (getGraphModel().isFlowInput(target) && isInputPortUsed(target));
+        boolean inputOccupied = (getGraphModel().isFlowInput(source) && graphModel.isInputPortUsed(source, this))
+                || (getGraphModel().isFlowInput(target) && graphModel.isInputPortUsed(target, this));
         if (!allowOutsToInMulticast() && inputOccupied) {
             return AppConstants.GRAPH_ERROR_INPUT_OCCUPIED;
         }
 
-        boolean outputOccupied = (getGraphModel().isFlowOutput(source) && isOutputPortUsed(source))
-                || (getGraphModel().isFlowOutput(target) && isOutputPortUsed(target));
+        boolean outputOccupied = (getGraphModel().isFlowOutput(source) && graphModel.isOutputPortUsed(source, this))
+                || (getGraphModel().isFlowOutput(target) && graphModel.isOutputPortUsed(target, this));
         if (!allowOutToInsMulticast() && outputOccupied) {
             return AppConstants.GRAPH_ERROR_OUTPUT_OCCUPIED;
         }
@@ -109,6 +107,12 @@ public class Graph extends mxGraph {
             targetParent = target;
         } else {
             targetParent = graphModel.getParent(target);
+        }
+
+        // same port?
+        boolean samePort = (source != null && target != null) && source.equals(target);
+        if (samePort) {
+            return "";
         }
 
         // same parent?
@@ -243,48 +247,6 @@ public class Graph extends mxGraph {
         edge.getGeometry().setRelative(true);
 
         return edge;
-    }
-
-    boolean isInputPortUsed(Object o) {
-        Object parent;
-        if (getGraphModel().isGlobalPort(o)) {
-            parent = o;
-        } else {
-            parent = getModel().getParent(o);
-        }
-        Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, parent);
-        for (Object in : targetIncomingEdges) {
-            if (in instanceof GraphEdge) {
-                GraphEdge inEdge = (GraphEdge) in;
-                mxCell targetCell = inEdge.getTargetPortCell();
-                if (null != targetCell && targetCell.equals(o)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    boolean isOutputPortUsed(Object o) {
-        Object parent;
-        if (getGraphModel().isGlobalPort(o)) {
-            parent = o;
-        } else {
-            parent = getModel().getParent(o);
-        }
-        Object[] sourceOutgoingEdges = mxGraphModel.getOutgoingEdges(model, parent);
-        for (Object out : sourceOutgoingEdges) {
-            if (out instanceof GraphEdge) {
-                GraphEdge outEdge = (GraphEdge) out;
-                mxCell sourcePort = outEdge.getSourcePortCell();
-                if (null != sourcePort && sourcePort.equals(o)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     /**
