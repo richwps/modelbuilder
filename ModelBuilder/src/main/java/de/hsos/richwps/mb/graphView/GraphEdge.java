@@ -22,6 +22,10 @@ public class GraphEdge extends mxCell {
         super(value, mxGeometry, style);
     }
 
+    GraphEdge() {
+        super(null, null, null);
+    }
+
     public mxCell getSourcePortCell() {
         return sourcePortCell;
     }

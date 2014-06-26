@@ -173,15 +173,15 @@ public class GraphView extends JPanel {
             // GLOBAL OUTPUT PORT STYLE
             Hashtable<String, Object> processOutputStyle = new Hashtable<String, Object>();
             processOutputStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-            processOutputStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opcatity to 100
+            processOutputStyle.put(mxConstants.STYLE_OPACITY, 100);
             processOutputStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
-            processOutputStyle.put(mxConstants.STYLE_FILLCOLOR, "#000000"); // changed fill color to white
-            processOutputStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // changed stroke color to black
-            processOutputStyle.put(mxConstants.STYLE_FONTSIZE, fontSize); // changed font size
-            processOutputStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD); // changed font size
-            processOutputStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#060606"); // changed font size
+            processOutputStyle.put(mxConstants.STYLE_FILLCOLOR, "#808080");
+            processOutputStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+            processOutputStyle.put(mxConstants.STYLE_FONTSIZE, fontSize); 
+            processOutputStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
+            processOutputStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#000000");
 //            processStyle.put(mxConstants.STYLE_MOVABLE, "0");
-            processOutputStyle.put(mxConstants.STYLE_SPACING_TOP, spacing); // changed textlabel v-align
+            processOutputStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
             stylesheet.putCellStyle("PROCESS_OUTPUT", processOutputStyle);
 
             // PROCESS (SUB-) PORT STYLE
@@ -212,6 +212,7 @@ public class GraphView extends JPanel {
             mxCodecRegistry.addPackage("de.hsos.richwps.mb.semanticProxy.entity");
             mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
             mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessPort()));
+            mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.graphView.GraphEdge()));
 
             // TODO move magic numbers etc. to config !!
             mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
