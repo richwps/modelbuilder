@@ -98,6 +98,7 @@ public class AppActionHandler implements IAppActionHandler {
         if (choice == JOptionPane.YES_OPTION) {
             getGraphView().newGraph();
             app.getUndoManager().discardAllEdits();
+            app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
         }
     }
 
