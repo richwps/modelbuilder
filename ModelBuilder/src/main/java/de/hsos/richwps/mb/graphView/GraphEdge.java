@@ -18,11 +18,11 @@ public class GraphEdge extends mxCell {
     private mxCell sourcePortCell;
     private mxCell targetPortCell;
 
-    GraphEdge(Object value, mxGeometry mxGeometry, String style) {
+    public GraphEdge(Object value, mxGeometry mxGeometry, String style) {
         super(value, mxGeometry, style);
     }
 
-    GraphEdge() {
+    public GraphEdge() {
         super(null, null, null);
     }
 
@@ -41,7 +41,5 @@ public class GraphEdge extends mxCell {
     public void setTargetPortCell(mxCell targetPortCell) {
         this.targetPortCell = targetPortCell;
     }
-
-
 
 }

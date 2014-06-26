@@ -29,8 +29,9 @@ public class GraphModel extends mxGraphModel {
     }
 
     public mxGraphModel cloneMxgraphModel() throws CloneNotSupportedException {
-        mxGraphModel clone = new mxGraphModel();
+        GraphModel clone = new GraphModel();
         clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
+        clone.setName(this.name);
         return clone;
     }
 

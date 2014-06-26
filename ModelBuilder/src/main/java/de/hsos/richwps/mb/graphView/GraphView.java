@@ -25,6 +25,8 @@ import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.graphView.codec.GraphEdgeCodec;
+import de.hsos.richwps.mb.graphView.codec.GraphModelCodec;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
@@ -212,7 +214,8 @@ public class GraphView extends JPanel {
             mxCodecRegistry.addPackage("de.hsos.richwps.mb.semanticProxy.entity");
             mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
             mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessPort()));
-            mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.graphView.GraphEdge()));
+            mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.GraphEdge()));
+            mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.GraphModel()));
 
             // TODO move magic numbers etc. to config !!
             mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
@@ -344,7 +347,7 @@ public class GraphView extends JPanel {
     public void saveGraphToXml(String filename) throws IOException, CloneNotSupportedException {
         mxCodec codec = new mxCodec();
         // TODO check for missing ProcessEntities !!!
-        String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel().cloneMxgraphModel()));
+        String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel()));//.cloneMxgraphModel()));
         mxUtils.writeFile(xml, filename);
 
         setGraphName(filename);
