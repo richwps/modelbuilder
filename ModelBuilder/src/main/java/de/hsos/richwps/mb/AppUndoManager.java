@@ -54,14 +54,8 @@ public class AppUndoManager extends UndoManager {
 
     @Override
     public synchronized boolean addEdit(UndoableEdit edit) {
-//        if( !(edit instanceof AppUndoableEdit) ) {
-//            throw new IllegalArgumentException("The edit must be an instance of AppUndoableEdit.");
-//        }
-        
         boolean result = super.addEdit(edit);
-
         notifyListeners();
-
         return result;
     }
 

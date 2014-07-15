@@ -98,6 +98,8 @@ public class AppActionHandler implements IAppActionHandler {
         if (choice == JOptionPane.YES_OPTION) {
             getGraphView().newGraph();
             app.getUndoManager().discardAllEdits();
+
+//            app.connectUndoManagerToModel();
             app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
         }
     }
@@ -123,6 +125,7 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getFrame().setGraphViewTitle(graphName);
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
+                    app.connectUndoManagerToModel();
                 }
 
             } catch (Exception ex) {

@@ -150,6 +150,14 @@ public class App {
         }
     }
 
+    /**
+     * Deletes the current UndoManager and adds a new instance.
+     */
+    void reloadUndoManager() {
+        undoManager = null;
+        getUndoManager();
+    }
+
     AppUndoManager getUndoManager() {
         if (null == undoManager) {
             undoManager = new AppUndoManager();
@@ -399,23 +407,29 @@ public class App {
                 }
             });
 
-            // Add undoable graph edits to the UndoManager.
-            graphView.addUndoEventListener(new mxEventSource.mxIEventListener() {
-                public void invoke(Object o, mxEventObject eo) {
-                    Object editProperty = eo.getProperty("edit");
-                    if (eo.getProperty("edit") instanceof mxUndoableEdit) {
-                        mxUndoableEdit edit = (mxUndoableEdit) editProperty;
-                        getUndoManager().addEdit(new AppUndoableEdit(graphView, edit, "Graph edit"));
-                    }
-                }
-
-            });
-
             // register graph components for the event service.
             AppEventService.getInstance().addSourceCommand(graphView, AppConstants.INFOTAB_ID_EDITOR);
             AppEventService.getInstance().addSourceCommand(graphView.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
+
+            connectUndoManagerToModel();
         }
         return graphView;
+    }
+
+    /**
+     * Add the model's undoable graph edits to the UndoManager. Needs to be
+     * called after a new model has been created or loaded.
+     */
+    void connectUndoManagerToModel() {
+        getGraphView().addUndoEventListener(new mxEventSource.mxIEventListener() {
+            public void invoke(Object o, mxEventObject eo) {
+                Object editProperty = eo.getProperty("edit");
+                if (eo.getProperty("edit") instanceof mxUndoableEdit) {
+                    mxUndoableEdit edit = (mxUndoableEdit) editProperty;
+                    getUndoManager().addEdit(new AppUndoableEdit(graphView, edit, "Graph edit"));
+                }
+            }
+        });
     }
 
     /**
