@@ -402,6 +402,7 @@ public class GraphView extends JPanel {
         // TODO check if graph model is really clean/empty after method call
         mxGraph graph = getGraph();
         graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
+        getGraph().getGraphModel().setName(null);
     }
 
     public void deleteSelectedCells() {

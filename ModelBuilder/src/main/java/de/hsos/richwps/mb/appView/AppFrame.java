@@ -68,13 +68,6 @@ public class AppFrame extends JFrame {
         // call after component is visible and has a size
         getLeftPanel().setDividerLocation(.5);
         // TODO restore divider locations from config
-
-        // save frame location, size etc. when closing
-//        addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent e) {
-//            }
-//        });
     }
 
     @Override
@@ -83,8 +76,9 @@ public class AppFrame extends JFrame {
         super.dispose();
     }
 
-
-
+    /**
+     * Save frame location, size etc. when closing.
+     */
     void saveConfig() {
         Boolean maximized = (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
         AppConfig.getConfig().putBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), maximized);
@@ -272,16 +266,28 @@ public class AppFrame extends JFrame {
         return treeViewGui;
     }
 
+    /**
+     * Sets GraphView title and style to show the current model's name.
+     * @param title
+     */
     public void setGraphViewTitle(String title) {
         getGraphViewGui().setTitle(title);
         getGraphViewGui().setTitleBold();
+    }
+
+    /**
+     * Resets style and title of the GraphView to indicate an unnamed model.
+     */
+    public void resetGraphViewTitle() {
+        getGraphViewGui().setTitle(AppConstants.EDITOR_DEFAULT_TITLE);
+        graphViewGui.setTitleItalic();
     }
 
     private TitledComponent getGraphViewGui() {
         if (null == graphViewGui) {
             graphViewGui = new TitledComponent(AppConstants.EDITOR_DEFAULT_TITLE, app.getGraphViewGui());
             graphViewGui.setTitleItalic();
-            // Add proxy layer with minimum z index.
+            // Add proxy layer with minimum z index (=on top).
             graphViewGui.add(app.getGraphDndProxy(), "0 1");
             app.getGraphDndProxy().setLocation(0, 0);
             graphViewGui.setComponentZOrder(app.getGraphDndProxy(), 0);
@@ -290,6 +296,7 @@ public class AppFrame extends JFrame {
         return graphViewGui;
     }
 
+    
     public AppMenuBar getAppMenuBar() {
         if (null == appMenuBar) {
             appMenuBar = new AppMenuBar(actionProvider);

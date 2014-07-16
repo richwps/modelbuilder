@@ -151,7 +151,7 @@ public class AppConstants {
      * UIManager keys.
      */
     public final static String ICON_MBLOGO_KEY = "rwps_icon_mblogo";
-    // Actions
+    // Icons
     public final static String ICON_NEW_KEY = "rwps_icon_new";
     public final static String ICON_OPEN_KEY = "rwps_icon_load";
     public final static String ICON_SAVE_KEY = "rwps_icon_save";
@@ -165,6 +165,7 @@ public class AppConstants {
     public final static String ICON_INFO_KEY = "richwps_icon_info";
     public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
+    public final static String ICON_PROCESS_KEY = "richwps_icon_process";
 
     public static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
     public static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";

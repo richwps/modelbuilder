@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -289,7 +290,13 @@ public class App {
             });
 
             treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
-            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
+            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
+                @Override
+                public Icon getLeafIcon() {
+                    return UIManager.getIcon(AppConstants.ICON_PROCESS_KEY);
+                }
+
+            };
             cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
 
             treeView.getGui().setCellRenderer(cellRenderer);

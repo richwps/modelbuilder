@@ -97,6 +97,7 @@ public class AppActionHandler implements IAppActionHandler {
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             getGraphView().newGraph();
+            app.getFrame().resetGraphViewTitle();
             app.getUndoManager().discardAllEdits();
             app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
         }
@@ -136,7 +137,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doPreferencesDialog() {
-        // TODO just an dirty mocked dialog !!! create a real one :)
+        // TODO just a dirty mocked dialog !!! create a real one :)
         final JDialog dialog = new JDialog(app.getFrame(), "Preferences");
         dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setResizable(false);
@@ -185,7 +186,6 @@ public class AppActionHandler implements IAppActionHandler {
     private void doExit() {
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
-//            app.getFrame().saveConfsaveConfigig();
             app.getFrame().dispose();
             System.exit(0);
         }
