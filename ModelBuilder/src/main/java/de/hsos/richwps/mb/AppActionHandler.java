@@ -98,8 +98,6 @@ public class AppActionHandler implements IAppActionHandler {
         if (choice == JOptionPane.YES_OPTION) {
             getGraphView().newGraph();
             app.getUndoManager().discardAllEdits();
-
-//            app.connectUndoManagerToModel();
             app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
         }
     }
@@ -125,6 +123,7 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getFrame().setGraphViewTitle(graphName);
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
+                    // A new model has been loaded => add change listener for undo/redo
                     app.connectUndoManagerToModel();
                 }
 
@@ -186,6 +185,7 @@ public class AppActionHandler implements IAppActionHandler {
     private void doExit() {
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
+//            app.getFrame().saveConfsaveConfigig();
             app.getFrame().dispose();
             System.exit(0);
         }

@@ -59,8 +59,6 @@ public class GraphView extends JPanel {
     private IProcessProvider processProvider;
     private mxUndoManager undoManager;
 
-
-
     // TODO move values to config/constants
     private int PROCESS_WIDTH = 210;
     private int PROCESS_HEIGHT = 90;
@@ -77,6 +75,7 @@ public class GraphView extends JPanel {
 
     /**
      * Adds an listener for mxEvent.UNDO events to the model.
+     *
      * @param listener
      */
     public void addUndoEventListener(mxEventSource.mxIEventListener listener) {
@@ -85,6 +84,7 @@ public class GraphView extends JPanel {
 
     /**
      * Lazy graph init.
+     *
      * @return
      */
     private mxGraphComponent getGraphComponent() {
@@ -179,7 +179,7 @@ public class GraphView extends JPanel {
             processOutputStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
             processOutputStyle.put(mxConstants.STYLE_FILLCOLOR, "#808080");
             processOutputStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
-            processOutputStyle.put(mxConstants.STYLE_FONTSIZE, fontSize); 
+            processOutputStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
             processOutputStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
             processOutputStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#000000");
 //            processStyle.put(mxConstants.STYLE_MOVABLE, "0");
@@ -344,13 +344,23 @@ public class GraphView extends JPanel {
         return getGraph().getGraphModel().getName();
     }
 
-    public void saveGraphToXml(String filename) throws IOException, CloneNotSupportedException {
+    public void saveGraphToXml(String filename) throws IOException {
         mxCodec codec = new mxCodec();
+        String oldName = getGraph().getGraphModel().getName();
         // TODO check for missing ProcessEntities !!!
-        String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel()));//.cloneMxgraphModel()));
-        mxUtils.writeFile(xml, filename);
 
+        // Set graph name in order to let the GraphModelCodec use it as an attribute
         setGraphName(filename);
+        try {
+            String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel()));//.cloneMxgraphModel()));
+            mxUtils.writeFile(xml, filename);
+        
+        } catch (IOException e) {
+            // if an error occured, reset graphModel name
+            setGraphName(oldName);
+            throw e;
+        }
+
     }
 
     public void loadGraphFromXml(String filename) throws Exception {
@@ -371,6 +381,7 @@ public class GraphView extends JPanel {
                 if (child.getValue() instanceof ProcessEntity) {
                     ProcessEntity loadedProcess = (ProcessEntity) child.getValue();
                     process = processProvider.getProcessEntity(loadedProcess.getServer(), loadedProcess.getIdentifier());
+
                 }
 
                 if (null == process) {

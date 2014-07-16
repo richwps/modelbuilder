@@ -15,8 +15,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -72,23 +70,34 @@ public class AppFrame extends JFrame {
         // TODO restore divider locations from config
 
         // save frame location, size etc. when closing
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                Boolean maximized = (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
-                AppConfig.getConfig().putBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), maximized);
+//        addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//            }
+//        });
+    }
 
-                if (maximized) {
-                    setExtendedState(getExtendedState() & ~Frame.MAXIMIZED_BOTH);
-                }
+    @Override
+    public void dispose() {
+        saveConfig();
+        super.dispose();
+    }
 
-                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), getSize().width);
-                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), getSize().height);
 
-                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), getLocation().x);
-                AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), getLocation().y);
-            }
-        });
+
+    void saveConfig() {
+        Boolean maximized = (getExtendedState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH;
+        AppConfig.getConfig().putBoolean(AppConfig.CONFIG_KEYS.FRAME_B_MAXIMIZED.name(), maximized);
+
+        if (maximized) {
+            setExtendedState(getExtendedState() & ~Frame.MAXIMIZED_BOTH);
+        }
+
+        AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_WIDTH.name(), getSize().width);
+        AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_HEIGHT.name(), getSize().height);
+
+        AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), getLocation().x);
+        AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), getLocation().y);
     }
 
     /**
@@ -224,7 +233,7 @@ public class AppFrame extends JFrame {
 
             // disable border => there is already another surrounding splitpane/border
             centerPanel.setBorder(null);
-            
+
             // only expand the graph panel on resize
             centerPanel.setResizeWeight(1);
         }

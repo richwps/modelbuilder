@@ -36,7 +36,6 @@ public class InfoTabsTest extends TestCase {
         mxUtils.writeFile(mxXmlUtils.getXml(mxCodec.encode(model)), tmpxml);
         Document xml = mxXmlUtils.parseXml(mxUtils.readFile(tmpxml));
         Object decode = mxCodec.decode(xml);
-        System.out.println("asyxdcvbnB");
     }
 
     /**

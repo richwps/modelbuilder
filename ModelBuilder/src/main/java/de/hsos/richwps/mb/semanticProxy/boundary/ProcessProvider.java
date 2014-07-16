@@ -10,9 +10,10 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
-import de.hsos.richwps.sp.client.Network;
-import de.hsos.richwps.sp.client.SPClient;
-import de.hsos.richwps.sp.client.WPS;
+import de.hsos.richwps.sp.client.RDFException;
+import de.hsos.richwps.sp.client.wps.SPClient;
+import de.hsos.richwps.sp.client.wps.gettypes.Network;
+import de.hsos.richwps.sp.client.wps.gettypes.WPS;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -29,7 +30,12 @@ public class ProcessProvider implements IProcessProvider {
 
     public ProcessProvider(String url) {
         spClient = SPClient.getInstance();
-        spClient.setRootURL(url);
+//        spClient.setRootURL(url);
+
+        spClient.setRootURL(url + "/resources");
+        spClient.setSearchURL(url + "/search");
+        spClient.setWpsListURL(url + "/resources/wpss");
+        spClient.setProcessListURL(url + "/resources/processes");
 
         this.url = url;
         this.wpss = new WPS[]{};
@@ -70,19 +76,29 @@ public class ProcessProvider implements IProcessProvider {
     @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
 
-        for (WPS wps : wpss) {
-            if (server.equals(wps.getEndpoint())) {
-                LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
-                ProcessEntity pe = null;
-                for (de.hsos.richwps.sp.client.Process p : wps.getProcesses()) {
-                    pe = new ProcessEntity(server, p.getIdentifier());
-                    pe.setOwsAbstract(p.getAbstract());
-                    pe.setTitle(p.getTitle());
-                    ps.add(pe);
-                }
+        boolean rdfError = false;
 
-                return ps;
+        for (WPS wps : wpss) {
+            try {
+                if (server.equals(wps.getEndpoint())) {
+                    LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
+                    ProcessEntity pe = null;
+                    for (de.hsos.richwps.sp.client.wps.gettypes.Process p : wps.getProcesses()) {
+                        pe = new ProcessEntity(server, p.getIdentifier());
+                        pe.setOwsAbstract(p.getAbstract());
+                        pe.setTitle(p.getTitle());
+                        ps.add(pe);
+                    }
+
+                    return ps;
+                }
+            } catch (RDFException ex) {
+                rdfError = true;
             }
+        }
+
+        if (rdfError) {
+            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RDF_ERROR, this);
         }
 
         LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
@@ -362,11 +378,28 @@ public class ProcessProvider implements IProcessProvider {
     public Collection<String> getAllServer() {
         LinkedList<String> l = new LinkedList<String>();
 
+        boolean rdfError = false;
+
         if (null != net) {
-            wpss = net.getWPSs();
-            for (WPS wps : wpss) {
-                l.add(wps.getEndpoint());
+            try {
+                wpss = net.getWPSs();
+            } catch (Exception ex) {
+                rdfError = true;
             }
+
+            if (!rdfError) {
+                for (WPS wps : wpss) {
+                    try {
+                        l.add(wps.getEndpoint());
+                    } catch (RDFException ex) {
+                        rdfError = true;
+                    }
+                }
+            }
+        }
+
+        if (rdfError) {
+            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RDF_ERROR, this);
         }
 
         // TODO replace String with formatable AppConstant

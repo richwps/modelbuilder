@@ -7,7 +7,9 @@ package de.hsos.richwps.mb.graphView.codec;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxModelCodec;
+import de.hsos.richwps.mb.graphView.GraphModel;
 import java.util.Map;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -33,11 +35,19 @@ public class GraphModelCodec extends mxModelCodec {
     public Node beforeDecode(mxCodec mxcdc, Node node, Object o) {
         Node result = super.beforeDecode(mxcdc, node, o);
 
-        
-
         return result;
     }
 
+    @Override
+    protected void encodeObject(mxCodec mxcdc, Object o, Node node) {
+        super.encodeObject(mxcdc, o, node);
 
+        if (o instanceof GraphModel) {
+            GraphModel model = (GraphModel) o;
+            Element nodeEl = (Element) node;
+            nodeEl.setAttribute("name", model.getName());
+        }
+        
+    }
 
 }

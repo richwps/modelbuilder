@@ -329,12 +329,11 @@ public class App {
 
         downloadServices.add(new DefaultMutableTreeNode(""));
 
-        // Create and fill local elements node
+        // TODO MOCK!! Create and fill local elements node
         DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
         // Outputs
         ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-
         cOut.setGlobalOutput(true);
         lOut.setGlobalOutput(true);
         local.add(new DefaultMutableTreeNode(cOut));
@@ -342,7 +341,6 @@ public class App {
         // inputs
         ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-
         cIn.setGlobalOutput(false);
         lIn.setGlobalOutput(false);
         local.add(new DefaultMutableTreeNode(cIn));
@@ -350,11 +348,10 @@ public class App {
 
         // add all child nodes to root
         root.add(processesNode);
-
         root.add(downloadServices);
-
         root.add(local);
 
+        // Update tree GUI
         getTreeView().getGui().updateUI();
         getTreeView().expandAll();
     }
