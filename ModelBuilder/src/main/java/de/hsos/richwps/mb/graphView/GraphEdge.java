@@ -3,13 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 
 /**
+ * Extension of JGraphX edges (cells) to identify the edges source/target ports
+ * (the super class only knows the connected process cells, not the ports).
  *
  * @author dziegenh
  */
@@ -40,6 +41,11 @@ public class GraphEdge extends mxCell {
 
     public void setTargetPortCell(mxCell targetPortCell) {
         this.targetPortCell = targetPortCell;
+    }
+
+    @Override
+    public String toString() {
+        return sourcePortCell + " - " + targetPortCell;
     }
 
 }

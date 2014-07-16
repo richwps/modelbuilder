@@ -395,7 +395,7 @@ public class GraphView extends JPanel {
         }
 
         graphComponent.refresh();
-        setGraphName(filename);
+//        setGraphName(filename);
     }
 
     public void newGraph() {

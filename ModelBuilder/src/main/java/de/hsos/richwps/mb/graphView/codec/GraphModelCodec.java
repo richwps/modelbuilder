@@ -32,13 +32,6 @@ public class GraphModelCodec extends mxModelCodec {
     }
 
     @Override
-    public Node beforeDecode(mxCodec mxcdc, Node node, Object o) {
-        Node result = super.beforeDecode(mxcdc, node, o);
-
-        return result;
-    }
-
-    @Override
     protected void encodeObject(mxCodec mxcdc, Object o, Node node) {
         super.encodeObject(mxcdc, o, node);
 

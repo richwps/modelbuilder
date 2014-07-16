@@ -7,11 +7,13 @@ package de.hsos.richwps.mb.graphView.codec;
 
 import com.mxgraph.io.mxCellCodec;
 import com.mxgraph.io.mxCodec;
+import de.hsos.richwps.mb.graphView.GraphEdge;
 import java.util.Map;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- *
+ * Codec for GraphEdges - main task is to encode the edge ports.
  * @author dziegenh
  */
 public class GraphEdgeCodec extends mxCellCodec {
@@ -29,22 +31,25 @@ public class GraphEdgeCodec extends mxCellCodec {
         super(template, exclude, idrefs, mapping);
     }
 
-    // TODO fix missing attributes bug! (here?)
     @Override
-    protected void encodeValue(mxCodec mxcdc, Object o, String string, Object o1, Node node) {
-        super.encodeValue(mxcdc, o, string, o1, node); //To change body of generated methods, choose Tools | Templates.
-        System.out.println(node);
+    public Node afterEncode(mxCodec mxcdc, Object o, Node node) {
+        
+        Node result = super.afterEncode(mxcdc, o, node);
+
+        // encode ports
+        if(o instanceof GraphEdge) {
+            GraphEdge edge = (GraphEdge) o;
+            Element nodeEl = (Element) node;
+            mxCellCodec cellCodec = new mxCellCodec();
+            
+            Node sourceNode = cellCodec.encode(mxcdc, edge.getSourcePortCell());
+            node.appendChild(sourceNode);
+
+            Node targetNode = cellCodec.encode(mxcdc, edge.getTargetPortCell());
+            node.appendChild(targetNode);
+        }
+
+        return result;
     }
-
-    // TODO fix missing attributes bug! (here?)
-    @Override
-    public Object beforeEncode(mxCodec mxcdc, Object o, Node node) {
-        return  super.beforeEncode(mxcdc, o, node);
-    }
-
-
-
-
-
 
 }
