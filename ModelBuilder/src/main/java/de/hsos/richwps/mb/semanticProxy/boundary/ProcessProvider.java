@@ -41,7 +41,6 @@ public class ProcessProvider implements IProcessProvider {
 
         this.url = url;
         this.wpss = new WPS[]{};
-
     }
 
     /**

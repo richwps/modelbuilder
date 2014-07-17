@@ -10,7 +10,6 @@ import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
-import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
@@ -28,7 +27,6 @@ import de.hsos.richwps.mb.graphView.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.codec.GraphModelCodec;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -367,33 +365,7 @@ public class GraphView extends JPanel {
         Document doc = mxXmlUtils.parseXml(mxUtils.readFile(filename));
         GraphModel graphModel = (GraphModel) codec.decode(doc.getFirstChild());
         graph.setModel(graphModel);
-
-        // force label update
-        mxCell defaultParent = (mxCell) graph.getDefaultParent();
-        for (int i = 0; i < defaultParent.getChildCount(); i++) {
-            mxICell child = defaultParent.getChildAt(i);
-
-            if (graphModel.isProcess(child)) {
-
-                ProcessEntity process = null;
-                if (child.getValue() instanceof ProcessEntity) {
-                    ProcessEntity loadedProcess = (ProcessEntity) child.getValue();
-                    process = processProvider.getProcessEntity(loadedProcess.getServer(), loadedProcess.getIdentifier());
-
-                }
-
-                if (null == process) {
-                    // TODO log "process xyz not found"
-                    child.setValue("MISSING: " + child.getValue().toString());
-
-                } else {
-                    child.setValue(process);
-                }
-            }
-        }
-
         graphComponent.refresh();
-//        setGraphName(filename);
     }
 
     public void newGraph() {
