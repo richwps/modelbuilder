@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 
 /**
  *
@@ -34,6 +35,21 @@ public class UiHelper {
         }
 
         return screenSize;
+    }
+
+    /**
+     * Calculates the center point of the first available graphics device (screen).
+     * @return
+     */
+    public static Point getFirstScreenCenter() {
+        GraphicsEnvironment gEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] devices = gEnvironment.getScreenDevices();
+        if (devices.length < 1) {
+            return new Point(0, 0);
+        }
+        DisplayMode displayMode = devices[0].getDisplayMode();
+        return new Point(displayMode.getWidth()/2, displayMode.getHeight()/2);
+        
     }
 
 }

@@ -44,6 +44,12 @@ public class AppConstants {
      * Full path to icons folder.
      */
     public final static String RES_ICONS_DIR = RESOURCES_DIR + FSEP + "icons";
+    /**
+     * Full path to images folder.
+     */
+    public final static String RES_IMAGES_DIR = RESOURCES_DIR + FSEP + "images";
+    
+public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String SEMANTICPROXY_DEFAULT_URL = "http://localhost:4567/semanticproxy/resources";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. (Proxy down or wrong URL?)";

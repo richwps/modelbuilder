@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.appView.AppFrame;
+import de.hsos.richwps.mb.appView.AppSplashScreen;
 import de.hsos.richwps.mb.appView.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
@@ -97,9 +98,7 @@ public class App {
 
         {
             // TODO create splashScreen class and move code
-//            final SplashScreen splash = SplashScreen.getSplashScreen();
-//            Graphics2D g = splash.createGraphics();
-//            renderSplashScreen(g); 
+            AppSplashScreen splash = new AppSplashScreen();
 
             // Interpret program arguments.
             if (Arrays.asList(args).contains("graph_editable")) {
@@ -140,6 +139,7 @@ public class App {
             // connect to SP and fill tree with services etc. received from SP
             fillTree();
 
+            splash.setVisible(false);
             frame.setVisible(true);
 
             // TODO move to config provider !
