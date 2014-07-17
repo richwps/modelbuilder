@@ -47,7 +47,8 @@ public class AppConstants {
 
     public final static String SEMANTICPROXY_DEFAULT_URL = "http://localhost:4567/semanticproxy/resources";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. (Proxy down or wrong URL?)";
-    public static String SEMANTICPROXY_RDF_ERROR = "One or more errors occured while receiving from SemanticProxy.";
+    public final static String SEMANTICPROXY_RDF_ERROR = "One or more errors occured while receiving from SemanticProxy.";
+    public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client!";
 
     /**
      * Frame

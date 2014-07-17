@@ -189,8 +189,12 @@ public class App {
     ProcessProvider getProcessProvider() {
         if (null == processProvider) {
             String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
-            processProvider = new ProcessProvider(url);
-            AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
+            try {
+                processProvider = new ProcessProvider(url);
+                AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
+            } catch (Exception ex) {
+                getActionProvider().fire(APP_ACTIONS.SHOW_ERROR_MSG, AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT);
+            }
         }
         return processProvider;
     }
@@ -308,11 +312,13 @@ public class App {
     void fillTree() {
         ProcessProvider processProvider = getProcessProvider();
 
-        if (!processProvider.isConnected()) {
-            // cancel if SP is unreachable, but the tree has already some content => avoid clearing the tree
-            if (!processProvider.connect() && !getTreeView().isEmpty()) {
-                return;
-            }
+        if (null == processProvider) {
+            return;
+        }
+
+        // cancel if SP is unreachable, but the tree has already some content => avoid clearing the tree
+        if (!processProvider.isConnected() && !processProvider.connect() && !getTreeView().isEmpty()) {
+            return;
         }
 
         // Remove existing child-nodes from root

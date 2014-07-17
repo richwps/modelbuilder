@@ -12,8 +12,10 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
+import de.hsos.richwps.sp.client.wps.Vocabulary;
 import de.hsos.richwps.sp.client.wps.gettypes.Network;
 import de.hsos.richwps.sp.client.wps.gettypes.WPS;
+import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -28,10 +30,10 @@ public class ProcessProvider implements IProcessProvider {
     private Network net;
     private WPS[] wpss;
 
-    public ProcessProvider(String url) {
+    public ProcessProvider(String url) throws Exception {
+        // init SP Client
+        Vocabulary.init(new URL(url + "/resources/vocab"));
         spClient = SPClient.getInstance();
-//        spClient.setRootURL(url);
-
         spClient.setRootURL(url + "/resources");
         spClient.setSearchURL(url + "/search");
         spClient.setWpsListURL(url + "/resources/wpss");
@@ -39,6 +41,7 @@ public class ProcessProvider implements IProcessProvider {
 
         this.url = url;
         this.wpss = new WPS[]{};
+
     }
 
     /**

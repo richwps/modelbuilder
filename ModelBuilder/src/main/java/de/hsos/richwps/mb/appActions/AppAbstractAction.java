@@ -53,7 +53,11 @@ public abstract class AppAbstractAction extends AbstractAction {
     }
 
     public void fireActionPerformed() {
-        ActionEvent e = new ActionEvent(actionSource, (int) (Integer.MAX_VALUE * Math.random()), "");
+        this.fireActionPerformed("");
+    }
+
+    public void fireActionPerformed(String command) {
+        ActionEvent e = new ActionEvent(actionSource, (int) (Integer.MAX_VALUE * Math.random()), command);
         actionPerformed(e);
     }
 

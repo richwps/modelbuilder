@@ -87,6 +87,9 @@ public class AppActionHandler implements IAppActionHandler {
             case RELOAD_PROCESSES:
                 doReloadProcesses();
                 break;
+            case SHOW_ERROR_MSG:
+                JOptionPane.showMessageDialog(app.getFrame(), e.getActionCommand());
+                break;
 
             default:
             // do nothing

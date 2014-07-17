@@ -20,7 +20,8 @@ public class AppActionProvider {
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, SHOW_PREFERENCES, EXIT_APP,
         UNDO, REDO, DO_LAYOUT,
         DEPLOY,
-        RELOAD_PROCESSES
+        RELOAD_PROCESSES,
+        SHOW_ERROR_MSG
     }
 
     private IAppActionHandler actionHandler;
@@ -91,6 +92,10 @@ public class AppActionProvider {
 
     public void fire(APP_ACTIONS action) {
         getAction(action).fireActionPerformed();
+    }
+
+    public void fire(APP_ACTIONS action, String command) {
+        getAction(action).fireActionPerformed(command);
     }
 
 }
