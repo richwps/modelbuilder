@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- *
+ * Encodes additional GraphModel attributes (e.g. the name).
  * @author dziegenh
  */
 public class GraphModelCodec extends mxModelCodec {

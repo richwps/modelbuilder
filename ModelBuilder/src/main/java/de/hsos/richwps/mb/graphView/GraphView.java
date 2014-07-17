@@ -10,7 +10,6 @@ import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
-import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.util.mxSwingConstants;
@@ -366,8 +365,7 @@ public class GraphView extends JPanel {
     public void loadGraphFromXml(String filename) throws Exception {
         mxCodec codec = new mxCodec();
         Document doc = mxXmlUtils.parseXml(mxUtils.readFile(filename));
-        mxGraphModel loadedModel = (mxGraphModel) codec.decode(doc.getFirstChild());
-        GraphModel graphModel = new GraphModel(loadedModel);
+        GraphModel graphModel = (GraphModel) codec.decode(doc.getFirstChild());
         graph.setModel(graphModel);
 
         // force label update

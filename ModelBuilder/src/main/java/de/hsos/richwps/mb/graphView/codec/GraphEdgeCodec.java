@@ -13,7 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
- * Codec for GraphEdges - main task is to encode the edge ports.
+ * Codec for GraphEdges - main task is to encode the edge port cells.
  * @author dziegenh
  */
 public class GraphEdgeCodec extends mxCellCodec {
