@@ -47,7 +47,6 @@ import java.util.Arrays;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -99,11 +98,14 @@ public class App {
         {
             // TODO create splashScreen class and move code
             AppSplashScreen splash = new AppSplashScreen();
+            splash.showProgess(0);
 
             // Interpret program arguments.
             if (Arrays.asList(args).contains("graph_editable")) {
                 AppConstants.GRAPH_AUTOLAYOUT = false;
             }
+
+            splash.showMessage("Loading resources");
 
             // Load icons etc. into UIManager
             AppRessourcesLoader.loadAll();
@@ -116,6 +118,9 @@ public class App {
                     }
                 });
             }
+
+            splash.showProgess(20);
+            splash.showMessage("Creating window");
 
             // Create frame.
             frame = new AppFrame(this);
@@ -130,14 +135,26 @@ public class App {
 
             });
 
+            splash.showProgess(40);
+            splash.showMessage("Initialising tooltips");
+
             // Setup ToolTip.
             ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
+            splash.showProgess(60);
+            splash.showMessage("Initialising user interactions");
+
             initDragAndDrop();
+
+            splash.showProgess(80);
+            splash.showMessage("Requesting processes");
 
             // connect to SP and fill tree with services etc. received from SP
             fillTree();
+
+            splash.showProgess(100);
+            splash.showMessage("ModelBuilder is ready!");
 
             splash.setVisible(false);
             frame.setVisible(true);
@@ -148,6 +165,7 @@ public class App {
             if (frame.getX() > screenSize.width || frame.getY() > screenSize.height) {
                 frame.setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
             }
+
         }
     }
 
@@ -188,12 +206,29 @@ public class App {
 
     ProcessProvider getProcessProvider() {
         if (null == processProvider) {
-            String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
+
             try {
+                String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
                 processProvider = new ProcessProvider(url);
                 AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
+
             } catch (Exception ex) {
-                getActionProvider().fire(APP_ACTIONS.SHOW_ERROR_MSG, AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT);
+                // Inform user when SP client can't be created
+                AppEvent event = new AppEvent(AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT, this, AppConstants.INFOTAB_ID_SEMANTICPROXY);
+                AppEventService.getInstance().fireAppEvent(event);
+
+                // Append exception message if available
+                String exMsg = ex.getMessage();
+                if (null != exMsg && !exMsg.isEmpty()) {
+                    StringBuilder sb = new StringBuilder(200);
+                    sb.append(AppConstants.ERROR_MSG_IS);
+                    sb.append(ex.getMessage());
+                    event.setMessage(sb.toString());
+                    AppEventService.getInstance().fireAppEvent(event);
+                }
+
+                // make sure initialisation will be tried again
+                processProvider = null;
             }
         }
         return processProvider;
@@ -273,7 +308,6 @@ public class App {
             DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
 
             treeView = new TreeView(root);
-//            treeView.expandAll();
 
             treeView.getGui().addMouseListener(new MouseAdapter() {
                 @Override
@@ -294,15 +328,9 @@ public class App {
             });
 
             treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
-            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
-                @Override
-                public Icon getLeafIcon() {
-                    return UIManager.getIcon(AppConstants.ICON_PROCESS_KEY);
-                }
-
-            };
+            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
             cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
-
+            cellRenderer.setLeafIcon(UIManager.getIcon(AppConstants.ICON_PROCESS_KEY));
             treeView.getGui().setCellRenderer(cellRenderer);
         }
 
@@ -312,15 +340,10 @@ public class App {
     void fillTree() {
         ProcessProvider processProvider = getProcessProvider();
 
-        if (null == processProvider) {
-            return;
-        }
-
         // cancel if SP is unreachable, but the tree has already some content => avoid clearing the tree
-        if (!processProvider.isConnected() && !processProvider.connect() && !getTreeView().isEmpty()) {
-            return;
-        }
-
+//        if (!processProvider.isConnected() && !processProvider.connect() && !getTreeView().isEmpty()) {
+//            return;
+//        }
         // Remove existing child-nodes from root
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
 
@@ -328,13 +351,18 @@ public class App {
 
         // Create and fill Process node
         DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
-        for (String server
-                : processProvider.getAllServer()) {
-            DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
-            for (ProcessEntity process : processProvider.getServerProcesses(server)) {
-                serverNode.add(new DefaultMutableTreeNode(process));
+        if (processProvider != null) {
+            if (processProvider.isConnected() || processProvider.connect()) {
+                for (String server
+                        : processProvider.getAllServer()) {
+                    DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
+
+                    for (ProcessEntity process : processProvider.getServerProcesses(server)) {
+                        serverNode.add(new DefaultMutableTreeNode(process));
+                    }
+                    processesNode.add(serverNode);
+                }
             }
-            processesNode.add(serverNode);
         }
 
         // Create and fill download services node

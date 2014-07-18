@@ -86,6 +86,18 @@ public class AppEvent {
         return "AppEvent[source=" + source + ", command="+command+", message="+message+"]";
     }
 
+    public void setSource(Object source) {
+        this.source = source;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
 
 
 }

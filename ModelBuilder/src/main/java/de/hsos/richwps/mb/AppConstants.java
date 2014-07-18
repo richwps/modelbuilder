@@ -54,7 +54,7 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
     public final static String SEMANTICPROXY_DEFAULT_URL = "http://localhost:4567/semanticproxy/resources";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. (Proxy down or wrong URL?)";
     public final static String SEMANTICPROXY_RDF_ERROR = "One or more errors occured while receiving from SemanticProxy.";
-    public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client!";
+    public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
 
     /**
      * Frame
@@ -185,5 +185,7 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
      * Used for error messages, e.g. in ToolTips
      */
     public static Color ERROR_MESSAGE_COLOR = Color.RED;
+
+    public final static String ERROR_MSG_IS = "Error message is: ";
 
 }
