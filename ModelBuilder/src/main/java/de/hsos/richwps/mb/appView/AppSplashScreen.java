@@ -75,7 +75,7 @@ public class AppSplashScreen extends JWindow {
 
     /**
      * Outputs a text message on the splash screen.
-     * @param message
+     * @param message text to output.
      */
     public void showMessage(String message) {
         msgLabel.setText(message);
@@ -103,4 +103,13 @@ public class AppSplashScreen extends JWindow {
         progLabel.setBackground(new Color(r, g, 0));
     }
 
+    /**
+     * Outputs a text message on the splash screen and updates the progress bar.
+     * @param msg text to output
+     * @param percent must be between 0 and 100
+     */
+    public void showMessageAndProgress(String msg, int progress) {
+        showMessage(msg);
+        showProgess(progress);
+    }
 }

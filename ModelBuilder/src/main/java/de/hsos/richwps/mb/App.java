@@ -60,6 +60,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import layout.TableLayout;
 
+/**
+ * ModelBuilder entry point. Creates and connects all components.
+ * @author dziegenh
+ */
 public class App {
 
     private AppActionProvider actionProvider;
@@ -88,6 +92,10 @@ public class App {
     private AppTreeToolbar treeViewToolbar;
     private JPanel treeViewPanel;
 
+    /**
+     * ModelBuilder entry point. Creates and connects all components.
+     * @param args
+     */
     public App(String[] args) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -119,8 +127,7 @@ public class App {
                 });
             }
 
-            splash.showProgess(20);
-            splash.showMessage("Creating window");
+            splash.showMessageAndProgress("Creating window", 20);
 
             // Create frame.
             frame = new AppFrame(this);
@@ -135,26 +142,22 @@ public class App {
 
             });
 
-            splash.showProgess(40);
-            splash.showMessage("Initialising tooltips");
+            splash.showMessageAndProgress("Initialising tooltips", 40);
 
             // Setup ToolTip.
             ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
-            splash.showProgess(60);
-            splash.showMessage("Initialising user interactions");
+            splash.showMessageAndProgress("Initialising user interactions", 60);
 
             initDragAndDrop();
 
-            splash.showProgess(80);
-            splash.showMessage("Requesting processes");
+            splash.showMessageAndProgress("Requesting processes", 80);
 
             // connect to SP and fill tree with services etc. received from SP
             fillTree();
 
-            splash.showProgess(100);
-            splash.showMessage("ModelBuilder is ready!");
+            splash.showMessageAndProgress("ModelBuilder is ready!", 100);
 
             splash.setVisible(false);
             frame.setVisible(true);
@@ -165,7 +168,6 @@ public class App {
             if (frame.getX() > screenSize.width || frame.getY() > screenSize.height) {
                 frame.setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
             }
-
         }
     }
 
