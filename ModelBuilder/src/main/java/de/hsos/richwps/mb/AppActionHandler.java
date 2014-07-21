@@ -144,7 +144,7 @@ public class AppActionHandler implements IAppActionHandler {
         // TODO just a dirty mocked dialog !!! create a real one :)
         final JDialog dialog = new JDialog(app.getFrame(), "Preferences");
         dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-        dialog.setResizable(false);
+        dialog.setResizable(true);
         dialog.setMinimumSize(new Dimension(200, 100));
         Point loc = dialog.getLocation();
         dialog.setLocation(loc.x + 100, loc.y + 100);
