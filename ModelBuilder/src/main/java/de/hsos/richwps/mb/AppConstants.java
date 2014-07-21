@@ -188,4 +188,7 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String ERROR_MSG_IS = "Error message is: ";
 
+    public final static String PROPERTIES_MODELDATA_TITLE = "Model";
+    public final static String PROPERTIES_MODELDATA_NAME = "Name";
+
 }

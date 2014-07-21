@@ -103,9 +103,9 @@ public class AppActionHandler implements IAppActionHandler {
             app.getFrame().resetGraphViewTitle();
             app.getUndoManager().discardAllEdits();
             app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
+            app.updateModelPropertiesView();
         }
     }
-
 
     private void doLoadModel() {
         int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_LOAD_MODEL, AppConstants.CONFIRM_LOAD_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
@@ -129,6 +129,7 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getUndoManager().discardAllEdits();
                     // A new model has been loaded => add change listener for undo/redo
                     app.connectUndoManagerToModel();
+                    app.updateModelPropertiesView();
                 }
 
             } catch (Exception ex) {

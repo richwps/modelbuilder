@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.graphView.GraphModel;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
@@ -19,14 +20,16 @@ import javax.swing.JPanel;
 public class PropertiesView extends TitledComponent {
 
     private final int cardGap = 0;
+
     private MultiProcessCard multiProcessCard;
     private SingleProcessCard singleProcessCard;
+    private ModelCard modelCard;
+
     private JPanel voidCard;
     private JPanel contentPanel;
 
-    protected static enum CARDS {
-
-        NO_SELECTION, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
+    public static enum CARD {
+        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
     }
 
     public PropertiesView(String title) {
@@ -35,9 +38,21 @@ public class PropertiesView extends TitledComponent {
         contentPanel = (JPanel) getComponent(1);
 
         contentPanel.setLayout(new CardLayout(cardGap, cardGap));
-        contentPanel.add(getVoidCard(), CARDS.NO_SELECTION.name());
-        contentPanel.add(getSingleProcessCard(), CARDS.PROCESS_SINGLE_SELECTION.name());
-        contentPanel.add(getMultiProcessesCard(), CARDS.PROCESS_MULTI_SELECTION.name());
+        contentPanel.add(getVoidCard(), CARD.NO_SELECTION.name());
+        contentPanel.add(getModelCard(), CARD.MODEL.name());
+        contentPanel.add(getSingleProcessCard(), CARD.PROCESS_SINGLE_SELECTION.name());
+        contentPanel.add(getMultiProcessesCard(), CARD.PROCESS_MULTI_SELECTION.name());
+    }
+
+
+    public void showCard(CARD card) {
+        getCardLayout().show(getContentPanel(), card.name());
+    }
+
+    // TODO create graph model properties as a common layer which GraphView and PropertiesView can use!
+    public void setModel(GraphModel model) {
+        getModelCard().setModel(model);
+        getCardLayout().show(getContentPanel(), CARD.MODEL.name());
     }
 
     public void setSelectedProcesses(List<IProcessEntity> processes) {
@@ -55,8 +70,8 @@ public class PropertiesView extends TitledComponent {
             singleProcessCard = new SingleProcessCard(new JPanel());
             singleProcessCard.setProcess(processes.get(0));
             contentPanel.remove(tmp);
-            contentPanel.add(singleProcessCard, CARDS.PROCESS_SINGLE_SELECTION.name());
-            getCardLayout().show(getContentPanel(), CARDS.PROCESS_SINGLE_SELECTION.name());
+            contentPanel.add(singleProcessCard, CARD.PROCESS_SINGLE_SELECTION.name());
+            getCardLayout().show(getContentPanel(), CARD.PROCESS_SINGLE_SELECTION.name());
 
             // recall panel foldings
             singleProcessCard.setProcessPanelFolded(processFolded);
@@ -66,13 +81,12 @@ public class PropertiesView extends TitledComponent {
             // multiple processes selected => show multi card
         } else if (1 < processes.size()) {
             getMultiProcessesCard().setProcesses(processes);
-            getCardLayout().show(getContentPanel(), CARDS.PROCESS_MULTI_SELECTION.name());
+            getCardLayout().show(getContentPanel(), CARD.PROCESS_MULTI_SELECTION.name());
 
             // nothing selected => show "void" card
         } else {
-            getCardLayout().show(getContentPanel(), CARDS.NO_SELECTION.name());
+            getCardLayout().show(getContentPanel(), CARD.NO_SELECTION.name());
         }
-
     }
 
     protected CardLayout getCardLayout() {
@@ -85,6 +99,14 @@ public class PropertiesView extends TitledComponent {
             return voidCard;
         }
         return voidCard;
+    }
+
+    private ModelCard getModelCard() {
+        if (null == modelCard) {
+            modelCard = new ModelCard(new JPanel());
+        }
+
+        return modelCard;
     }
 
     private SingleProcessCard getSingleProcessCard() {

@@ -11,44 +11,19 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
-import java.awt.Insets;
-import java.awt.Point;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import layout.TableLayout;
 
 /**
  *
  * @author dziegenh
  */
-public class SingleProcessCard extends JScrollPane {
-
-    private JPanel contentPanel;
-
-    // TODO move magic numbers to config/create setter
-    private double propertyBorderThickness = 1; // property row: height of the bottom border
-    private final int COLUMN_1_WIDTH = 56;      // fixed width of first column ("header")
-    private int titleHeight = 20;               // height of titles ("process", "inputs" etc.)
-    protected Insets labelInsets = new Insets(2, 5, 2, 5);
-
-    protected Color headLabelBgColor = UIManager.getColor("Panel.background");
-    protected Color bodyLabelBgColor = Color.WHITE;
-
-    protected Color propertyTitleFgColor = Color.WHITE;
-    protected Color propertyTitleBgColor1 = Color.LIGHT_GRAY;
-    protected Color propertyTitleBgColor2 = Color.LIGHT_GRAY.darker();
-    protected Color portBorderColor = Color.LIGHT_GRAY.darker();
+public class SingleProcessCard extends AbstractPropertiesCard {
 
     private TitledComponent processPanel;
     private TitledComponent inputsPanel;
@@ -62,34 +37,6 @@ public class SingleProcessCard extends JScrollPane {
         super(contentPanel);
 
         contentPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.MINIMUM, TableLayout.MINIMUM, TableLayout.MINIMUM}}));
-        this.contentPanel = contentPanel;
-        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            // Scroll to top after component changed
-            public void componentShown(ComponentEvent e) {
-                getViewport().setViewPosition(new Point(0, 0));
-            }
-
-            @Override
-            // Set content panel width to match the viewport.
-            // Otherwise, when resizing the panel to a smaller width, the
-            // panel width would not adjust and the horizontal scrollbar appears
-            public void componentResized(ComponentEvent e) {
-                if (getViewport().getWidth() < contentPanel.getPreferredSize().width) {
-//                    processPanel.setMinimumSize(new Dimension(getViewport().getWidth(), processPanel.getPreferredSize().height));
-//                    inputsPanel.setMinimumSize(new Dimension(getViewport().getWidth(), inputsPanel.getPreferredSize().height));
-//                    outputsPanel.setMinimumSize(new Dimension(getViewport().getWidth(), outputsPanel.getPreferredSize().height));
-//                    doLayout();
-//                    contentPanel.setPreferredSize(new Dimension(getViewport().getWidth(), 100));
-//                    contentPanel.setPreferredSize(new Dimension(getViewport().getWidth(), 100));
-                }
-                contentPanel.revalidate();
-                contentPanel.repaint();
-            }
-
-        });
     }
 
     /**
@@ -201,27 +148,6 @@ public class SingleProcessCard extends JScrollPane {
         return processPanel;
     }
 
-    protected TitledComponent createTitledComponent(String title, Component component) {
-        TitledComponent titledComponent = new TitledComponent(title, component, titleHeight, true);
-        titledComponent.setTitleFontColor(propertyTitleFgColor);
-        titledComponent.setTitleGradientColor1(propertyTitleBgColor1);
-        titledComponent.setTitleGradientColor2(propertyTitleBgColor2);
-        titledComponent.setTitleInsets(labelInsets);
-        return titledComponent;
-    }
-
-    protected Component createColumn1Border() {
-        JLabel border = new JLabel("");
-        border.setBorder(new ColorBorder(bodyLabelBgColor, 0, 0, (int) propertyBorderThickness, 0));
-        return border;
-    }
-
-    protected Component createColumn2Border() {
-        JLabel border = new JLabel("");
-        border.setBorder(new ColorBorder(headLabelBgColor, 0, 0, (int) propertyBorderThickness, 0));
-        return border;
-    }
-
     protected Component createPortBorder() {
         JLabel border = new JLabel("");
         border.setBorder(new ColorBorder(portBorderColor, 0, 0, (int) propertyBorderThickness, 0));
@@ -293,37 +219,6 @@ public class SingleProcessCard extends JScrollPane {
         parent.add(createBodyLabel(port.getDatatype()), "1 " + rowOffset++);
 
         return rowOffset;
-    }
-
-    /**
-     * Creates and returns a styled Label for the table head.
-     *
-     * @param text
-     * @return
-     */
-    private MultilineLabel createHeadLabel(String text) {
-        return createMultilineLabel(text, headLabelBgColor);
-    }
-
-    /**
-     * Creates and returns a styled label for the table body.
-     *
-     * @param text
-     * @return
-     */
-    private MultilineLabel createBodyLabel(String text) {
-        MultilineLabel label = createMultilineLabel(text, bodyLabelBgColor);
-        label.setFocusable(true);
-        return label;
-    }
-
-    private MultilineLabel createMultilineLabel(String text, Color background) {
-        MultilineLabel label = new MultilineLabel(text);
-        label.setBackground(background);
-        Border emptyBorder = new EmptyBorder(labelInsets);
-        label.setBorder(emptyBorder);
-
-        return label;
     }
 
     void setProcessPanelFolded(boolean processFolded) {

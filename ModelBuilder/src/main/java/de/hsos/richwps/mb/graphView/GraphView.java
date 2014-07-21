@@ -320,6 +320,10 @@ public class GraphView extends JPanel {
         selectionListener.remove(listener);
     }
 
+    public boolean hasSelection() {
+        return getGraph().getSelectionCount() > 0;
+    }
+
     public List<IProcessEntity> getSelectedProcesses() {
         Object[] cells = getGraph().getSelectionCells();
         List<IProcessEntity> processes = new LinkedList<IProcessEntity>();

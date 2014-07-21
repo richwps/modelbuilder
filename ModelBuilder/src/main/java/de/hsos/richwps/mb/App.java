@@ -62,6 +62,7 @@ import layout.TableLayout;
 
 /**
  * ModelBuilder entry point. Creates and connects all components.
+ *
  * @author dziegenh
  */
 public class App {
@@ -94,6 +95,7 @@ public class App {
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
+     *
      * @param args
      */
     public App(String[] args) {
@@ -151,6 +153,8 @@ public class App {
             splash.showMessageAndProgress("Initialising user interactions", 60);
 
             initDragAndDrop();
+
+            updateModelPropertiesView();
 
             splash.showMessageAndProgress("Requesting processes", 80);
 
@@ -486,8 +490,11 @@ public class App {
             propertiesView = new PropertiesView(AppConstants.PROPERTIES_PANEL_TITLE);
             getGraphView().addSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
-                    propertiesView.setSelectedProcesses(getGraphView().getSelectedProcesses());
-
+                    if (getGraphView().hasSelection()) {
+                        propertiesView.setSelectedProcesses(getGraphView().getSelectedProcesses());
+                    } else {
+                        propertiesView.showCard(PropertiesView.CARD.MODEL);
+                    }
                 }
             });
         }
@@ -568,5 +575,9 @@ public class App {
      */
     public Component getInfoTabGui() {
         return getInfoTabs();
+    }
+
+    public void updateModelPropertiesView() {
+        getPropertiesView().setModel(getGraphView().getGraph().getGraphModel());
     }
 }
