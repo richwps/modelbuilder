@@ -338,7 +338,6 @@ public class App {
         if (processProvider != null) {
             try {
                 String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
-de.hsos.richwps.mb.Logger.log("using url: " + url);
                 if (processProvider.isConnected() || processProvider.connect(url)) {
                     for (String server : processProvider.getAllServer()) {
                         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
