@@ -141,7 +141,6 @@ public class App {
                 public void windowClosing(WindowEvent e) {
                     getActionProvider().fire(APP_ACTIONS.EXIT_APP);
                 }
-
             });
 
             splash.showMessageAndProgress("Initialising tooltips", 40);
@@ -312,6 +311,9 @@ public class App {
         if (null == treeView) {
             // TODO mock; to be replaced when semantic proxy exists
             DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
+
+            // add dummy node. otherwise the tree doesn't work with Java 1.7
+            root.add(new DefaultMutableTreeNode(""));
 
             treeView = new TreeView(root);
 
