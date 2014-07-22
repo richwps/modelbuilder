@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -28,10 +29,13 @@ public class PropertiesView extends TitledComponent {
     private JPanel voidCard;
     private JPanel contentPanel;
 
+
     public static enum CARD {
         NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
     }
 
+    private LinkedList<PropertyChangeListener> propertyChangeListeners;
+    
     public PropertiesView(String title) {
         super(title, new JPanel());
 
@@ -42,8 +46,23 @@ public class PropertiesView extends TitledComponent {
         contentPanel.add(getModelCard(), CARD.MODEL.name());
         contentPanel.add(getSingleProcessCard(), CARD.PROCESS_SINGLE_SELECTION.name());
         contentPanel.add(getMultiProcessesCard(), CARD.PROCESS_MULTI_SELECTION.name());
+
+        propertyChangeListeners = new LinkedList<PropertyChangeListener>();
     }
 
+    public boolean addPropertyChangeListener(PropertyChangeListener listener) {
+        return propertyChangeListeners.add(listener);
+    }
+
+    void firePropertyChangeEvent(CARD sourceCard, String property, Object oldValue, Object newValue) {
+        firePropertyChangeEvent(new PropertyChangeEvent(sourceCard, property, oldValue, newValue));
+    }
+
+    void firePropertyChangeEvent(PropertyChangeEvent propertyChangeEvent) {
+        for(PropertyChangeListener listener : propertyChangeListeners) {
+            listener.propertyChange(propertyChangeEvent);
+        }
+    }
 
     public void showCard(CARD card) {
         getCardLayout().show(getContentPanel(), card.name());
