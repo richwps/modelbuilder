@@ -26,29 +26,31 @@ import java.util.LinkedList;
 public class ProcessProvider implements IProcessProvider {
 
     private String url;
-    private final SPClient spClient;
+    private SPClient spClient;
     private Network net;
     private WPS[] wpss;
 
-    public ProcessProvider(String url) throws Exception {
-        // init SP Client
-        Vocabulary.init(new URL(url + "/resources/vocab"));
+    public ProcessProvider()   {
         spClient = SPClient.getInstance();
-        spClient.setRootURL(url + "/resources");
-        spClient.setSearchURL(url + "/search");
-        spClient.setWpsListURL(url + "/resources/wpss");
-        spClient.setProcessListURL(url + "/resources/processes");
-
-        this.url = url;
         this.wpss = new WPS[]{};
     }
 
     /**
      * Connects to the SemanticProxy using the url field.
      *
+     * @param url SemanticProxy URL
      * @return
      */
-    public boolean connect() {
+    public boolean connect(String url) throws Exception {
+        // init SP Client
+        Vocabulary.init(new URL(url + "/resources/vocab"));
+        spClient.setRootURL(url + "/resources");
+        spClient.setSearchURL(url + "/search");
+        spClient.setWpsListURL(url + "/resources/wpss");
+        spClient.setProcessListURL(url + "/resources/processes");
+
+        this.url = url;
+
         try {
             net = spClient.getNetwork();
         } catch (Exception ex) {
@@ -108,7 +110,7 @@ public class ProcessProvider implements IProcessProvider {
         ProcessEntity process;
         ProcessPort port;
 
-        if (server.equals(server1)) {
+        if (server.equals(mockServer1)) {
 
             // SelectReportingArea
             {
@@ -309,7 +311,7 @@ public class ProcessProvider implements IProcessProvider {
                 ps.add(process);
             }
 
-        } else if (server.equals(server2)) {
+        } else if (server.equals(mockServer2)) {
             // put server 2 processes here...
 
             // Makrophyten
@@ -407,14 +409,10 @@ public class ProcessProvider implements IProcessProvider {
         // TODO replace String with formatable AppConstant
         AppEventService.getInstance().fireAppEvent("Received " + l.size() + " servers.", this);
 
-        // TODO mocked!! remove when SP works+delivers useable data
-        l.add(server1);
-        l.add(server2);
-
         return l;
     }
 
-    private String server1 = "Server 1";
-    private String server2 = "Server 2";
+    public String mockServer1 = "Server 1";
+    public String mockServer2 = "Server 2";
 
 }

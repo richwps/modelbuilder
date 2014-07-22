@@ -44,6 +44,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -211,30 +212,8 @@ public class App {
 
     ProcessProvider getProcessProvider() {
         if (null == processProvider) {
-
-            try {
-                String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
-                processProvider = new ProcessProvider(url);
-                AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
-
-            } catch (Exception ex) {
-                // Inform user when SP client can't be created
-                AppEvent event = new AppEvent(AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT, this, AppConstants.INFOTAB_ID_SEMANTICPROXY);
-                AppEventService.getInstance().fireAppEvent(event);
-
-                // Append exception message if available
-                String exMsg = ex.getMessage();
-                if (null != exMsg && !exMsg.isEmpty()) {
-                    StringBuilder sb = new StringBuilder(200);
-                    sb.append(AppConstants.ERROR_MSG_IS);
-                    sb.append(ex.getMessage());
-                    event.setMessage(sb.toString());
-                    AppEventService.getInstance().fireAppEvent(event);
-                }
-
-                // make sure initialisation will be tried again
-                processProvider = null;
-            }
+            processProvider = new ProcessProvider();
+            AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
         }
         return processProvider;
     }
@@ -259,8 +238,10 @@ public class App {
                     dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
                     dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
                     getGraphDndProxy().setVisible(true);
+
                 } catch (TooManyListenersException ex) {
-                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(App.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -348,28 +329,56 @@ public class App {
     void fillTree() {
         ProcessProvider processProvider = getProcessProvider();
 
-        // cancel if SP is unreachable, but the tree has already some content => avoid clearing the tree
-//        if (!processProvider.isConnected() && !processProvider.connect() && !getTreeView().isEmpty()) {
-//            return;
-//        }
         // Remove existing child-nodes from root
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
-
         root.removeAllChildren();
 
         // Create and fill Process node
         DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
         if (processProvider != null) {
-            if (processProvider.isConnected() || processProvider.connect()) {
-                for (String server
-                        : processProvider.getAllServer()) {
-                    DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
+            try {
+                String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
+de.hsos.richwps.mb.Logger.log("using url: " + url);
+                if (processProvider.isConnected() || processProvider.connect(url)) {
+                    for (String server : processProvider.getAllServer()) {
+                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
 
-                    for (ProcessEntity process : processProvider.getServerProcesses(server)) {
-                        serverNode.add(new DefaultMutableTreeNode(process));
+                        for (ProcessEntity process : processProvider.getServerProcesses(server)) {
+                            serverNode.add(new DefaultMutableTreeNode(process));
+                        }
+                        processesNode.add(serverNode);
                     }
-                    processesNode.add(serverNode);
                 }
+
+            } catch (Exception ex) {
+                // Inform user when SP client can't be created
+                AppEvent event = new AppEvent(AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT, this, AppConstants.INFOTAB_ID_SEMANTICPROXY);
+                AppEventService.getInstance().fireAppEvent(event);
+
+                // Append exception message if available
+                String exMsg = ex.getMessage();
+                if (null != exMsg && !exMsg.isEmpty()) {
+                    StringBuilder sb = new StringBuilder(200);
+                    sb.append(AppConstants.ERROR_MSG_IS);
+                    sb.append("\"");
+                    sb.append(ex.getMessage());
+                    sb.append("\"");
+                    event.setMessage(sb.toString());
+                    AppEventService.getInstance().fireAppEvent(event);
+                }
+            }
+
+            // add MOCK servers for Development -> to be removed!
+            LinkedList<String> mockServers = new LinkedList<String>();
+            mockServers.add(processProvider.mockServer1);
+            mockServers.add(processProvider.mockServer2);
+            for (String server : mockServers) {
+                DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
+
+                for (ProcessEntity process : processProvider.getServerProcesses(server)) {
+                    serverNode.add(new DefaultMutableTreeNode(process));
+                }
+                processesNode.add(serverNode);
             }
         }
 
