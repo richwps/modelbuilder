@@ -14,6 +14,7 @@ import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
+import java.awt.Window;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,8 +34,8 @@ public class SingleProcessCard extends AbstractPropertiesCard {
     private MultilineLabel processTitleLabel;
     private MultilineLabel processAbstractLabel;
 
-    public SingleProcessCard(final JPanel contentPanel) {
-        super(contentPanel);
+    public SingleProcessCard(final Window parentWindow, final JPanel contentPanel) {
+        super(parentWindow, contentPanel);
 
         contentPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.MINIMUM, TableLayout.MINIMUM, TableLayout.MINIMUM}}));
     }

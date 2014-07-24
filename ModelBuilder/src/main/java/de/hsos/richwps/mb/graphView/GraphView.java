@@ -32,7 +32,6 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
-import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -347,18 +346,18 @@ public class GraphView extends JPanel {
 
     public void saveGraphToXml(String filename) throws IOException {
         mxCodec codec = new mxCodec();
-        String oldName = getGraph().getGraphModel().getName();
+//        String oldName = getGraph().getGraphModel().getName();
         // TODO check for missing ProcessEntities !!!
 
         // Set graph name in order to let the GraphModelCodec use it as an attribute
-        setGraphName(filename);
+//        setGraphName(filename);
         try {
             String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel()));//.cloneMxgraphModel()));
             mxUtils.writeFile(xml, filename);
         
         } catch (IOException e) {
             // if an error occured, reset graphModel name
-            setGraphName(oldName);
+//            setGraphName(oldName);
             throw e;
         }
 
@@ -383,12 +382,12 @@ public class GraphView extends JPanel {
         getGraph().removeCells(getGraph().getSelectionCells());
     }
 
-    // TODO mocked: graph name is currently derived from filename. create possibility to let the user set the name!
-    private void setGraphName(String filename) {
-        int pathEnd = filename.lastIndexOf(File.separator) + 1;
-        int extensionBegin = filename.length() - 4;
+    public void setGraphName(String name) {
+//        int pathEnd = filename.lastIndexOf(File.separator) + 1;
+//        int extensionBegin = filename.length() - 4;
         // the name is the pure filename without path and extension.
-        getGraph().getGraphModel().setName(filename.substring(pathEnd, extensionBegin));
+//        getGraph().getGraphModel().setName(filename.substring(pathEnd, extensionBegin));
+        getGraph().getGraphModel().setName(name);
     }
 
     public void layoutGraph() {

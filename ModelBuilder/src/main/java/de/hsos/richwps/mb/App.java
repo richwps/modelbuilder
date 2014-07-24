@@ -16,6 +16,8 @@ import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
+import de.hsos.richwps.mb.propertiesView.PropertyChangeEvent;
+import de.hsos.richwps.mb.propertiesView.PropertyChangeListener;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
@@ -107,7 +109,8 @@ public class App {
         }
 
         {
-            // TODO create splashScreen class and move code
+            //
+            frame = new AppFrame(AppConstants.FRAME_TITLE);
             AppSplashScreen splash = new AppSplashScreen();
             splash.showProgess(0);
 
@@ -133,7 +136,7 @@ public class App {
             splash.showMessageAndProgress("Creating window", 20);
 
             // Create frame.
-            frame = new AppFrame(this);
+            frame.init(this);
             frame.setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
 
             // Delegate frame closing action
@@ -155,6 +158,28 @@ public class App {
             initDragAndDrop();
 
             updateModelPropertiesView();
+            getPropertiesView().addPropertyChangeListener(new PropertyChangeListener() {
+
+                public void propertyChange(PropertyChangeEvent event) {
+                        switch(event.getSourceCard()) {
+                        case NO_SELECTION:
+                            break;
+                        case MODEL:
+                            // TODO move String to config or new properties model
+                            if(event.getProperty().equals("name")) {
+                                getGraphView().setGraphName((String) event.getNewValue());
+                            }
+                            break;
+                        case PROCESS_SINGLE_SELECTION:
+                            break;
+                        case PROCESS_MULTI_SELECTION:
+                            break;
+                        default:
+                            // nothing
+                        }
+                }
+            });
+
 
             splash.showMessageAndProgress("Requesting processes", 80);
 
@@ -497,7 +522,7 @@ public class App {
 
     protected PropertiesView getPropertiesView() {
         if (null == propertiesView) {
-            propertiesView = new PropertiesView(AppConstants.PROPERTIES_PANEL_TITLE);
+            propertiesView = new PropertiesView(getFrame(), AppConstants.PROPERTIES_PANEL_TITLE);
             getGraphView().addSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     if (getGraphView().hasSelection()) {

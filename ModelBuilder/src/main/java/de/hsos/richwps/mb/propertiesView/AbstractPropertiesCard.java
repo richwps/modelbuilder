@@ -10,15 +10,22 @@ import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -29,11 +36,12 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
 
     protected JPanel contentPanel;
 
-    // TODO move magic numbers to config/create setter
+    // TODO move magic numbers to config/create setters
     protected double propertyBorderThickness = 1; // property row: height of the bottom border
     protected final int COLUMN_1_WIDTH = 56;      // fixed width of first column ("header")
     protected int titleHeight = 20;               // height of titles ("process", "inputs" etc.)
     protected Insets labelInsets = new Insets(2, 5, 2, 5);
+    protected float propertyFieldFontSize = 10f;
 
     protected Color headLabelBgColor = UIManager.getColor("Panel.background");
     protected Color bodyLabelBgColor = Color.WHITE;
@@ -43,10 +51,14 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
     protected Color propertyTitleBgColor2 = Color.LIGHT_GRAY.darker();
     protected Color portBorderColor = Color.LIGHT_GRAY.darker();
 
+//    protected HashMap<String, MultilineLabel> propertyFields;
+    protected HashMap<String, JTextField> propertyFields;
+    protected final Window parentWindow;
 
-    public AbstractPropertiesCard(final JPanel contentPanel) {
+    public AbstractPropertiesCard(final Window parentWindow, final JPanel contentPanel) {
         super(contentPanel);
 
+        this.parentWindow = parentWindow;
         this.contentPanel = contentPanel;
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -68,6 +80,41 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
         });
     }
 
+    /**
+     *
+     * @return
+     */
+    HashMap<String, JTextField> getPropertyFields() {
+        if (null == propertyFields) {
+            propertyFields = new HashMap<String, JTextField>();
+        }
+        return propertyFields;
+    }
+
+    protected JTextField createEditablePropertyField(String property, String text) {
+        JTextField label = new JTextField(text);//createMultilineLabel(text, bodyLabelBgColor, true);
+        CompoundBorder border = new CompoundBorder(new ColorBorder(headLabelBgColor, 2, 0, 0, 1), label.getBorder());
+        label.setBorder(border);
+        label.setName(property);
+        label.setActionCommand(property);
+        label.setFont(label.getFont().deriveFont(propertyFieldFontSize));
+
+        // TODO try to find a better way to change the cursor (label.setCursor doesn't work)
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {
+                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
+        
+        getPropertyFields().put(property, label);
+        return label;
+    }
+    
     protected TitledComponent createTitledComponent(String title, Component component) {
         TitledComponent titledComponent = new TitledComponent(title, component, titleHeight, true);
         titledComponent.setTitleFontColor(propertyTitleFgColor);
@@ -112,7 +159,11 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
     }
 
     protected MultilineLabel createMultilineLabel(String text, Color background) {
-        MultilineLabel label = new MultilineLabel(text);
+        return createMultilineLabel(text, background, false);
+    }
+
+    protected MultilineLabel createMultilineLabel(String text, Color background, boolean editable) {
+        MultilineLabel label = new MultilineLabel(text, editable);
         label.setBackground(background);
         Border emptyBorder = new EmptyBorder(labelInsets);
         label.setBorder(emptyBorder);

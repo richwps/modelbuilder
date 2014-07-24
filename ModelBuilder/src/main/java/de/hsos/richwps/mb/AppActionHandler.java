@@ -28,7 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -124,7 +124,8 @@ public class AppActionHandler implements IAppActionHandler {
                         graphName = "";
                     }
                     app.setCurrentModelFilename(filename);
-                    app.getFrame().setGraphViewTitle(graphName);
+//                    app.getFrame().setGraphViewTitle(graphName);
+                    app.getFrame().setGraphViewTitle(filename);
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
                     // A new model has been loaded => add change listener for undo/redo
@@ -157,7 +158,7 @@ public class AppActionHandler implements IAppActionHandler {
         JLabel urlLabel = new JLabel("Semantic Proxy URL:");
         urlLabel.setBorder(mockBorder);
 
-        final JTextArea urlField = new JTextArea(AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL));
+        final JTextField urlField = new JTextField(AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL));
         urlField.setBorder(mockBorder);
 
         JButton okButton = new JButton("Ok");
@@ -246,7 +247,8 @@ public class AppActionHandler implements IAppActionHandler {
                 getGraphView().saveGraphToXml(filename);
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                 app.setCurrentModelFilename(filename);
-                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
+                app.getFrame().setGraphViewTitle(filename);
+//                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
             } catch (Exception ex) {
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
                 JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);

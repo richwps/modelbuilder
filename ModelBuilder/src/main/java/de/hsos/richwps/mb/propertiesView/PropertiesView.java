@@ -10,9 +10,13 @@ import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
  *
@@ -25,19 +29,23 @@ public class PropertiesView extends TitledComponent {
     private MultiProcessCard multiProcessCard;
     private SingleProcessCard singleProcessCard;
     private ModelCard modelCard;
-
     private JPanel voidCard;
+
     private JPanel contentPanel;
 
+    private Window parentWindow;
 
     public static enum CARD {
+
         NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
     }
 
     private LinkedList<PropertyChangeListener> propertyChangeListeners;
-    
-    public PropertiesView(String title) {
+
+    public PropertiesView(Window parentWindow, String title) {
         super(title, new JPanel());
+
+        this.parentWindow = parentWindow;
 
         contentPanel = (JPanel) getComponent(1);
 
@@ -59,7 +67,7 @@ public class PropertiesView extends TitledComponent {
     }
 
     void firePropertyChangeEvent(PropertyChangeEvent propertyChangeEvent) {
-        for(PropertyChangeListener listener : propertyChangeListeners) {
+        for (PropertyChangeListener listener : propertyChangeListeners) {
             listener.propertyChange(propertyChangeEvent);
         }
     }
@@ -86,7 +94,7 @@ public class PropertiesView extends TitledComponent {
 
             // create new card and replace the old one
             Component tmp = singleProcessCard;
-            singleProcessCard = new SingleProcessCard(new JPanel());
+            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
             singleProcessCard.setProcess(processes.get(0));
             contentPanel.remove(tmp);
             contentPanel.add(singleProcessCard, CARD.PROCESS_SINGLE_SELECTION.name());
@@ -122,7 +130,16 @@ public class PropertiesView extends TitledComponent {
 
     private ModelCard getModelCard() {
         if (null == modelCard) {
-            modelCard = new ModelCard(new JPanel());
+            modelCard = new ModelCard(parentWindow, new JPanel());
+            for (final JTextField field : modelCard.getPropertyFields().values()) {
+                field.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        JTextField field = (JTextField) e.getSource();
+//                        Logger.log((.getName());
+                        firePropertyChangeEvent(CARD.MODEL, field.getName(), null, field.getText());
+                    }
+                });
+            }
         }
 
         return modelCard;
@@ -130,7 +147,7 @@ public class PropertiesView extends TitledComponent {
 
     private SingleProcessCard getSingleProcessCard() {
         if (null == singleProcessCard) {
-            singleProcessCard = new SingleProcessCard(new JPanel());
+            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
         }
 
         return singleProcessCard;

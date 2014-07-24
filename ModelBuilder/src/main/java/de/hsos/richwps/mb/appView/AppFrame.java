@@ -41,20 +41,23 @@ public class AppFrame extends JFrame {
     private AppToolbar toolbar;
     private TitledComponent graphViewGui;
     private JPanel serviceSummaryView;
+    private String frameTitle;
 
     /**
      * Frame setup.
      */
-    public AppFrame(App app) {
-        super();
+    public AppFrame(String title) {
+        super(title);
+        this.frameTitle = title;
+    }
 
+    public void init(App app) {
         // TODO Inversion of Control: AppFrame should not know class App!
         this.app = app;
 
         this.actionProvider = app.getActionProvider();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        setTitle(AppConstants.FRAME_TITLE);
         setLocation(getStartLocation());
         setSize(getStartSize());
         if (isStartMaximized()) {
@@ -268,19 +271,24 @@ public class AppFrame extends JFrame {
 
     /**
      * Sets GraphView title and style to show the current model's name.
+     *
      * @param title
      */
     public void setGraphViewTitle(String title) {
-        getGraphViewGui().setTitle(title);
-        getGraphViewGui().setTitleBold();
+        setTitle(frameTitle + " - " + title);
+
+//    );
+//        getGraphViewGui().setTitle(title);
+//        getGraphViewGui().setTitleBold();
     }
 
     /**
      * Resets style and title of the GraphView to indicate an unnamed model.
      */
     public void resetGraphViewTitle() {
-        getGraphViewGui().setTitle(AppConstants.EDITOR_DEFAULT_TITLE);
-        graphViewGui.setTitleItalic();
+//        getGraphViewGui().setTitle(AppConstants.EDITOR_DEFAULT_TITLE);
+//        graphViewGui.setTitleItalic();
+        setTitle(frameTitle);
     }
 
     private TitledComponent getGraphViewGui() {
@@ -296,7 +304,6 @@ public class AppFrame extends JFrame {
         return graphViewGui;
     }
 
-    
     public AppMenuBar getAppMenuBar() {
         if (null == appMenuBar) {
             appMenuBar = new AppMenuBar(actionProvider);

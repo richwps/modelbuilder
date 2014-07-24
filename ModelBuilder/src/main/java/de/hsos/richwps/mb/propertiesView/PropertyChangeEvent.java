@@ -45,7 +45,18 @@ public class PropertyChangeEvent {
         this.newValue = newValue;
     }
 
-
-
+    @Override
+    public String toString() {
+        StringBuilder sb =new StringBuilder(200);
+        sb.append("SourceCard: ");
+        sb.append(sourceCard.name());
+        sb.append(", property: ");
+        sb.append(property);
+        sb.append(", oldValue: ");
+        sb.append(oldValue);
+        sb.append(", newValue: ");
+        sb.append(newValue);
+        return sb.toString();
+    }
 
 }

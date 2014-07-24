@@ -53,6 +53,7 @@ public class ProcessProvider implements IProcessProvider {
 
         try {
             net = spClient.getNetwork();
+            spClient.clearCache();
         } catch (Exception ex) {
             net = null;
             AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_NOT_REACHABLE, this);
