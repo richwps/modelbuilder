@@ -163,7 +163,7 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
     }
 
     protected MultilineLabel createMultilineLabel(String text, Color background, boolean editable) {
-        MultilineLabel label = new MultilineLabel(text, editable);
+        MultilineLabel label = new MultilineLabel(text);
         label.setBackground(background);
         Border emptyBorder = new EmptyBorder(labelInsets);
         label.setBorder(emptyBorder);
