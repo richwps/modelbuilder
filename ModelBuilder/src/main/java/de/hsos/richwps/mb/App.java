@@ -467,7 +467,6 @@ public class App {
             graphView.getGui().addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyReleased(KeyEvent e) {
-                    // delete key
                     switch (e.getKeyCode()) {
                         // Delete
                         case 127:
@@ -477,6 +476,14 @@ public class App {
                                 if (choice == JOptionPane.YES_OPTION) {
                                     getGraphView().deleteSelectedCells();
                                 }
+                            }
+                            break;
+
+                        // Select All
+                        case 65:
+                            if(0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
+                                // TODO move select-method to graphView (boundary!!)
+                                graphView.getGraph().selectAll();
                             }
                             break;
 
