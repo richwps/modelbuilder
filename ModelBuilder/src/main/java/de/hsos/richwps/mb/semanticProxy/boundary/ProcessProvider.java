@@ -13,6 +13,7 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
 import de.hsos.richwps.sp.client.wps.Vocabulary;
+import de.hsos.richwps.sp.client.wps.gettypes.InAndOutputForm;
 import de.hsos.richwps.sp.client.wps.gettypes.Input;
 import de.hsos.richwps.sp.client.wps.gettypes.Network;
 import de.hsos.richwps.sp.client.wps.gettypes.Output;
@@ -32,7 +33,7 @@ public class ProcessProvider implements IProcessProvider {
     private Network net;
     private WPS[] wpss;
 
-    public ProcessProvider()   {
+    public ProcessProvider() {
         spClient = SPClient.getInstance();
         this.wpss = new WPS[]{};
     }
@@ -80,10 +81,6 @@ public class ProcessProvider implements IProcessProvider {
         return null;
     }
 
-//    private ProcessPortDatatype getDatatype(Input input) {
-//        switch(input.)
-//    }
-
     @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
 
@@ -100,18 +97,16 @@ public class ProcessProvider implements IProcessProvider {
                         process.setOwsAbstract(spProcess.getAbstract());
                         process.setTitle(spProcess.getTitle());
 
-                        for(Input spInput : spProcess.getInputs()) {
-                        //  FIXME get Datatype from SP ?!?!?
-                            ProcessPort inPort = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                        for (Input spInput : spProcess.getInputs()) {
+                            ProcessPort inPort = new ProcessPort(getDatatype(spInput.getInputFormChoice()));
                             inPort.setOwsIdentifier(spInput.getIdentifier());
                             inPort.setOwsAbstract(spInput.getAbstract());
                             inPort.setOwsTitle(spInput.getTitle());
                             process.addInputPort(inPort);
                         }
 
-                        for(Output spOutput : spProcess.getOutputs()) {
-                        //  FIXME get Datatype from SP ?!?!?
-                            ProcessPort outPort = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                        for (Output spOutput : spProcess.getOutputs()) {
+                            ProcessPort outPort = new ProcessPort(getDatatype(spOutput.getOutputFormChoice()));
                             outPort.setOwsIdentifier(spOutput.getIdentifier());
                             outPort.setOwsAbstract(spOutput.getAbstract());
                             outPort.setOwsTitle(spOutput.getTitle());
@@ -442,5 +437,18 @@ public class ProcessProvider implements IProcessProvider {
 
     public String mockServer1 = "Server 1";
     public String mockServer2 = "Server 2";
+
+    private ProcessPortDatatype getDatatype(InAndOutputForm inputFormChoice) throws UnsupportedWpsDatatypeException {
+        switch (inputFormChoice.getDataType()) {
+            case InAndOutputForm.LITERAL_TYPE:
+                return ProcessPortDatatype.LITERAL;
+            case InAndOutputForm.COMPLEX_TYPE:
+                return ProcessPortDatatype.COMPLEX;
+            case InAndOutputForm.BOUNDING_BOX_TYPE:
+                return ProcessPortDatatype.BOUNDING_BOX;
+        }
+
+        throw new UnsupportedWpsDatatypeException(inputFormChoice.getDataType());
+    }
 
 }
