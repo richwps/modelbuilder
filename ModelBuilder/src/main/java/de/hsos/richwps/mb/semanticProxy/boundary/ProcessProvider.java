@@ -13,7 +13,9 @@ import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
 import de.hsos.richwps.sp.client.wps.Vocabulary;
+import de.hsos.richwps.sp.client.wps.gettypes.Input;
 import de.hsos.richwps.sp.client.wps.gettypes.Network;
+import de.hsos.richwps.sp.client.wps.gettypes.Output;
 import de.hsos.richwps.sp.client.wps.gettypes.WPS;
 import java.net.URL;
 import java.util.Collection;
@@ -78,6 +80,10 @@ public class ProcessProvider implements IProcessProvider {
         return null;
     }
 
+//    private ProcessPortDatatype getDatatype(Input input) {
+//        switch(input.)
+//    }
+
     @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
 
@@ -86,18 +92,39 @@ public class ProcessProvider implements IProcessProvider {
         for (WPS wps : wpss) {
             try {
                 if (server.equals(wps.getEndpoint())) {
-                    LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
-                    ProcessEntity pe = null;
-                    for (de.hsos.richwps.sp.client.wps.gettypes.Process p : wps.getProcesses()) {
-                        pe = new ProcessEntity(server, p.getIdentifier());
-                        pe.setOwsAbstract(p.getAbstract());
-                        pe.setTitle(p.getTitle());
-                        ps.add(pe);
+                    LinkedList<ProcessEntity> serverProcesses = new LinkedList<ProcessEntity>();
+                    ProcessEntity process = null;
+
+                    for (de.hsos.richwps.sp.client.wps.gettypes.Process spProcess : wps.getProcesses()) {
+                        process = new ProcessEntity(server, spProcess.getIdentifier());
+                        process.setOwsAbstract(spProcess.getAbstract());
+                        process.setTitle(spProcess.getTitle());
+
+                        for(Input spInput : spProcess.getInputs()) {
+                        //  FIXME get Datatype from SP ?!?!?
+                            ProcessPort inPort = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                            inPort.setOwsIdentifier(spInput.getIdentifier());
+                            inPort.setOwsAbstract(spInput.getAbstract());
+                            inPort.setOwsTitle(spInput.getTitle());
+                            process.addInputPort(inPort);
+                        }
+
+                        for(Output spOutput : spProcess.getOutputs()) {
+                        //  FIXME get Datatype from SP ?!?!?
+                            ProcessPort outPort = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                            outPort.setOwsIdentifier(spOutput.getIdentifier());
+                            outPort.setOwsAbstract(spOutput.getAbstract());
+                            outPort.setOwsTitle(spOutput.getTitle());
+                            process.addOutputPort(outPort);
+                        }
+
+                        // add process to current server's list
+                        serverProcesses.add(process);
                     }
 
-                    return ps;
+                    return serverProcesses;
                 }
-            } catch (RDFException ex) {
+            } catch (Exception ex) {
                 rdfError = true;
             }
         }
