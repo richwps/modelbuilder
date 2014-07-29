@@ -72,20 +72,78 @@ public class ProcessProvider implements IProcessProvider {
 
     @Override
     public ProcessEntity getProcessEntity(String server, String identifier) {
-        for (ProcessEntity process : getServerProcesses(server)) {
-            if (process.getIdentifier().equals(identifier)) {
-                return process;
+        return getProcessWithPorts(server, identifier);
+    }
+
+    private void fireSpReceiveExceptionAsAppEvent(Exception ex) {
+        String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, ex.getClass().getSimpleName(), ex.getMessage());
+        AppEventService.getInstance().fireAppEvent(msg, this);
+    }
+
+    private ProcessEntity getProcessWithPorts(String server, String identifier) {
+
+        ProcessEntity process = null;
+
+        // find desired endpoint (server)
+        for (WPS wps : wpss) {
+            try {
+                if (server.equals(wps.getEndpoint())) {
+
+                    for (de.hsos.richwps.sp.client.wps.gettypes.Process spProcess : wps.getProcesses()) {
+
+                        if (spProcess.getIdentifier().equals(identifier)) {
+                            // Map process properties
+                            process = new ProcessEntity(server, spProcess.getIdentifier());
+                            process.setOwsAbstract(spProcess.getAbstract());
+                            process.setTitle(spProcess.getTitle());
+
+                            // Map input ports
+                            try {
+                                for (Input spInput : spProcess.getInputs()) {
+                                    ProcessPort inPort = new ProcessPort(getDatatype(spInput.getInputFormChoice()));
+                                    inPort.setOwsIdentifier(spInput.getIdentifier());
+                                    inPort.setOwsAbstract(spInput.getAbstract());
+                                    inPort.setOwsTitle(spInput.getTitle());
+                                    process.addInputPort(inPort);
+                                }
+                            } catch (Exception ex) {
+                                fireSpReceiveExceptionAsAppEvent(ex);
+                            }
+
+                            // Map output ports
+                            try {
+                                for (Output spOutput : spProcess.getOutputs()) {
+                                    ProcessPort outPort = new ProcessPort(getDatatype(spOutput.getOutputFormChoice()));
+                                    outPort.setOwsIdentifier(spOutput.getIdentifier());
+                                    outPort.setOwsAbstract(spOutput.getAbstract());
+                                    outPort.setOwsTitle(spOutput.getTitle());
+                                    process.addOutputPort(outPort);
+                                }
+                            } catch (Exception ex) {
+                                fireSpReceiveExceptionAsAppEvent(ex);
+                            }
+
+                            // process found, return to stop search
+                            return process;
+                        }
+                    }
+
+                }
+            } catch (RDFException ex) {
+                fireSpReceiveExceptionAsAppEvent(ex);
             }
         }
-
         return null;
     }
 
     @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
+        return getServerProcesses(server, false);
+    }
 
-        boolean rdfError = false;
+    public Collection<ProcessEntity> getServerProcesses(String server, boolean withPorts) {
 
+        // find desired endpoint (server)
         for (WPS wps : wpss) {
             try {
                 if (server.equals(wps.getEndpoint())) {
@@ -93,39 +151,48 @@ public class ProcessProvider implements IProcessProvider {
                     ProcessEntity process = null;
 
                     for (de.hsos.richwps.sp.client.wps.gettypes.Process spProcess : wps.getProcesses()) {
+
+                        // Map process properties
                         process = new ProcessEntity(server, spProcess.getIdentifier());
                         process.setOwsAbstract(spProcess.getAbstract());
                         process.setTitle(spProcess.getTitle());
 
-                        for (Input spInput : spProcess.getInputs()) {
-                            ProcessPort inPort = new ProcessPort(getDatatype(spInput.getInputFormChoice()));
-                            inPort.setOwsIdentifier(spInput.getIdentifier());
-                            inPort.setOwsAbstract(spInput.getAbstract());
-                            inPort.setOwsTitle(spInput.getTitle());
-                            process.addInputPort(inPort);
-                        }
-
-                        for (Output spOutput : spProcess.getOutputs()) {
-                            ProcessPort outPort = new ProcessPort(getDatatype(spOutput.getOutputFormChoice()));
-                            outPort.setOwsIdentifier(spOutput.getIdentifier());
-                            outPort.setOwsAbstract(spOutput.getAbstract());
-                            outPort.setOwsTitle(spOutput.getTitle());
-                            process.addOutputPort(outPort);
-                        }
-
+//                        if (withPorts) {
+//                            // Map input ports
+//                            try {
+//                                for (Input spInput : spProcess.getInputs()) {
+//                                    ProcessPort inPort = new ProcessPort(getDatatype(spInput.getInputFormChoice()));
+//                                    inPort.setOwsIdentifier(spInput.getIdentifier());
+//                                    inPort.setOwsAbstract(spInput.getAbstract());
+//                                    inPort.setOwsTitle(spInput.getTitle());
+//                                    process.addInputPort(inPort);
+//                                }
+//                            } catch (Exception ex) {
+//                                fireSpReceiveExceptionAsAppEvent(ex);
+//                            }
+//
+//                            // Map output ports
+//                            try {
+//                                for (Output spOutput : spProcess.getOutputs()) {
+//                                    ProcessPort outPort = new ProcessPort(getDatatype(spOutput.getOutputFormChoice()));
+//                                    outPort.setOwsIdentifier(spOutput.getIdentifier());
+//                                    outPort.setOwsAbstract(spOutput.getAbstract());
+//                                    outPort.setOwsTitle(spOutput.getTitle());
+//                                    process.addOutputPort(outPort);
+//                                }
+//                            } catch (Exception ex) {
+//                                fireSpReceiveExceptionAsAppEvent(ex);
+//                            }
+//                        }
                         // add process to current server's list
                         serverProcesses.add(process);
                     }
 
                     return serverProcesses;
                 }
-            } catch (Exception ex) {
-                rdfError = true;
+            } catch (RDFException ex) {
+                fireSpReceiveExceptionAsAppEvent(ex);
             }
-        }
-
-        if (rdfError) {
-            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RDF_ERROR, this);
         }
 
         LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
@@ -426,7 +493,7 @@ public class ProcessProvider implements IProcessProvider {
         }
 
         if (rdfError) {
-            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RDF_ERROR, this);
+            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, this);
         }
 
         // TODO replace String with formatable AppConstant

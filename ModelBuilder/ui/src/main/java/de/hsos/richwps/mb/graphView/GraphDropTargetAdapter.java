@@ -82,6 +82,9 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
 
         if (o instanceof ProcessEntity) {
             ProcessEntity processEntity = (ProcessEntity) o;
+            String server = processEntity.getServer();
+            String identifier = processEntity.getIdentifier();
+            processEntity = processProvider.getProcessEntity(server, identifier);
             node = graphView.createNodeFromProcess(processEntity, location);
         }
 
@@ -102,7 +105,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
         }
 
         // can't handle given object
-        if(null != node) {
+        if (null != node) {
             createdNodes.add(node);
             return true;
         }
