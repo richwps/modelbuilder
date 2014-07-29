@@ -1,1 +1,16 @@
-/ModelBuilder/target/
+!ModelBuilder/tablelayout/target/tablelayout-1.0.0-SNAPSHOT.jar
+
+target
+.classpath
+.project
+.settings
+**/target/
+nbactions*.xml
+**/nbactions*.xml
+nb-configuration*.xml
+**/nb-configuration*.xml
+.classpath
+.Rhistory
+
+*.class
+
