@@ -82,9 +82,15 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
 
         if (o instanceof ProcessEntity) {
             ProcessEntity processEntity = (ProcessEntity) o;
+
+            // try to update ProcessEntity using SemanticProxy
             String server = processEntity.getServer();
             String identifier = processEntity.getIdentifier();
-            processEntity = processProvider.getProcessEntity(server, identifier);
+            ProcessEntity spProcess = processProvider.getProcessEntity(server, identifier);
+            if (null != spProcess) {
+                processEntity = spProcess;
+            }
+
             node = graphView.createNodeFromProcess(processEntity, location);
         }
 

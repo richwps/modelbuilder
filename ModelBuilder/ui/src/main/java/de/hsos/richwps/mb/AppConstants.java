@@ -52,7 +52,7 @@ public class AppConstants {
 public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String SEMANTICPROXY_DEFAULT_URL = "http://localhost:4567/semanticproxy/resources";
-    public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. (Proxy down or wrong URL?)";
+    public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. Please check the configuration.";
     public final static String SEMANTICPROXY_RECEIVE_ERROR = "An error occured while receiving from SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
 
@@ -87,7 +87,7 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
         {"LOAD_MODEL", "Open"},
         {"SAVE_MODEL", "Save"},
         {"SAVE_MODEL_AS", "Save as"},
-        {"SHOW_PREFERENCES", "Preferences"},
+        {"SHOW_PREFERENCES", "Configuration"},
         {"EXIT_APP", "Exit"},
         {"UNDO", "Undo"},
         {"REDO", "Redo"},

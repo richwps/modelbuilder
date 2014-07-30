@@ -31,7 +31,7 @@ import layout.TableLayout;
 import org.w3c.dom.Document;
 
 /**
- *
+ * Boundary class for accessing and interacting with the RichWPS graph.
  * @author dziegenh
  */
 public class GraphView extends JPanel {
@@ -52,7 +52,7 @@ public class GraphView extends JPanel {
     }
 
     /**
-     * Lazy graph init.
+     * Lazy graph component init.
      *
      * @return
      */
@@ -208,8 +208,10 @@ public class GraphView extends JPanel {
     /**
      * Reads from the given file and instantiates the model etc using extended
      * JGRaphX codecs.
+     * @param filename
+     * @throws java.io.IOException
      */
-    public void loadGraphFromXml(String filename) throws Exception {
+    public void loadGraphFromXml(String filename) throws IOException {
         mxCodec codec = new mxCodec();
         Document doc = mxXmlUtils.parseXml(mxUtils.readFile(filename));
         GraphModel graphModel = (GraphModel) codec.decode(doc.getFirstChild());

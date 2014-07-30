@@ -41,7 +41,7 @@ public class GraphNodeCreator {
             double OUTPUT_PORT_WIDTH = PROCESS_WIDTH / (double) numOutputs;
 
             // TODO calculate process dimensions depending on num ports, length of name  etc.
-            processCell = (mxCell) graph.insertVertex(parent, null, process, location.x, location.y, PROCESS_WIDTH, PROCESS_HEIGHT, "PROCESS"); // changed height
+            processCell = (mxCell) graph.insertVertex(parent, null, process, location.x, location.y, PROCESS_WIDTH, PROCESS_HEIGHT, GraphSetup.STYLENAME_PROCESS); // changed height
             processCell.setConnectable(false);
 
             int i = 0;
@@ -53,9 +53,8 @@ public class GraphNodeCreator {
                 geo1.setRelative(true);
                 geo1.setOffset(new mxPoint(curX, 0));
 
-                mxCell port1 = new mxCell(null, geo1, "PORT");
+                mxCell port1 = new mxCell(null, geo1, GraphSetup.STYLENAME_LOCAL_PORT);
                 port1.setVertex(true);
-//                port1.setValue("In " + (i + 1));   // later, ports will have names!
                 port1.setValue(pIn);
                 graph.addCell(port1, processCell);
 
@@ -71,9 +70,8 @@ public class GraphNodeCreator {
                 geo2.setRelative(true);
                 geo2.setOffset(new mxPoint(curX, -PROCESS_PORT_HEIGHT)); // Changed position offset
 
-                mxCell port1 = new mxCell(null, geo2, "PORT");
+                mxCell port1 = new mxCell(null, geo2, GraphSetup.STYLENAME_LOCAL_PORT);
                 port1.setVertex(true);
-//                port1.setValue("Out " + (i + 1));   // later, ports will have names!
                 port1.setValue(pOut);
                 graph.addCell(port1, processCell);
 
@@ -101,7 +99,7 @@ public class GraphNodeCreator {
         mxCell portCell = null;
 
         try {
-            String style = port.isGlobalInput() ? "PROCESS_INPUT" : "PROCESS_OUTPUT";
+            String style = port.isGlobalInput() ? GraphSetup.STYLENAME_GLOBAL_INPUT : GraphSetup.STYLENAME_GLOBAL_OUTPUT;
             portCell = (mxCell) graph.insertVertex(parent, null, port, location.x, location.y, GLOBAL_PORT_WIDTH, GLOBAL_PORT_HEIGHT, style);
 
         } finally {

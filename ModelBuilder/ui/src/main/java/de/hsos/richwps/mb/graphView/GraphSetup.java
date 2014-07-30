@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.io.mxCodecRegistry;
@@ -17,7 +12,7 @@ import java.awt.BasicStroke;
 import java.util.Hashtable;
 
 /**
- *
+ * Basic setup (constants, styles, behaviour) for the RichWPS graph.
  * @author dziegenh
  */
 public class GraphSetup {
@@ -26,6 +21,14 @@ public class GraphSetup {
     private static int fontSize = 16;
     private static int spacing = 4;
 
+    static String STYLENAME_GLOBAL_INPUT = "PROCESS_INPUT";
+    static String STYLENAME_GLOBAL_OUTPUT = "PROCESS_OUTPUT";
+    static String STYLENAME_PROCESS = "PROCESS";
+    static String STYLENAME_LOCAL_PORT = "PORT";
+
+    /**
+     * Initialises graph-independent codecs, constants etc.
+     */
     public static void init() {
         // TODO refactor when the real Process Model is implemented!
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.semanticProxy.entity");
@@ -42,6 +45,11 @@ public class GraphSetup {
                     3 * strokeWidth, 3 * strokeWidth}, 0.0f);
     }
 
+    /**
+     * Sets up a specific graph (styles, behaviour).
+     * @param graph
+     * @return
+     */
     public static Graph setup(Graph graph) {
         // graph setup
         graph.setCellsDisconnectable(true);
