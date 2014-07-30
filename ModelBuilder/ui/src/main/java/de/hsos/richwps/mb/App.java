@@ -483,7 +483,7 @@ public class App {
                         case 65:
                             if(0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
                                 // TODO move select-method to graphView (boundary!!)
-                                graphView.getGraph().selectAll();
+                                graphView.selectAll();
                             }
                             break;
 

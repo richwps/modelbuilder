@@ -174,12 +174,14 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
 
-    public static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
-    public static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";
-    public static String GRAPH_ERROR_SINGLE_FEEDBACK = "Connecting an input to an output of the same process is not possible"; //"Feedback connection loops are not allowed";
-    public static String GRAPH_ERROR_IN_TO_IN = "An input port must be connected to an output port";
-    public static String GRAPH_ERROR_OUT_TO_OUT = "An output port must be connected to an input port";
-    public static String GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE = "Port types are not compatible";
+    // Graph error messages
+    public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
+    public final static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";
+    public final static String GRAPH_ERROR_SINGLE_FEEDBACK = "Connecting an input to an output of the same process is not possible"; //"Feedback connection loops are not allowed";
+    public final static String GRAPH_ERROR_IN_TO_IN = "An input port must be connected to an output port";
+    public final static String GRAPH_ERROR_OUT_TO_OUT = "An output port must be connected to an input port";
+    public final static String GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE = "Port types are not compatible";
+    public final static String GRAPH_EXCEPTION_PORT_NOT_GLOBAL = "Only global ports can be added to the graph";
 
     /**
      * Used for error messages, e.g. in ToolTips
@@ -190,5 +192,6 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String PROPERTIES_MODELDATA_TITLE = "Model";
     public final static String PROPERTIES_MODELDATA_NAME = "Name";
+
 
 }
