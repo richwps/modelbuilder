@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
@@ -23,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- *
+ * Adapter for performing drop actions depending on the transferred object(s).
  * @author dziegenh
  */
 public class GraphDropTargetAdapter extends DropTargetAdapter {
@@ -44,6 +39,11 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
         return dropTarget;
     }
 
+    /**
+     * Performs an action depending on the transfered Object.
+     * Uses DataFlavors to get the transfer object.
+     * @param dtde
+     */
     public void drop(DropTargetDropEvent dtde) {
         Transferable transferable = dtde.getTransferable();
 
@@ -76,6 +76,13 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
         graphView.setCellsSelected(createdNodes.toArray());
     }
 
+    /**
+     * Creates a graph node (cell) depending on the given transfer object.
+     * Useds recursively if the object is an array.
+     * @param o
+     * @param location
+     * @return
+     */
     protected boolean createNodesFromTransferObject(Object o, Point location) {
 
         mxCell node = null;

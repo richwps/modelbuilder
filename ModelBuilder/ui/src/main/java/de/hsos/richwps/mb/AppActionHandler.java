@@ -129,7 +129,7 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
                     // A new model has been loaded => add change listener for undo/redo
-                    app.connectUndoManagerToModel();
+                    app.modelLoaded();
                     app.updateModelPropertiesView();
                 }
 
@@ -270,6 +270,6 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doReloadProcesses() {
-        app.fillTree();
+        app.fillMainTree();
     }
 }

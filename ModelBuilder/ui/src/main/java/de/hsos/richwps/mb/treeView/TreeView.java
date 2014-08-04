@@ -17,11 +17,8 @@ import javax.swing.tree.TreeSelectionModel;
 public class TreeView {
 
     private JTree tree;
-//    private IProcessProvider processProvider;
 
     public TreeView(TreeNode root) {
-//        this.processProvider = processProvider;
-    
         tree = new JTree(root);
         tree.setRootVisible(false);
         tree.setDragEnabled(true);

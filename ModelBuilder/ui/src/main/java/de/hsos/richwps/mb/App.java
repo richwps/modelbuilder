@@ -19,48 +19,29 @@ import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.PropertyChangeListener;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.treeView.TreeView;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.DndProxyLabel;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import layout.TableLayout;
 
 /**
@@ -86,7 +67,7 @@ public class App {
         App app = new App(args);
     }
 
-    private TreeView treeView;
+    private MainTreeView mainTreeView;
     private GraphView graphView;
     private PropertiesView propertiesView;
     private JLabel graphDndProxy;
@@ -94,7 +75,9 @@ public class App {
     GraphDropTargetAdapter dropTargetAdapter;
     private InfoTabs infoTabs;
     private AppTreeToolbar treeViewToolbar;
-    private JPanel treeViewPanel;
+    private JPanel mainTreeViewPanel;
+    private JPanel subTreeViewPanel;
+    private SubTreeView subTreeView;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -161,12 +144,12 @@ public class App {
             getPropertiesView().addPropertyChangeListener(new PropertyChangeListener() {
 
                 public void propertyChange(PropertyChangeEvent event) {
-                        switch(event.getSourceCard()) {
+                    switch (event.getSourceCard()) {
                         case NO_SELECTION:
                             break;
                         case MODEL:
                             // TODO move String to config or new properties model
-                            if(event.getProperty().equals("name")) {
+                            if (event.getProperty().equals("name")) {
                                 getGraphView().setGraphName((String) event.getNewValue());
                             }
                             break;
@@ -175,16 +158,15 @@ public class App {
                         case PROCESS_MULTI_SELECTION:
                             break;
                         default:
-                            // nothing
+                        // nothing
                         }
                 }
             });
 
-
             splash.showMessageAndProgress("Requesting processes", 80);
 
             // connect to SP and fill tree with services etc. received from SP
-            fillTree();
+            fillMainTree();
 
             splash.showMessageAndProgress("ModelBuilder is ready!", 100);
 
@@ -252,48 +234,40 @@ public class App {
     }
 
     private void initDragAndDrop() {
-        // activate graph droptarget when user starts dragging a treeView node
-        DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(getTreeView().getGui(), DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
-            public void dragGestureRecognized(DragGestureEvent dge) {
-                try {
-                    if (null != dropTargetAdapter) {
-                        return;
-                    }
-                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphDndProxy());
-                    dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
-                    dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
-                    getGraphDndProxy().setVisible(true);
-
-                } catch (TooManyListenersException ex) {
-                    Logger.getLogger(App.class
-                            .getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-
-        // deactivate graph drop target when dragging ends
-        DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceListener() {
-            public void dragEnter(DragSourceDragEvent dsde) {
-            }
-
-            public void dragOver(DragSourceDragEvent dsde) {
-            }
-
-            public void dropActionChanged(DragSourceDragEvent dsde) {
-            }
-
-            public void dragExit(DragSourceEvent dse) {
-            }
-
-            public void dragDropEnd(DragSourceDropEvent dsde) {
-                dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
-                getGraphDndProxy().setVisible(false);
-                dropTargetAdapter = null;
-            }
-        });
-
-        getTreeView().getGui().setTransferHandler(getProcessTransferHandler());
+        getMainTreeView().initDnd();
+        getSubTreeView().initDnd();
     }
+//        // activate graph droptarget when user starts dragging a treeView node
+//        DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(tree, DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
+//            public void dragGestureRecognized(DragGestureEvent dge) {
+//                try {
+//                    if (null != dropTargetAdapter) {
+//                        return;
+//                    }
+//                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphDndProxy());
+//                    dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
+//                    dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
+//                    getGraphDndProxy().setVisible(true);
+//
+//                } catch (TooManyListenersException ex) {
+//                    Logger.getLogger(App.class
+//                            .getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
+//
+//        // deactivate graph drop target when dragging ends
+//        DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceAdapter() {
+//            @Override
+//            public void dragDropEnd(DragSourceDropEvent dsde) {
+//                dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
+//                getGraphDndProxy().setVisible(false);
+//                dropTargetAdapter = null;
+//            }
+//        });
+//
+//        tree.setTransferHandler(getProcessTransferHandler());
+//    }
 
     /**
      * Returns an overlay panel for the graph.
@@ -308,134 +282,16 @@ public class App {
         return graphDndProxy;
     }
 
-    /**
-     * The server/process tree (north-west of the frame).
-     *
-     * @return
-     */
-    protected TreeView getTreeView() {
-        if (null == treeView) {
-            // TODO mock; to be replaced when semantic proxy exists
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
-
-            // add dummy node. otherwise the tree doesn't work with Java 1.7
-            root.add(new DefaultMutableTreeNode(""));
-
-            treeView = new TreeView(root);
-
-            treeView.getGui().addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (2 == e.getClickCount()) {
-                        DefaultMutableTreeNode node = treeView.getSelectedNode();
-                        if (null != node) {
-
-                            Object nodeObject = node.getUserObject();
-                            if (nodeObject instanceof ProcessEntity) {
-                                getGraphView().createNodeFromProcess((IProcessEntity) nodeObject, new Point(0, 0));
-                            } else if (nodeObject instanceof ProcessPort) {
-                                getGraphView().createNodeFromPort((ProcessPort) nodeObject, new Point(0, 0));
-                            }
-                        }
-                    }
-                }
-            });
-
-            treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
-            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
-            cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
-            cellRenderer.setLeafIcon(UIManager.getIcon(AppConstants.ICON_PROCESS_KEY));
-            treeView.getGui().setCellRenderer(cellRenderer);
+    private SubTreeView getSubTreeView() {
+        if (null == subTreeView) {
+            subTreeView = new SubTreeView(this);
         }
 
-        return treeView;
+        return subTreeView;
     }
 
-    void fillTree() {
-        ProcessProvider processProvider = getProcessProvider();
-
-        // Remove existing child-nodes from root
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
-        root.removeAllChildren();
-
-        // Create and fill Process node
-        DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
-        if (processProvider != null) {
-            try {
-                String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
-                if (processProvider.isConnected() || processProvider.connect(url)) {
-                    for (String server : processProvider.getAllServer()) {
-                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
-
-                        for (ProcessEntity process : processProvider.getServerProcesses(server)) {
-                            serverNode.add(new DefaultMutableTreeNode(process));
-                        }
-                        processesNode.add(serverNode);
-                    }
-                }
-
-            } catch (Exception ex) {
-                // Inform user when SP client can't be created
-                AppEvent event = new AppEvent(AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT, this, AppConstants.INFOTAB_ID_SEMANTICPROXY);
-                AppEventService.getInstance().fireAppEvent(event);
-
-                // Append exception message if available
-                String exMsg = ex.getMessage();
-                if (null != exMsg && !exMsg.isEmpty()) {
-                    StringBuilder sb = new StringBuilder(200);
-                    sb.append(AppConstants.ERROR_MSG_IS);
-                    sb.append("\"");
-                    sb.append(ex.getMessage());
-                    sb.append("\"");
-                    event.setMessage(sb.toString());
-                    AppEventService.getInstance().fireAppEvent(event);
-                }
-            }
-
-            // add MOCK servers for Development -> to be removed!
-            LinkedList<String> mockServers = new LinkedList<String>();
-            mockServers.add(processProvider.mockServer1);
-            mockServers.add(processProvider.mockServer2);
-            for (String server : mockServers) {
-                DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
-
-                for (ProcessEntity process : processProvider.getServerProcesses(server)) {
-                    serverNode.add(new DefaultMutableTreeNode(process));
-                }
-                processesNode.add(serverNode);
-            }
-        }
-
-        // Create and fill download services node
-        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
-
-        downloadServices.add(new DefaultMutableTreeNode(""));
-
-        // TODO MOCK!! Create and fill local elements node
-        DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
-        // Outputs
-        ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-        ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-        cOut.setGlobalOutput(true);
-        lOut.setGlobalOutput(true);
-        local.add(new DefaultMutableTreeNode(cOut));
-        local.add(new DefaultMutableTreeNode(lOut));
-        // inputs
-        ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-        ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-        cIn.setGlobalOutput(false);
-        lIn.setGlobalOutput(false);
-        local.add(new DefaultMutableTreeNode(cIn));
-        local.add(new DefaultMutableTreeNode(lIn));
-
-        // add all child nodes to root
-        root.add(processesNode);
-        root.add(downloadServices);
-        root.add(local);
-
-        // Update tree GUI
-        getTreeView().getGui().updateUI();
-        getTreeView().expandAll();
+    protected JTree getSubTreeViewComponent() {
+        return getSubTreeView().getTreeView().getGui();
     }
 
     /**
@@ -443,17 +299,61 @@ public class App {
      *
      * @return
      */
-    public JPanel getTreeViewGui() {
-        if (null == treeViewPanel) {
-            treeViewPanel = new JPanel();
-            treeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
-            treeViewToolbar = new AppTreeToolbar(getActionProvider());
-            treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
-            treeViewPanel.add(treeViewToolbar, "0 0");
-            treeViewPanel.add(getTreeView().getGui(), "0 1");
+    public JPanel getSubTreeViewGui() {
+        if (null == subTreeViewPanel) {
+            subTreeViewPanel = new TitledComponent(AppConstants.SUB_TREEVIEW_TITLE, getSubTreeViewComponent());
+//            treeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+//            subTreeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+//            treeViewToolbar = new AppTreeToolbar(getActionProvider());
+//            treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
+//            treeViewPanel.add(treeViewToolbar, "0 0");
+//            subTreeViewPanel.add(getSubTreeViewComponent(), "0 0");
 
         }
-        return treeViewPanel;
+        return subTreeViewPanel;
+    }
+
+    public void fillSubTree() {
+        getSubTreeView().fillTree();
+    }
+
+    private MainTreeView getMainTreeView() {
+        if (null == mainTreeView) {
+            mainTreeView = new MainTreeView(this);
+        }
+
+        return mainTreeView;
+    }
+
+    /**
+     * The server/process tree (north-west of the frame).
+     *
+     * @return
+     */
+    protected JTree getMainTreeViewComponent() {
+        return getMainTreeView().getTreeView().getGui();
+    }
+
+    /**
+     * The tree GUI component.
+     *
+     * @return
+     */
+    public JPanel getMainTreeViewGui() {
+        if (null == mainTreeViewPanel) {
+            mainTreeViewPanel = new JPanel();
+            mainTreeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+            treeViewToolbar = new AppTreeToolbar(getActionProvider());
+            treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
+            mainTreeViewPanel.add(treeViewToolbar, "0 0");
+            mainTreeViewPanel.add(getMainTreeViewComponent(), "0 1");
+
+        }
+        return mainTreeViewPanel;
+    }
+
+    void fillMainTree() {
+        getMainTreeView().fillTree();
     }
 
     /**
@@ -481,7 +381,7 @@ public class App {
 
                         // Select All
                         case 65:
-                            if(0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
+                            if (0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
                                 // TODO move select-method to graphView (boundary!!)
                                 graphView.selectAll();
                             }
@@ -497,7 +397,7 @@ public class App {
             AppEventService.getInstance().addSourceCommand(graphView, AppConstants.INFOTAB_ID_EDITOR);
             AppEventService.getInstance().addSourceCommand(graphView.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
-            connectUndoManagerToModel();
+            modelLoaded();
         }
         return graphView;
     }
@@ -506,7 +406,7 @@ public class App {
      * Add the model's undoable graph edits to the UndoManager. Needs to be
      * called after a new model has been created or loaded.
      */
-    void connectUndoManagerToModel() {
+    void modelLoaded() {
         getGraphView().addUndoEventListener(new mxEventSource.mxIEventListener() {
             public void invoke(Object o, mxEventObject eo) {
                 Object editProperty = eo.getProperty("edit");
@@ -516,6 +416,8 @@ public class App {
                 }
             }
         });
+        
+        getSubTreeView().fillTree();
     }
 
     /**
@@ -622,4 +524,5 @@ public class App {
     public void updateModelPropertiesView() {
         getPropertiesView().setModel(getGraphView().getGraph().getGraphModel());
     }
+
 }

@@ -112,10 +112,10 @@ public class AppFrame extends JFrame {
      *
      * @return
      */
-    private Component getServiceSummaryView() {
+    private Component getModellingSummaryView() {
         // TODO mock
         if (null == serviceSummaryView) {
-            serviceSummaryView = new JPanel();
+            serviceSummaryView = app.getSubTreeViewGui();
         }
 
         return serviceSummaryView;
@@ -187,8 +187,8 @@ public class AppFrame extends JFrame {
     private JSplitPane getLeftPanel() {
         if (null == leftPanel) {
             leftPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-            leftPanel.add(getTreeViewGui(), JSplitPane.TOP);
-            leftPanel.add(getServiceSummaryView(), JSplitPane.BOTTOM);
+            leftPanel.add(getMainTreeViewGui(), JSplitPane.TOP);
+            leftPanel.add(getModellingSummaryView(), JSplitPane.BOTTOM);
             // expand both components on resize
             leftPanel.setResizeWeight(.5);
             leftPanel.setMinimumSize(AppConstants.LEFT_PANEL_MIN_SIZE);
@@ -262,9 +262,9 @@ public class AppFrame extends JFrame {
         return new Dimension(w, h);
     }
 
-    private Component getTreeViewGui() {
+    private Component getMainTreeViewGui() {
         if (null == treeViewGui) {
-            treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, new JScrollPane(app.getTreeViewGui()));
+            treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, new JScrollPane(app.getMainTreeViewGui()));
         }
 
         return treeViewGui;

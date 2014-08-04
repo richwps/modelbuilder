@@ -191,6 +191,23 @@ public class GraphView extends JPanel {
 
         return processes;
     }
+    /**
+     * Returns currently selected process entities.
+     *
+     * @return selected process entities.
+     */
+    public List<IProcessEntity> getUsedProcesses() {
+        Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
+        List<IProcessEntity> processes = new LinkedList<IProcessEntity>();
+        for (Object cell : cells) {
+            Object cellValue = getGraph().getModel().getValue(cell);
+            if (cellValue != null && cellValue instanceof IProcessEntity) {
+                processes.add((IProcessEntity) cellValue);
+            }
+        }
+
+        return processes;
+    }
 
     /**
      * Serializes the current model using extended JGRaphX codecs and saves the
