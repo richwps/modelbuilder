@@ -153,5 +153,21 @@ public class ProcessEntity implements IProcessEntity, Transferable, Serializable
         return toolTipText;
     }
 
+    /**
+     * ProcessEntities are equal if their server and identifier match.
+     * @param obj
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(null == obj || !(obj instanceof ProcessEntity)) {
+            return false;
+        }
+
+        ProcessEntity other = (ProcessEntity) obj;
+        return other.getServer().equals(this.getServer()) && other.getIdentifier().equals(this.getIdentifier());
+    }
+
+
 
 }

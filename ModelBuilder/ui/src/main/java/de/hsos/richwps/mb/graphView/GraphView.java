@@ -60,7 +60,7 @@ public class GraphView extends JPanel {
      *
      * @return
      */
-    private mxGraphComponent getGraphComponent() {
+    mxGraphComponent getGraphComponent() {
         if (null == graphComponent) {
             Graph graph = getGraph();
 
@@ -143,6 +143,14 @@ public class GraphView extends JPanel {
      */
     public void addUndoEventListener(mxEventSource.mxIEventListener listener) {
         getGraph().getModel().addListener(mxEvent.UNDO, listener);
+    }
+
+    public Point getEmptyCellLocation(Point start) {
+       while(null != getGraphComponent().getCellAt(start.x, start.y)) {
+            start.y += GraphSetup.CELLS_VERTICAL_OFFSET;
+        }
+       
+       return start;
     }
 
     // constants for model element change listener

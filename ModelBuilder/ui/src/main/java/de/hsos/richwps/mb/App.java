@@ -47,7 +47,6 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import layout.TableLayout;
 
 /**
@@ -394,19 +393,20 @@ public class App {
 
             @Override
             public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
-                if(type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
-                    getSubTreeView().addNode(new DefaultMutableTreeNode(element));
+                if (!type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
+                    return;
                 }
-//                de.hsos.richwps.mb.Logger.log(element.toString() + " " + type +" "+  changeType);
+
+                switch (changeType) {
+                    case ADDED:
+                        getSubTreeView().addNode(element);
+                        break;
+                    case REMOVED:
+                        getSubTreeView().removeNode(element);
+                        break;
+                }
             }
         });
-//        getGraphView().addCellEventListener(new mxEventSource.mxIEventListener() {
-//            @Override
-//            public void invoke(Object o, mxEventObject eo) {
-//                // TODO update subTreeView depending on event type (add/remove) !!
-//                de.hsos.richwps.mb.Logger.log("app listener: " + eo.getName());
-//            }
-//        });
 
         getSubTreeView().fillTree();
     }

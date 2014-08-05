@@ -85,6 +85,8 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
      */
     protected boolean createNodesFromTransferObject(Object o, Point location) {
 
+        location = graphView.getEmptyCellLocation(location);
+
         mxCell node = null;
 
         if (o instanceof ProcessEntity) {
@@ -111,7 +113,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             for (Object object : objects) {
                 if (createNodesFromTransferObject(object, location)) {
                     // if node creation was successful, set a different location for next node
-                    location.y += 100; // TODO get magic number from config/graph
+                    location.y += GraphSetup.CELLS_VERTICAL_OFFSET;
                 }
             }
             return true;

@@ -34,10 +34,13 @@ class TreeViewMouseAdapter extends MouseAdapter {
             DefaultMutableTreeNode node = treeView.getSelectedNode();
             if (null != node) {
                 Object nodeObject = node.getUserObject();
+
+                Point location = graphView.getEmptyCellLocation(new Point(0, 0));
+
                 if (nodeObject instanceof ProcessEntity) {
-                    graphView.createNodeFromProcess((IProcessEntity) nodeObject, new Point(0, 0));
+                    graphView.createNodeFromProcess((IProcessEntity) nodeObject, location);
                 } else if (nodeObject instanceof ProcessPort) {
-                    graphView.createNodeFromPort((ProcessPort) nodeObject, new Point(0, 0));
+                    graphView.createNodeFromPort((ProcessPort) nodeObject, location);
                 }
             }
         }

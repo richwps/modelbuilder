@@ -1,12 +1,12 @@
 package de.hsos.richwps.mb.graphView;
 
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
 import java.awt.BasicStroke;
@@ -21,6 +21,8 @@ public class GraphSetup {
     // TODO move to config/constants
     private static int fontSize = 16;
     private static int spacing = 4;
+
+    final static int CELLS_VERTICAL_OFFSET = 100;
 
     static String STYLENAME_GLOBAL_INPUT = "PROCESS_INPUT";
     static String STYLENAME_GLOBAL_OUTPUT = "PROCESS_OUTPUT";
