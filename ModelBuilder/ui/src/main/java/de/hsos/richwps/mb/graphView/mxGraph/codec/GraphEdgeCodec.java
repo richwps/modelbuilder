@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphView.codec;
+package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCellCodec;
 import com.mxgraph.io.mxCodec;
-import de.hsos.richwps.mb.graphView.GraphEdge;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

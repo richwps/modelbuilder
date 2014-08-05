@@ -14,6 +14,9 @@ import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraph;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
@@ -39,6 +42,7 @@ public class GraphView extends JPanel {
     private Graph graph;
     private mxGraphComponent graphComponent;
     private LinkedList<ListSelectionListener> selectionListener;
+    private LinkedList<ModelElementsChangedListener> modelElementsChangeListener;
     private IProcessProvider processProvider;
 
     public GraphView(IProcessProvider processProvider) {
@@ -64,12 +68,6 @@ public class GraphView extends JPanel {
             graphComponent.setToolTips(true);
             graphComponent.setBorder(new EmptyBorder(0, 0, 0, 0));
             graphComponent.getViewport().setBackground(Color.WHITE); // TODO move value to config/constants !!
-
-//            CellMarker cellMarker = new CellMarker(graphComponent);
-//            cellMarker.setHotspotEnabled(true);
-//            graphComponent.getConnectionHandler().setMarker(cellMarker);
-            // TODO replace with eventlistener - graph should not know graphcomponent!
-//            graph.setGraphComponent(graphComponent);
         }
 
         return graphComponent;
@@ -128,6 +126,15 @@ public class GraphView extends JPanel {
         return GraphNodeCreator.createNodeFromPort(getGraph(), port, location);
     }
 
+    /**
+     * Adds an listener for the events mxEvent.CELLS_ADDED, CELLS_REMOVE.
+     *
+     * @param listener
+     */
+//    public void addCellEventListener(mxEventSource.mxIEventListener listener) {
+//        getGraph().addListener(mxEvent.CELLS_ADDED, listener);
+//        getGraph().addListener(mxEvent.CELLS_REMOVED, listener);
+//    }
 
     /**
      * Adds an listener for mxEvent.UNDO events to the model.
@@ -136,6 +143,79 @@ public class GraphView extends JPanel {
      */
     public void addUndoEventListener(mxEventSource.mxIEventListener listener) {
         getGraph().getModel().addListener(mxEvent.UNDO, listener);
+    }
+
+    // constants for model element change listener
+    public static enum ELEMENT_TYPE { PROCESS, GLOBAL_PORT }
+    public static enum ELEMENT_CHANGE_TYPE { ADDED, REMOVED }
+
+    private List<ModelElementsChangedListener> getModelElementsChangedListeners() {
+        if(null == modelElementsChangeListener) {
+            modelElementsChangeListener = new LinkedList<ModelElementsChangedListener>();
+            
+            // listen to cells added/removed and fire custom event
+            mxEventSource.mxIEventListener listener = new mxEventSource.mxIEventListener() {
+                @Override
+                public void invoke(Object o, mxEventObject eo) {
+                    ELEMENT_CHANGE_TYPE change_type = null;
+//                    ELEMENT_TYPE type = null;
+                    GraphModel model = getGraph().getGraphModel();
+
+                    if(eo.getName().equals(mxEvent.CELLS_ADDED)) {
+                        change_type = ELEMENT_CHANGE_TYPE.ADDED;
+                    }
+                    else if(eo.getName().equals(mxEvent.CELLS_REMOVED)) {
+                        change_type = ELEMENT_CHANGE_TYPE.REMOVED;
+                    }
+                    else {
+                        return;
+                    }
+
+                    // there exists no mxGraph-Constants for the properties :(
+                    Object[] cells = (Object[]) eo.getProperty("cells");
+                    if(null == cells) {
+                        return;
+                    }
+
+                    for(Object cell : cells) {
+                        if(model.isProcess(cell)) {
+                            Object value = ((mxCell) cell).getValue();
+                            fireModelElementsChanged(value, ELEMENT_TYPE.PROCESS, change_type);
+                        }
+                        else if(model.isGlobalPort(cell)) {
+                            Object value = ((mxCell) cell).getValue();
+                            fireModelElementsChanged(value, ELEMENT_TYPE.GLOBAL_PORT, change_type);
+                        }
+                    }
+                }
+            };
+            getGraph().addListener(mxEvent.CELLS_ADDED, listener);
+            getGraph().addListener(mxEvent.CELLS_REMOVED, listener);
+        }
+
+        return modelElementsChangeListener;
+    }
+
+    void fireModelElementsChanged(Object element, ELEMENT_TYPE type, ELEMENT_CHANGE_TYPE changeType) {
+        for(ModelElementsChangedListener listener : getModelElementsChangedListeners()) {
+            listener.modelElementsChanged(element, type, changeType);
+        }
+    }
+
+    /**
+     * Adds a listener for model changes.
+     * @param listener
+     */
+    public void addModelElementsChangedListener(ModelElementsChangedListener listener) {
+        getModelElementsChangedListeners().add(listener);
+    }
+
+    /**
+     * removes a l
+     * @param listener
+     */
+    public void removeModeElementslChangedListener(ModelElementsChangedListener listener) {
+        getModelElementsChangedListeners().remove(listener);
     }
 
     /**

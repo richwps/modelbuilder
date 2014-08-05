@@ -20,18 +20,19 @@ import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import javax.swing.JTree;
 import javax.swing.TransferHandler;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- *
+ * Abstract Controller for a TreeView.
  * @author dziegenh
  */
-public abstract class AbstractTreeView {
+public abstract class AbstractTreeViewController {
 
     protected App app;
     private TreeView treeView;
     private GraphDropTargetAdapter dropTargetAdapter;
 
-    public AbstractTreeView(App app) {
+    public AbstractTreeViewController(App app) {
         this.app = app;
     }
 
@@ -64,6 +65,9 @@ public abstract class AbstractTreeView {
         return this.treeView;
     }
 
+    /**
+     * Initialises drag-and-drop mechanism for TreeView nodes.
+     */
     void initDnd() {
         JTree tree = getTreeView().getGui();
 
@@ -100,4 +104,12 @@ public abstract class AbstractTreeView {
         tree.setTransferHandler(getProcessTransferHandler());
     }
 
+    public void updateUI() {
+        getTreeView().getGui().updateUI();
+        getTreeView().expandAll();
+    }
+
+    protected DefaultMutableTreeNode getRoot() {
+        return (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
+    }
 }

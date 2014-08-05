@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphView;
+package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
@@ -35,7 +35,7 @@ public class GraphModel extends mxGraphModel {
         return clone;
     }
 
-    boolean isFlowInput(Object o) {
+    public boolean isFlowInput(Object o) {
         if (!isVertex(o)) {
             return false;
         }
@@ -47,7 +47,7 @@ public class GraphModel extends mxGraphModel {
         return false;
     }
 
-    boolean isFlowOutput(Object o) {
+    public boolean isFlowOutput(Object o) {
         if (!isVertex(o)) {
             return false;
         }
@@ -65,7 +65,7 @@ public class GraphModel extends mxGraphModel {
      * @param cell
      * @return
      */
-    boolean isProcess(Object o) {
+    public boolean isProcess(Object o) {
         return isVertex(o) && !isFlowInput(o) && !isFlowOutput(o);
     }
 
@@ -77,7 +77,7 @@ public class GraphModel extends mxGraphModel {
         this.name = name;
     }
 
-    boolean isGlobalPort(Object o) {
+    public boolean isGlobalPort(Object o) {
         if (!isVertex(o)) {
             return false;
         }

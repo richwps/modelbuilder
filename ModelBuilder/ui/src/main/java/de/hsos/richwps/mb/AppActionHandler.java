@@ -14,14 +14,13 @@ import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.SAVE_M
 import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS;
 import static de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.appActions.IAppActionHandler;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -97,8 +96,13 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doNewModel() {
-        int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION) {
+        boolean doNew = true;
+        if (app.getUndoManager().canUndoOrRedo()) {
+            int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
+            doNew = choice == JOptionPane.YES_OPTION;
+        }
+
+        if (doNew) {
             getGraphView().newGraph();
             app.getFrame().resetGraphViewTitle();
             app.getUndoManager().discardAllEdits();
@@ -108,8 +112,17 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doLoadModel() {
-        int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_LOAD_MODEL, AppConstants.CONFIRM_LOAD_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION) {
+        boolean doLoad = true;
+        if (app.getUndoManager().canUndoOrRedo()) {
+            int choice = JOptionPane.showConfirmDialog(
+                    app.getFrame(),
+                    AppConstants.CONFIRM_LOAD_MODEL,
+                    AppConstants.CONFIRM_LOAD_MODEL_TITLE,
+                    JOptionPane.YES_NO_OPTION);
+            doLoad = choice == JOptionPane.YES_OPTION;
+        }
+
+        if (doLoad) {
             try {
 
                 JFileChooser fc = new JFileChooser();
@@ -134,8 +147,18 @@ public class AppActionHandler implements IAppActionHandler {
                 }
 
             } catch (Exception ex) {
-                Logger.getLogger(AppActionHandler.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(app.getFrame(), AppConstants.LOAD_MODEL_FAILED);
+                StringBuilder sb = new StringBuilder(100);
+                sb.append(AppConstants.LOAD_MODEL_FAILED);
+                sb.append("\n");
+                sb.append(AppConstants.SEE_MODEL_LOG);
+                JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
+
+                sb = new StringBuilder(100);
+                sb.append(AppConstants.LOAD_MODEL_FAILED);
+                sb.append("\n");
+                sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
+                AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
             }
         }
@@ -185,12 +208,16 @@ public class AppActionHandler implements IAppActionHandler {
         dialog.add(buttonPanel, "0 2 1 2");
 
         dialog.setVisible(true);
-
     }
 
     private void doExit() {
-        int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION) {
+        boolean doExit = true;
+        if (app.getUndoManager().canUndoOrRedo()) {
+            int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
+            doExit = choice == JOptionPane.YES_OPTION;
+        }
+
+        if (doExit) {
             app.getFrame().dispose();
             System.exit(0);
         }
@@ -215,9 +242,9 @@ public class AppActionHandler implements IAppActionHandler {
 
         try {
             getGraphView().saveGraphToXml(filename);
+
         } catch (Exception ex) {
-            Logger.getLogger(AppActionHandler.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
+            handleSaveModelFailedException(ex);
         }
 
     }
@@ -249,16 +276,30 @@ public class AppActionHandler implements IAppActionHandler {
                 app.setCurrentModelFilename(filename);
                 app.getFrame().setGraphViewTitle(filename);
 //                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
+
             } catch (Exception ex) {
+                handleSaveModelFailedException(ex);
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
-                JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);
             }
         }
     }
 
+    private void handleSaveModelFailedException(Exception ex) {
+        StringBuilder sb = new StringBuilder(100);
+        sb.append(AppConstants.SAVE_MODEL_FAILED);
+        sb.append("\n");
+        sb.append(AppConstants.SEE_MODEL_LOG);
+        JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
+
+        sb = new StringBuilder(100);
+        sb.append(AppConstants.SAVE_MODEL_FAILED);
+        sb.append("\n");
+        sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
+        AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+    }
+
     private void doDeploy() {
-        // TODO just an example: get the graph etc. and hand it to the deployment package.
-        app.getGraphView().getGraph();
+        app.deploy();
     }
 
     private void doUndo() {

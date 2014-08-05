@@ -6,7 +6,7 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.graphView.GraphModel;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Component;

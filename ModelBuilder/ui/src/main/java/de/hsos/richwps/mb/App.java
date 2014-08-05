@@ -12,8 +12,10 @@ import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.appView.AppFrame;
 import de.hsos.richwps.mb.appView.AppSplashScreen;
 import de.hsos.richwps.mb.appView.toolbar.AppTreeToolbar;
+import de.hsos.richwps.mb.dsl.Export;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.PropertyChangeEvent;
@@ -30,6 +32,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +47,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import layout.TableLayout;
 
 /**
@@ -67,7 +73,7 @@ public class App {
         App app = new App(args);
     }
 
-    private MainTreeView mainTreeView;
+    private MainTreeViewController mainTreeView;
     private GraphView graphView;
     private PropertiesView propertiesView;
     private JLabel graphDndProxy;
@@ -77,7 +83,7 @@ public class App {
     private AppTreeToolbar treeViewToolbar;
     private JPanel mainTreeViewPanel;
     private JPanel subTreeViewPanel;
-    private SubTreeView subTreeView;
+    private SubTreeViewController subTreeView;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -97,18 +103,14 @@ public class App {
             AppSplashScreen splash = new AppSplashScreen();
             splash.showProgess(0);
 
-            // Interpret program arguments.
-            if (Arrays.asList(args).contains("graph_editable")) {
-                AppConstants.GRAPH_AUTOLAYOUT = false;
-            }
-
             splash.showMessage("Loading resources");
 
             // Load icons etc. into UIManager
             AppRessourcesLoader.loadAll();
 
             // Optional Debug Logging.
-            if (AppConstants.DEBUG_MODE) {
+            if (Arrays.asList(args).contains("debug")) {
+                AppConstants.DEBUG_MODE = true;
                 AppEventService.getInstance().registerObserver(new IAppEventObserver() {
                     public void eventOccured(AppEvent e) {
                         de.hsos.richwps.mb.Logger.log(e);
@@ -116,7 +118,7 @@ public class App {
                 });
             }
 
-            splash.showMessageAndProgress("Creating window", 20);
+            splash.showMessageAndProgress("Creating window", 15);
 
             // Create frame.
             frame.init(this);
@@ -130,19 +132,18 @@ public class App {
                 }
             });
 
-            splash.showMessageAndProgress("Initialising tooltips", 40);
+            splash.showMessageAndProgress("Initialising tooltips", 30);
 
             // Setup ToolTip.
             ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
             ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
 
-            splash.showMessageAndProgress("Initialising user interactions", 60);
+            splash.showMessageAndProgress("Initialising user interactions", 45);
 
             initDragAndDrop();
 
             updateModelPropertiesView();
             getPropertiesView().addPropertyChangeListener(new PropertyChangeListener() {
-
                 public void propertyChange(PropertyChangeEvent event) {
                     switch (event.getSourceCard()) {
                         case NO_SELECTION:
@@ -163,7 +164,7 @@ public class App {
                 }
             });
 
-            splash.showMessageAndProgress("Requesting processes", 80);
+            splash.showMessageAndProgress("Requesting processes", 60);
 
             // connect to SP and fill tree with services etc. received from SP
             fillMainTree();
@@ -237,37 +238,6 @@ public class App {
         getMainTreeView().initDnd();
         getSubTreeView().initDnd();
     }
-//        // activate graph droptarget when user starts dragging a treeView node
-//        DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(tree, DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
-//            public void dragGestureRecognized(DragGestureEvent dge) {
-//                try {
-//                    if (null != dropTargetAdapter) {
-//                        return;
-//                    }
-//                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphDndProxy());
-//                    dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
-//                    dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
-//                    getGraphDndProxy().setVisible(true);
-//
-//                } catch (TooManyListenersException ex) {
-//                    Logger.getLogger(App.class
-//                            .getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        });
-//
-//        // deactivate graph drop target when dragging ends
-//        DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceAdapter() {
-//            @Override
-//            public void dragDropEnd(DragSourceDropEvent dsde) {
-//                dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
-//                getGraphDndProxy().setVisible(false);
-//                dropTargetAdapter = null;
-//            }
-//        });
-//
-//        tree.setTransferHandler(getProcessTransferHandler());
-//    }
 
     /**
      * Returns an overlay panel for the graph.
@@ -282,33 +252,35 @@ public class App {
         return graphDndProxy;
     }
 
-    private SubTreeView getSubTreeView() {
+    /**
+     *
+     * @return
+     */
+    private SubTreeViewController getSubTreeView() {
         if (null == subTreeView) {
-            subTreeView = new SubTreeView(this);
+            subTreeView = new SubTreeViewController(this);
         }
 
         return subTreeView;
     }
 
+    /**
+     * The SubTree Swing component.
+     *
+     * @return
+     */
     protected JTree getSubTreeViewComponent() {
         return getSubTreeView().getTreeView().getGui();
     }
 
     /**
-     * The tree GUI component.
+     * The SubTree panel containg the SubTree swing component.
      *
      * @return
      */
     public JPanel getSubTreeViewGui() {
         if (null == subTreeViewPanel) {
             subTreeViewPanel = new TitledComponent(AppConstants.SUB_TREEVIEW_TITLE, getSubTreeViewComponent());
-//            treeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
-//            subTreeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
-//            treeViewToolbar = new AppTreeToolbar(getActionProvider());
-//            treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
-//            treeViewPanel.add(treeViewToolbar, "0 0");
-//            subTreeViewPanel.add(getSubTreeViewComponent(), "0 0");
-
         }
         return subTreeViewPanel;
     }
@@ -317,16 +289,16 @@ public class App {
         getSubTreeView().fillTree();
     }
 
-    private MainTreeView getMainTreeView() {
+    private MainTreeViewController getMainTreeView() {
         if (null == mainTreeView) {
-            mainTreeView = new MainTreeView(this);
+            mainTreeView = new MainTreeViewController(this);
         }
 
         return mainTreeView;
     }
 
     /**
-     * The server/process tree (north-west of the frame).
+     * The MainTree Swing component.
      *
      * @return
      */
@@ -335,7 +307,7 @@ public class App {
     }
 
     /**
-     * The tree GUI component.
+     * The MainTree panel containg the MainTree swing component.
      *
      * @return
      */
@@ -397,6 +369,7 @@ public class App {
             AppEventService.getInstance().addSourceCommand(graphView, AppConstants.INFOTAB_ID_EDITOR);
             AppEventService.getInstance().addSourceCommand(graphView.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
+            // setup model listeners etc.
             modelLoaded();
         }
         return graphView;
@@ -416,7 +389,25 @@ public class App {
                 }
             }
         });
-        
+
+        getGraphView().addModelElementsChangedListener(new ModelElementsChangedListener() {
+
+            @Override
+            public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
+                if(type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
+                    getSubTreeView().addNode(new DefaultMutableTreeNode(element));
+                }
+//                de.hsos.richwps.mb.Logger.log(element.toString() + " " + type +" "+  changeType);
+            }
+        });
+//        getGraphView().addCellEventListener(new mxEventSource.mxIEventListener() {
+//            @Override
+//            public void invoke(Object o, mxEventObject eo) {
+//                // TODO update subTreeView depending on event type (add/remove) !!
+//                de.hsos.richwps.mb.Logger.log("app listener: " + eo.getName());
+//            }
+//        });
+
         getSubTreeView().fillTree();
     }
 
@@ -523,6 +514,31 @@ public class App {
 
     public void updateModelPropertiesView() {
         getPropertiesView().setModel(getGraphView().getGraph().getGraphModel());
+    }
+
+    void deploy() {
+        try {
+            String dslFile = "generated.rola";
+            new Export(getGraphView().getGraph()).export(dslFile);
+
+            String content = null;
+            File file = new File(dslFile); //for ex foo.txt
+            FileReader reader = new FileReader(file);
+            try {
+                char[] chars = new char[(int) file.length()];
+                reader.read(chars);
+                content = new String(chars);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                reader.close();
+            }
+            JOptionPane.showMessageDialog(getFrame(), content, "Generated ROLA", JOptionPane.PLAIN_MESSAGE);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(getFrame(), AppConstants.DEPLOYMENT_FAILED);
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

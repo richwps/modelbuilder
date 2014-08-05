@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.graphView;
+package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.analysis.mxAnalysisGraph;
 import com.mxgraph.analysis.mxGraphProperties;
@@ -16,7 +16,7 @@ import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.graphView.layout.GraphWorkflowLayout;
+import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.util.List;
@@ -56,13 +56,12 @@ public class Graph extends mxGraph {
     @Override
     public boolean isValidSource(Object o) {
         // a used input port is not a valid source
-        if(getGraphModel().isInputPortUsed(o, this))
+        if (getGraphModel().isInputPortUsed(o, this)) {
             return false;
+        }
 
         return super.isValidSource(o);
     }
-
-
 
     @Override
     public String getEdgeValidationError(Object edge, Object source, Object target) {
@@ -186,23 +185,15 @@ public class Graph extends mxGraph {
         getGraphModel().beginUpdate();
         getGraphWorkflowLayout().execute(null);
         getGraphModel().endUpdate();
-
-        // TODO check if refresh is still necessary.
-        // TODO if so: replace with eventlistener - graph should not know graphcomponent!
-//        graphComponent.refresh();
     }
 
     /**
-     * Do not use this method, it has side effects if a cell is intepreted as a
-     * port. Use GraphModel.isInput() and GraphModel.isOutput() instead.
+     * Uses the model to check if the cell is a process port.
      */
     @Override
-    @Deprecated
     public boolean isPort(Object cell) {
-        mxGeometry geo = getCellGeometry(cell);
-
-        return (geo != null) ? geo.isRelative() : false;
-
+        GraphModel model = getGraphModel();
+        return (model.isFlowInput(cell) || model.isFlowOutput(cell)) && !model.isGlobalPort(cell);
     }
 
     /**
@@ -267,19 +258,8 @@ public class Graph extends mxGraph {
                 Object tmp = target;
                 target = source;
                 source = tmp;
-
-//                AppEventService.getInstance().fireAppEvent("Reversed direction of connection", this, "editor");
             }
 
-//            String error = getEdgeValidationError(cell, source, target);
-//            if (null != error) {
-//                // TODO check if add/remove is still necessary (for auto-layout)
-////                super.addCell(cell);
-////                graphModel.remove(cell);
-//                returnValue = null;
-//                AppEventService.getInstance().fireAppEvent(error, this);
-//
-//            } else {
             returnValue = super.addCell(cell, parent, index, source, target);
             GraphEdge graphEdge = null;
 
@@ -289,7 +269,6 @@ public class Graph extends mxGraph {
                 graphEdge.setSourcePortCell((mxCell) source);
                 graphEdge.setTargetPortCell((mxCell) target);
             }
-//            }
 
             // Detect and remove cycle connections if necessary.
             if (!isAllowLoops() && mxGraphStructure.isCyclicDirected(getAnalysisGraph())) {
@@ -347,11 +326,7 @@ public class Graph extends mxGraph {
         return ag;
     }
 
-    // TODO replace with eventlistener - graph should not know graphcomponent!
-//    void setGraphComponent(mxGraphComponent graphComponent) {
-//        this.graphComponent = graphComponent;
-//    }
-    boolean isAutoLayout() {
+    public boolean isAutoLayout() {
         return autoLayout;
     }
 

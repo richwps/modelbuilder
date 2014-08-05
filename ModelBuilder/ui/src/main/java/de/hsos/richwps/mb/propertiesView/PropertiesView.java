@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
-import de.hsos.richwps.mb.graphView.GraphModel;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;

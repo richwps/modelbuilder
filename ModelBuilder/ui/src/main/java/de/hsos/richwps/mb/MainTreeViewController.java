@@ -18,9 +18,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  * @author dziegenh
  */
-public class MainTreeView extends AbstractTreeView {
+public class MainTreeViewController extends AbstractTreeViewController {
 
-    public MainTreeView(App app) {
+    public MainTreeViewController(App app) {
         super(app);
     }
 
@@ -29,7 +29,7 @@ public class MainTreeView extends AbstractTreeView {
         ProcessProvider processProvider = getProcessProvider();
 
         // Remove existing child-nodes from root
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) getTreeView().getGui().getModel().getRoot();
+        DefaultMutableTreeNode root = getRoot();
         root.removeAllChildren();
 
         // Create and fill Process node
@@ -107,9 +107,7 @@ public class MainTreeView extends AbstractTreeView {
         root.add(downloadServices);
         root.add(local);
 
-        // Update tree GUI
-        getTreeView().getGui().updateUI();
-        getTreeView().expandAll();
+        updateUI();
     }
 
 }

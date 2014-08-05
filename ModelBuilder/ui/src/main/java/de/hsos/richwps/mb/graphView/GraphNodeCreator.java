@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.graphView;
 
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxPoint;
