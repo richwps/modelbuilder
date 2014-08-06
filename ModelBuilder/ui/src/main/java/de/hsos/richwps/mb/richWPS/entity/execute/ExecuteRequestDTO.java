@@ -45,6 +45,8 @@ public class ExecuteRequestDTO {
      * List of actual, requested process outputs before execution.
      */
     private HashMap<String, IOutputArgument> actualoutputs;
+    /**The actual results.*/
+    private HashMap<String, Object> results;
 
     /**
      * Builds a new, blank, data transfer object.
@@ -56,6 +58,7 @@ public class ExecuteRequestDTO {
         this.actualinputs = new HashMap<>();
         this.availableoutputs = new ArrayList<>();
         this.actualoutputs = new HashMap<>();
+        this.results = new HashMap<>();
     }
 
     public String getEndpoint() {
@@ -139,5 +142,19 @@ public class ExecuteRequestDTO {
             //FIXME 
         }
     }
+
+    public HashMap<String, Object> getResults() {
+        return results;
+    }
+
+    public void setResults(HashMap<String, Object> results) {
+        this.results = results;
+    }
+    
+    public void addResult(final String key, final Object value){
+        this.results.put(key, value);
+    }
+    
+    
 
 }

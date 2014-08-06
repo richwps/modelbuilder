@@ -20,4 +20,8 @@ public class OutputLiteralDataArgument implements IOutputArgument {
         return this.specifier.getIdentifier();
     }
     
+    public OutputLiteralDataSpecifier getSepcifier(){
+        return this.specifier;
+    }
+    
 }

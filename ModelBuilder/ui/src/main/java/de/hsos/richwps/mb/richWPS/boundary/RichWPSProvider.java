@@ -17,6 +17,7 @@ import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionsDocument;
 import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientSession;
+import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 
 /**
  * Interface to RichWPS enabled servers.
@@ -132,13 +133,39 @@ public class RichWPSProvider implements IRichWPSProvider {
 
     //FIXME splitup
     public ExecuteRequestDTO executeProcess(ExecuteRequestDTO dto) {
+        ExecuteRequestDTO resultdto = dto;
         String wpsurl = dto.getEndpoint();
         String processid = dto.getProcessid();
+
         HashMap theinputs = dto.getInputArguments();
         HashMap theoutputs = dto.getOutputArguments();
 
         ProcessDescriptionType description = this._describeProcess(wpsurl, processid);
         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
+
+        this.prepareInputs(executeBuilder, theinputs);
+        this.prepareOutputs(executeBuilder, theoutputs);
+
+        ExecuteDocument execute = null;
+        Object responseObject = null;
+        try {
+            execute = executeBuilder.getExecute();
+            execute.getExecute().setService("WPS");
+
+            System.err.println("Execute String: " + execute.toString());
+
+            WPSClientSession wpsClient = WPSClientSession.getInstance();
+            responseObject = wpsClient.execute(wpsurl, execute);
+        } catch (Exception e) {
+            System.err.println("Something went wrong, executing the process " + processid + ", " + e);
+        }
+
+        resultdto = this.analyseResponse(execute, description, responseObject, dto);
+
+        return resultdto;
+    }
+
+    private void prepareInputs(org.n52.wps.client.ExecuteRequestBuilder executeBuilder, HashMap theinputs) {
 
         java.util.Set<String> keys = theinputs.keySet();
         for (String key : keys) {
@@ -156,9 +183,12 @@ public class RichWPSProvider implements IRichWPSProvider {
                 String schema = param.getSchema();
                 executeBuilder.addComplexDataReference(key, url, schema, encoding, mimetype);
             }
+            //FIXME add BoundingBox
         }
+    }
 
-        keys = theoutputs.keySet();
+    private void prepareOutputs(org.n52.wps.client.ExecuteRequestBuilder executeBuilder, HashMap theoutputs) {
+        java.util.Set<String> keys = theoutputs.keySet();
 
         for (String key : keys) {
             Object o = theoutputs.get(key);
@@ -172,7 +202,6 @@ public class RichWPSProvider implements IRichWPSProvider {
                 String mimetype = param.getMimetype();
                 String encoding = param.getEncoding();
                 String schema = param.getSchema();
-                System.out.println(asReference);
 
                 if (asReference) {
                     executeBuilder.setAsReference(key, true);
@@ -182,36 +211,56 @@ public class RichWPSProvider implements IRichWPSProvider {
                 executeBuilder.setEncodingForOutput(encoding, key);
                 executeBuilder.setSchemaForOutput(schema, key);
             }
+            //FIXME add BoundingBox
         }
+    }
 
-        try {
-            ExecuteDocument execute = executeBuilder.getExecute();
-            execute.getExecute().setService("WPS");
+    private ExecuteRequestDTO analyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequestDTO dto) {
+        ExecuteRequestDTO resultdto = dto;
+        HashMap theoutputs = dto.getOutputArguments();
+        System.err.println("Debug: " + responseObject.getClass());
+        if (responseObject instanceof ExecuteResponseDocument) {
+            ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
+            System.out.println("Debug: \n" + response.toString());
 
-            System.err.println("Execute String: " + execute.toString());
+            ExecuteResponseAnalyser analyser = null;
+            try {
 
-            WPSClientSession wpsClient = WPSClientSession.getInstance();
-            Object responseObject = wpsClient.execute(wpsurl, execute);
-
-            if (responseObject instanceof ExecuteResponseDocument) {
-                ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
-                System.out.println("response: " + response.toString());
-
-                ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
-
-                keys = theoutputs.keySet();
+                java.util.Set<String> keys = theoutputs.keySet();
                 for (String key : keys) {
-                    String httpkvpref = analyser.getComplexReferenceByIndex(0);
-                    System.out.println(key + ", " + httpkvpref);
-                }
-            } else {
-                throw new Exception("Not an execute response.");
-            }
-        } catch (Exception e) {
-            System.err.println("Something went wrong, executing the process " + processid + ", " + e);
+                    Object o = theoutputs.get(key);
+                    if (o instanceof OutputLiteralDataArgument) {
+                        OutputLiteralDataArgument argument = (OutputLiteralDataArgument) o;
+                        //String subtype = argument.getSepcifier().getSubtype();
+                        //FIXME
 
+                        //dto.addResult(key, o);
+                    } else if (o instanceof OutputComplexDataArgument) {
+                        analyser = new ExecuteResponseAnalyser(execute, response, description);
+                        OutputComplexDataArgument argument = (OutputComplexDataArgument) o;
+                        if (argument.isAsReference()) {
+                            String httpkvpref = analyser.getComplexReferenceByIndex(0);
+                            System.out.println(key + ", " + httpkvpref);
+                        } else {
+                            //FIXME proper analytics for different bindings.
+                            GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);//FIXME
+                            System.out.println(binding.getPayload().size());
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                //throw new Exception("Unable to analyse response.");
+                e.printStackTrace();
+            }
+        } else if (responseObject instanceof net.opengis.ows.x11.ExceptionDocument) {
+            net.opengis.ows.x11.ExceptionDocument exception = (net.opengis.ows.x11.ExceptionDocument) responseObject;
+            System.err.println("Unable to analyse response. Response is Exception: " + exception.toString());
+        } else {
+            //throw new Exception("Unable to analyse response.");
+            System.err.println("Unable to analyse response. Response is not an valid ExecuteResponse.");
         }
-        return dto;
+        return resultdto;
     }
 
     private ProcessDescriptionType _describeProcess(String wpsurl, String processid) {
