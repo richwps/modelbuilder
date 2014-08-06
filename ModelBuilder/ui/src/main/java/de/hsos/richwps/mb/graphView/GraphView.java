@@ -107,6 +107,14 @@ public class GraphView extends JPanel {
     }
 
     /**
+     * Returns true if the current graph doesn't contain any modelling element (cell).
+     * @return
+     */
+    public boolean isEmpty() {
+        return getGraph().getGraphModel().getChildCount(getGraph().getDefaultParent()) < 1;
+    }
+
+    /**
      * Creates a graph node (cell) representing a process entity.
      * @param process
      * @param location point where the cell will be placed
@@ -262,6 +270,23 @@ public class GraphView extends JPanel {
         return getGraph().getSelectionCells();
     }
 
+    public ELEMENT_TYPE getSelectedElementType() {
+        Object[] cells = getSelection();
+
+        if(cells.length == 1 && cells[0] instanceof mxCell) {
+            GraphModel model = getGraph().getGraphModel();
+
+            if(model.isProcess(cells[0])) {
+                return ELEMENT_TYPE.PROCESS;
+            }
+            if(model.isGlobalPort(cells[0])) {
+                return ELEMENT_TYPE.GLOBAL_PORT;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Returns currently selected process entities.
      *
@@ -269,7 +294,26 @@ public class GraphView extends JPanel {
      */
     public List<IProcessEntity> getSelectedProcesses() {
         Object[] cells = getGraph().getSelectionCells();
-        List<IProcessEntity> processes = new LinkedList<IProcessEntity>();
+        return filterProcessEntities(cells);
+    }
+
+    /**
+     * Returns currently selected process entities.
+     *
+     * @return selected process entities.
+     */
+    public List<IProcessEntity> getUsedProcesses() {
+        Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
+        return filterProcessEntities(cells);
+    }
+
+    /**
+     * Returns a list containing only the cells which represent a ProcessEntity.
+     * @param cells
+     * @return
+     */
+    private List<IProcessEntity> filterProcessEntities(Object[] cells) {
+        List<IProcessEntity> processes = new LinkedList<>();
         for (Object cell : cells) {
             Object cellValue = getGraph().getModel().getValue(cell);
             if (cellValue != null && cellValue instanceof IProcessEntity) {
@@ -279,22 +323,29 @@ public class GraphView extends JPanel {
 
         return processes;
     }
+
     /**
-     * Returns currently selected process entities.
+     * Returns currently selected global ports.
      *
-     * @return selected process entities.
+     * @return selected global ports.
      */
-    public List<IProcessEntity> getUsedProcesses() {
-        Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
-        List<IProcessEntity> processes = new LinkedList<IProcessEntity>();
+    public List<ProcessPort> getSelectedGlobalPorts() {
+        Object[] cells = getGraph().getSelectionCells();
+        return filterGlobalPorts(cells);
+    }
+    
+    private List<ProcessPort> filterGlobalPorts(Object[] cells) {
+        List<ProcessPort> ports = new LinkedList<>();
+        GraphModel model = getGraph().getGraphModel();
         for (Object cell : cells) {
-            Object cellValue = getGraph().getModel().getValue(cell);
-            if (cellValue != null && cellValue instanceof IProcessEntity) {
-                processes.add((IProcessEntity) cellValue);
+//            Object cellValue = getGraph().getModel().getValue(cell);
+//            if (cellValue != null && cellValue instanceof IProcessEntity) {
+            if(model.isGlobalPort(cell)) {
+                ports.add((ProcessPort) model.getValue(cell));
             }
         }
 
-        return processes;
+        return ports;
     }
 
     /**

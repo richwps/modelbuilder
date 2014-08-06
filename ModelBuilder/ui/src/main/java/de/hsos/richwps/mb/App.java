@@ -18,9 +18,10 @@ import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
-import de.hsos.richwps.mb.propertiesView.PropertyChangeEvent;
-import de.hsos.richwps.mb.propertiesView.PropertyChangeListener;
+import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
+import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.server.Mock;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.DndProxyLabel;
@@ -328,6 +329,15 @@ public class App {
     }
 
     /**
+     * The graph GUI component.
+     *
+     * @return
+     */
+    public Component getGraphViewGui() {
+        return getGraphView().getGui();
+    }
+
+    /**
      * The graph. Lazy init, binds listeners to it on creation.
      *
      * @return
@@ -342,7 +352,8 @@ public class App {
                         // Delete
                         case 127:
                             Object[] selection = graphView.getSelection();
-                            if (null != graphView.getSelection() && selection.length > 0) {
+//                            if (null != graphView.getSelection() && selection.length > 0) {
+                            if (graphView.hasSelection()) {
                                 int choice = JOptionPane.showConfirmDialog(frame, AppConstants.CONFIRM_DELETE_CELLS, AppConstants.CONFIRM_DELETE_CELLS_TITLE, JOptionPane.YES_NO_OPTION);
                                 if (choice == JOptionPane.YES_OPTION) {
                                     getGraphView().deleteSelectedCells();
@@ -353,7 +364,6 @@ public class App {
                         // Select All
                         case 65:
                             if (0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
-                                // TODO move select-method to graphView (boundary!!)
                                 graphView.selectAll();
                             }
                             break;
@@ -367,6 +377,9 @@ public class App {
             // register graph components for the event service.
             AppEventService.getInstance().addSourceCommand(graphView, AppConstants.INFOTAB_ID_EDITOR);
             AppEventService.getInstance().addSourceCommand(graphView.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
+
+            // TODO mocked server class for app events -> replace when server client exists!!
+            AppEventService.getInstance().addSourceCommand(Mock.getInstance(), AppConstants.INFOTAB_ID_SERVER);
 
             // setup model listeners etc.
             modelLoaded();
@@ -390,9 +403,10 @@ public class App {
         });
 
         getGraphView().addModelElementsChangedListener(new ModelElementsChangedListener() {
-
             @Override
             public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
+                updateGraphDependentActions();
+
                 if (!type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
                     return;
                 }
@@ -409,15 +423,17 @@ public class App {
         });
 
         getSubTreeView().fillTree();
+        updateGraphDependentActions();
     }
 
     /**
-     * The graph GUI component.
-     *
-     * @return
+     * Sets specific actions enabled depending on the graph content. Should be
+     * called when graph model changes (eg by user edits or new/load actions).
      */
-    public Component getGraphViewGui() {
-        return getGraphView().getGui();
+    private void updateGraphDependentActions() {
+        boolean graphIsEmpty = getGraphView().isEmpty();
+        getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.DO_LAYOUT).setEnabled(!graphIsEmpty);
     }
 
     protected PropertiesView getPropertiesView() {
@@ -426,7 +442,12 @@ public class App {
             getGraphView().addSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     if (getGraphView().hasSelection()) {
-                        propertiesView.setSelectedProcesses(getGraphView().getSelectedProcesses());
+                        GraphView.ELEMENT_TYPE type = getGraphView().getSelectedElementType();
+                        if (null != type && type.equals(GraphView.ELEMENT_TYPE.GLOBAL_PORT)) {
+                            propertiesView.setSelectedGlobalPorts(getGraphView().getSelectedGlobalPorts());
+                        } else {
+                            propertiesView.setSelectedProcesses(getGraphView().getSelectedProcesses());
+                        }
                     } else {
                         propertiesView.showCard(PropertiesView.CARD.MODEL);
                     }
@@ -536,7 +557,19 @@ public class App {
             JOptionPane.showMessageDialog(getFrame(), content, "Generated ROLA", JOptionPane.PLAIN_MESSAGE);
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(getFrame(), AppConstants.DEPLOYMENT_FAILED);
+            StringBuilder sb = new StringBuilder(200);
+            sb.append(AppConstants.DEPLOYMENT_FAILED);
+            sb.append('\n');
+            sb.append(AppConstants.SEE_LOGGING_TABS);
+
+            JOptionPane.showMessageDialog(getFrame(), sb.toString());
+
+            sb = new StringBuilder(200);
+            sb.append(AppConstants.DEPLOYMENT_FAILED);
+            sb.append('\n');
+            sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getClass().getSimpleName() + ": " + ex.getMessage()));
+
+            AppEventService.getInstance().fireAppEvent(sb.toString(), Mock.getInstance());
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

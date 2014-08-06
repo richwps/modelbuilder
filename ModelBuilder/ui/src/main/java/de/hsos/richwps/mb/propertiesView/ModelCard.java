@@ -56,7 +56,7 @@ public class ModelCard extends AbstractPropertiesCard {
         nameLabel.setText(model.getName());
     }
 
-private Component createModeldataPanel(GraphModel model) {
+    private Component createModeldataPanel(GraphModel model) {
         JPanel modeldataPanel = new JPanel();
 
         double P = TableLayout.PREFERRED;

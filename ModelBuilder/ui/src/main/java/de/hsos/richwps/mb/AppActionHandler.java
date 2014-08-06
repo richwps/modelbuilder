@@ -150,7 +150,7 @@ public class AppActionHandler implements IAppActionHandler {
                 StringBuilder sb = new StringBuilder(100);
                 sb.append(AppConstants.LOAD_MODEL_FAILED);
                 sb.append("\n");
-                sb.append(AppConstants.SEE_MODEL_LOG);
+                sb.append(AppConstants.SEE_LOGGING_TABS);
                 JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
 
                 sb = new StringBuilder(100);
@@ -288,7 +288,7 @@ public class AppActionHandler implements IAppActionHandler {
         StringBuilder sb = new StringBuilder(100);
         sb.append(AppConstants.SAVE_MODEL_FAILED);
         sb.append("\n");
-        sb.append(AppConstants.SEE_MODEL_LOG);
+        sb.append(AppConstants.SEE_LOGGING_TABS);
         JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
 
         sb = new StringBuilder(100);

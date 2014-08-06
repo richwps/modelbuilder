@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.Point;
@@ -19,6 +20,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -92,11 +94,11 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
     }
 
     protected JTextField createEditablePropertyField(String property, String text) {
-        JTextField label = new JTextField(text);//createMultilineLabel(text, bodyLabelBgColor, true);
+        JTextField label = new JTextField(text);
         CompoundBorder border = new CompoundBorder(new ColorBorder(headLabelBgColor, 2, 0, 0, 1), label.getBorder());
         label.setBorder(border);
         label.setName(property);
-        label.setActionCommand(property);
+        label.setActionCommand(property); // necessary ???
         label.setFont(label.getFont().deriveFont(propertyFieldFontSize));
 
         // TODO try to find a better way to change the cursor (label.setCursor doesn't work)
@@ -169,6 +171,19 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
         label.setBorder(emptyBorder);
 
         return label;
+    }
+
+    protected Map<String, JTextField> getPropertyFields(Container container) {
+        HashMap<String, JTextField> properties = new HashMap<>();
+
+        for(Component component : container.getComponents()) {
+            if(component instanceof  JTextField) {
+                JTextField field = (JTextField) component;
+                properties.put(field.getName(), field);
+            }
+        }
+
+        return properties;
     }
 
 }

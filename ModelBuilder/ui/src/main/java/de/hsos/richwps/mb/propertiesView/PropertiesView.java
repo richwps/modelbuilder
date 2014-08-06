@@ -6,7 +6,10 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
+import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
+import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -34,10 +37,10 @@ public class PropertiesView extends TitledComponent {
     private JPanel contentPanel;
 
     private Window parentWindow;
+    private GlobalPortCard globalPortCard;
 
     public static enum CARD {
-
-        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION
+        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT
     }
 
     private LinkedList<PropertyChangeListener> propertyChangeListeners;
@@ -54,6 +57,7 @@ public class PropertiesView extends TitledComponent {
         contentPanel.add(getModelCard(), CARD.MODEL.name());
         contentPanel.add(getSingleProcessCard(), CARD.PROCESS_SINGLE_SELECTION.name());
         contentPanel.add(getMultiProcessesCard(), CARD.PROCESS_MULTI_SELECTION.name());
+        contentPanel.add(getGlobalPortCard(), CARD.GLOBAL_PORT.name());
 
         propertyChangeListeners = new LinkedList<PropertyChangeListener>();
     }
@@ -82,6 +86,23 @@ public class PropertiesView extends TitledComponent {
         getCardLayout().show(getContentPanel(), CARD.MODEL.name());
     }
 
+    public void setSelectedGlobalPorts(List<ProcessPort> ports) {
+      // show single process card
+        if (1 == ports.size()) {
+            getGlobalPortCard().setPort(ports.get(0));
+            showCard(CARD.GLOBAL_PORT);
+
+            // multiple processes selected => show multi card
+        } else if (1 < ports.size()) {
+            getMultiProcessesCard().setProcesses(null);
+            showCard(CARD.PROCESS_MULTI_SELECTION);
+
+            // nothing selected => show "void" card
+        } else {
+            showCard(CARD.NO_SELECTION);
+        }
+    }
+
     public void setSelectedProcesses(List<IProcessEntity> processes) {
 
         // show single process card
@@ -98,7 +119,7 @@ public class PropertiesView extends TitledComponent {
             singleProcessCard.setProcess(processes.get(0));
             contentPanel.remove(tmp);
             contentPanel.add(singleProcessCard, CARD.PROCESS_SINGLE_SELECTION.name());
-            getCardLayout().show(getContentPanel(), CARD.PROCESS_SINGLE_SELECTION.name());
+            showCard(CARD.PROCESS_SINGLE_SELECTION);
 
             // recall panel foldings
             singleProcessCard.setProcessPanelFolded(processFolded);
@@ -108,11 +129,11 @@ public class PropertiesView extends TitledComponent {
             // multiple processes selected => show multi card
         } else if (1 < processes.size()) {
             getMultiProcessesCard().setProcesses(processes);
-            getCardLayout().show(getContentPanel(), CARD.PROCESS_MULTI_SELECTION.name());
+            showCard(CARD.PROCESS_MULTI_SELECTION);
 
             // nothing selected => show "void" card
         } else {
-            getCardLayout().show(getContentPanel(), CARD.NO_SELECTION.name());
+            showCard(CARD.NO_SELECTION);
         }
     }
 
@@ -159,6 +180,14 @@ public class PropertiesView extends TitledComponent {
         }
 
         return multiProcessCard;
+    }
+
+    private GlobalPortCard getGlobalPortCard() {
+        if(null == globalPortCard) {
+            globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
+        }
+
+        return globalPortCard;
     }
 
     protected JPanel getContentPanel() {

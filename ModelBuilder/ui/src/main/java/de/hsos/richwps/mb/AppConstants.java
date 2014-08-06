@@ -147,7 +147,7 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String LOAD_MODEL_FAILED = "An error occured while loading the model.";
     public final static String SAVE_MODEL_FAILED = "An error occured while saving the model.";
-    public final static String SEE_MODEL_LOG = "See model log for details..";
+    public final static String SEE_LOGGING_TABS = "See logging tabs for details.";
     public final static String ERROR_MSG_IS_FORMAT = "Error message is '%s'.";
 
     /**
@@ -194,9 +194,10 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String PROPERTIES_MODELDATA_TITLE = "Model";
     public final static String PROPERTIES_MODELDATA_NAME = "Name";
+    public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
 
     public final static String SUB_TREEVIEW_TITLE = "Used elements";
 
-    final static String DEPLOYMENT_FAILED = "Deployment failed!";
+    final static String DEPLOYMENT_FAILED = "Deployment failed!m";
 
 }
