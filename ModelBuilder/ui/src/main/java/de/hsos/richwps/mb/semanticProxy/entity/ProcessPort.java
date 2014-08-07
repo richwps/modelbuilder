@@ -13,8 +13,8 @@ import java.io.Serializable;
  */
 public class ProcessPort implements Serializable {
 
-//    private ProcessPortDatatype datatype;
-    private String datatype;
+    private ProcessPortDatatype datatype;
+//    private String datatype;
     private String owsIdentifier;
     private String owsTitle;
     private String owsAbstract;
@@ -29,7 +29,8 @@ public class ProcessPort implements Serializable {
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
-        this.datatype = processPortDatatype.name();
+//        this.datatype = processPortDatatype.name();
+        this.datatype = processPortDatatype;
         this.global = global;
     }
 
@@ -48,12 +49,12 @@ public class ProcessPort implements Serializable {
     /**
      * @return the data
      */
-//    public ProcessPortDatatype getDatatype() {
-//        return datatype;
-//    }
-    public String getDatatype() {
+    public ProcessPortDatatype getDatatype() {
         return datatype;
     }
+//    public String getDatatype() {
+//        return datatype;
+//    }
 
     public void setFlowInput(boolean isInput) {
         flowInput = isInput;
@@ -119,12 +120,12 @@ public class ProcessPort implements Serializable {
     /**
      * @param datatype the data to set
      */
-//    public void setDatatype(ProcessPortDatatype datatype) {
-//        this.datatype = datatype;
-//    }
-    public void setDatatype(String datatype) {
+    public void setDatatype(ProcessPortDatatype datatype) {
         this.datatype = datatype;
     }
+//    public void setDatatype(String datatype) {
+//        this.datatype = datatype;
+//    }
 
     /**
      * @return the owsIdentifier
@@ -178,7 +179,7 @@ public class ProcessPort implements Serializable {
     public String toString() {
         // TODO mocked!
         if(null != getDatatype())
-            return getDatatype().substring(0,1).toUpperCase();
+            return getDatatype().name().substring(0,1).toUpperCase();
         else
           return getOwsTitle().length() < 3 ? getOwsTitle() : getOwsTitle().substring(0, 3) + "...";
     }
@@ -201,6 +202,17 @@ public class ProcessPort implements Serializable {
 
     public void setToolTipText(String text) {
         this.toolTipText = text;
+    }
+
+    public ProcessPort clone() {
+        ProcessPort clone = new ProcessPort(datatype, global);
+        clone.flowInput = flowInput;
+        clone.owsAbstract = owsAbstract;
+        clone.owsIdentifier = owsIdentifier;
+        clone.owsTitle =owsTitle;
+        clone.toolTipText = null; // indicate lazy init.
+
+        return clone;
     }
 
 }

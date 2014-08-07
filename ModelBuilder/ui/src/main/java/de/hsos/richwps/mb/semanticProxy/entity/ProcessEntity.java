@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class ProcessEntity implements IProcessEntity, Transferable, Serializable {
+public class ProcessEntity implements Transferable, Serializable {
 
     private String title;
     private String owsAbstract;
@@ -81,17 +81,14 @@ public class ProcessEntity implements IProcessEntity, Transferable, Serializable
         this.server = server;
     }
 
-    @Override
     public String getServer() { return server; }
-    @Override
+
     public String getIdentifier() { return identifier; }
     
-    @Override
     public int getNumInputs() {
         return inputPorts.size();
     }
 
-    @Override
     public int getNumOutputs() {
         return outputPorts.size();
     }
@@ -99,8 +96,6 @@ public class ProcessEntity implements IProcessEntity, Transferable, Serializable
     @Override
     public String toString() {
         return getTitle();
-//        StringBuilder sb = new StringBuilder(server.length() + identifier.length() + 1);
-//        return sb.append(server).append('.').append(identifier).toString();
     }
 
     public void addInputPort(ProcessPort port) {
@@ -168,6 +163,22 @@ public class ProcessEntity implements IProcessEntity, Transferable, Serializable
         return other.getServer().equals(this.getServer()) && other.getIdentifier().equals(this.getIdentifier());
     }
 
+    public ProcessEntity clone() {
+        ProcessEntity clone = new ProcessEntity(server, identifier);
+        clone.owsAbstract = owsAbstract;
+        clone.title = title;
+        clone.toolTipText = null; // indicate lazy initialisation
+
+        for(ProcessPort inPort : inputPorts) {
+            clone.addInputPort(inPort.clone());
+        }
+
+        for(ProcessPort outPort : outputPorts) {
+            clone.addOutputPort(outPort.clone());
+        }
+
+        return clone;
+    }
 
 
 }

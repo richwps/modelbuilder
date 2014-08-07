@@ -18,7 +18,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.awt.Color;
 import java.awt.Component;
@@ -120,7 +120,7 @@ public class GraphView extends JPanel {
      * @param location point where the cell will be placed
      * @return
      */
-    public mxCell createNodeFromProcess(IProcessEntity process, Point location) {
+    public mxCell createNodeFromProcess(ProcessEntity process, Point location) {
         return GraphNodeCreator.createNodeFromProcess(getGraph(), process, location);
     }
 
@@ -292,7 +292,7 @@ public class GraphView extends JPanel {
      *
      * @return selected process entities.
      */
-    public List<IProcessEntity> getSelectedProcesses() {
+    public List<ProcessEntity> getSelectedProcesses() {
         Object[] cells = getGraph().getSelectionCells();
         return filterProcessEntities(cells);
     }
@@ -302,7 +302,7 @@ public class GraphView extends JPanel {
      *
      * @return selected process entities.
      */
-    public List<IProcessEntity> getUsedProcesses() {
+    public List<ProcessEntity> getUsedProcesses() {
         Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
         return filterProcessEntities(cells);
     }
@@ -312,12 +312,12 @@ public class GraphView extends JPanel {
      * @param cells
      * @return
      */
-    private List<IProcessEntity> filterProcessEntities(Object[] cells) {
-        List<IProcessEntity> processes = new LinkedList<>();
+    private List<ProcessEntity> filterProcessEntities(Object[] cells) {
+        List<ProcessEntity> processes = new LinkedList<>();
         for (Object cell : cells) {
             Object cellValue = getGraph().getModel().getValue(cell);
-            if (cellValue != null && cellValue instanceof IProcessEntity) {
-                processes.add((IProcessEntity) cellValue);
+            if (cellValue != null && cellValue instanceof ProcessEntity) {
+                processes.add((ProcessEntity) cellValue);
             }
         }
 

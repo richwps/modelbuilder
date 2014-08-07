@@ -17,10 +17,12 @@ import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
+import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.server.Mock;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
@@ -142,7 +144,6 @@ public class App {
 
             initDragAndDrop();
 
-            updateModelPropertiesView();
             getPropertiesView().addPropertyChangeListener(new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent event) {
                     switch (event.getSourceCard()) {
@@ -158,6 +159,30 @@ public class App {
                             break;
                         case PROCESS_MULTI_SELECTION:
                             break;
+                        case GLOBAL_PORT:
+                            Object newValue = event.getNewValue();
+                            if (    null != newValue
+                                    && newValue instanceof String
+                                    && (null != event.getSourceObject()
+                                    && event.getSourceObject() instanceof ProcessPort)) {
+
+                                ProcessPort port = (ProcessPort) event.getSourceObject();
+                                String value = (String) newValue;
+                                switch (event.getProperty()) {
+                                    case AbstractPortCard.PORT_TITLE:
+                                        port.setOwsTitle(value);
+                                        break;
+                                    case AbstractPortCard.PORT_ABSTRACT:
+                                        port.setOwsAbstract(value);
+                                        break;
+                                    case AbstractPortCard.PORT_IDENTIFIER:
+                                        port.setOwsIdentifier(value);
+                                        break;
+                                }
+                                de.hsos.richwps.mb.Logger.log(newValue);
+                            }
+                            break;
+
                         default:
                         // nothing
                         }
@@ -424,6 +449,7 @@ public class App {
 
         getSubTreeView().fillTree();
         updateGraphDependentActions();
+        updateModelPropertiesView();
     }
 
     /**
@@ -570,7 +596,9 @@ public class App {
             sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getClass().getSimpleName() + ": " + ex.getMessage()));
 
             AppEventService.getInstance().fireAppEvent(sb.toString(), Mock.getInstance());
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+            Logger
+                    .getLogger(App.class
+                            .getName()).log(Level.SEVERE, null, ex);
         }
     }
 

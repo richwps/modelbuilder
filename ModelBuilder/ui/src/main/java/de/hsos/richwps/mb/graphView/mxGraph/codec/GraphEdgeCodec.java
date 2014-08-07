@@ -9,7 +9,6 @@ import com.mxgraph.io.mxCellCodec;
 import com.mxgraph.io.mxCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import java.util.Map;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -39,7 +38,6 @@ public class GraphEdgeCodec extends mxCellCodec {
         // encode ports
         if(o instanceof GraphEdge) {
             GraphEdge edge = (GraphEdge) o;
-            Element nodeEl = (Element) node;
             mxCellCodec cellCodec = new mxCellCodec();
             
             Node sourceNode = cellCodec.encode(mxcdc, edge.getSourcePortCell());

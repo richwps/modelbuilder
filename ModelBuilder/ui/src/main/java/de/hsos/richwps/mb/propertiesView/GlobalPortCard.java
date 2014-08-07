@@ -8,7 +8,9 @@ package de.hsos.richwps.mb.propertiesView;
 import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
 import java.util.Map;
@@ -24,10 +26,8 @@ public class GlobalPortCard extends AbstractPortCard {
 
     private TitledComponent portPanel;
 
-//    private MultilineLabel nameLabel;
-//    private JTextField nameLabel;
-
-    Map<String, JTextField> propertyFields;
+    Map<String, Component> propertyFields;
+    private ProcessPort port;
 
     public GlobalPortCard(final Window parentWindow, final JPanel contentPanel) {
         super(parentWindow, contentPanel);
@@ -43,33 +43,35 @@ public class GlobalPortCard extends AbstractPortCard {
         contentPanel.add(portPanel, "0 0");
     }
 
+    Map<String, Component> getPropertyComponents() {
+        return this.propertyFields;
+    }
+
+    ProcessPort getPort() {
+        return this.port;
+    }
+
     /**
      * Updates UI after a process has been set.
      *
      * @param process
      */
     void setPort(ProcessPort port) {
-//        nameLabel.setText(model.getName());
-    }
+        if(!port.isGlobal()) {
+            throw new IllegalArgumentException("Port is not global");
+        }
+        
+        this.port = port;
 
-//    private Component createModeldataPanel(GraphModel model) {
-//        JPanel modeldataPanel = new JPanel();
-//
-//        double P = TableLayout.PREFERRED;
-//        modeldataPanel.setLayout(new TableLayout(new double[][]{{COLUMN_1_WIDTH, TableLayout.FILL}, {P, propertyBorderThickness, P, propertyBorderThickness, P}}));
-//        modeldataPanel.setBorder(new ColorBorder(propertyTitleBgColor2, 0, 0, 1, 0));
-//
-//        String name = (null != model) ? model.getName() : "";
-//        nameLabel = createEditablePropertyField("name", name);
-//        nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-////        nameLabel.setEditable(true);
-//
-//        int y = 0;
-//        modeldataPanel.add(createHeadLabel(AppConstants.PROPERTIES_MODELDATA_NAME), "0 " + y);
-//        modeldataPanel.add(nameLabel, "1 " + y);
-//        y++;
-//
-//        return modeldataPanel;
-//    }
+        JTextField titleField = (JTextField) propertyFields.get(AbstractPortCard.PORT_TITLE);
+        JTextField abstractField = (JTextField) propertyFields.get(AbstractPortCard.PORT_ABSTRACT);
+        JTextField identifierField = (JTextField) propertyFields.get(AbstractPortCard.PORT_IDENTIFIER);
+        MultilineLabel typeField = (MultilineLabel) propertyFields.get(AbstractPortCard.PORT_DATATYPE);
+
+        titleField.setText(port.getOwsTitle());
+        abstractField.setText(port.getOwsAbstract());
+        identifierField.setText(port.getOwsIdentifier());
+        typeField.setText(port.getDatatype().toString());
+    }
 
 }

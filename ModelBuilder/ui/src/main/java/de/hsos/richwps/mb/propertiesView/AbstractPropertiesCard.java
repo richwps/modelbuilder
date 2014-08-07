@@ -173,13 +173,14 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
         return label;
     }
 
-    protected Map<String, JTextField> getPropertyFields(Container container) {
-        HashMap<String, JTextField> properties = new HashMap<>();
+    protected Map<String, Component> getPropertyFields(Container container) {
+        HashMap<String, Component> properties = new HashMap<>();
 
         for(Component component : container.getComponents()) {
-            if(component instanceof  JTextField) {
-                JTextField field = (JTextField) component;
-                properties.put(field.getName(), field);
+            String cName = component.getName();
+            if(null != cName && !cName.isEmpty()) {
+//                JTextField field = (JTextField) component;
+                properties.put(cName, component);
             }
         }
 

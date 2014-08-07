@@ -6,7 +6,6 @@
 package de.hsos.richwps.mb;
 
 import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.treeView.TreeView;
@@ -38,7 +37,8 @@ class TreeViewMouseAdapter extends MouseAdapter {
                 Point location = graphView.getEmptyCellLocation(new Point(0, 0));
 
                 if (nodeObject instanceof ProcessEntity) {
-                    graphView.createNodeFromProcess((IProcessEntity) nodeObject, location);
+                    graphView.createNodeFromProcess((ProcessEntity) nodeObject, location);
+                    
                 } else if (nodeObject instanceof ProcessPort) {
                     graphView.createNodeFromPort((ProcessPort) nodeObject, location);
                 }

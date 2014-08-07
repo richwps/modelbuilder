@@ -7,7 +7,7 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,7 +24,7 @@ public class MultiProcessCard extends JPanel {
         add(new JLabel(AppConstants.CARD_MULTI_PROCESS_SELECTION));
     }
 
-    void setProcesses(List<IProcessEntity> processes) {
+    void setProcesses(List<ProcessEntity> processes) {
         // nothing to do at the moment
     }
 

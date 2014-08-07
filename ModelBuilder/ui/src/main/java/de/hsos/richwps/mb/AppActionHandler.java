@@ -141,9 +141,8 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getFrame().setGraphViewTitle(filename);
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
-                    // A new model has been loaded => add change listener for undo/redo
+                    // A new model has been loaded => add change listener e
                     app.modelLoaded();
-                    app.updateModelPropertiesView();
                 }
 
             } catch (Exception ex) {

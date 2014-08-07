@@ -9,6 +9,7 @@ import de.hsos.richwps.mb.AppConstants;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import java.awt.BasicStroke;
 import java.util.Hashtable;
 
@@ -35,8 +36,10 @@ public class GraphSetup {
     public static void init() {
         // TODO refactor when the real Process Model is implemented!
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.semanticProxy.entity");
+//        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
+//        mxCodecRegistry.register(new mxObjectCodec(de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype.COMPLEX));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessPort()));
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessPort()));
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
 

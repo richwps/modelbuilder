@@ -8,7 +8,7 @@ package de.hsos.richwps.mb.propertiesView;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
@@ -16,6 +16,7 @@ import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -40,6 +41,7 @@ public class PropertiesView extends TitledComponent {
     private GlobalPortCard globalPortCard;
 
     public static enum CARD {
+
         NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT
     }
 
@@ -87,7 +89,7 @@ public class PropertiesView extends TitledComponent {
     }
 
     public void setSelectedGlobalPorts(List<ProcessPort> ports) {
-      // show single process card
+        // show single process card
         if (1 == ports.size()) {
             getGlobalPortCard().setPort(ports.get(0));
             showCard(CARD.GLOBAL_PORT);
@@ -103,7 +105,7 @@ public class PropertiesView extends TitledComponent {
         }
     }
 
-    public void setSelectedProcesses(List<IProcessEntity> processes) {
+    public void setSelectedProcesses(List<ProcessEntity> processes) {
 
         // show single process card
         if (1 == processes.size()) {
@@ -156,8 +158,7 @@ public class PropertiesView extends TitledComponent {
                 field.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         JTextField field = (JTextField) e.getSource();
-//                        Logger.log((.getName());
-                        firePropertyChangeEvent(CARD.MODEL, field.getName(), null, field.getText());
+                        firePropertyChangeEvent(CARD.MODEL, field.getName(), getModelCard().getModel(), field.getText());
                     }
                 });
             }
@@ -183,8 +184,21 @@ public class PropertiesView extends TitledComponent {
     }
 
     private GlobalPortCard getGlobalPortCard() {
-        if(null == globalPortCard) {
+        if (null == globalPortCard) {
             globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
+            Collection<Component> properties = globalPortCard.getPropertyComponents().values();
+            for (Component property : properties) {
+                if (property instanceof JTextField) {
+                    JTextField field = (JTextField) property;
+                    field.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JTextField field = (JTextField) e.getSource();
+                            firePropertyChangeEvent(CARD.GLOBAL_PORT, field.getName(), getGlobalPortCard().getPort(), field.getText());
+                        }
+                    });
+                }
+            }
         }
 
         return globalPortCard;

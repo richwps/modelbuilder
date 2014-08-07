@@ -198,6 +198,6 @@ public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
     public final static String SUB_TREEVIEW_TITLE = "Used elements";
 
-    final static String DEPLOYMENT_FAILED = "Deployment failed!m";
+    final static String DEPLOYMENT_FAILED = "Deployment failed!";
 
 }

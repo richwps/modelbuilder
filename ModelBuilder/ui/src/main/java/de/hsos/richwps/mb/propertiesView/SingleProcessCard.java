@@ -6,7 +6,7 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
@@ -43,7 +43,7 @@ public class SingleProcessCard extends AbstractPortCard {
      *
      * @param process
      */
-    void setProcess(IProcessEntity process) {
+    void setProcess(ProcessEntity process) {
         setProccessPanelData(process);
         setInputPanelData(process);
         setOutputPanelData(process);
@@ -54,7 +54,7 @@ public class SingleProcessCard extends AbstractPortCard {
      *
      * @param process
      */
-    private void setProccessPanelData(IProcessEntity process) {
+    private void setProccessPanelData(ProcessEntity process) {
         if (null == processPanel) {
             Component panelContent = createProcessPanel(process);
             String processTitle = AppConstants.PROPERTIES_PROCESS_TITLE;
@@ -72,7 +72,7 @@ public class SingleProcessCard extends AbstractPortCard {
      *
      * @param process
      */
-    private void setInputPanelData(IProcessEntity process) {
+    private void setInputPanelData(ProcessEntity process) {
         List<ProcessPort> ports = process.getInputPorts();
         String title = AppConstants.PROPERTIES_INPUTS_TITLE + " (" + ports.size() + ")";
 
@@ -94,7 +94,7 @@ public class SingleProcessCard extends AbstractPortCard {
      *
      * @param process
      */
-    private void setOutputPanelData(IProcessEntity process) {
+    private void setOutputPanelData(ProcessEntity process) {
         List<ProcessPort> ports = process.getOutputPorts();
         String title = AppConstants.PROPERTIES_OUTPUTS_TITLE + " (" + ports.size() + ")";
 
@@ -116,7 +116,7 @@ public class SingleProcessCard extends AbstractPortCard {
      * @param process
      * @return
      */
-    private Component createProcessPanel(IProcessEntity process) {
+    private Component createProcessPanel(ProcessEntity process) {
         JPanel processPanel = new JPanel();
 
         double P = TableLayout.PREFERRED;

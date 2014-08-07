@@ -27,6 +27,8 @@ public class ModelCard extends AbstractPropertiesCard {
 //    private MultilineLabel nameLabel;
     private JTextField nameLabel;
 
+    private GraphModel model;
+
     public ModelCard(final Window parentWindow, final JPanel contentPanel) {
         super(parentWindow, contentPanel);
 
@@ -44,7 +46,12 @@ public class ModelCard extends AbstractPropertiesCard {
      * @param process
      */
     void setModel(GraphModel model) {
+        this.model = model;
         setModelPanelData(model);
+    }
+
+    GraphModel getModel() {
+        return this.model;
     }
 
     /**

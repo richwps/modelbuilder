@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb;
 
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import java.util.HashMap;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -28,7 +28,7 @@ public class SubTreeViewController extends AbstractTreeViewController {
             root.removeAllChildren();
         }
 
-        for (IProcessEntity process : app.getGraphView().getUsedProcesses()) {
+        for (ProcessEntity process : app.getGraphView().getUsedProcesses()) {
 //            root.add(new DefaultMutableTreeNode(process));
             addNode(process);
         }

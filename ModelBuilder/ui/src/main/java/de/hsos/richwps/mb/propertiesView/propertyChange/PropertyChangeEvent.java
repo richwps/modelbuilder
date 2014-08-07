@@ -18,15 +18,15 @@ public class PropertyChangeEvent {
 
     protected String property;
 
-    protected Object oldValue;
+    protected Object sourceObject;
     protected Object newValue;
 
     public String getProperty() {
         return property;
     }
 
-    public Object getOldValue() {
-        return oldValue;
+    public Object getSourceObject() {
+        return sourceObject;
     }
 
     public Object getNewValue() {
@@ -38,11 +38,11 @@ public class PropertyChangeEvent {
     }
 
 
-    public PropertyChangeEvent(CARD sourceCard, String property, Object oldValue, Object newValue) {
+    public PropertyChangeEvent(CARD sourceCard, String property, Object sourceObject, Object newValue) {
         this.sourceCard = sourceCard;
         this.property = property;
-        this.oldValue = oldValue;
         this.newValue = newValue;
+        this.sourceObject = sourceObject;
     }
 
     @Override
@@ -52,8 +52,8 @@ public class PropertyChangeEvent {
         sb.append(sourceCard.name());
         sb.append(", property: ");
         sb.append(property);
-        sb.append(", oldValue: ");
-        sb.append(oldValue);
+        sb.append(", sourceObject: ");
+        sb.append(sourceObject);
         sb.append(", newValue: ");
         sb.append(newValue);
         return sb.toString();

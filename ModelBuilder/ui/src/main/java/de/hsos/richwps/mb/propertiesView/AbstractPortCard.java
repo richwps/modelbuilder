@@ -87,7 +87,7 @@ public class AbstractPortCard extends AbstractPropertiesCard {
 
         Component titleLabel;
         if(editable) {
-            titleLabel = createBodyComponent("title", port.getOwsTitle(), true);
+            titleLabel = createBodyComponent(PORT_TITLE, port.getOwsTitle(), true);
         } else {
             MultilineLabel tmpLabel = createBodyLabel(port.getOwsTitle());
             tmpLabel.setFont(tmpLabel.getFont().deriveFont(Font.BOLD));
@@ -100,22 +100,28 @@ public class AbstractPortCard extends AbstractPropertiesCard {
         parent.add(createColumn2Border(), "1 " + rowOffset++);
 
         parent.add(createHeadLabel("Identifier"), "0 " + rowOffset);
-        parent.add(createBodyComponent("identifier", port.getOwsIdentifier(), editable), "1 " + rowOffset++);
+        parent.add(createBodyComponent(PORT_IDENTIFIER, port.getOwsIdentifier(), editable), "1 " + rowOffset++);
 
         parent.add(createColumn1Border(), "0 " + rowOffset);
         parent.add(createColumn2Border(), "1 " + rowOffset++);
 
         parent.add(createHeadLabel("Abstract"), "0 " + rowOffset);
-        parent.add(createBodyComponent("abstract", port.getOwsAbstract(), editable), "1 " + rowOffset++);
+        parent.add(createBodyComponent(PORT_ABSTRACT, port.getOwsAbstract(), editable), "1 " + rowOffset++);
 
         parent.add(createColumn1Border(), "0 " + rowOffset);
         parent.add(createColumn2Border(), "1 " + rowOffset++);
 
         parent.add(createHeadLabel("Datatype"), "0 " + rowOffset);
-        parent.add(createBodyComponent("datatype", port.getDatatype(), false), "1 " + rowOffset++);
+        parent.add(createBodyComponent(PORT_DATATYPE, port.getDatatype().toString(), false), "1 " + rowOffset++);
 
         return rowOffset;
     }
+
+    // property constants.
+    public static final String PORT_DATATYPE = "datatype";
+    public static final String PORT_ABSTRACT = "abstract";
+    public static final String PORT_IDENTIFIER = "identifier";
+    public static final String PORT_TITLE = "title";
 
     private Component createBodyComponent(String property, String content, boolean editable) {
         if (editable) {

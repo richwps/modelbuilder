@@ -5,12 +5,12 @@
  */
 package de.hsos.richwps.mb.graphView;
 
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxPoint;
 import de.hsos.richwps.mb.AppConstants;
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.awt.Point;
 
@@ -27,7 +27,10 @@ public class GraphNodeCreator {
     private static int GLOBAL_PORT_WIDTH = 45;
     private static int GLOBAL_PORT_HEIGHT = 45;
 
-    public static mxCell createNodeFromProcess(Graph graph, IProcessEntity process, Point location) {
+    public static mxCell createNodeFromProcess(Graph graph, ProcessEntity process, Point location) {
+
+        process = process.clone();
+
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();
 
@@ -87,7 +90,9 @@ public class GraphNodeCreator {
         return processCell;
     }
 
-    public static mxCell createNodeFromPort(Graph graph, ProcessPort port, Point location) {
+    public static mxCell createNodeFromPort(Graph graph, ProcessPort port, Point location)  {
+
+        port = port.clone();
 
         // This method handles global ports only
         if (!port.isGlobal()) {

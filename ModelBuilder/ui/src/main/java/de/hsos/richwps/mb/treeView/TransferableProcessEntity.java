@@ -5,7 +5,6 @@
  */
 package de.hsos.richwps.mb.treeView;
 
-import de.hsos.richwps.mb.semanticProxy.entity.IProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -41,7 +40,7 @@ public class TransferableProcessEntity implements Transferable {
         return processEntity;
     }
 
-    public IProcessEntity getProcessEntity() {
+    public ProcessEntity getProcessEntity() {
         return processEntity;
     }
 
