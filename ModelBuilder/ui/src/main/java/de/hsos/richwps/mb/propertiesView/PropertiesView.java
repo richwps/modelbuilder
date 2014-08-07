@@ -14,8 +14,8 @@ import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -155,8 +155,9 @@ public class PropertiesView extends TitledComponent {
         if (null == modelCard) {
             modelCard = new ModelCard(parentWindow, new JPanel());
             for (final JTextField field : modelCard.getPropertyFields().values()) {
-                field.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
+                field.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
                         JTextField field = (JTextField) e.getSource();
                         firePropertyChangeEvent(CARD.MODEL, field.getName(), getModelCard().getModel(), field.getText());
                     }
@@ -190,12 +191,13 @@ public class PropertiesView extends TitledComponent {
             for (Component property : properties) {
                 if (property instanceof JTextField) {
                     JTextField field = (JTextField) property;
-                    field.addActionListener(new ActionListener() {
+                    field.addFocusListener(new FocusAdapter() {
                         @Override
-                        public void actionPerformed(ActionEvent e) {
+                        public void focusLost(FocusEvent e) {
                             JTextField field = (JTextField) e.getSource();
                             firePropertyChangeEvent(CARD.GLOBAL_PORT, field.getName(), getGlobalPortCard().getPort(), field.getText());
                         }
+
                     });
                 }
             }
