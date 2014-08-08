@@ -5,18 +5,25 @@ import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.InputDescriptionType;
+import net.opengis.wps.x100.OutputDataType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessBriefType;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionsDocument;
+import org.geotools.gml3.bindings.GML3ParsingUtils;
 import org.n52.wps.client.ExecuteResponseAnalyser;
+import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientSession;
+import org.n52.wps.commons.WPSConfig;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 
 /**
@@ -216,6 +223,11 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     private ExecuteRequestDTO analyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequestDTO dto) {
+        java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
+        String file = res.toExternalForm().replace("file:", "");
+        System.out.println(file);
+        WPSClientConfig.getInstance(file);
+        
         ExecuteRequestDTO resultdto = dto;
         HashMap theoutputs = dto.getOutputArguments();
         System.err.println("Debug: " + responseObject.getClass());
@@ -223,26 +235,27 @@ public class RichWPSProvider implements IRichWPSProvider {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
             System.out.println("Debug: \n" + response.toString());
 
-            ExecuteResponseAnalyser analyser = null;
             try {
-
                 java.util.Set<String> keys = theoutputs.keySet();
+
                 for (String key : keys) {
                     Object o = theoutputs.get(key);
                     if (o instanceof OutputLiteralDataArgument) {
                         OutputLiteralDataArgument argument = (OutputLiteralDataArgument) o;
+
                         //String subtype = argument.getSepcifier().getSubtype();
                         //FIXME
-
                         //dto.addResult(key, o);
                     } else if (o instanceof OutputComplexDataArgument) {
-                        analyser = new ExecuteResponseAnalyser(execute, response, description);
+                        ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
+                        
                         OutputComplexDataArgument argument = (OutputComplexDataArgument) o;
                         if (argument.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
                             System.out.println(key + ", " + httpkvpref);
+                            // FIXME Typedetection.
                         } else {
-                            //FIXME proper analytics for different bindings.
+                            // FIXME proper analytics for different bindings.
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);//FIXME
                             System.out.println(binding.getPayload().size());
                         }
