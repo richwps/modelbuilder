@@ -11,7 +11,7 @@ import com.mxgraph.swing.handler.mxVertexHandler;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
-import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;

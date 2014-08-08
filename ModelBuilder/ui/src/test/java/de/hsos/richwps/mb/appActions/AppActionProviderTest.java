@@ -6,9 +6,13 @@
 
 package de.hsos.richwps.mb.appActions;
 
-import de.hsos.richwps.mb.App;
-import de.hsos.richwps.mb.AppActionHandler;
-import de.hsos.richwps.mb.appActions.AppActionProvider.APP_ACTIONS;
+import de.hsos.richwps.mb.app.App;
+import de.hsos.richwps.mb.app.AppActionHandler;
+import de.hsos.richwps.mb.app.actions.AppAbstractAction;
+import de.hsos.richwps.mb.app.actions.AppActionProvider;
+import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
+import de.hsos.richwps.mb.app.actions.IAppActionHandler;
+import de.hsos.richwps.mb.app.actions.NewModelAction;
 import junit.framework.TestCase;
 
 /**
@@ -46,14 +50,5 @@ public class AppActionProviderTest extends TestCase {
         assertTrue(result instanceof NewModelAction);
     }
 
-    /**
-     * Test of getActionClassName method, of class AppActionProvider.
-     */
-    public void testGetActionClassName() {
-        System.out.println("getActionClassName");
-        String expResult = "NewModelAction";
-        String result = instance.getActionClassName(APP_ACTIONS.NEW_MODEL);
-        assertEquals(expResult, result);
-    }
 
 }
