@@ -109,15 +109,9 @@ public class App {
                 String portKey = AppConfig.CONFIG_KEYS.HTTPPROXY_S_PORT.name();
 
                 String host = AppConfig.getConfig().get(hostKey, "");
-                if (host.isEmpty()) {
-                    host = null;
-                }
                 System.setProperty("http.proxyHost", host);
 
                 String port = AppConfig.getConfig().get(portKey, "");
-                if (port.isEmpty()) {
-                    port = null;
-                }
                 System.setProperty("http.proxyPort", port);
             }
             splash.showProgess(7);
@@ -593,7 +587,7 @@ public class App {
     void deploy() {
         try {
             String dslFile = "generated.rola";
-            new Export(getGraphView().getGraph()).export(dslFile);
+            new Export(getGraphView().getGraph().clone()).export(dslFile);
 
             String content = null;
             File file = new File(dslFile); //for ex foo.txt

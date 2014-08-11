@@ -28,13 +28,6 @@ public class GraphModel extends mxGraphModel {
         mergeChildren((mxICell) modelToClone.getRoot(), (mxCell) getRoot(), true);
     }
 
-    public mxGraphModel cloneMxgraphModel() throws CloneNotSupportedException {
-        GraphModel clone = new GraphModel();
-        clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
-        clone.setName(this.name);
-        return clone;
-    }
-
     public boolean isFlowInput(Object o) {
         if (!isVertex(o)) {
             return false;
@@ -141,6 +134,14 @@ public class GraphModel extends mxGraphModel {
             }
         }
         return false;
+    }
+
+    public GraphModel clone() throws CloneNotSupportedException {
+        GraphModel clone = new GraphModel();
+        clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
+        clone.setName(this.name);
+        
+        return clone;
     }
 
 }

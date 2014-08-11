@@ -40,10 +40,6 @@ public class PreferencesHttpProxy extends AbstractPreferencesTab {
     }
 
     private void saveSystemProperty(String property, String value, String configKey) {
-        if(null != value && value.isEmpty()) {
-            value = null;
-        }
-        
         System.setProperty(property, value);
         AppConfig.getConfig().put(configKey, value);
     }

@@ -5,7 +5,6 @@
  */
 package de.hsos.richwps.mb.app.view.preferences;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Dimension;
@@ -55,7 +54,6 @@ public class AppPreferencesDialog extends JDialog {
             addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
-                    Logger.log("save stuff");
                     saveDialogAppearance();
                 }
             });
@@ -129,7 +127,7 @@ public class AppPreferencesDialog extends JDialog {
         AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.PREFERENCES_I_HEIGHT.name(), getSize().height);
 
         AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.PREFERENCES_I_POSITIONX.name(), getLocation().x);
-        AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.PREFERENCES_I_POSITIONY.name(), getLocation().y);Logger.log("start location saved: " + getLocation());
+        AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.PREFERENCES_I_POSITIONY.name(), getLocation().y);
     }
 
     private Dimension getStartSize() {

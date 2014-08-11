@@ -16,6 +16,7 @@ import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
@@ -358,4 +359,12 @@ public class Graph extends mxGraph {
         return AppConstants.GRAPH_ALLOW_SINGLE_FEEDBACK_LOOPS;
     }
 
+    public Graph clone() throws CloneNotSupportedException {
+        Graph clone = new Graph();
+        clone.ag = null; // force lazy init
+        clone.model = getGraphModel().clone();
+        GraphSetup.setup(clone);
+
+        return clone;
+    }
 }
