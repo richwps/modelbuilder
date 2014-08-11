@@ -17,6 +17,7 @@ import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -99,6 +100,20 @@ public class AppActionHandler implements IAppActionHandler {
         }
     }
 
+    private void setupFileChooser(JFileChooser fc) {
+        String lastDirPath = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTDIR.name(), "");
+        File lastDir = new File(lastDirPath);
+        if (!lastDirPath.isEmpty() && lastDir.exists()) {
+            fc.setCurrentDirectory(lastDir);
+        }
+
+        fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
+    }
+
+    private void rememberLastDir(File file) {
+        AppConfig.getConfig().put(AppConfig.CONFIG_KEYS.MODEL_S_LASTDIR.name(), file.getAbsolutePath());
+    }
+
     private void doLoadModel() {
         boolean doLoad = true;
         if (app.getUndoManager().canUndoOrRedo()) {
@@ -116,6 +131,8 @@ public class AppActionHandler implements IAppActionHandler {
                 JFileChooser fc = new JFileChooser();
                 fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
 
+                setupFileChooser(fc);
+
                 int state = fc.showOpenDialog(app.getFrame());
                 if (state == JFileChooser.APPROVE_OPTION) {
                     String filename = fc.getSelectedFile().getPath();
@@ -131,6 +148,8 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getUndoManager().discardAllEdits();
                     // A new model has been loaded => add change listener e
                     app.modelLoaded();
+
+                    rememberLastDir(fc.getSelectedFile());
                 }
 
             } catch (Exception ex) {
@@ -196,9 +215,8 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doSaveModelAs() {
 
-        // TODO check for missing ProcessEntities !!!
         JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
+        setupFileChooser(fc);
 
         int state = fc.showSaveDialog(app.getFrame());
         if (state == JFileChooser.APPROVE_OPTION) {
@@ -214,6 +232,8 @@ public class AppActionHandler implements IAppActionHandler {
             if (!filename.toLowerCase().endsWith(".xml")) {
                 filename = filename.concat(".xml");
             }
+
+            rememberLastDir(fc.getSelectedFile());
 
             try {
                 getGraphView().saveGraphToXml(filename);

@@ -31,6 +31,8 @@ public class AppConfig {
         FRAME_I_POSITIONY,
         FRAME_B_MAXIMIZED,
 
+        MODEL_S_LASTDIR,
+
         PREFERENCES_I_WIDTH,
         PREFERENCES_I_HEIGHT,
         PREFERENCES_I_POSITIONX,
