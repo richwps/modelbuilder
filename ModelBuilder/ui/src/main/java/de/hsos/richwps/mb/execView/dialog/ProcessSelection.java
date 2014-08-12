@@ -45,6 +45,8 @@ public class ProcessSelection extends ADialogPanel {
 
     @Override
     public void updateDTO() {
+        this.dto = new ExecuteRequestDTO();
+        dto.setEndpoint(this.wpsurl);
         dto.setProcessid((String) this.processesBox.getSelectedItem());
     }
 
@@ -75,6 +77,7 @@ public class ProcessSelection extends ADialogPanel {
         add(processLabel, gridBagConstraints);
 
         processesBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        processesBox.setPreferredSize(new java.awt.Dimension(400, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;

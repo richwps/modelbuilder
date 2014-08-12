@@ -39,6 +39,7 @@ public class SeverSelection extends ADialogPanel {
 
     @Override
     public void updateDTO() {
+        this.dto = new ExecuteRequestDTO();
         this.dto.setEndpoint((String) this.serverSelectionBox.getSelectedItem());
     }
 
@@ -55,24 +56,37 @@ public class SeverSelection extends ADialogPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        jLabel1 = new javax.swing.JLabel();
+        serverSelectionLabel = new javax.swing.JLabel();
         serverSelectionBox = new javax.swing.JComboBox();
 
-        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        jLabel1.setLabelFor(serverSelectionBox);
-        jLabel1.setText("Server:");
-        jLabel1.setName("serverSelectionLabel"); // NOI18N
-        add(jLabel1);
+        setLayout(new java.awt.GridBagLayout());
+
+        serverSelectionLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        serverSelectionLabel.setLabelFor(serverSelectionBox);
+        serverSelectionLabel.setText("Server:");
+        serverSelectionLabel.setName("serverSelectionLabel"); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(serverSelectionLabel, gridBagConstraints);
 
         serverSelectionBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        add(serverSelectionBox);
+        serverSelectionBox.setPreferredSize(new java.awt.Dimension(400, 27));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(serverSelectionBox, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JComboBox serverSelectionBox;
+    private javax.swing.JLabel serverSelectionLabel;
     // End of variables declaration//GEN-END:variables
 
 }

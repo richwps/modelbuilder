@@ -6,8 +6,6 @@ package de.hsos.richwps.mb.richWPS.entity;
  */
 public interface IInputSpecifier {
     
-    public Class getType();
-    
     public String getIdentifier();
     
     public String getAbstract();

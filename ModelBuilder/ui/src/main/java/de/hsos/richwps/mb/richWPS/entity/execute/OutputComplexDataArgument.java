@@ -13,12 +13,11 @@ public class OutputComplexDataArgument implements IOutputArgument {
 
     private boolean asReference = false;
     private boolean storeOutput = false;
-    private String url = "";
     private Object value;
     private Class valuedesc;
     private String encoding;
     private String schema;
-    
+
     /**
      * The selected mimetype.
      */
@@ -39,14 +38,6 @@ public class OutputComplexDataArgument implements IOutputArgument {
     public void storeOutput(boolean val) {
         this.storeOutput = val;
     }
-    
-    public String getURL(){
-        return this.url;
-    }
-    
-    public void setURL(String url){
-        this.url=url;
-    }
 
     public OutputComplexDataSpecifier getSpecifier() {
         return specifier;
@@ -62,14 +53,6 @@ public class OutputComplexDataArgument implements IOutputArgument {
 
     public void setStoreOutput(boolean storeOutput) {
         this.storeOutput = storeOutput;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public Object getValue() {
@@ -115,7 +98,5 @@ public class OutputComplexDataArgument implements IOutputArgument {
     public boolean isAsReference() {
         return asReference;
     }
-    
-    
-    
+
 }

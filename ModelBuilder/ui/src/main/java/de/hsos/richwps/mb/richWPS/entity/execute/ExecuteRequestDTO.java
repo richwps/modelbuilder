@@ -16,7 +16,7 @@ import net.opengis.wps.x100.OutputDescriptionType;
 
 /**
  * An object used to parameterize and prepare execute requests.
- * 
+ *
  * @author dalcacer
  */
 public class ExecuteRequestDTO {
@@ -45,7 +45,9 @@ public class ExecuteRequestDTO {
      * List of actual, requested process outputs before execution.
      */
     private HashMap<String, IOutputArgument> actualoutputs;
-    /**The actual results.*/
+    /**
+     * The actual results.
+     */
     private HashMap<String, Object> results;
 
     /**
@@ -78,15 +80,11 @@ public class ExecuteRequestDTO {
     }
 
     public List<IInputSpecifier> getInputSpecifier() {
-        return availableinputs;
-    }
-
-    public void setInputSpecifier(List<IInputSpecifier> availableinputs) {
-        this.availableinputs = availableinputs;
+        return this.availableinputs;
     }
 
     public HashMap<String, IInputArgument> getInputArguments() {
-        return actualinputs;
+        return this.actualinputs;
     }
 
     public void setInputArguments(HashMap<String, IInputArgument> arguments) {
@@ -94,15 +92,11 @@ public class ExecuteRequestDTO {
     }
 
     public List<IOutputSpecifier> getOutputSepcifier() {
-        return availableoutputs;
-    }
-
-    public void setOutputSpecifier(List<IOutputSpecifier> specifiers) {
-        this.availableoutputs = specifiers;
+        return this.availableoutputs;
     }
 
     public HashMap<String, IOutputArgument> getOutputArguments() {
-        return actualoutputs;
+        return this.actualoutputs;
     }
 
     public void setOutputArguments(HashMap<String, IOutputArgument> arguments) {
@@ -150,11 +144,8 @@ public class ExecuteRequestDTO {
     public void setResults(HashMap<String, Object> results) {
         this.results = results;
     }
-    
-    public void addResult(final String key, final Object value){
+
+    public void addResult(final String key, final Object value) {
         this.results.put(key, value);
     }
-    
-    
-
 }

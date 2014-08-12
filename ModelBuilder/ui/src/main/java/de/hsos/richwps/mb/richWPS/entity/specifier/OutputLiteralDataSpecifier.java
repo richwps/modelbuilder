@@ -26,10 +26,6 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         this.subtype = description.getLiteralOutput().getDataType().toString();
     }
 
-    @Override
-    public Class getType() {
-        return this.getClass();
-    }
 
     @Override
     public String getIdentifier() {

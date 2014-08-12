@@ -18,12 +18,13 @@ public class InputLiteralData extends javax.swing.JPanel {
         String theidentifier = specifier.getIdentifier();
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
-        String datatype = this.specifier.getSubtype();
+        String datatype = this.specifier.getType();
         //fixme
         this.id = theidentifier;
         //        this.identifier.setText(theidentifier+ "("+datatype+"):");
         this.setBorder(new TitledBorder(theidentifier + "(" + datatype + ")"));
-        this.hint.setText("Hint: " + thetitel + ", " + theabstract);
+        this.abstractValue.setText(theabstract);
+        this.titleValue.setText(thetitel);
     }
 
     public InputLiteralDataSpecifier getSpecifier() {
@@ -45,40 +46,104 @@ public class InputLiteralData extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         value = new javax.swing.JTextField();
-        hint = new javax.swing.JLabel();
+        abstractLabel = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
+        valueLabel = new javax.swing.JLabel();
+        titleValue = new javax.swing.JTextArea();
+        abstractValue = new javax.swing.JTextArea();
 
         setBorder(null);
-        setPreferredSize(new java.awt.Dimension(400, 42));
+        setMinimumSize(new java.awt.Dimension(550, 136));
+        setPreferredSize(new java.awt.Dimension(600, 200));
         setLayout(new java.awt.GridBagLayout());
 
         value.setPreferredSize(new java.awt.Dimension(120, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(value, gridBagConstraints);
 
-        hint.setText("Hint");
+        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abstractLabel.setLabelFor(abstractValue);
+        abstractLabel.setText("Abstract:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(hint, gridBagConstraints);
+        add(abstractLabel, gridBagConstraints);
+
+        titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        titleLabel.setLabelFor(titleValue);
+        titleLabel.setText("Title:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(titleLabel, gridBagConstraints);
+
+        valueLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        valueLabel.setLabelFor(value);
+        valueLabel.setText("Value:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(valueLabel, gridBagConstraints);
+
+        titleValue.setEditable(false);
+        titleValue.setBackground(java.awt.Color.white);
+        titleValue.setColumns(20);
+        titleValue.setLineWrap(true);
+        titleValue.setRows(2);
+        titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(titleValue, gridBagConstraints);
+
+        abstractValue.setEditable(false);
+        abstractValue.setBackground(java.awt.Color.white);
+        abstractValue.setColumns(20);
+        abstractValue.setLineWrap(true);
+        abstractValue.setRows(2);
+        abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(abstractValue, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel hint;
+    private javax.swing.JLabel abstractLabel;
+    private javax.swing.JTextArea abstractValue;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextArea titleValue;
     private javax.swing.JTextField value;
+    private javax.swing.JLabel valueLabel;
     // End of variables declaration//GEN-END:variables
 }

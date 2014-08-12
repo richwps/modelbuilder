@@ -29,8 +29,12 @@ public class OutputComplexData extends javax.swing.JPanel {
 
         this.selectType.removeAllItems();
 
-        for (String type : specifier.getMimetypes()) {
-            this.selectType.addItem(type);
+        for (java.util.List type : specifier.getTypes()) {
+            String amimetype = (String) type.get(OutputComplexDataSpecifier.mimetype_IDX);
+            String aschema = (String) type.get(OutputComplexDataSpecifier.schema_IDX);
+            String aencoding = (String) type.get(OutputComplexDataSpecifier.encoding_IDX);
+            String line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
+            this.selectType.addItem(line);
         }
 
         //fixme
@@ -38,7 +42,8 @@ public class OutputComplexData extends javax.swing.JPanel {
         //this.identifier.setText(theidentifier);
 
         this.setBorder(new TitledBorder(theidentifier));
-        this.hint.setText("Hint: " + thetitel + ", " + theabstract);
+        this.titleValue.setText(thetitel);
+        this.abstractValue.setText(theabstract);
     }
 
     public OutputComplexDataSpecifier getSpecifier() {
@@ -49,38 +54,13 @@ public class OutputComplexData extends javax.swing.JPanel {
         return this.selectOutput.isSelected();
     }
 
-    public String getMimeType() {
-        return (String) this.selectType.getSelectedItem();
+    public java.util.List getType() {
+        int idx = this.selectType.getSelectedIndex();
+        return specifier.getTypes().get(idx);
     }
 
     public boolean asReference() {
         return this.selectAsReference.isSelected();
-    }
-
-    public String getSchema(String mimetype) {
-        String result = "";
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            if (thetype.getMimeType().equals(mimetype)) {
-                result = thetype.getSchema();
-            }
-        }
-        if (result == null) {
-            return "";
-        }
-        return result;
-    }
-
-    public String getEncoding(String mimetype) {
-        String result = "";
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            if (thetype.getMimeType().equals(mimetype)) {
-                result = thetype.getEncoding();
-            }
-        }
-        if (result == null) {
-            return "";
-        }
-        return result;
     }
 
     /**
@@ -97,14 +77,21 @@ public class OutputComplexData extends javax.swing.JPanel {
         selectType = new javax.swing.JComboBox();
         selectAsReference = new javax.swing.JCheckBox();
         selectStore = new javax.swing.JCheckBox();
-        hint = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
+        typeLabel = new javax.swing.JLabel();
+        abstractLabel = new javax.swing.JLabel();
+        abstractValue = new javax.swing.JTextArea();
+        titleValue = new javax.swing.JTextArea();
 
+        setMinimumSize(new java.awt.Dimension(550, 200));
+        setPreferredSize(new java.awt.Dimension(600, 250));
+        setRequestFocusEnabled(false);
         setLayout(new java.awt.GridBagLayout());
 
         selectOutput.setText("Select");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -112,20 +99,23 @@ public class OutputComplexData extends javax.swing.JPanel {
         add(selectOutput, gridBagConstraints);
 
         selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        selectType.setPreferredSize(new java.awt.Dimension(450, 50));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectType, gridBagConstraints);
 
+        selectAsReference.setSelected(true);
         selectAsReference.setText("As Reference");
+        selectAsReference.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -135,31 +125,84 @@ public class OutputComplexData extends javax.swing.JPanel {
         selectStore.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectStore, gridBagConstraints);
 
-        hint.setText("Hint");
+        titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        titleLabel.setText("Title:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(hint, gridBagConstraints);
+        add(titleLabel, gridBagConstraints);
+
+        typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        typeLabel.setText("Type:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(typeLabel, gridBagConstraints);
+
+        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abstractLabel.setText("Abstract:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(abstractLabel, gridBagConstraints);
+
+        abstractValue.setEditable(false);
+        abstractValue.setColumns(20);
+        abstractValue.setLineWrap(true);
+        abstractValue.setRows(2);
+        abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(abstractValue, gridBagConstraints);
+
+        titleValue.setEditable(false);
+        titleValue.setColumns(20);
+        titleValue.setLineWrap(true);
+        titleValue.setRows(2);
+        titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(titleValue, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel hint;
+    private javax.swing.JLabel abstractLabel;
+    private javax.swing.JTextArea abstractValue;
     private javax.swing.JCheckBox selectAsReference;
     private javax.swing.JCheckBox selectOutput;
     private javax.swing.JCheckBox selectStore;
     private javax.swing.JComboBox selectType;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextArea titleValue;
+    private javax.swing.JLabel typeLabel;
     // End of variables declaration//GEN-END:variables
 }

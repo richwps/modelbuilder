@@ -10,7 +10,8 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.specifier.OutputLiteralDataSpecifier;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,16 +44,23 @@ public class OutputParameterization extends ADialogPanel {
         this.provider = provider;
         this.dto = dto;
         initComponents();
-        this.outputs = new ArrayList<>();
+        
+        
         String selectedserver = this.dto.getEndpoint();
         String selectedprocess = this.dto.getProcessid();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
+        
+        this.outputs = new ArrayList<>();
         this.dto = this.provider.describeProcess(dto);
         this.showOutputs();
     }
 
     private void showOutputs() {
+
+        System.out.println(this.dto.getOutputSepcifier());
+        System.out.println(this.dto.getOutputSepcifier().size());
+
         for (IOutputSpecifier specifier : this.dto.getOutputSepcifier()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
@@ -62,12 +70,24 @@ public class OutputParameterization extends ADialogPanel {
             //FIXME BoundingBox
         }
 
-        GridLayout layout = new GridLayout(this.outputs.size(), 1);
-        this.outputPanel.setLayout(layout);
+        JPanel outputsPanel = new JPanel();
+        outputsPanel.setLayout(new GridBagLayout());
+
+        GridBagConstraints g = new GridBagConstraints();
+        g.gridx = 0;
+        g.gridy = 0;
+        g.anchor = GridBagConstraints.NORTHWEST;
+        g.insets.bottom = 5;
+        g.insets.top = 5;
+        g.insets.right = 5;
+        g.insets.left = 5;
 
         for (JPanel panel : this.outputs) {
-            this.outputPanel.add(panel);
+            outputsPanel.add(panel, g);
+            g.gridy += 1;
         }
+
+        this.outputsPanelScrollPane.setViewportView(outputsPanel);
     }
 
     @Override
@@ -76,27 +96,35 @@ public class OutputParameterization extends ADialogPanel {
 
         for (JPanel panel : this.outputs) {
             if (panel instanceof OutputComplexData) {
+
                 OutputComplexData pan = (OutputComplexData) panel;
+
                 if (pan.isSelected()) {
                     OutputComplexDataSpecifier specifier = pan.getSpecifier();
-                    OutputComplexDataArgument param = new OutputComplexDataArgument(specifier);
+                    OutputComplexDataArgument argument = new OutputComplexDataArgument(specifier);
 
                     Boolean asRef = pan.asReference();
-                    param.setAsReference(asRef);
-                    String mimetype = pan.getMimeType();
-                    param.setMimetype(mimetype);
-                    param.setSchema(specifier.getSchemaByMimetype(mimetype));
-                    param.setEncoding(specifier.getEncodingByMimetype(mimetype));
+                    argument.setAsReference(asRef);
+                    List type = pan.getType();
+                    String amimetype = (String) type.get(OutputComplexDataSpecifier.mimetype_IDX);
+                    String aschema = (String) type.get(OutputComplexDataSpecifier.schema_IDX);
+                    String aencoding = (String) type.get(OutputComplexDataSpecifier.encoding_IDX);
 
-                    theoutputs.put(param.getIdentifier(), param);
+                    argument.setMimetype(amimetype);
+                    argument.setSchema(aschema);
+                    argument.setEncoding(aencoding);
+
+                    theoutputs.put(argument.getIdentifier(), argument);
                 }
             } else if (panel instanceof OutputLiteralData) {
                 OutputLiteralData pan = (OutputLiteralData) panel;
+
                 if (pan.isSelected()) {
                     OutputLiteralDataSpecifier specifier = pan.getSpecifier();
-                    OutputLiteralDataArgument param = new OutputLiteralDataArgument(specifier);
-                    theoutputs.put(param.getIdentifier(), param);
+                    OutputLiteralDataArgument argument = new OutputLiteralDataArgument(specifier);
+                    theoutputs.put(argument.getIdentifier(), argument);
                 }
+
             }
             //FIXME BoundingBox
         }
@@ -123,8 +151,8 @@ public class OutputParameterization extends ADialogPanel {
         selectedServerLabel = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
         outputsPanelScrollPane = new javax.swing.JScrollPane();
-        outputPanel = new javax.swing.JPanel();
 
+        setPreferredSize(new java.awt.Dimension(620, 650));
         setLayout(new java.awt.GridBagLayout());
 
         selectedServer.setText("jLabel1");
@@ -171,14 +199,10 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedProcessLabel, gridBagConstraints);
 
-        outputsPanelScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Outputs"));
+        outputsPanelScrollPane.setBorder(null);
         outputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(700, 300));
-
-        outputPanel.setPreferredSize(new java.awt.Dimension(700, 300));
-        outputPanel.setLayout(new java.awt.BorderLayout());
-        outputsPanelScrollPane.setViewportView(outputPanel);
-
+        outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(600, 600));
+        outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -193,7 +217,6 @@ public class OutputParameterization extends ADialogPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel outputPanel;
     private javax.swing.JScrollPane outputsPanelScrollPane;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
