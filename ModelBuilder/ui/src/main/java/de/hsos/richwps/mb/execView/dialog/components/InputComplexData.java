@@ -18,16 +18,23 @@ public class InputComplexData extends javax.swing.JPanel {
 
     /**
      * Creates new form ComplexInput
+     * @param specifier the specifier of the complexinputdata.
      */
     public InputComplexData(final InputComplexDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
+        
         String theidentifier = specifier.getIdentifier();
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
+
         this.selectType.removeAllItems();
-        for (String mimetype : specifier.getMimetypes()) {
-            this.selectType.addItem(mimetype);
+        for (java.util.List type : specifier.getTypes()) {
+            String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
+            String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
+            String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
+            String line = "<html>"+amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding+"</html>";
+            this.selectType.addItem(line);
         }
 
         //fixme
@@ -36,7 +43,8 @@ public class InputComplexData extends javax.swing.JPanel {
 
         this.setBorder(new TitledBorder(theidentifier));
 
-        this.hint.setText("Hint: " + thetitel + ", " + theabstract);
+        this.titleValue.setText(thetitel);
+        this.abstractValue.setText(theabstract);
     }
 
     public InputComplexDataSpecifier getSpecifier() {
@@ -51,8 +59,9 @@ public class InputComplexData extends javax.swing.JPanel {
         return this.selectByValue.isSelected();
     }
 
-    public String getMimeType() {
-        return (String) this.selectType.getSelectedItem();
+    public java.util.List getMimeType() {
+        int idx = this.selectType.getSelectedIndex();
+        return specifier.getTypes().get(idx);
     }
 
     public String getValue() {
@@ -70,27 +79,38 @@ public class InputComplexData extends javax.swing.JPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        hint = new javax.swing.JLabel();
+        titleLabel = new javax.swing.JLabel();
         value = new javax.swing.JTextField();
         selectByValue = new javax.swing.JRadioButton();
         selectByReference = new javax.swing.JRadioButton();
         selectType = new javax.swing.JComboBox();
+        selectTypeLabel = new javax.swing.JLabel();
+        valueLabel = new javax.swing.JLabel();
+        abstractLabel = new javax.swing.JLabel();
+        modeLabel = new javax.swing.JLabel();
+        abstractValue = new javax.swing.JTextArea();
+        titleValue = new javax.swing.JTextArea();
 
         setBorder(null);
+        setMinimumSize(new java.awt.Dimension(550, 214));
+        setPreferredSize(new java.awt.Dimension(600, 300));
         setLayout(new java.awt.GridBagLayout());
 
-        hint.setText("Hint");
+        titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        titleLabel.setText("Title:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        add(hint, gridBagConstraints);
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(titleLabel, gridBagConstraints);
 
-        value.setPreferredSize(new java.awt.Dimension(400, 27));
+        value.setPreferredSize(new java.awt.Dimension(450, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
@@ -100,11 +120,11 @@ public class InputComplexData extends javax.swing.JPanel {
         add(value, gridBagConstraints);
 
         buttonGroup1.add(selectByValue);
-        selectByValue.setText("by value");
+        selectByValue.setText("value");
         selectByValue.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -113,10 +133,10 @@ public class InputComplexData extends javax.swing.JPanel {
 
         buttonGroup1.add(selectByReference);
         selectByReference.setSelected(true);
-        selectByReference.setText("by reference");
+        selectByReference.setText("reference (KVP)");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -124,22 +144,108 @@ public class InputComplexData extends javax.swing.JPanel {
         add(selectByReference, gridBagConstraints);
 
         selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        selectType.setPreferredSize(new java.awt.Dimension(450, 50));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectType, gridBagConstraints);
+
+        selectTypeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        selectTypeLabel.setLabelFor(selectType);
+        selectTypeLabel.setText("Type:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectTypeLabel, gridBagConstraints);
+
+        valueLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        valueLabel.setLabelFor(value);
+        valueLabel.setText("Input (URL):");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(valueLabel, gridBagConstraints);
+
+        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abstractLabel.setText("Abstract");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(abstractLabel, gridBagConstraints);
+
+        modeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        modeLabel.setText("Provide by:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectType, gridBagConstraints);
+        add(modeLabel, gridBagConstraints);
+
+        abstractValue.setEditable(false);
+        abstractValue.setColumns(20);
+        abstractValue.setLineWrap(true);
+        abstractValue.setRows(2);
+        abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(abstractValue, gridBagConstraints);
+
+        titleValue.setEditable(false);
+        titleValue.setColumns(20);
+        titleValue.setLineWrap(true);
+        titleValue.setRows(2);
+        titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(titleValue, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel abstractLabel;
+    private javax.swing.JTextArea abstractValue;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JLabel hint;
+    private javax.swing.JLabel modeLabel;
     private javax.swing.JRadioButton selectByReference;
     private javax.swing.JRadioButton selectByValue;
     private javax.swing.JComboBox selectType;
+    private javax.swing.JLabel selectTypeLabel;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JTextArea titleValue;
     private javax.swing.JTextField value;
+    private javax.swing.JLabel valueLabel;
     // End of variables declaration//GEN-END:variables
 }

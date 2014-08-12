@@ -51,6 +51,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
 
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
+            this.currentPanel.setVisible(false);
         }
 
         this.add(this.serverselectionpanel);
@@ -72,6 +73,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.provider.connect(this.dto.getEndpoint());
         this.processesselectionpanel = new ProcessSelection(this.provider, this.dto);
         this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
         this.add(this.processesselectionpanel);
         this.pack();
         this.currentPanel = processesselectionpanel;
@@ -87,9 +89,10 @@ public class ExecViewDialog extends javax.swing.JDialog {
         //refresh the dto
         this.currentPanel.updateDTO();
         this.dto = this.currentPanel.getDTO();
-
+        
         this.inputspanel = new InputParameterization(this.provider, this.dto);
         this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
         this.add(this.inputspanel);
         this.pack();
         this.currentPanel = inputspanel;
@@ -105,9 +108,10 @@ public class ExecViewDialog extends javax.swing.JDialog {
         //refresh the dto
         this.currentPanel.updateDTO();
         this.dto = this.currentPanel.getDTO();
-
+        
         this.outputsspanel = new OutputParameterization(this.provider, this.dto);
         this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
         this.add(this.outputsspanel);
         this.pack();
         this.currentPanel = outputsspanel;
@@ -123,10 +127,12 @@ public class ExecViewDialog extends javax.swing.JDialog {
 
         this.resultpanel = new ResultVisualisation(this.provider, this.dto);
         this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
         this.add(this.resultpanel);
         this.pack();
-        this.resultpanel.executeProcess();
         this.currentPanel = resultpanel;
+        
+        this.resultpanel.executeProcess();
     }
 
     /**
@@ -214,41 +220,25 @@ public class ExecViewDialog extends javax.swing.JDialog {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+        
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /*try {
-         for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-         if ("Nimbus".equals(info.getName())) {
-         javax.swing.UIManager.setLookAndFeel(info.getClassName());
-         break;
-         }
-         }
-         } catch (ClassNotFoundException ex) {
-         java.util.logging.Logger.getLogger(ExecViewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         } catch (InstantiationException ex) {
-         java.util.logging.Logger.getLogger(ExecViewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         } catch (IllegalAccessException ex) {
-         java.util.logging.Logger.getLogger(ExecViewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-         java.util.logging.Logger.getLogger(ExecViewDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-         }*/
-        //</editor-fold>
+        
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                List<String> remotes = new ArrayList<String>();
+                List<String> remotes = new ArrayList<>();
                 remotes.add("http://192.168.56.101:8080/wps/WebProcessingService");
                 remotes.add("http://52n.edvsz.hs-osnabrueck.de/wps/WebProcessingService");
                 remotes.add("http://52n.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
+                remotes.add("http://52n.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
+                remotes.add("http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService");
+                
                 ExecViewDialog dialog = new ExecViewDialog(new javax.swing.JFrame(), true, remotes);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override

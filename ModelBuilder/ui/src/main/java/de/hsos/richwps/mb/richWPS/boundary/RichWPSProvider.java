@@ -5,12 +5,9 @@ import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -19,11 +16,10 @@ import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessBriefType;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionsDocument;
-import org.geotools.gml3.bindings.GML3ParsingUtils;
 import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientSession;
-import org.n52.wps.commons.WPSConfig;
+import org.n52.wps.client.WPSTClientSession;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 
 /**
@@ -33,11 +29,24 @@ import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
  */
 public class RichWPSProvider implements IRichWPSProvider {
 
+    /**
+     * WPS client.
+     */
     private WPSClientSession wps;
+    /**
+     * WPS-T client.
+     */
+    private WPSTClientSession wpst;
 
     @Override
+    /**
+     * Connects the provider to a WPS-server.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     */
     public void connect(String wpsurl) {
         try {
+            wps = WPSClientSession.getInstance();
             wps.connect(wpsurl);
         } catch (Exception e) {
             System.err.println("Unable to connect, " + e.getLocalizedMessage());
@@ -45,21 +54,50 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     @Override
+    /**
+     * Connects the provider to a WPS-server with WPS-T functionality.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsturl endpoint of transactional interface.
+     */
     public void connect(String wpsurl, String wpsturl) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
+    /**
+     * Connects the provider to a WPS-server with WPS-T and testing
+     * functionality.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsturl endpoint of transactional interface.
+     * @param testurl endpoint of testing interface.
+     */
     public void connect(String wpsurl, String wpsturl, String testurl) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
+    /**
+     * Connects the provider to a WPS-server with WPS-T, testing and profiling
+     * functionality.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsturl endpoint of transactional interface.
+     * @param testurl endpoint of testing interface.
+     * @param testurl endpoint of profiling interface.
+     */
     public void connect(String wpsurl, String wpsturl, String testurl, String profileurl) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
+    /**
+     * Lists all available processes.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @return list of processes.
+     */
     public List<String> getAvailableProcesses(String wpsurl) {
         List<String> processes = new ArrayList<>();
 
@@ -81,16 +119,24 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     @Override
+    /**
+     * Describes process and its' in and outputs.
+     *
+     * @param ExecuteRequestDTO with endpoint and processid.
+     * @return ExecuteRequestDTO with endpoint and processid an process
+     * description.
+     */
     public ExecuteRequestDTO describeProcess(ExecuteRequestDTO dto) {
-        ExecuteRequestDTO resultdto = dto;
+
         if (dto.getInputSpecifier().isEmpty()) {
-            resultdto = this.describeInputs(dto);
+            dto = this.describeInputs(dto);
         }
 
         if (dto.getOutputSepcifier().isEmpty()) {
-            resultdto = this.describeOutputs(dto);
+            dto = this.describeOutputs(dto);
         }
-        return resultdto;
+
+        return dto;
     }
 
     private ExecuteRequestDTO describeInputs(ExecuteRequestDTO dto) {
@@ -138,7 +184,6 @@ public class RichWPSProvider implements IRichWPSProvider {
         return dto;
     }
 
-    //FIXME splitup
     public ExecuteRequestDTO executeProcess(ExecuteRequestDTO dto) {
         ExecuteRequestDTO resultdto = dto;
         String wpsurl = dto.getEndpoint();
@@ -159,7 +204,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             execute = executeBuilder.getExecute();
             execute.getExecute().setService("WPS");
 
-            System.err.println("Execute String: " + execute.toString());
+            de.hsos.richwps.mb.Logger.log("Debug:\n Execute String: " + execute.toString());
 
             WPSClientSession wpsClient = WPSClientSession.getInstance();
             responseObject = wpsClient.execute(wpsurl, execute);
@@ -227,13 +272,13 @@ public class RichWPSProvider implements IRichWPSProvider {
         String file = res.toExternalForm().replace("file:", "");
         System.out.println(file);
         WPSClientConfig.getInstance(file);
-        
+
         ExecuteRequestDTO resultdto = dto;
         HashMap theoutputs = dto.getOutputArguments();
-        System.err.println("Debug: " + responseObject.getClass());
+        de.hsos.richwps.mb.Logger.log("Debug: " + responseObject.getClass());
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
-            System.out.println("Debug: \n" + response.toString());
+            de.hsos.richwps.mb.Logger.log("Debug: \n" + response.toString());
 
             try {
                 java.util.Set<String> keys = theoutputs.keySet();
@@ -242,18 +287,25 @@ public class RichWPSProvider implements IRichWPSProvider {
                     Object o = theoutputs.get(key);
                     if (o instanceof OutputLiteralDataArgument) {
                         OutputLiteralDataArgument argument = (OutputLiteralDataArgument) o;
+                        OutputDataType[] outputs = response.getExecuteResponse().getProcessOutputs().getOutputArray();
+                        String value = "";
+                        for (OutputDataType output : outputs) {
+                            String givenIdentifier = output.getIdentifier().getStringValue();
+                            String wantedIdentifer = argument.getIdentifier();
+                            if (givenIdentifier.equals(wantedIdentifer)) {
+                                value = output.getData().getLiteralData().getStringValue();
+                                de.hsos.richwps.mb.Logger.log("#thevalue " + value);
+                            }
+                        }
+                        dto.addResult(key, value);
 
-                        //String subtype = argument.getSepcifier().getSubtype();
-                        //FIXME
-                        //dto.addResult(key, o);
                     } else if (o instanceof OutputComplexDataArgument) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
-                        
+
                         OutputComplexDataArgument argument = (OutputComplexDataArgument) o;
                         if (argument.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
-                            System.out.println(key + ", " + httpkvpref);
-                            // FIXME Typedetection.
+                            dto.addResult(key, httpkvpref);
                         } else {
                             // FIXME proper analytics for different bindings.
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);//FIXME
@@ -261,14 +313,15 @@ public class RichWPSProvider implements IRichWPSProvider {
                         }
                     }
                 }
-
             } catch (Exception e) {
                 //throw new Exception("Unable to analyse response.");
                 e.printStackTrace();
             }
         } else if (responseObject instanceof net.opengis.ows.x11.ExceptionDocument) {
-            net.opengis.ows.x11.ExceptionDocument exception = (net.opengis.ows.x11.ExceptionDocument) responseObject;
+            net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) responseObject;
             System.err.println("Unable to analyse response. Response is Exception: " + exception.toString());
+            System.err.println(exception.getExceptionReport());
+
         } else {
             //throw new Exception("Unable to analyse response.");
             System.err.println("Unable to analyse response. Response is not an valid ExecuteResponse.");

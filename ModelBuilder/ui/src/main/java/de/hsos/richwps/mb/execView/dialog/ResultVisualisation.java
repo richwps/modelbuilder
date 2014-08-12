@@ -1,8 +1,15 @@
 package de.hsos.richwps.mb.execView.dialog;
 
+import de.hsos.richwps.mb.execView.dialog.components.renderer.LiteralResultRenderer;
+import de.hsos.richwps.mb.execView.dialog.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
+import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
+import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JPanel;
 
@@ -21,7 +28,7 @@ public class ResultVisualisation extends ADialogPanel {
         this.dto = dto;
         this.renderers = new ArrayList<>();
         initComponents();
-        this.resultTabbedPane.setVisible(false);
+        this.resultPanel.setVisible(false);
         this.loadingLabel.setVisible(true);
     }
 
@@ -33,21 +40,42 @@ public class ResultVisualisation extends ADialogPanel {
 
         this.dto = this.provider.executeProcess(this.dto);
 
-        /*for (JPanel pan : this.renderers) {
-         this.resultTabbedPane.add(pan);
-         }*/
-        this.resultTabbedPane.setVisible(true);
+        HashMap results = this.dto.getResults();
+        HashMap arguments = this.dto.getOutputArguments();
+        java.util.Set keys = results.keySet();
 
+        GridLayout layout = new GridLayout(results.size(), 1);
+        this.resultPanel.setLayout(layout);
+
+        for (Object key : keys) {
+            IOutputArgument argument = (IOutputArgument) arguments.get(key);
+            if (argument instanceof OutputComplexDataArgument) {
+                String uri = (String) results.get(key);
+                OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
+                String identifier = (_argument.getSpecifier()).getIdentifier();
+                URIResultRenderer pan = new URIResultRenderer(identifier, uri);
+                this.resultPanel.add(pan);
+            } else if (argument instanceof OutputLiteralDataArgument) {
+                String value = (String) results.get(key);
+                OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
+                String identifier = (_argument.getSepcifier()).getIdentifier();
+                LiteralResultRenderer pan = new LiteralResultRenderer(identifier,value);
+                this.resultPanel.add(pan);
+            }
+        }
+
+        this.resultPanel.setVisible(true);
     }
 
     @Override
     public void updateDTO() {
-        throw new UnsupportedOperationException("Unnecessary.");
+        //nop
     }
 
     @Override
     public ExecuteRequestDTO getDTO() {
-        throw new UnsupportedOperationException("Unnecessary.");
+        //nop
+        return this.dto;
     }
 
     /**
@@ -60,19 +88,11 @@ public class ResultVisualisation extends ADialogPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        resultTabbedPane = new javax.swing.JTabbedPane();
         loadingLabel = new javax.swing.JLabel();
+        resultPanel = new javax.swing.JPanel();
 
+        setPreferredSize(new java.awt.Dimension(300, 200));
         setLayout(new java.awt.GridBagLayout());
-
-        resultTabbedPane.setPreferredSize(new java.awt.Dimension(700, 400));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(resultTabbedPane, gridBagConstraints);
 
         loadingLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         loadingLabel.setText("Loading");
@@ -83,12 +103,21 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(resultPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel loadingLabel;
-    private javax.swing.JTabbedPane resultTabbedPane;
+    private javax.swing.JPanel resultPanel;
     // End of variables declaration//GEN-END:variables
 
 }

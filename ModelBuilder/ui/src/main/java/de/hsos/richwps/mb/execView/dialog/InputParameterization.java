@@ -10,7 +10,8 @@ import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,6 @@ public class InputParameterization extends ADialogPanel {
     }
 
     private void showInputs() {
-
         for (IInputSpecifier specifier : this.dto.getInputSpecifier()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
                 this.inputs.add(new InputLiteralData((InputLiteralDataSpecifier) specifier));
@@ -63,12 +63,24 @@ public class InputParameterization extends ADialogPanel {
             //FIXME BoundingBox
         }
 
-        GridLayout layout = new GridLayout(this.inputs.size(), 1);
-        this.inputsPanel.setLayout(layout);
+        JPanel inputsPanel = new JPanel();
+        inputsPanel.setLayout(new GridBagLayout());
+
+        GridBagConstraints g = new GridBagConstraints();
+        g.gridx = 0;
+        g.gridy = 0;
+        g.anchor = GridBagConstraints.NORTHWEST;
+        g.insets.bottom = 5;
+        g.insets.top = 5;
+        g.insets.right = 5;
+        g.insets.left = 5;
+        g.fill = GridBagConstraints.BOTH;
 
         for (JPanel panel : this.inputs) {
-            this.inputsPanel.add(panel);
+            inputsPanel.add(panel, g);
+            g.gridy += 1;
         }
+        this.jScrollPane1.setViewportView(inputsPanel);
     }
 
     @Override
@@ -81,20 +93,31 @@ public class InputParameterization extends ADialogPanel {
                 InputComplexData pan = (InputComplexData) panel;
                 InputComplexDataSpecifier specifier = pan.getSpecifier();
 
+                List type = pan.getMimeType();
+
+                String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
+                String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
+                String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
+
                 InputComplexDataArgument param = null;
                 if (pan.isReference()) {
                     param = new InputComplexDataArgument(specifier);
                     String url = pan.getValue();
                     param.setURL(url);
-                    param.setMimeType(TOOL_TIP_TEXT_KEY);
                 } else {
                     throw new UnsupportedOperationException("Not implemented, yet.");
                 }
-                String mimetype = pan.getMimeType();
 
-                param.setMimeType(mimetype);
-                param.setEncoding(specifier.getEncodingByMimetype(mimetype));
-                param.setSchema(specifier.getSchemaByMimetype(mimetype));
+                
+                param.setMimeType(amimetype);
+                if(aschema!=null){
+                    System.out.println(aschema);
+                    param.setSchema(aschema);
+                }
+                if(aencoding!=null){
+                    System.out.println(aencoding);
+                    param.setEncoding(aencoding);
+                }
 
                 theinputs.put(param.getIdentifier(), param);
             } else if (panel instanceof InputLiteralData) {
@@ -124,11 +147,11 @@ public class InputParameterization extends ADialogPanel {
 
         selectedServer = new javax.swing.JLabel();
         selectedProcess = new javax.swing.JLabel();
-        inputsPanelScrollPane = new javax.swing.JScrollPane();
-        inputsPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         selectedServerLabel = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
 
+        setPreferredSize(new java.awt.Dimension(620, 650));
         setLayout(new java.awt.GridBagLayout());
 
         selectedServer.setText("jLabel1");
@@ -151,24 +174,19 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedProcess, gridBagConstraints);
 
-        inputsPanelScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Inputs"));
-        inputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        inputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(700, 300));
-
-        inputsPanel.setPreferredSize(new java.awt.Dimension(700, 300));
-        inputsPanel.setLayout(new java.awt.BorderLayout());
-        inputsPanelScrollPane.setViewportView(inputsPanel);
-
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(600, 600));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(inputsPanelScrollPane, gridBagConstraints);
+        add(jScrollPane1, gridBagConstraints);
 
         selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedServerLabel.setLabelFor(selectedServer);
@@ -197,8 +215,7 @@ public class InputParameterization extends ADialogPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel inputsPanel;
-    private javax.swing.JScrollPane inputsPanelScrollPane;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;

@@ -18,31 +18,38 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     private String identifier;
     private String theabstract;
     private String title;
-    private List<String> mimetypes;
-    private List<String> schema;
+    private List<List> types;
+    public static int mimetype_IDX = 0;
+    public static int schema_IDX = 1;
+    public static int encoding_IDX = 2;
+
     private SupportedComplexDataType type;
 
     public OutputComplexDataSpecifier(OutputDescriptionType description) {
         this.description = description;
 
-        mimetypes = new ArrayList<String>();
+        types = new ArrayList<List>();
         type = description.getComplexOutput();
         this.identifier = description.getIdentifier().getStringValue();
 
-        this.theabstract = description.getAbstract().getStringValue();
+        if (description.getAbstract() != null) {
+            this.theabstract = description.getAbstract().getStringValue();
+        } else {
+            this.theabstract = "";
+        }
         this.title = description.getTitle().getStringValue();
         ComplexDataCombinationsType subtypes = type.getSupported();
 
         ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
         for (ComplexDataDescriptionType thetype : subtypes_) {
-            this.mimetypes.add(thetype.getMimeType());
+            List<String> atype = new ArrayList<>();
+            atype.add(thetype.getMimeType());
+            atype.add(thetype.getSchema());
+            atype.add(thetype.getEncoding());
+            this.types.add(atype);
         }
-    }
-
-    @Override
-    public Class getType() {
-        return this.getClass();
+        
     }
 
     @Override
@@ -76,44 +83,8 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         this.theabstract = theabstract;
     }
 
-    public List<String> getMimetypes() {
-        return mimetypes;
+    public List<List> getTypes() {
+        return types;
     }
 
-    public void setMimetypes(List<String> mimetypes) {
-        this.mimetypes = mimetypes;
-    }
-
-    public List<String> getSchema() {
-        return schema;
-    }
-
-    public void setSchema(List<String> schema) {
-        this.schema = schema;
-    }
-    
-    public String getEncodingByMimetype(String mimetype) {
-        ComplexDataCombinationsType subtypes = this.type.getSupported();
-        ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
-
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            if (thetype.getMimeType().equals(mimetype)) {
-                return thetype.getEncoding();
-            }
-        }
-        return "";
-    }
-
-    public String getSchemaByMimetype(String mimetype) {
-        ComplexDataCombinationsType subtypes = this.type.getSupported();
-        ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
-
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            if (thetype.getMimeType().equals(mimetype)) {
-                return thetype.getSchema();
-            }
-        }
-        return "";
-    }
-    
 }

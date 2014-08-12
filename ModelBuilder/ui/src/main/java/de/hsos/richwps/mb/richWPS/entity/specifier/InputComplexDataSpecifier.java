@@ -21,30 +21,38 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     private String identifier;
     private String titel;
     private String theabstract;
-    private List<String> mimetypes;
-    private String schema;
-    private String encoding;
+    private int minOccur = 0;
+    private int maxOccur = 0;
+
+    private List<List> types;
+    public final static int mimetype_IDX = 0;
+    public final static int schema_IDX = 1;
+    public final static int encoding_IDX = 2;
 
     public InputComplexDataSpecifier(InputDescriptionType description) {
         this.description = description;
         this.type = description.getComplexData();
 
         this.identifier = description.getIdentifier().getStringValue();
-        this.theabstract = description.getAbstract().getStringValue();
+        if (description.getAbstract() != null) {
+            this.theabstract = description.getAbstract().getStringValue();
+        } else {
+            this.theabstract = "";
+        }
         this.titel = description.getTitle().getStringValue();
         ComplexDataCombinationsType subtypes = this.type.getSupported();
         ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
-        this.mimetypes = new ArrayList<>();
+        this.types = new ArrayList<>();
         for (ComplexDataDescriptionType thetype : subtypes_) {
-            this.mimetypes.add(thetype.getMimeType());
-
+            List<String> atype = new ArrayList();
+            atype.add(thetype.getMimeType());
+            atype.add(thetype.getSchema());
+            atype.add(thetype.getEncoding());
+            this.types.add(atype);
         }
-    }
-
-    @Override
-    public Class getType() {
-        return this.getClass();
+        this.minOccur = description.getMinOccurs().intValue();
+        this.maxOccur = description.getMaxOccurs().intValue();
     }
 
     @Override
@@ -62,31 +70,15 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         return this.titel;
     }
 
-    public List<String> getMimetypes() {
-        return this.mimetypes;
+    public List<List> getTypes() {
+        return this.types;
     }
 
-    public String getEncodingByMimetype(String mimetype) {
-        ComplexDataCombinationsType subtypes = this.type.getSupported();
-        ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
-
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            if (thetype.getMimeType().equals(mimetype)) {
-                return thetype.getEncoding();
-            }
-        }
-        return "";
+    public int getMinOccur() {
+        return minOccur;
     }
 
-    public String getSchemaByMimetype(String mimetype) {
-        ComplexDataCombinationsType subtypes = this.type.getSupported();
-        ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
-
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            if (thetype.getMimeType().equals(mimetype)) {
-                return thetype.getSchema();
-            }
-        }
-        return "";
+    public int getMaxOccur() {
+        return maxOccur;
     }
 }

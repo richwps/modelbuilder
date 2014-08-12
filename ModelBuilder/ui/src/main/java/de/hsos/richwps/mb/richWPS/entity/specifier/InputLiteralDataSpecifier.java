@@ -11,30 +11,29 @@ import net.opengis.wps.x100.LiteralInputType;
 public class InputLiteralDataSpecifier implements IInputSpecifier {
 
     private String identifier;
-    private String subtype;
+    private String type;
     private String title;
     private String theabstract;
     private String value;
 
     public InputLiteralDataSpecifier(final String identifier, final String type, final String title, final String theabstract) {
         this.identifier = identifier;
-        this.subtype = type;
+        this.type = type;
         this.title = title;
         this.theabstract = theabstract;
     }
 
     public InputLiteralDataSpecifier(final InputDescriptionType description) {
         this.identifier = description.getIdentifier().getStringValue();
-        this.theabstract = description.getAbstract().getStringValue();
+        if (description.getAbstract() != null) {
+            this.theabstract = description.getAbstract().getStringValue();
+        } else {
+            this.theabstract = "";
+        }
+
         this.title = description.getTitle().getStringValue();
-        LiteralInputType type = description.getLiteralData();
-        this.subtype = type.getDataType().getReference();
-
-    }
-
-    @Override
-    public Class getType() {
-        return this.getClass();
+        LiteralInputType thetype = description.getLiteralData();
+        this.type = thetype.getDataType().getReference();
     }
 
     @Override
@@ -42,12 +41,12 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         return this.identifier;
     }
 
-    public String getSubtype() {
-        return this.subtype;
+    public String getType() {
+        return this.type;
     }
 
     public void setSubtype(String type) {
-        this.subtype = type;
+        this.type = type;
     }
 
     @Override
