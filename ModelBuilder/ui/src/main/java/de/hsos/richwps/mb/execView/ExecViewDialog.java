@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView;
 
-import de.hsos.richwps.mb.App;
+import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.execView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.execView.dialog.InputParameterization;
 import de.hsos.richwps.mb.execView.dialog.OutputParameterization;

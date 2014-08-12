@@ -338,8 +338,6 @@ public class GraphView extends JPanel {
         List<ProcessPort> ports = new LinkedList<>();
         GraphModel model = getGraph().getGraphModel();
         for (Object cell : cells) {
-//            Object cellValue = getGraph().getModel().getValue(cell);
-//            if (cellValue != null && cellValue instanceof IProcessEntity) {
             if(model.isGlobalPort(cell)) {
                 ports.add((ProcessPort) model.getValue(cell));
             }
@@ -357,7 +355,7 @@ public class GraphView extends JPanel {
      */
     public void saveGraphToXml(String filename) throws IOException {
         mxCodec codec = new mxCodec();
-        String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel()));//.cloneMxgraphModel()));
+        String xml = mxXmlUtils.getXml(codec.encode(getGraph().getGraphModel()));
         mxUtils.writeFile(xml, filename);
     }
 

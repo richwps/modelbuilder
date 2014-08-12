@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
-import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.ui.MultilineLabel;

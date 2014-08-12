@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb.ui;
 
-import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;

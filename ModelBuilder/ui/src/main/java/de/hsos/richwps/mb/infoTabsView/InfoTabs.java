@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb.infoTabsView;
 
-import de.hsos.richwps.mb.AppConstants;
+import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.LinkedList;
