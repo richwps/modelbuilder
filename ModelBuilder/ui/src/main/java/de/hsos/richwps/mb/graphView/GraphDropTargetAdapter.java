@@ -1,9 +1,10 @@
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.treeView.TransferableProcessEntity;
 import de.hsos.richwps.mb.treeView.TransferableProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableTreeNodes;
@@ -84,6 +85,9 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
      * @return
      */
     protected boolean createNodesFromTransferObject(Object o, Point location) {
+
+        location.x = (int) Math.floor(location.x / AppConstants.GRAPH_GRID_SIZE) * AppConstants.GRAPH_GRID_SIZE;
+        location.y = (int) Math.floor(location.y / AppConstants.GRAPH_GRID_SIZE) * AppConstants.GRAPH_GRID_SIZE;
 
         location = graphView.getEmptyCellLocation(location);
 

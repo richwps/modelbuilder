@@ -61,19 +61,42 @@ public class AppGraphView extends GraphView {
                         break;
                 }
             }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch(e.getKeyCode()) {
+                    
+                    // move cells
+                    case 37:
+                        moveSelectedCells(-AppConstants.GRAPH_GRID_SIZE, 0);    // left
+                        break;
+                    case 38:
+                        moveSelectedCells(0, -AppConstants.GRAPH_GRID_SIZE);    // up
+                        break;
+                    case 39:
+                        moveSelectedCells(AppConstants.GRAPH_GRID_SIZE, 0);     // right
+                        break;
+                    case 40:
+                        moveSelectedCells(0, AppConstants.GRAPH_GRID_SIZE);     // down
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+
+
         });
 
         // register graph components for the event service.
         AppEventService.getInstance().addSourceCommand(this, AppConstants.INFOTAB_ID_EDITOR);
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
-        // setup model listeners etc.
-        modelLoaded();
-
         init = true;
     }
 
-        /**
+    /**
      * Add the model's undoable graph edits to the UndoManager. Needs to be
      * called after a new model has been created or loaded.
      */

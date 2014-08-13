@@ -31,6 +31,10 @@ public class AppConstants {
     public static boolean GRAPH_ALLOW_FEEDBACK_LOOPS = false;
     // true if a process output can be connected to an input of the same process
     public static boolean GRAPH_ALLOW_SINGLE_FEEDBACK_LOOPS = false;
+    /**
+     * Size in px of the graph grid.
+     */
+    public final static int GRAPH_GRID_SIZE = 10;
 
     /**
      * Ressources
@@ -67,6 +71,7 @@ public class AppConstants {
     public final static Point PREFERENCES_DIALOG_LOCATION = new Point(200, 150);
     public final static String PREFERENCES_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
     public final static String PREFERENCES_DIALOG_BTN_OK = DIALOG_BTN_OK;
+
     public enum PREFERENCES_TAB {
         SEMANTICPROXY,
         HTTPPROXY

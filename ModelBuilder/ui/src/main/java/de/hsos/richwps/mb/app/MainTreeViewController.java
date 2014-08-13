@@ -7,10 +7,10 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import java.util.LinkedList;
 import javax.swing.tree.DefaultMutableTreeNode;
 
