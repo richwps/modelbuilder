@@ -234,9 +234,8 @@ public class ExecViewDialog extends javax.swing.JDialog {
             public void run() {
                 List<String> remotes = new ArrayList<>();
                 remotes.add("http://192.168.56.101:8080/wps/WebProcessingService");
-                remotes.add("http://52n.edvsz.hs-osnabrueck.de/wps/WebProcessingService");
-                remotes.add("http://52n.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
-                remotes.add("http://52n.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
+                remotes.add("http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
+                remotes.add("http://richwps.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
                 remotes.add("http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService");
                 
                 ExecViewDialog dialog = new ExecViewDialog(new javax.swing.JFrame(), true, remotes);

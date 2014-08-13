@@ -89,9 +89,10 @@ public class ResultVisualisation extends ADialogPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         loadingLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         resultPanel = new javax.swing.JPanel();
 
-        setPreferredSize(new java.awt.Dimension(300, 200));
+        setPreferredSize(new java.awt.Dimension(600, 600));
         setLayout(new java.awt.GridBagLayout());
 
         loadingLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -103,19 +104,27 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
+
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(600, 500));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(600, 500));
+
+        resultPanel.setMinimumSize(new java.awt.Dimension(550, 150));
+        resultPanel.setPreferredSize(new java.awt.Dimension(600, 200));
+        jScrollPane1.setViewportView(resultPanel);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(resultPanel, gridBagConstraints);
+        add(jScrollPane1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel loadingLabel;
     private javax.swing.JPanel resultPanel;
     // End of variables declaration//GEN-END:variables
