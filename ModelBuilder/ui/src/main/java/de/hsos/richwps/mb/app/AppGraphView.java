@@ -67,13 +67,10 @@ public class AppGraphView extends GraphView {
         AppEventService.getInstance().addSourceCommand(this, AppConstants.INFOTAB_ID_EDITOR);
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
-        // setup model listeners etc.
-        modelLoaded();
-
         init = true;
     }
 
-        /**
+    /**
      * Add the model's undoable graph edits to the UndoManager. Needs to be
      * called after a new model has been created or loaded.
      */
