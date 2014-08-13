@@ -7,8 +7,7 @@ import java.awt.datatransfer.StringSelection;
 import java.net.URI;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *

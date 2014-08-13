@@ -5,8 +5,12 @@
  */
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.util.mxEventObject;
+import com.mxgraph.util.mxEventSource;
+import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
@@ -18,10 +22,17 @@ import javax.swing.JOptionPane;
 public class AppGraphView extends GraphView {
 
     private final App app;
+    private boolean init = false;
 
     public AppGraphView(App app) {
         super(app.getProcessProvider());
         this.app = app;
+    }
+
+    void init() {
+        if (init) {
+            return;
+        }
 
         getGui().addKeyListener(new KeyAdapter() {
             @Override
@@ -57,7 +68,45 @@ public class AppGraphView extends GraphView {
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
         // setup model listeners etc.
-        app.modelLoaded();
+        modelLoaded();
+
+        init = true;
+    }
+
+        /**
+     * Add the model's undoable graph edits to the UndoManager. Needs to be
+     * called after a new model has been created or loaded.
+     */
+    void modelLoaded() {
+        addUndoEventListener(new mxEventSource.mxIEventListener() {
+            public void invoke(Object o, mxEventObject eo) {
+                Object editProperty = eo.getProperty("edit");
+                if (eo.getProperty("edit") instanceof mxUndoableEdit) {
+                    mxUndoableEdit edit = (mxUndoableEdit) editProperty;
+                    getApp().getUndoManager().addEdit(new AppUndoableEdit(this, edit, "Graph edit"));
+                }
+            }
+        });
+
+        addModelElementsChangedListener(new ModelElementsChangedListener() {
+            @Override
+            public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
+                getApp().updateGraphDependentActions();
+
+                if (!type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
+                    return;
+                }
+
+                switch (changeType) {
+                    case ADDED:
+                        getApp().getSubTreeView().addNode(element);
+                        break;
+                    case REMOVED:
+                        getApp().getSubTreeView().removeNode(element);
+                        break;
+                }
+            }
+        });
     }
 
     private App getApp() {

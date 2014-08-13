@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.execView.dialog.components.renderer;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
