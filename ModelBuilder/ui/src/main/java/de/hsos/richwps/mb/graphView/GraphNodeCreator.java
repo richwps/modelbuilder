@@ -9,9 +9,9 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxPoint;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.Point;
 
 /**
@@ -21,11 +21,11 @@ import java.awt.Point;
 public class GraphNodeCreator {
 
     // TODO move values to config/constants
-    private static int PROCESS_WIDTH = 210;
+    private static int PROCESS_WIDTH = 240;
     private static int PROCESS_HEIGHT = 90;
     private static int PROCESS_PORT_HEIGHT = 30;
-    private static int GLOBAL_PORT_WIDTH = 45;
-    private static int GLOBAL_PORT_HEIGHT = 45;
+    private static int GLOBAL_PORT_WIDTH = 40;
+    private static int GLOBAL_PORT_HEIGHT = 40;
 
     public static mxCell createNodeFromProcess(Graph graph, ProcessEntity process, Point location) {
 

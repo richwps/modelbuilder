@@ -20,7 +20,7 @@ import java.util.Hashtable;
 public class GraphSetup {
 
     // TODO move to config/constants
-    private static int fontSize = 16;
+    private static int fontSize = 15;
     private static int spacing = 4;
 
     final static int CELLS_VERTICAL_OFFSET = 100;
@@ -86,15 +86,15 @@ public class GraphSetup {
         // PROCESS STYLE
         Hashtable<String, Object> processStyle = new Hashtable<String, Object>();
         processStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-        processStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opcatity to 100
+        processStyle.put(mxConstants.STYLE_OPACITY, 80);
         processStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
-        processStyle.put(mxConstants.STYLE_FILLCOLOR, "#ffffff"); // changed fill color to white
-        processStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // changed stroke color to black
-        processStyle.put(mxConstants.STYLE_FONTSIZE, fontSize); // changed font size
-        processStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD); // changed font size
-        processStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f6f6f6"); // changed font size
+        processStyle.put(mxConstants.STYLE_FILLCOLOR, "#ffffff");
+        processStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        processStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
+        processStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
+        processStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f6f6f6");
 //            processStyle.put(mxConstants.STYLE_MOVABLE, "0");
-        processStyle.put(mxConstants.STYLE_SPACING_TOP, spacing); // changed textlabel v-align
+        processStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
         stylesheet.putCellStyle("PROCESS", processStyle);
 
         // GLOBAL INPUT PORT STYLE
@@ -104,7 +104,7 @@ public class GraphSetup {
         // GLOBAL OUTPUT PORT STYLE
         Hashtable<String, Object> processOutputStyle = new Hashtable<String, Object>();
         processOutputStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-        processOutputStyle.put(mxConstants.STYLE_OPACITY, 100);
+        processOutputStyle.put(mxConstants.STYLE_OPACITY, 80);
         processOutputStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
         processOutputStyle.put(mxConstants.STYLE_FILLCOLOR, "#808080");
         processOutputStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
@@ -117,16 +117,16 @@ public class GraphSetup {
 
         // PROCESS (SUB-) PORT STYLE
         Hashtable<String, Object> portStyle = new Hashtable<String, Object>();
-        portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE); // changed shape to rect
-        portStyle.put(mxConstants.STYLE_OPACITY, 100); // changed opacity to 100
+        portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+        portStyle.put(mxConstants.STYLE_OPACITY, 100);
         portStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
-        portStyle.put(mxConstants.STYLE_FILLCOLOR, "none"); // changed fill color to white
+        portStyle.put(mxConstants.STYLE_FILLCOLOR, "none");
 //            portStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f9f9f9"); // changed font size
-        portStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000"); // changed stroke color to black
-        portStyle.put(mxConstants.STYLE_FONTSIZE, fontSize); // changed font size
-        portStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD); // changed font size
-        portStyle.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_MIDDLE); // changed textlabel v-align
-        portStyle.put(mxConstants.STYLE_SPACING_TOP, spacing); // changed textlabel v-align
+        portStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+        portStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
+        portStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
+        portStyle.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_MIDDLE);
+        portStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
         stylesheet.putCellStyle("PORT", portStyle);
 
         return graph;
