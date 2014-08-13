@@ -4,6 +4,7 @@
  */
 package de.hsos.richwps.mb.treeView;
 
+import de.hsos.richwps.mb.entity.ProcessPort;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
@@ -19,7 +20,23 @@ public class TreeView {
     private JTree tree;
 
     public TreeView(TreeNode root) {
-        tree = new JTree(root);
+        tree = new JTree(root) {
+            @Override
+            public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                if (value instanceof DefaultMutableTreeNode) {
+                    Object userObject = ((DefaultMutableTreeNode) value).getUserObject();
+                    if (userObject instanceof ProcessPort) {
+                        ProcessPort port = (ProcessPort) userObject;
+                        if (port.isGlobal()) {
+                            return port.getDatatype().toString() + (port.isGlobalInput() ? " Input" : " Output");
+                        }
+                    }
+
+                }
+
+                return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
         tree.setRootVisible(false);
         tree.setDragEnabled(true);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
@@ -38,8 +55,9 @@ public class TreeView {
 
     public DefaultMutableTreeNode getSelectedNode() {
         Object path = tree.getSelectionPath().getLastPathComponent();
-        if(path instanceof DefaultMutableTreeNode)
+        if (path instanceof DefaultMutableTreeNode) {
             return (DefaultMutableTreeNode) path;
+        }
 
         return null;
     }

@@ -12,7 +12,7 @@ package de.hsos.richwps.mb.dsl.exceptions;
  */
 public class NoIdentifierException extends Exception {
 
-    private final static String msg = "A global %s port has no identifier";
+    private final static String msg = "At least one global %s port has no identifier";
 
     public NoIdentifierException(boolean isInput) {
         super(String.format(msg, (isInput ? "input" : "output") ));
