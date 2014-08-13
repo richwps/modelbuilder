@@ -6,8 +6,8 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
@@ -61,9 +61,9 @@ public class SingleProcessCard extends AbstractPortCard {
             processPanel = createTitledComponent(processTitle, panelContent);
             contentPanel.add(processPanel, "0 0");
         } else {
-            processTitleLabel.setText(process.getTitle());
+            processTitleLabel.setText(process.getOwsTitle());
             processAbstractLabel.setText(process.getOwsAbstract());
-            processIdentifierLabel.setText(process.getIdentifier());
+            processIdentifierLabel.setText(process.getOwsIdentifier());
         }
     }
 
@@ -123,8 +123,8 @@ public class SingleProcessCard extends AbstractPortCard {
         processPanel.setLayout(new TableLayout(new double[][]{{COLUMN_1_WIDTH, TableLayout.FILL}, {P, propertyBorderThickness, P, propertyBorderThickness, P}}));
         processPanel.setBorder(new ColorBorder(propertyTitleBgColor2, 0, 0, 1, 0));
 
-        processIdentifierLabel = createBodyLabel(process.getIdentifier());
-        processTitleLabel = createBodyLabel(process.getTitle());
+        processIdentifierLabel = createBodyLabel(process.getOwsIdentifier());
+        processTitleLabel = createBodyLabel(process.getOwsTitle());
         processTitleLabel.setFont(processTitleLabel.getFont().deriveFont(Font.BOLD));
         processAbstractLabel = createBodyLabel(process.getOwsAbstract());
 

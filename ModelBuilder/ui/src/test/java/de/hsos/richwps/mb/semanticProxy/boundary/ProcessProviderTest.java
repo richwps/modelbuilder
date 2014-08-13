@@ -6,7 +6,7 @@
 
 package de.hsos.richwps.mb.semanticProxy.boundary;
 
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.util.Collection;
 import junit.framework.TestCase;
 

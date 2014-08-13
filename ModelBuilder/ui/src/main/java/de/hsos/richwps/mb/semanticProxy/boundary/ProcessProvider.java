@@ -7,9 +7,9 @@ package de.hsos.richwps.mb.semanticProxy.boundary;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
 import de.hsos.richwps.sp.client.wps.Vocabulary;
@@ -95,7 +95,7 @@ public class ProcessProvider implements IProcessProvider {
                             // Map process properties
                             process = new ProcessEntity(server, spProcess.getIdentifier());
                             process.setOwsAbstract(spProcess.getAbstract());
-                            process.setTitle(spProcess.getTitle());
+                            process.setOwsTitle(spProcess.getTitle());
 
                             // Map input ports
                             try {
@@ -155,7 +155,7 @@ public class ProcessProvider implements IProcessProvider {
                         // Map process properties
                         process = new ProcessEntity(server, spProcess.getIdentifier());
                         process.setOwsAbstract(spProcess.getAbstract());
-                        process.setTitle(spProcess.getTitle());
+                        process.setOwsTitle(spProcess.getTitle());
 
 //                        if (withPorts) {
 //                            // Map input ports
@@ -205,7 +205,7 @@ public class ProcessProvider implements IProcessProvider {
             // SelectReportingArea
             {
                 process = new ProcessEntity(server, "net.disy.wps.lkn.processes.SelectReportingArea");
-                process.setTitle("SelectReportingArea");
+                process.setOwsTitle("SelectReportingArea");
                 process.setOwsAbstract(".");
 
                 // INPUTS
@@ -234,7 +234,7 @@ public class ProcessProvider implements IProcessProvider {
             // MSRLD5selection
             {
                 process = new ProcessEntity(server, "net.disy.wps.lkn.mpa.processes.MSRLD5selection");
-                process.setTitle("MSRLD5selection");
+                process.setOwsTitle("MSRLD5selection");
                 process.setOwsAbstract("MSRLD5selection. ");
 
                 // INPUTS
@@ -275,7 +275,7 @@ public class ProcessProvider implements IProcessProvider {
             // SelectTopography
             {
                 process = new ProcessEntity(server, "net.disy.wps.lkn.mpa.processes.SelectTopography");
-                process.setTitle("SelectTopography");
+                process.setOwsTitle("SelectTopography");
                 process.setOwsAbstract(".");
 
                 // INPUTS
@@ -316,7 +316,7 @@ public class ProcessProvider implements IProcessProvider {
             // Characteristics
             {
                 process = new ProcessEntity(server, "net.disy.wps.lkn.mpa.processes.Characteristics");
-                process.setTitle("Characteristics");
+                process.setOwsTitle("Characteristics");
                 process.setOwsAbstract(".");
 
                 // INPUTS
@@ -369,7 +369,7 @@ public class ProcessProvider implements IProcessProvider {
             // Intersect
             {
                 process = new ProcessEntity(server, "net.disy.wps.lkn.mpa.processes.Intersect");
-                process.setTitle("Intersect");
+                process.setOwsTitle("Intersect");
                 process.setOwsAbstract(".");
 
                 // INPUTS
@@ -407,7 +407,7 @@ public class ProcessProvider implements IProcessProvider {
             // Makrophyten
             {
                 process = new ProcessEntity(server, "net.disy.wps.lkn.mpa.processes.MacrophyteAssesment");
-                process.setTitle("Makrophytenbewertung");
+                process.setOwsTitle("Makrophytenbewertung");
                 process.setOwsAbstract("Prozess zur Bewertung der Berichtsgebiete Nordfriesland und Dithmarschen anhand von MSRL-D5 Daten");
 
                 // INPUTS

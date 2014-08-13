@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.semanticProxy.entity;
+package de.hsos.richwps.mb.entity;
 
 public enum ProcessPortDatatype {
 

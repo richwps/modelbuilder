@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.semanticProxy.entity;
+package de.hsos.richwps.mb.entity;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -19,12 +19,12 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class ProcessEntity implements Transferable, Serializable {
+public class ProcessEntity implements IOwsObject, Transferable, Serializable {
 
-    private String title;
+    private String owsTitle;
     private String owsAbstract;
     private String server;
-    private String identifier;
+    private String owsIdentifier;
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
@@ -34,12 +34,12 @@ public class ProcessEntity implements Transferable, Serializable {
         this("", "");
     }
 
-    public ProcessEntity(String server, String identifier) {
+    public ProcessEntity(String server, String owsIdentifier) {
         this.server = server;
-        this.identifier = identifier;
+        this.owsIdentifier = owsIdentifier;
 
-        this.inputPorts = new LinkedList<ProcessPort>();
-        this.outputPorts = new LinkedList<ProcessPort>();
+        this.inputPorts = new LinkedList<>();
+        this.outputPorts = new LinkedList<>();
     }
 
     public void setInputPorts(LinkedList<ProcessPort> ports) {
@@ -52,19 +52,21 @@ public class ProcessEntity implements Transferable, Serializable {
 
     /**
      * Sets the title and resets the toolTipText.
-     * @param title
+     * @param owsTitle
      */
-    public void setTitle(String title) {
-        this.title = title;
+    @Override
+    public void setOwsTitle(String owsTitle) {
+        this.owsTitle = owsTitle;
         toolTipText = null;
     }
 
     /**
      * Sets the identifier and resets the toolTipText.
-     * @param identifier
+     * @param owsIdentifier
      */
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    @Override
+    public void setOwsIdentifier(String owsIdentifier) {
+        this.owsIdentifier = owsIdentifier;
         toolTipText = null;
     }
 
@@ -72,6 +74,7 @@ public class ProcessEntity implements Transferable, Serializable {
      * Sets the abstract and resets the toolTipText.
      * @param owsAbstract 
      */
+    @Override
     public void setOwsAbstract(String owsAbstract) {
         this.owsAbstract = owsAbstract;
         toolTipText = null;
@@ -81,9 +84,14 @@ public class ProcessEntity implements Transferable, Serializable {
         this.server = server;
     }
 
-    public String getServer() { return server; }
+    public String getServer() { 
+        return server;
+    }
 
-    public String getIdentifier() { return identifier; }
+    @Override
+    public String getOwsIdentifier() {
+        return owsIdentifier;
+    }
     
     public int getNumInputs() {
         return inputPorts.size();
@@ -95,7 +103,7 @@ public class ProcessEntity implements Transferable, Serializable {
 
     @Override
     public String toString() {
-        return getTitle();
+        return getOwsTitle();
     }
 
     public void addInputPort(ProcessPort port) {
@@ -128,10 +136,12 @@ public class ProcessEntity implements Transferable, Serializable {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    public String getOwsTitle() {
+        return owsTitle;
     }
 
+    @Override
     public String getOwsAbstract() {
         return owsAbstract;
     }
@@ -139,9 +149,9 @@ public class ProcessEntity implements Transferable, Serializable {
     public String getToolTipText() {
         if(null == toolTipText) {
             // length of vars + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
-            int sbCapacity = getTitle().length() + getIdentifier().length() + getOwsAbstract().length() + 13 + 7 + 4 + 8;
+            int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 13 + 7 + 4 + 8;
             StringBuilder sb = new StringBuilder(sbCapacity);
-            sb.append("<html><b>").append(getTitle()).append("</b><br>").append(getIdentifier()).append("<br><hr>").append(getOwsAbstract()).append("</html>");
+            sb.append("<html><b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><hr>").append(getOwsAbstract()).append("</html>");
             toolTipText = sb.toString();
         }
 
@@ -160,13 +170,13 @@ public class ProcessEntity implements Transferable, Serializable {
         }
 
         ProcessEntity other = (ProcessEntity) obj;
-        return other.getServer().equals(this.getServer()) && other.getIdentifier().equals(this.getIdentifier());
+        return other.getServer().equals(this.getServer()) && other.getOwsIdentifier().equals(this.getOwsIdentifier());
     }
 
     public ProcessEntity clone() {
-        ProcessEntity clone = new ProcessEntity(server, identifier);
+        ProcessEntity clone = new ProcessEntity(server, owsIdentifier);
         clone.owsAbstract = owsAbstract;
-        clone.title = title;
+        clone.owsTitle = owsTitle;
         clone.toolTipText = null; // indicate lazy initialisation
 
         for(ProcessPort inPort : inputPorts) {

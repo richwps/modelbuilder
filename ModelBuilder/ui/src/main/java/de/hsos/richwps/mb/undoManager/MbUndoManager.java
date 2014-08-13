@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.app;
+package de.hsos.richwps.mb.undoManager;
 
 
 import java.util.LinkedList;
@@ -8,17 +8,12 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  *
  * @author dziegenh
  */
-public class AppUndoManager extends UndoManager {
+public class MbUndoManager extends UndoManager {
 
     public interface UndoManagerChangeListener {
         void changed();
@@ -26,15 +21,15 @@ public class AppUndoManager extends UndoManager {
 
     private List<UndoManagerChangeListener> changeListeners;
 
-    public AppUndoManager() {
+    public MbUndoManager() {
         super();
     }
 
-    void addChangeListener(UndoManagerChangeListener listener) {
+    public void addChangeListener(UndoManagerChangeListener listener) {
         getChangeListeners().add(listener);
     }
 
-    boolean removeChangeListener(UndoManagerChangeListener listener) {
+    public boolean removeChangeListener(UndoManagerChangeListener listener) {
         return getChangeListeners().remove(listener);
     }
 
@@ -76,7 +71,5 @@ public class AppUndoManager extends UndoManager {
         super.discardAllEdits();
         notifyListeners();
     }
-
-    
 
 }

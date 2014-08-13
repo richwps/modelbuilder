@@ -10,8 +10,8 @@ import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxPoint;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import java.awt.Point;
 
 /**

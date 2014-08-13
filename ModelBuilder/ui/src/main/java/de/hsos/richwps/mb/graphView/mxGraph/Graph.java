@@ -16,10 +16,11 @@ import com.mxgraph.util.mxUndoableEdit;
 import com.mxgraph.view.mxGraph;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -85,12 +86,6 @@ public class Graph extends mxGraph {
                 || (getGraphModel().isFlowOutput(target) && graphModel.isOutputPortUsed(target, this));
         if (!allowOutToInsMulticast() && outputOccupied) {
             return AppConstants.GRAPH_ERROR_OUTPUT_OCCUPIED;
-        }
-
-        GraphEdge graphEdge = null;
-
-        if (edge instanceof GraphEdge) {
-            graphEdge = (GraphEdge) edge;
         }
 
         // Parents are used to retrieve incoming and outgoing edges.
@@ -365,6 +360,157 @@ public class Graph extends mxGraph {
         clone.model = getGraphModel().clone();
         GraphSetup.setup(clone);
 
+        for (Object cell : clone.getChildCells(clone.getDefaultParent())) {
+            Object cellValue = clone.model.getValue(cell);
+            if (cellValue instanceof ProcessEntity) {
+                ProcessEntity value = (ProcessEntity) cellValue;
+                clone.model.setValue(cell, value.clone());
+
+            } else if (cellValue instanceof ProcessPort) {
+                ProcessPort value = (ProcessPort) cellValue;
+                clone.model.setValue(cell, value.clone());
+            }
+        }
+
         return clone;
     }
+
+    /**
+     * Returns a list containing only the cells which represent a ProcessEntity.
+     *
+     * @param cells
+     * @return
+     */
+    private List<ProcessEntity> filterProcessEntities(Object[] cells) {
+        List<ProcessEntity> processes = new LinkedList<>();
+        for (Object cell : cells) {
+            Object cellValue = getModel().getValue(cell);
+            if (cellValue != null && cellValue instanceof ProcessEntity) {
+                processes.add((ProcessEntity) cellValue);
+            }
+        }
+
+        return processes;
+    }
+
+    /**
+     * Returns currently selected process entities.
+     *
+     * @return selected process entities.
+     */
+    public List<ProcessEntity> getSelectedProcesses() {
+        Object[] cells = getSelectionCells();
+        return filterProcessEntities(cells);
+    }
+
+    /**
+     * Returns all process entities which are used by the graph.
+     *
+     * @return selected process entities.
+     */
+    public List<ProcessEntity> getProcesses() {
+        Object[] cells = getChildCells(getDefaultParent());
+        return filterProcessEntities(cells);
+    }
+
+    /**
+     * Returns currently selected global ports.
+     *
+     * @return selected global ports.
+     */
+    public List<ProcessPort> getSelectedGlobalPorts() {
+        Object[] cells = getSelectionCells();
+        return filterGlobalPorts(cells);
+    }
+
+    private List<ProcessPort> filterGlobalPorts(Object[] cells) {
+        List<ProcessPort> ports = new LinkedList<>();
+        GraphModel model = getGraphModel();
+        for (Object cell : cells) {
+            if (model.isGlobalPort(cell)) {
+                ports.add((ProcessPort) model.getValue(cell));
+            }
+        }
+
+        return ports;
+    }
+
+    /**
+     * Returns all global input and output ports which are used by the graph.
+     *
+     * @return
+     */
+    public List<ProcessPort> getGlobalPorts() {
+        Object[] cells = getChildCells(getDefaultParent());
+        return filterGlobalPorts(cells);
+    }
+
+    /**
+     * Returns all global input ports which are used by the graph.
+     *
+     * @return
+     */
+    public List<ProcessPort> getGlobalInputPorts() {
+        List<ProcessPort> inputs = new LinkedList<>();
+        Object[] cells = getChildCells(getDefaultParent());
+        for (Object cell : cells) {
+            if (getGraphModel().isGlobalInputPort(cell)) {
+                inputs.add((ProcessPort) getGraphModel().getValue(cell));
+            }
+        }
+
+        return inputs;
+    }
+
+    /**
+     * Returns all global output ports which are used by the graph.
+     *
+     * @return
+     */
+    public List<ProcessPort> getGlobalOutputPorts() {
+        List<ProcessPort> outputs = new LinkedList<>();
+        Object[] cells = getChildCells(getDefaultParent());
+        for (Object cell : cells) {
+            if (getGraphModel().isGlobalOutputPort(cell)) {
+                outputs.add((ProcessPort) getGraphModel().getValue(cell));
+            }
+        }
+
+        return outputs;
+    }
+
+    /**
+     * Returns the input and output ports of all processes which are used by the
+     * graph.
+     *
+     * @return
+     */
+    public List<ProcessPort> getAllProcessPorts() {
+        List<ProcessPort> allProcessPorts = new LinkedList<>();
+
+        Object[] rootCells = getChildCells(getDefaultParent());
+        for (ProcessEntity process : filterProcessEntities(rootCells)) {
+            allProcessPorts.addAll(process.getInputPorts());
+            allProcessPorts.addAll(process.getOutputPorts());
+        }
+
+        return allProcessPorts;
+    }
+
+    public List<ProcessPort> getAllFlowOutputPorts() {
+        List<ProcessPort> outputs = new LinkedList<>();
+        
+        Object[] cells = getChildCells(getDefaultParent());
+        for(Object cell : cells) {
+            Object value = getGraphModel().getValue(cell);
+            if(value instanceof ProcessPort) {
+                ProcessPort port = (ProcessPort) value;
+                if(port.isFlowOutput())
+                    outputs.add(port);
+            }
+        }
+
+        return outputs;
+    }
+
 }

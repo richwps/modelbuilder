@@ -7,7 +7,7 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

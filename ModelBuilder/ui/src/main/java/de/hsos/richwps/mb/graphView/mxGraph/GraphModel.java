@@ -8,7 +8,7 @@ package de.hsos.richwps.mb.graphView.mxGraph;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessPort;
 
 /**
  *
@@ -82,6 +82,30 @@ public class GraphModel extends mxGraphModel {
         return false;
     }
 
+    /**
+     * Returns true if the given Object is a global input cell.
+     * @param o
+     * @return
+     */
+    public boolean isGlobalInputPort(Object o) {
+        if(!isGlobalPort(o))
+            return false;
+
+        return ((ProcessPort) getValue(o)).isGlobalInput();
+    }
+
+    /**
+     * Returns true if the given Object is a global output cell.
+     * @param o
+     * @return 
+     */
+    public boolean isGlobalOutputPort(Object o) {
+        if(!isGlobalPort(o))
+            return false;
+
+        return ((ProcessPort) getValue(o)).isGlobalOutput();
+    }
+
     boolean arePortTypesCompatible(ProcessPort p1, ProcessPort p2) {
         return p1.getDatatype().equals(p2.getDatatype());
     }
@@ -122,7 +146,6 @@ public class GraphModel extends mxGraphModel {
             parent = model.getParent(o);
         }
 
-
         Object[] targetIncomingEdges = mxGraphModel.getIncomingEdges(model, parent);
         for (Object in : targetIncomingEdges) {
             if (in instanceof GraphEdge) {
@@ -140,7 +163,7 @@ public class GraphModel extends mxGraphModel {
         GraphModel clone = new GraphModel();
         clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
         clone.setName(this.name);
-        
+
         return clone;
     }
 

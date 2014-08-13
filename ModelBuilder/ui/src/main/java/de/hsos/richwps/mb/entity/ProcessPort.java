@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.hsos.richwps.mb.semanticProxy.entity;
+package de.hsos.richwps.mb.entity;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author dziegenh
  */
-public class ProcessPort implements Serializable {
+public class ProcessPort implements IOwsObject, Serializable {
 
     private ProcessPortDatatype datatype;
 //    private String datatype;
@@ -130,6 +130,7 @@ public class ProcessPort implements Serializable {
     /**
      * @return the owsIdentifier
      */
+    @Override
     public String getOwsIdentifier() {
         return owsIdentifier;
     }
@@ -138,6 +139,7 @@ public class ProcessPort implements Serializable {
      * Sets the identifier and resets the toolTipText.
      * @param owsIdentifier the owsIdentifier to set
      */
+    @Override
     public void setOwsIdentifier(String owsIdentifier) {
         this.owsIdentifier = owsIdentifier;
         toolTipText = null;
@@ -146,6 +148,7 @@ public class ProcessPort implements Serializable {
     /**
      * @return the owsTitle
      */
+    @Override
     public String getOwsTitle() {
         return owsTitle;
     }
@@ -154,6 +157,7 @@ public class ProcessPort implements Serializable {
      * Sets the title and resets the toolTipText.
      * @param owsTitle the owsTitle to set
      */
+    @Override
     public void setOwsTitle(String owsTitle) {
         this.owsTitle = owsTitle;
         toolTipText = null;
@@ -162,6 +166,7 @@ public class ProcessPort implements Serializable {
     /**
      * @return the owsAbstract
      */
+    @Override
     public String getOwsAbstract() {
         return owsAbstract;
     }
@@ -170,6 +175,7 @@ public class ProcessPort implements Serializable {
      * Sets the abstract and resets the toolTipText.
      * @param owsAbstract the owsAbstract to set
      */
+    @Override
     public void setOwsAbstract(String owsAbstract) {
         this.owsAbstract = owsAbstract;
         toolTipText = null;

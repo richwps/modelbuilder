@@ -5,8 +5,8 @@ import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -103,7 +103,7 @@ public class TopologicalSorter {
         Object entity = cell.getValue();
         switch (cell.getValue().getClass().getSimpleName()) {
             case "ProcessEntity": {
-                return (((ProcessEntity) entity).getIdentifier());
+                return (((ProcessEntity) entity).getOwsIdentifier());
             }
             case "ProcessPort": {
                 return (((ProcessPort) entity).getOwsIdentifier());

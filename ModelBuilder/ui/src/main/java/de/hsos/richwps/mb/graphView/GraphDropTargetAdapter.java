@@ -2,8 +2,8 @@ package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableProcessEntity;
 import de.hsos.richwps.mb.treeView.TransferableProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableTreeNodes;
@@ -94,7 +94,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
 
             // try to update ProcessEntity using SemanticProxy
             String server = processEntity.getServer();
-            String identifier = processEntity.getIdentifier();
+            String identifier = processEntity.getOwsIdentifier();
             ProcessEntity spProcess = processProvider.getProcessEntity(server, identifier);
             if (null != spProcess) {
                 processEntity = spProcess;

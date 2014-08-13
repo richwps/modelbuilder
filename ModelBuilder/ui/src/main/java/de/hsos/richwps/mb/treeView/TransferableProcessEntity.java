@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb.treeView;
 
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;

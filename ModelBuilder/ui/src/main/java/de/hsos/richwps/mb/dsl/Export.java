@@ -10,42 +10,53 @@ import de.hsos.richwps.dsl.api.elements.Reference;
 import de.hsos.richwps.dsl.api.elements.VarReference;
 import de.hsos.richwps.dsl.api.elements.Worksequence;
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
+import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Exports a graph to dsl notation
+ *
+ * @author Jewgeni Kovalev
+ * @author dziegenh
  */
 public class Export {
 
     /**
-     * Variable reference map
-     * input variables are stored to the reference map at the beginning
-     * process outputs are stored to variables in the reference map
-     * process inputs get their values from the reference map
-     * output variables get their values from the reference map
+     * Variable reference map input variables are stored to the reference map at
+     * the beginning process outputs are stored to variables in the reference
+     * map process inputs get their values from the reference map output
+     * variables get their values from the reference map
      */
     protected Map<String, Reference> variables;
     protected Graph graph;
 
+    private HashMap<Object, String> uniqueIdentifiers = new HashMap<>();
+
     /**
      * Initializes the variables and fills the vertex lists
+     *
      * @param graph the exported graph
      */
-    public Export(Graph graph) {
+    public Export(Graph graph) throws NoIdentifierException, IdentifierDuplicatedException {
+
+        // ensure the graph meets all requirements to be translated
+        GraphHandler.validate(graph);
+
         this.graph = graph;
         this.variables = new HashMap<String, Reference>();
     }
-    
+
     /**
-     * Defines one global input, assigns inputs to variables in the
-     * reference map
+     * Defines one global input, assigns inputs to variables in the reference
+     * map
      *
      * @param ws Worksequence to write to
      * @throws Exception
@@ -53,21 +64,25 @@ public class Export {
     protected void defineInput(mxICell input, Worksequence ws) throws Exception {
         Logger.log("Defining input variable.");
         ProcessPort source = (ProcessPort) input.getValue();
-        // @TODO: getOwsIdentifier is not ideal, collisions possible
-        String identifier = source.getOwsIdentifier();
-        VarReference variable = new VarReference(identifier);
-        InReference inputReference = new InReference(identifier);
+
+        // unique identifier is necessaty to distinguish ports with the same owsIdentifier
+        String uniqueIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
+        // OWS Identifier is the original port identifier
+        String owsIdentifier = getOwsIdentifier(source.getOwsIdentifier());
+
+        VarReference variable = new VarReference(owsIdentifier);
+        InReference inputReference = new InReference(owsIdentifier);
         Assignment assignment = new Assignment(variable, inputReference);
         // Save variable to variable reference map
-        this.variables.put(identifier, variable);
+        this.variables.put(uniqueIdentifier, variable);
         // Write assignment to Worksequence
         Logger.log("Assignment: " + assignment.toNotation());
         ws.add(assignment);
     }
 
     /**
-     * Adds one process execute statement to worksequence, gets inputs from variables, stores
-     * outputs to variables
+     * Adds one process execute statement to worksequence, gets inputs from
+     * variables, stores outputs to variables
      *
      * @param processVertex
      * @param ws Wroksequence to write to
@@ -75,34 +90,36 @@ public class Export {
      */
     protected void defineExecute(mxICell processVertex, Worksequence ws) throws Exception {
         GraphModel model = graph.getGraphModel();
-        
+
         // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
         ProcessEntity process = (ProcessEntity) processVertex.getValue();
         // @TODO: identifier not ideal, not in $org/name$ syntax
-        String identifier = process.getIdentifier();
+        String identifier = process.getOwsIdentifier();
         Execute execute = new Execute(identifier);
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
             // Reading varibale from varibale reference map
-            Reference variable = this.variables.get(source.getOwsIdentifier());
-            execute.addInput(variable, target.getOwsIdentifier());
+            Reference variable = this.variables.get(getUniqueIdentifier(source.getOwsIdentifier()));
+            execute.addInput(variable, getOwsIdentifier(target.getOwsIdentifier()));
         }
-        
+
         // Store outputs to variable refenrece map
         Object[] outgoing = graph.getOutgoingEdges(processVertex);
         for (Object out : outgoing) {
             GraphEdge edge = (GraphEdge) out;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             // @TODO: identifier is not ideal
-            String outIdentifier = source.getOwsIdentifier();
+            String uniqueOutIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
+            String owsOutIdentifier = getOwsIdentifier(source.getOwsIdentifier());
+
             // Writing varibale to varibale reference map
-            VarReference variable = new VarReference(outIdentifier);
+            VarReference variable = new VarReference(uniqueOutIdentifier);
             // @TODO: set correct variable value
-            Reference asd = this.variables.put(outIdentifier, variable);
-            execute.addOutput(outIdentifier, variable);
+            Reference asd = this.variables.put(uniqueOutIdentifier, variable);
+            execute.addOutput(owsOutIdentifier, variable);
         }
         Logger.log("Execute: " + execute.toNotation());
         ws.add(execute);
@@ -123,11 +140,21 @@ public class Export {
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
             // @TODO: identifier is not ideal
-            String inIdentifier = source.getOwsIdentifier();
-            String outIdentifier = target.getOwsIdentifier();
+
+            // unique identifier is necessary to distinguish ports with the same owsIdentifier
+            String uniqueInIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
+            // OWS Identifier is the original port identifier
+//            String owsInIdentifier = uniqueInIdentifier.split(" ")[0];
+
+            // ... same for out identifiers
+            String uniqueOutIdentifier = getUniqueIdentifier(target.getOwsIdentifier());
+            String owsOutIdentifier = getOwsIdentifier(target.getOwsIdentifier());
+
+//            String inIdentifier = source.getOwsIdentifier();
+//            String outIdentifier = target.getOwsIdentifier();
             // Reading varibale from varibale reference map
-            Reference variable = this.variables.get(inIdentifier);
-            Reference outputReference = new OutReference(outIdentifier);
+            Reference variable = this.variables.get(uniqueInIdentifier);
+            Reference outputReference = new OutReference(owsOutIdentifier);
             Assignment assignment = new Assignment(outputReference, variable);
             Logger.log("Assignment: " + assignment.toNotation());
             ws.add(assignment);
@@ -143,23 +170,36 @@ public class Export {
     public void export(String path) throws Exception {
         Writer writer = new Writer();
         Worksequence ws = new Worksequence();
+
+        createUniqueIdentifiers(graph.getAllFlowOutputPorts());
+
         // Topological sort is used to resolve dependencies
         TopologicalSorter sorter = new TopologicalSorter();
         List<mxICell> sorted = sorter.sort(graph);
         Logger.log("Sorting graph");
         for (mxICell cell : sorted) {
-            if(this.graph.getGraphModel().isProcess(cell)){
+            if (this.graph.getGraphModel().isProcess(cell)) {
                 this.defineExecute(cell, ws);
-            }
-            else if(this.graph.getGraphModel().isFlowInput(cell)){
+            } else if (this.graph.getGraphModel().isFlowInput(cell)) {
                 this.defineOutput(cell, ws);
-            }
-            else if(this.graph.getGraphModel().isFlowOutput(cell)){
+            } else if (this.graph.getGraphModel().isFlowOutput(cell)) {
                 this.defineInput(cell, ws);
             }
         }
         Logger.log(ws.toNotation());
         writer.create(path, ws);
+    }
+
+    protected void createUniqueIdentifiers(List<ProcessPort> ports) {
+        GraphHandler.createRawIdentifiers(ports);
+    }
+
+    protected String getOwsIdentifier(String rawIdentifier) {
+        return GraphHandler.getOwsIdentifier(rawIdentifier);
+    }
+
+    protected String getUniqueIdentifier(String rawIdentifier) {
+        return GraphHandler.getUniqueIdentifier(rawIdentifier);
     }
 
 }

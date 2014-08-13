@@ -18,8 +18,8 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
@@ -293,35 +293,16 @@ public class GraphView extends JPanel {
      * @return selected process entities.
      */
     public List<ProcessEntity> getSelectedProcesses() {
-        Object[] cells = getGraph().getSelectionCells();
-        return filterProcessEntities(cells);
+        return getGraph().getSelectedProcesses();
     }
 
     /**
-     * Returns currently selected process entities.
+     * Returns all process entities which are used by the graph.
      *
      * @return selected process entities.
      */
     public List<ProcessEntity> getUsedProcesses() {
-        Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
-        return filterProcessEntities(cells);
-    }
-
-    /**
-     * Returns a list containing only the cells which represent a ProcessEntity.
-     * @param cells
-     * @return
-     */
-    private List<ProcessEntity> filterProcessEntities(Object[] cells) {
-        List<ProcessEntity> processes = new LinkedList<>();
-        for (Object cell : cells) {
-            Object cellValue = getGraph().getModel().getValue(cell);
-            if (cellValue != null && cellValue instanceof ProcessEntity) {
-                processes.add((ProcessEntity) cellValue);
-            }
-        }
-
-        return processes;
+        return getGraph().getProcesses();
     }
 
     /**
@@ -330,20 +311,16 @@ public class GraphView extends JPanel {
      * @return selected global ports.
      */
     public List<ProcessPort> getSelectedGlobalPorts() {
-        Object[] cells = getGraph().getSelectionCells();
-        return filterGlobalPorts(cells);
+        return getGraph().getSelectedGlobalPorts();
     }
-    
-    private List<ProcessPort> filterGlobalPorts(Object[] cells) {
-        List<ProcessPort> ports = new LinkedList<>();
-        GraphModel model = getGraph().getGraphModel();
-        for (Object cell : cells) {
-            if(model.isGlobalPort(cell)) {
-                ports.add((ProcessPort) model.getValue(cell));
-            }
-        }
 
-        return ports;
+    /**
+     * Returns all global ports which are used by the graph.
+     *
+     * @return selected global ports.
+     */
+    public List<ProcessPort> getUsedGlobalPorts() {
+        return getGraph().getGlobalPorts();
     }
 
     /**
@@ -431,5 +408,4 @@ public class GraphView extends JPanel {
         getGraph().clearSelection();
         getGraph().setSelectionCells(cells);
     }
-
 }

@@ -5,7 +5,7 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.Component;

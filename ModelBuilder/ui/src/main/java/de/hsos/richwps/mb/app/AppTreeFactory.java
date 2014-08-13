@@ -6,8 +6,8 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;

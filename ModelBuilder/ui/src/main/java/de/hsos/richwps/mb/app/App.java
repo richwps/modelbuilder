@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
@@ -14,6 +15,7 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.dsl.Export;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
@@ -23,7 +25,6 @@ import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
 import de.hsos.richwps.mb.server.Mock;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
@@ -32,8 +33,6 @@ import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -67,7 +66,7 @@ public class App {
 
     private TreenodeTransferHandler processTransferHandler;
 
-    private AppUndoManager undoManager;
+    private MbUndoManager undoManager;
 
     // TODO move to model (which has to be created...)
     private String currentModelFilename = null;
@@ -206,6 +205,8 @@ public class App {
 
             // connect to SP and fill tree with services etc. received from SP
             fillMainTree();
+            // TODO mocked server class for app events -> replace when server client exists!!
+            AppEventService.getInstance().addSourceCommand(Mock.getInstance(), AppConstants.INFOTAB_ID_SERVER);
 
             splash.showMessageAndProgress("ModelBuilder is ready!", 100);
 
@@ -229,10 +230,10 @@ public class App {
         getUndoManager();
     }
 
-    AppUndoManager getUndoManager() {
+    MbUndoManager getUndoManager() {
         if (null == undoManager) {
-            undoManager = new AppUndoManager();
-            undoManager.addChangeListener(new AppUndoManager.UndoManagerChangeListener() {
+            undoManager = new MbUndoManager();
+            undoManager.addChangeListener(new MbUndoManager.UndoManagerChangeListener() {
                 public void changed() {
                     AppAbstractAction undoAction = getActionProvider().getAction(APP_ACTIONS.UNDO);
                     undoAction.setName("Undo " + undoManager.getPresentationName());
@@ -390,45 +391,7 @@ public class App {
      */
     protected GraphView getGraphView() {
         if (null == graphView) {
-            graphView = new GraphView(getProcessProvider());
-            graphView.getGui().addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyReleased(KeyEvent e) {
-                    switch (e.getKeyCode()) {
-                        // Delete
-                        case 127:
-                            Object[] selection = graphView.getSelection();
-//                            if (null != graphView.getSelection() && selection.length > 0) {
-                            if (graphView.hasSelection()) {
-                                int choice = JOptionPane.showConfirmDialog(frame, AppConstants.CONFIRM_DELETE_CELLS, AppConstants.CONFIRM_DELETE_CELLS_TITLE, JOptionPane.YES_NO_OPTION);
-                                if (choice == JOptionPane.YES_OPTION) {
-                                    getGraphView().deleteSelectedCells();
-                                }
-                            }
-                            break;
-
-                        // Select All
-                        case 65:
-                            if (0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
-                                graphView.selectAll();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            });
-
-            // register graph components for the event service.
-            AppEventService.getInstance().addSourceCommand(graphView, AppConstants.INFOTAB_ID_EDITOR);
-            AppEventService.getInstance().addSourceCommand(graphView.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
-
-            // TODO mocked server class for app events -> replace when server client exists!!
-            AppEventService.getInstance().addSourceCommand(Mock.getInstance(), AppConstants.INFOTAB_ID_SERVER);
-
-            // setup model listeners etc.
-            modelLoaded();
+            graphView = new AppGraphView(this);
         }
         return graphView;
     }
@@ -611,10 +574,17 @@ public class App {
 
             JOptionPane.showMessageDialog(getFrame(), sb.toString());
 
+            String exMsg;
+            if(ex.getMessage() == null || ex.getMessage().isEmpty()) {
+                exMsg = ex.getClass().getSimpleName();
+            } else {
+                exMsg = ex.getMessage();
+            }
+
             sb = new StringBuilder(200);
             sb.append(AppConstants.DEPLOYMENT_FAILED);
             sb.append('\n');
-            sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getClass().getSimpleName() + ": " + ex.getMessage()));
+            sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, exMsg));
 
             AppEventService.getInstance().fireAppEvent(sb.toString(), Mock.getInstance());
             Logger

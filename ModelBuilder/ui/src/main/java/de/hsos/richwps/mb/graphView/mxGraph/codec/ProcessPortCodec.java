@@ -7,8 +7,8 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPort;
-import de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

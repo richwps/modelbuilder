@@ -34,12 +34,10 @@ public class GraphSetup {
      * Initialises graph-independent codecs, constants etc.
      */
     public static void init() {
-        // TODO refactor when the real Process Model is implemented!
-        mxCodecRegistry.addPackage("de.hsos.richwps.mb.semanticProxy.entity");
-//        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
-//        mxCodecRegistry.register(new mxObjectCodec(de.hsos.richwps.mb.semanticProxy.entity.ProcessPortDatatype.COMPLEX));
-        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessPort()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.semanticProxy.entity.ProcessEntity()));
+        // register codecs for custom classes
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity");
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
 
@@ -71,6 +69,8 @@ public class GraphSetup {
         graph.setMultigraph(false);
         graph.setAutoLayout(AppConstants.GRAPH_AUTOLAYOUT);
         graph.setCellsMovable(!graph.isAutoLayout());
+
+        graph.setGridSize(10);
 
         // size (ratio) of the connectable port part (in percent relative to port size)
         mxConstants.DEFAULT_HOTSPOT = graph.isAutoLayout() ? 1 : .5;
