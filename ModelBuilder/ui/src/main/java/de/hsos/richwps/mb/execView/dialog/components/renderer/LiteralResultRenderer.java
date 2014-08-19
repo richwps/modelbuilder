@@ -42,7 +42,7 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         identifier = new javax.swing.JLabel();
         value = new javax.swing.JTextArea();
 
-        setPreferredSize(new java.awt.Dimension(700, 300));
+        setPreferredSize(new java.awt.Dimension(700, 400));
         setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -61,8 +61,8 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
@@ -81,12 +81,12 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         value.setColumns(20);
         value.setLineWrap(true);
         value.setRows(10);
-        value.setMinimumSize(new java.awt.Dimension(300, 150));
-        value.setPreferredSize(new java.awt.Dimension(300, 200));
+        value.setMinimumSize(new java.awt.Dimension(400, 200));
+        value.setPreferredSize(new java.awt.Dimension(400, 200));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);

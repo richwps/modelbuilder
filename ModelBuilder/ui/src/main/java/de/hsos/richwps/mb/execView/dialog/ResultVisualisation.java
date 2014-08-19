@@ -7,10 +7,12 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Observer;
 import javax.swing.JPanel;
 
 /**
@@ -28,24 +30,36 @@ public class ResultVisualisation extends ADialogPanel {
         this.dto = dto;
         this.renderers = new ArrayList<>();
         initComponents();
-        this.resultPanel.setVisible(false);
-        this.loadingLabel.setVisible(true);
     }
 
     /**
      *
      */
     public void executeProcess() {
-        this.loadingLabel.setVisible(false);
+        this.jScrollPane1.setVisible(false);
+        this.loadingLabel.setVisible(true);
 
-        this.dto = this.provider.executeProcess(this.dto);
+        ExecuteThread mt = new ExecuteThread(this, this.dto, this.provider);
+        mt.start();
+    }
 
+    private void update(ExecuteRequestDTO dto) {
+        this.dto = dto;
         HashMap results = this.dto.getResults();
         HashMap arguments = this.dto.getOutputArguments();
         java.util.Set keys = results.keySet();
 
-        GridLayout layout = new GridLayout(results.size(), 1);
-        this.resultPanel.setLayout(layout);
+        JPanel outputsPanel = new JPanel();
+        outputsPanel.setLayout(new GridBagLayout());
+
+        GridBagConstraints g = new GridBagConstraints();
+        g.gridx = 0;
+        g.gridy = 0;
+        g.anchor = GridBagConstraints.NORTHWEST;
+        g.insets.bottom = 5;
+        g.insets.top = 5;
+        g.insets.right = 5;
+        g.insets.left = 5;
 
         for (Object key : keys) {
             IOutputArgument argument = (IOutputArgument) arguments.get(key);
@@ -54,17 +68,21 @@ public class ResultVisualisation extends ADialogPanel {
                 OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
                 URIResultRenderer pan = new URIResultRenderer(identifier, uri);
-                this.resultPanel.add(pan);
+                outputsPanel.add(pan, g);
+                g.gridy += 1;
             } else if (argument instanceof OutputLiteralDataArgument) {
                 String value = (String) results.get(key);
                 OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
                 String identifier = (_argument.getSepcifier()).getIdentifier();
-                LiteralResultRenderer pan = new LiteralResultRenderer(identifier,value);
-                this.resultPanel.add(pan);
+                LiteralResultRenderer pan = new LiteralResultRenderer(identifier, value);
+                outputsPanel.add(pan, g);
+                g.gridy += 1;
             }
         }
 
-        this.resultPanel.setVisible(true);
+        this.jScrollPane1.setViewportView(outputsPanel);
+        this.jScrollPane1.setVisible(true);
+        this.loadingLabel.setVisible(false);
     }
 
     @Override
@@ -76,6 +94,24 @@ public class ResultVisualisation extends ADialogPanel {
     public ExecuteRequestDTO getDTO() {
         //nop
         return this.dto;
+    }
+
+    private class ExecuteThread extends Thread {
+
+        private ExecuteRequestDTO dto;
+        private RichWPSProvider provider;
+        private ResultVisualisation parent;
+
+        public ExecuteThread(ResultVisualisation parent, ExecuteRequestDTO dto, RichWPSProvider provider) {
+            this.parent = parent;
+            this.dto = dto;
+            this.provider = provider;
+        }
+
+        public void run() {
+            this.dto = this.provider.executeProcess(this.dto);
+            this.parent.update(this.dto);
+        }
     }
 
     /**
@@ -90,7 +126,6 @@ public class ResultVisualisation extends ADialogPanel {
 
         loadingLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        resultPanel = new javax.swing.JPanel();
 
         setPreferredSize(new java.awt.Dimension(600, 600));
         setLayout(new java.awt.GridBagLayout());
@@ -107,11 +142,6 @@ public class ResultVisualisation extends ADialogPanel {
 
         jScrollPane1.setMinimumSize(new java.awt.Dimension(600, 500));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(600, 500));
-
-        resultPanel.setMinimumSize(new java.awt.Dimension(550, 150));
-        resultPanel.setPreferredSize(new java.awt.Dimension(600, 200));
-        jScrollPane1.setViewportView(resultPanel);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -126,7 +156,6 @@ public class ResultVisualisation extends ADialogPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel loadingLabel;
-    private javax.swing.JPanel resultPanel;
     // End of variables declaration//GEN-END:variables
 
 }
