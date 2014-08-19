@@ -317,14 +317,11 @@ public class RichWPSProvider implements IRichWPSProvider {
                 //throw new Exception("Unable to analyse response.");
                 e.printStackTrace();
             }
-        } else if (responseObject instanceof net.opengis.ows.x11.ExceptionDocument) {
-            net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) responseObject;
-            System.err.println("Unable to analyse response. Response is Exception: " + exception.toString());
-            System.err.println(exception.getExceptionReport());
-
         } else {
-            //throw new Exception("Unable to analyse response.");
-            System.err.println("Unable to analyse response. Response is not an valid ExecuteResponse.");
+            net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) responseObject;
+            resultdto.addException(exception.getExceptionReport().toString());
+            de.hsos.richwps.mb.Logger.log("Debug: \n Unable to analyse response. Response is Exception: " + exception.toString());
+            de.hsos.richwps.mb.Logger.log("Debug: \n " + exception.getExceptionReport());
         }
         return resultdto;
     }

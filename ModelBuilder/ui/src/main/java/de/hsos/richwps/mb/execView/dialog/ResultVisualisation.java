@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.execView.dialog;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.execView.dialog.components.renderer.ExceptionRenderer;
 import de.hsos.richwps.mb.execView.dialog.components.renderer.LiteralResultRenderer;
 import de.hsos.richwps.mb.execView.dialog.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -10,6 +11,7 @@ import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +56,15 @@ public class ResultVisualisation extends ADialogPanel {
 
     private void update(ExecuteRequestDTO dto) {
         this.dto = dto;
+        if (this.dto.isException()) {
+            renderException(dto);
+        } else {
+            this.renderResults(dto);
+        }
+    }
+
+    private void renderResults(ExecuteRequestDTO dto) {
+        this.dto = dto;
         HashMap results = this.dto.getResults();
         HashMap arguments = this.dto.getOutputArguments();
         java.util.Set keys = results.keySet();
@@ -94,6 +105,24 @@ public class ResultVisualisation extends ADialogPanel {
 
         this.jScrollPane1.setViewportView(outputsPanel);
         this.jScrollPane1.setVisible(true);
+        this.loadingLabel.setVisible(false);
+    }
+
+    private void renderException(ExecuteRequestDTO dto) {
+        this.dto = dto;
+        ExceptionRenderer r = new ExceptionRenderer("", dto.getException());
+        this.remove(this.jScrollPane1);
+        GridBagConstraints g = new GridBagConstraints();
+        g.gridx = 0;
+        g.gridy = 3;
+        g.fill = GridBagConstraints.BOTH;
+        g.anchor = GridBagConstraints.NORTHWEST;
+        g.ipadx = 5;
+        g.ipady = 5;
+        g.insets = new Insets(5, 5, 5, 5);
+        g.gridwidth = 2;
+        
+        this.add(r, g);
         this.loadingLabel.setVisible(false);
     }
 

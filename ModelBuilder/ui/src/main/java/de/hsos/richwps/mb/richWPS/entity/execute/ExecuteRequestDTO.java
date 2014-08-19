@@ -49,6 +49,15 @@ public class ExecuteRequestDTO {
      * The actual results.
      */
     private HashMap<String, Object> results;
+    
+    /**
+     * Exception instead of result.
+     */
+    private boolean wasException=false;
+    /**
+     * Exception text.
+     */
+    private String exception="";
 
     /**
      * Builds a new, blank, data transfer object.
@@ -103,6 +112,20 @@ public class ExecuteRequestDTO {
         this.actualoutputs = arguments;
     }
 
+    public boolean isException() {
+        return wasException;
+    }
+
+    
+    public String getException() {
+        return exception;
+    }
+
+    public void setException(String exception) {
+        this.exception = exception;
+    }
+    
+
     /**
      * Adds an input specification to the list of available inputs.
      *
@@ -147,5 +170,10 @@ public class ExecuteRequestDTO {
 
     public void addResult(final String key, final Object value) {
         this.results.put(key, value);
+    }
+    
+    public void addException(final String message){
+        wasException=true;
+        this.exception=message;
     }
 }
