@@ -34,8 +34,7 @@ public class ProcessSelection extends ADialogPanel {
 
     private void init() {
         if(this.processes.isEmpty()){
-            JOptionPane optionPane = new JOptionPane("Unable to load processes.",  JOptionPane.WARNING_MESSAGE);
-            optionPane.setVisible(true);
+            JOptionPane.showMessageDialog(this, "Unable to load processes.");
             return;
         }
         this.processesBox.removeAllItems();

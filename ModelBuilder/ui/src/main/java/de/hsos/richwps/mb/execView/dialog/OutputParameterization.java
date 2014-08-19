@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.execView.dialog;
 
+import de.hsos.richwps.mb.execView.dialog.components.InputComplexData;
+import de.hsos.richwps.mb.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputComplexData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputLiteralData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -64,7 +66,7 @@ public class OutputParameterization extends ADialogPanel {
             optionPane.setVisible(true);
             return;
         }
-        
+
         for (IOutputSpecifier specifier : this.dto.getOutputSepcifier()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
@@ -143,10 +145,31 @@ public class OutputParameterization extends ADialogPanel {
         return this.dto;
     }
 
-    
-    public boolean isValidInput(){
+    public boolean isValidInput() {
+        boolean someThingSelected = false;
+        for (JPanel panel : this.outputs) {
+            if (panel instanceof OutputComplexData) {
+                OutputComplexData pan = (OutputComplexData) panel;
+                if (pan.isSelected()) {
+                    someThingSelected = true;
+                }
+
+            } else if (panel instanceof OutputLiteralData) {
+                OutputLiteralData pan = (OutputLiteralData) panel;
+                if (pan.isSelected()) {
+                    someThingSelected = true;
+                }
+            }
+        }
+
+        if (!someThingSelected) {
+            JOptionPane.showMessageDialog(this, "Please select an output.");
+            return false;
+        }
+
         return true;
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

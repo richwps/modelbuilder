@@ -56,8 +56,8 @@ public class InputParameterization extends ADialogPanel {
     }
 
     private void showInputs() {
-         if(this.dto.getInputSpecifier().isEmpty()){
-            JOptionPane optionPane = new JOptionPane("Unable to load inputs.",  JOptionPane.WARNING_MESSAGE);
+        if (this.dto.getInputSpecifier().isEmpty()) {
+            JOptionPane optionPane = new JOptionPane("Unable to load inputs.", JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
@@ -146,8 +146,23 @@ public class InputParameterization extends ADialogPanel {
     public ExecuteRequestDTO getDTO() {
         return this.dto;
     }
-    
-    public boolean isValidInput(){
+
+    public boolean isValidInput() {
+        for (JPanel panel : this.inputs) {
+            if (panel instanceof InputComplexData) {
+                InputComplexData pan = (InputComplexData) panel;
+                if (pan.getValue().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    return false;
+                }
+            } else if (panel instanceof InputLiteralData) {
+                InputLiteralData pan = (InputLiteralData) panel;
+                if (pan.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    return false;
+                }
+            }
+        }
         return true;
     }
 

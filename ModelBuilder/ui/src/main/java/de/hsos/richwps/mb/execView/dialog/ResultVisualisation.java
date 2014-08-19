@@ -35,7 +35,8 @@ public class ResultVisualisation extends ADialogPanel {
         this.dto = dto;
         this.renderers = new ArrayList<>();
         initComponents();
-        
+        this.selectedProcess.setText(dto.getProcessid());
+        this.selectedServer.setText(dto.getEndpoint());
         ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
         this.loadingLabel.setIcon(ico);
     }
@@ -137,15 +138,21 @@ public class ResultVisualisation extends ADialogPanel {
 
         loadingLabel = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
+        selectedProcess = new javax.swing.JLabel();
+        selectedProcessLabel = new javax.swing.JLabel();
+        selectedServer = new javax.swing.JLabel();
+        selectedServerLabel = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(600, 600));
+        setMinimumSize(new java.awt.Dimension(680, 700));
+        setPreferredSize(new java.awt.Dimension(600, 700));
         setLayout(new java.awt.GridBagLayout());
 
         loadingLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         loadingLabel.setText("Loading");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -153,22 +160,70 @@ public class ResultVisualisation extends ADialogPanel {
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setViewportBorder(javax.swing.BorderFactory.createTitledBorder("Outputs:"));
         jScrollPane1.setMinimumSize(new java.awt.Dimension(610, 600));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jScrollPane1, gridBagConstraints);
+
+        selectedProcess.setText("jLabel2");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectedProcess, gridBagConstraints);
+
+        selectedProcessLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        selectedProcessLabel.setText("Process:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectedProcessLabel, gridBagConstraints);
+
+        selectedServer.setText("jLabel1");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectedServer, gridBagConstraints);
+
+        selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        selectedServerLabel.setText("Server:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectedServerLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel loadingLabel;
+    private javax.swing.JLabel selectedProcess;
+    private javax.swing.JLabel selectedProcessLabel;
+    private javax.swing.JLabel selectedServer;
+    private javax.swing.JLabel selectedServerLabel;
     // End of variables declaration//GEN-END:variables
 
 }
