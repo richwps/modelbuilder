@@ -82,9 +82,6 @@ public class AppGraphView extends GraphView {
                         break;
                 }
             }
-
-
-
         });
 
         // register graph components for the event service.

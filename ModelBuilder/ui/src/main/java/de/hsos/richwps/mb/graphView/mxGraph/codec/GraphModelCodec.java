@@ -38,12 +38,15 @@ public class GraphModelCodec extends mxModelCodec {
         return super.decode(dec, node, into); //To change body of generated methods, choose Tools | Templates.
     }
 
-
     @Override
     protected void encodeObject(mxCodec mxcdc, Object o, Node node) {
         super.encodeObject(mxcdc, o, node);
 
         if (o instanceof GraphModel) {
+
+            // reset temporary port ID list etc.
+            ProcessPortCodec.reset();
+
             GraphModel model = (GraphModel) o;
             Element nodeEl = (Element) node;
             nodeEl.setAttribute("name", model.getName());

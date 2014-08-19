@@ -69,13 +69,11 @@ public class AboutFrame extends JDialog {
 
         JButton closeButton = new JButton();
         closeButton.setAction(new AbstractAction() {
-
             @Override
             public Object getValue(String key) {
                 if(key.equals(NAME)) {
                     return AppConstants.DIALOG_BTN_CLOSE;
                 }
-
                 return super.getValue(key);
             }
 

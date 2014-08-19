@@ -27,8 +27,6 @@ public class ProcessEntityCodec extends mxObjectCodec {
 
     @Override
     protected void encodeObject(mxCodec enc, Object obj, Node node) {
-        // reset temporary port ID list etc.
-        ProcessPortCodec.reset();
         super.encodeObject(enc, obj, node);
     }
 }

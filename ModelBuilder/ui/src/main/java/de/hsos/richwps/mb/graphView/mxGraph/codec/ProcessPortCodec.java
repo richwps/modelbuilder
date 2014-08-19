@@ -22,8 +22,21 @@ import org.w3c.dom.Node;
  */
 public class ProcessPortCodec extends mxObjectCodec {
 
+    /**
+     * 
+     */
     private final String ATTR_PORT_ID = "port_id";
 
+    /**
+     * Contains IDs of encoded ports to prevent dublicate encodings.
+     */
+    private static List<ProcessPort> encodedPorts = new LinkedList<>();
+
+    /**
+     * Maps port IDs to decoded ports to re-assign port the right instances to the model elements.
+     */
+    private static HashMap<String, ProcessPort> decodedPorts;
+    
     public ProcessPortCodec(Object template) {
         super(template);
     }
@@ -63,7 +76,7 @@ public class ProcessPortCodec extends mxObjectCodec {
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
         obj = super.afterDecode(dec, node, obj); //To change body of generated methods, choose Tools | Templates.
 
-        // identify port
+        // identify non-global process ports
         Node idNode = node.getAttributes().getNamedItem(ATTR_PORT_ID);
         if (idNode != null) {
             String id = idNode.getNodeValue();
@@ -75,25 +88,21 @@ public class ProcessPortCodec extends mxObjectCodec {
                 if (port != null) {
                     return port;
 
-                // b) first time port is decoded
+                    // b) first time port is decoded
                 } else {
                     decodedPorts.put(id, (ProcessPort) obj);
                 }
             }
         }
+
         return obj;
-
     }
-
-    private static List<ProcessPort> encodedPorts = new LinkedList<>();
-
-    private static HashMap<String, ProcessPort> decodedPorts;
 
     @Override
     public Object beforeEncode(mxCodec enc, Object obj, Node node) {
 
         // add port id to node
-        if (obj instanceof ProcessPort) {
+        if (obj instanceof ProcessPort) {// && !((ProcessPort) obj).isGlobal()) {
 
             // a) existing ID (port already encoded)
             if (encodedPorts.contains(obj)) {
@@ -117,8 +126,11 @@ public class ProcessPortCodec extends mxObjectCodec {
     @Override
     public Node afterEncode(mxCodec enc, Object obj, Node node) {
         if (obj instanceof ProcessPort) {
-            if (!encodedPorts.contains(obj)) {
-                encodedPorts.add((ProcessPort) obj);
+            ProcessPort port = (ProcessPort) obj;
+
+//            if (!port.isGlobal() &&
+            if(!encodedPorts.contains(obj)) {
+                encodedPorts.add(port);
             }
         }
 
@@ -134,7 +146,7 @@ public class ProcessPortCodec extends mxObjectCodec {
     @Override
     protected void encodeValue(mxCodec enc, Object obj, String fieldname, Object value, Node node) {
         if (obj instanceof ProcessPort) {
-            // don't encode port again...
+            // don't encode port (value) again...
             if (encodedPorts.contains(obj)) {
                 return;
             }
