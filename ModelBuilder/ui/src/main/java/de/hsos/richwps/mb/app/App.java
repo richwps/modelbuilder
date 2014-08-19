@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.app.view.AppFrame;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.execView.ExecViewDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
@@ -17,7 +18,9 @@ import de.hsos.richwps.mb.ui.DndProxyLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTree;
@@ -56,6 +59,7 @@ public class App {
     private SubTreeViewController subTreeView;
     private AppPreferencesDialog preferencesDialog;
     private AppDeployManager deployManager;
+    private ExecViewDialog execViewDialog;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -302,11 +306,24 @@ public class App {
     }
 
     void deploy() {
-        if(null == deployManager) {
+        if (null == deployManager) {
             deployManager = new AppDeployManager(this);
         }
 
         deployManager.deploy();
+    }
+
+    void showExecute() {
+        if (null == execViewDialog) {
+            List<String> remotes = new ArrayList<>();
+            remotes.add("http://192.168.56.101:8080/wps/WebProcessingService");
+            remotes.add("http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
+            remotes.add("http://richwps.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
+            remotes.add("http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService");
+            execViewDialog = new ExecViewDialog(getFrame(), true, remotes);
+        }
+        
+        execViewDialog.setVisible(true);
     }
 
 }

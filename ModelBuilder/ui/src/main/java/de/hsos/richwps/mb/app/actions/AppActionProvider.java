@@ -21,7 +21,8 @@ public class AppActionProvider {
         UNDO, REDO, DO_LAYOUT,
         DEPLOY,
         RELOAD_PROCESSES,
-        SHOW_ERROR_MSG
+        SHOW_ERROR_MSG,
+        EXECUTE
     }
 
     private IAppActionHandler actionHandler;

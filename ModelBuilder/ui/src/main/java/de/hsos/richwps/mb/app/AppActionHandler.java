@@ -78,6 +78,9 @@ public class AppActionHandler implements IAppActionHandler {
             case SHOW_ERROR_MSG:
                 JOptionPane.showMessageDialog(app.getFrame(), e.getActionCommand());
                 break;
+            case EXECUTE:
+                doExecute();
+                break;
 
             default:
             // do nothing
@@ -279,5 +282,9 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doReloadProcesses() {
         app.fillMainTree();
+    }
+
+    private void doExecute() {
+        app.showExecute();
     }
 }

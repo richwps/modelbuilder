@@ -206,6 +206,7 @@ public class AppConstants {
     public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
+    public final static String ICON_EXECUTE_KEY = "richwps_icon_execute";
 
     // Graph error messages
     public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";

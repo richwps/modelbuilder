@@ -145,6 +145,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_RELOAD_KEY, new ImageIcon(iconDir + "database-refresh.png", "reload icon"));
         UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));
+        UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));
     }
 
 }

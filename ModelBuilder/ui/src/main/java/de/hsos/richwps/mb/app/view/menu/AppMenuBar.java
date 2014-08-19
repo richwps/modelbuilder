@@ -21,7 +21,7 @@ public class AppMenuBar extends JMenuBar {
 
     public static enum MENUS {
 
-        FILE, EDIT
+        FILE, EDIT, TOOLS
     }
 
     private final AppActionProvider actionProvider;
@@ -33,6 +33,7 @@ public class AppMenuBar extends JMenuBar {
 
         add(getFileMenu());
         add(getEditMenu());
+        add(getToolsMenu());
     }
 
     /**
@@ -70,7 +71,6 @@ public class AppMenuBar extends JMenuBar {
         return menuItem;
     }
 
-
     /**
      * Creates a menu item for the given {@link AppActionProvider.APP_ACTION} using the {@link AppActionProvider}.
      * @param menu
@@ -105,6 +105,14 @@ public class AppMenuBar extends JMenuBar {
         createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.DO_LAYOUT);
 
         return mEdit;
+    }
+
+    private JMenu getToolsMenu() {
+        JMenu mTools = new JMenu(getMenuItemCaption(MENUS.TOOLS));
+
+        createAndAddMenuItem(mTools, AppActionProvider.APP_ACTIONS.EXECUTE);
+
+        return mTools;
     }
 
 }
