@@ -107,7 +107,7 @@ public class RichWPSProviderTest extends TestCase {
 
     /**
      * Test of describeProcess method, of class RichWPSProvider.
-     */
+     
     public void testSimpleBuffer() {
         System.out.println("simpleBuffer");
         String processid = "org.n52.wps.server.algorithm.SimpleBufferAlgorithm";
@@ -148,6 +148,6 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, Object> theResults = dto.getResults();
         assertNotNull(theResults);
-    }
+    }*/
 
 }
