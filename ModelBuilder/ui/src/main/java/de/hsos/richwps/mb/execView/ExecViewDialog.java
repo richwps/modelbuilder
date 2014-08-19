@@ -89,7 +89,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
         //refresh the dto
         this.currentPanel.updateDTO();
         this.dto = this.currentPanel.getDTO();
-        
+
         this.inputspanel = new InputParameterization(this.provider, this.dto);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -108,7 +108,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
         //refresh the dto
         this.currentPanel.updateDTO();
         this.dto = this.currentPanel.getDTO();
-        
+
         this.outputsspanel = new OutputParameterization(this.provider, this.dto);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -132,7 +132,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.pack();
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);
-        
+
         this.resultpanel.executeProcess();
     }
 
@@ -202,7 +202,6 @@ public class ExecViewDialog extends javax.swing.JDialog {
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
         this.dispose();
-        System.exit(0);//FIXME, when integrating.
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
@@ -217,39 +216,6 @@ public class ExecViewDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_backButtonActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                List<String> remotes = new ArrayList<>();
-                remotes.add("http://192.168.56.101:8080/wps/WebProcessingService");
-                remotes.add("http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
-                remotes.add("http://richwps.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
-                remotes.add("http://geoprocessing.demo.52north.org:8080/52n-wps-webapp-3.3.0/WebProcessingService");
-                
-                ExecViewDialog dialog = new ExecViewDialog(new javax.swing.JFrame(), true, remotes);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton abortButton;
