@@ -201,6 +201,8 @@ public class ExecViewDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
+        this.showServerSelection();     //Reset
+        this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed
 

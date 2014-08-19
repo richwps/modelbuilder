@@ -92,7 +92,7 @@ public class InputComplexData extends javax.swing.JPanel {
         titleValue = new javax.swing.JTextArea();
 
         setBorder(null);
-        setMinimumSize(new java.awt.Dimension(550, 214));
+        setMinimumSize(new java.awt.Dimension(550, 300));
         setPreferredSize(new java.awt.Dimension(600, 300));
         setLayout(new java.awt.GridBagLayout());
 
@@ -107,6 +107,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(titleLabel, gridBagConstraints);
 
+        value.setMinimumSize(new java.awt.Dimension(450, 27));
         value.setPreferredSize(new java.awt.Dimension(450, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -181,7 +182,7 @@ public class InputComplexData extends javax.swing.JPanel {
         add(valueLabel, gridBagConstraints);
 
         abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        abstractLabel.setText("Abstract");
+        abstractLabel.setText("Abstract:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

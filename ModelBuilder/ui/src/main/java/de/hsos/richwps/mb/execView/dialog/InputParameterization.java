@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JPanel;
+import layout.TableLayout;
 
 /**
  *
@@ -63,22 +64,28 @@ public class InputParameterization extends ADialogPanel {
             //FIXME BoundingBox
         }
 
+        this.jScrollPane1.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
+        this.jScrollPane1.setAlignmentY(javax.swing.JScrollPane.TOP_ALIGNMENT);
+
         JPanel inputsPanel = new JPanel();
-        inputsPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = 0;
-        g.gridy = 0;
-        g.anchor = GridBagConstraints.NORTHWEST;
-        g.insets.bottom = 5;
-        g.insets.top = 5;
-        g.insets.right = 5;
-        g.insets.left = 5;
-        g.fill = GridBagConstraints.BOTH;
+        double size[][] = new double[2][1];
+        size[0] = new double[]{TableLayout.FILL};
 
+        double innersize[] = new double[inputs.size()];
+        for (int i = 0; i < inputs.size(); i++) {
+            innersize[i] = TableLayout.PREFERRED;
+        }
+        size[1] = innersize;
+
+        TableLayout layout = new TableLayout(size);
+        inputsPanel.setLayout(layout);
+
+        int i = 0;
         for (JPanel panel : this.inputs) {
-            inputsPanel.add(panel, g);
-            g.gridy += 1;
+            String c = "0," + i;
+            inputsPanel.add(panel, c);
+            i++;
         }
         this.jScrollPane1.setViewportView(inputsPanel);
     }
@@ -108,13 +115,12 @@ public class InputParameterization extends ADialogPanel {
                     throw new UnsupportedOperationException("Not implemented, yet.");
                 }
 
-                
                 param.setMimeType(amimetype);
-                if(aschema!=null){
+                if (aschema != null) {
                     System.out.println(aschema);
                     param.setSchema(aschema);
                 }
-                if(aencoding!=null){
+                if (aencoding != null) {
                     System.out.println(aencoding);
                     param.setEncoding(aencoding);
                 }
@@ -177,7 +183,7 @@ public class InputParameterization extends ADialogPanel {
         jScrollPane1.setBorder(null);
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(600, 600));
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(610, 600));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

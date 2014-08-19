@@ -30,7 +30,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         initComponents();
         this.identifier.setText(identifier);
         this.httpuri=reference;
-        String abbString = StringUtils.abbreviate(httpuri, 50);
+        String abbString = StringUtils.abbreviateMiddle(httpuri, "[...]" ,50);
         this.uri.setText(abbString);
         
     }
@@ -50,7 +50,8 @@ public class URIResultRenderer extends javax.swing.JPanel {
         copyToClipBoard = new javax.swing.JButton();
         identifier = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(700, 300));
+        setMinimumSize(new java.awt.Dimension(600, 200));
+        setPreferredSize(new java.awt.Dimension(600, 200));
         setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -62,9 +63,10 @@ public class URIResultRenderer extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jLabel1, gridBagConstraints);
 
-        uri.setFont(new java.awt.Font("Droid Sans", 2, 12)); // NOI18N
         uri.setForeground(java.awt.Color.blue);
         uri.setText("value");
+        uri.setMinimumSize(new java.awt.Dimension(450, 15));
+        uri.setPreferredSize(new java.awt.Dimension(450, 15));
         uri.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 uriMouseClicked(evt);
@@ -73,7 +75,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -88,8 +90,8 @@ public class URIResultRenderer extends javax.swing.JPanel {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;

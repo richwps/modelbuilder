@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JPanel;
+import layout.TableLayout;
 
 /**
  *
@@ -44,13 +45,12 @@ public class OutputParameterization extends ADialogPanel {
         this.provider = provider;
         this.dto = dto;
         initComponents();
-        
-        
+
         String selectedserver = this.dto.getEndpoint();
         String selectedprocess = this.dto.getProcessid();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
-        
+
         this.outputs = new ArrayList<>();
         this.dto = this.provider.describeProcess(dto);
         this.showOutputs();
@@ -71,20 +71,23 @@ public class OutputParameterization extends ADialogPanel {
         }
 
         JPanel outputsPanel = new JPanel();
-        outputsPanel.setLayout(new GridBagLayout());
+        double size[][] = new double[2][1];
+        size[0] = new double[]{TableLayout.FILL};
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = 0;
-        g.gridy = 0;
-        g.anchor = GridBagConstraints.NORTHWEST;
-        g.insets.bottom = 5;
-        g.insets.top = 5;
-        g.insets.right = 5;
-        g.insets.left = 5;
+        double innersize[] = new double[outputs.size()];
+        for (int i = 0; i < outputs.size(); i++) {
+            innersize[i] = TableLayout.PREFERRED;
+        }
+        size[1] = innersize;
 
+        TableLayout layout = new TableLayout(size);
+        outputsPanel.setLayout(layout);
+
+        int i = 0;
         for (JPanel panel : this.outputs) {
-            outputsPanel.add(panel, g);
-            g.gridy += 1;
+            String c = "0," + i;
+            outputsPanel.add(panel, c);
+            i++;
         }
 
         this.outputsPanelScrollPane.setViewportView(outputsPanel);
@@ -201,7 +204,7 @@ public class OutputParameterization extends ADialogPanel {
 
         outputsPanelScrollPane.setBorder(null);
         outputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(600, 600));
+        outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 600));
         outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

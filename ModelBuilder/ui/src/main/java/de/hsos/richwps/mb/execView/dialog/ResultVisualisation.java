@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Observer;
 import javax.swing.JPanel;
+import layout.TableLayout;
 
 /**
  *
@@ -50,34 +51,37 @@ public class ResultVisualisation extends ADialogPanel {
         java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();
-        outputsPanel.setLayout(new GridBagLayout());
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = 0;
-        g.gridy = 0;
-        g.anchor = GridBagConstraints.NORTHWEST;
-        g.insets.bottom = 5;
-        g.insets.top = 5;
-        g.insets.right = 5;
-        g.insets.left = 5;
+        double size[][] = new double[2][1];
+        size[0] = new double[]{TableLayout.FILL};
 
+        double innersize[] = new double[results.size()];
+        for (int i = 0; i < results.size(); i++) {
+            innersize[i] = TableLayout.PREFERRED;
+        }
+        size[1] = innersize;
+
+        TableLayout layout = new TableLayout(size);
+        outputsPanel.setLayout(layout);
+
+        int i = 0;
         for (Object key : keys) {
+            String c = "0," + i;
             IOutputArgument argument = (IOutputArgument) arguments.get(key);
             if (argument instanceof OutputComplexDataArgument) {
                 String uri = (String) results.get(key);
                 OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
                 URIResultRenderer pan = new URIResultRenderer(identifier, uri);
-                outputsPanel.add(pan, g);
-                g.gridy += 1;
+                outputsPanel.add(pan, c);
             } else if (argument instanceof OutputLiteralDataArgument) {
                 String value = (String) results.get(key);
                 OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
                 String identifier = (_argument.getSepcifier()).getIdentifier();
                 LiteralResultRenderer pan = new LiteralResultRenderer(identifier, value);
-                outputsPanel.add(pan, g);
-                g.gridy += 1;
+                outputsPanel.add(pan, c);
             }
+            i++;
         }
 
         this.jScrollPane1.setViewportView(outputsPanel);
@@ -140,8 +144,8 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
 
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(600, 500));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(600, 500));
+        jScrollPane1.setMinimumSize(new java.awt.Dimension(610, 600));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

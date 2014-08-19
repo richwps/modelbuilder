@@ -53,11 +53,12 @@ public class InputLiteralData extends javax.swing.JPanel {
         abstractValue = new javax.swing.JTextArea();
 
         setBorder(null);
-        setMinimumSize(new java.awt.Dimension(550, 136));
-        setPreferredSize(new java.awt.Dimension(600, 200));
+        setMinimumSize(new java.awt.Dimension(600, 200));
+        setPreferredSize(new java.awt.Dimension(500, 200));
         setLayout(new java.awt.GridBagLayout());
 
-        value.setPreferredSize(new java.awt.Dimension(120, 27));
+        value.setMinimumSize(new java.awt.Dimension(450, 27));
+        value.setPreferredSize(new java.awt.Dimension(450, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
