@@ -499,14 +499,20 @@ public class Graph extends mxGraph {
 
     public List<ProcessPort> getAllFlowOutputPorts() {
         List<ProcessPort> outputs = new LinkedList<>();
-        
+
         Object[] cells = getChildCells(getDefaultParent());
-        for(Object cell : cells) {
+        for (Object cell : cells) {
             Object value = getGraphModel().getValue(cell);
-            if(value instanceof ProcessPort) {
+            if (value instanceof ProcessPort) {
                 ProcessPort port = (ProcessPort) value;
-                if(port.isFlowOutput())
+                if (port.isFlowOutput()) {
                     outputs.add(port);
+                }
+            } else if (value instanceof ProcessEntity) {
+                ProcessEntity process = (ProcessEntity) value;
+                for (ProcessPort port : process.getOutputPorts()) {
+                    outputs.add(port);
+                }
             }
         }
 

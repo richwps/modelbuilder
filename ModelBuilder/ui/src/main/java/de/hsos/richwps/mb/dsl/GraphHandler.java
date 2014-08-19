@@ -8,8 +8,8 @@ package de.hsos.richwps.mb.dsl;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.util.List;
 
 /**
@@ -79,28 +79,24 @@ public class GraphHandler {
      */
     static void createRawIdentifiers(List<ProcessPort> ports) {
         for (ProcessPort port : ports) {
-            
-            // only output ids have to be unique
-            if (port.isFlowOutput()) {
-
-                // find a unique identifier
-                int add = 1;
-                String tmpId = port.getOwsIdentifier();
-                while (1 < countPortIdentifierOccurences(ports, port.getOwsIdentifier())) {
-                    port.setOwsIdentifier(tmpId + "_" + add++);
-                }
+            // find a unique identifier
+            int add = 1;
+            String tmpId = port.getOwsIdentifier();
+            while (1 < countPortIdentifierOccurences(ports, port.getOwsIdentifier())) {
+                port.setOwsIdentifier(tmpId + "_" + add++);
+            }
 
             // build the raw identifier by replacing the unique identifier's
-                // underscores with spaces in order to later
-                // a) identify the original ows identifier
-                // b) build the just found unique identifer
-                if (!port.getOwsIdentifier().equals(tmpId)) {
-                    port.setOwsIdentifier(tmpId + " " + add);
+            // underscores with spaces in order to later
+            // a) identify the original ows identifier
+            // b) build the just found unique identifer
+            if (!port.getOwsIdentifier().equals(tmpId)) {
+                port.setOwsIdentifier(tmpId + " " + add);
 
-                    Logger.log("set ID: '"  + tmpId + " " + add + "'");
+                Logger.log("set ID: '" + tmpId + " " + add + "'");
 
-                }
             }
+            Logger.log(port.getOwsIdentifier() +", "+ getUniqueIdentifier(port.getOwsIdentifier())+ ", "+getOwsIdentifier(port.getOwsIdentifier()));
         }
     }
 

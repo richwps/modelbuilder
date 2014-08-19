@@ -40,7 +40,8 @@ public class AppDeployManager {
     void deploy() {
         try {
             String dslFile = "generated.rola";
-            new Export(getGraphView().getGraph().clone()).export(dslFile);
+//            new Export(getGraphView().getGraph().clone()).export(dslFile);
+            new Export(getGraphView().getGraph()).export(dslFile);
 
             String content = null;
             File file = new File(dslFile); //for ex foo.txt

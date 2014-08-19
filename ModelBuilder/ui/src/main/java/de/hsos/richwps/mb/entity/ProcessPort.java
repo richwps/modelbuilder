@@ -62,6 +62,7 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     /**
      * True if the port receives data.
+     *
      * @return
      */
     public boolean isFlowInput() {
@@ -70,6 +71,7 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     /**
      * True if the port sends data.
+     *
      * @return
      */
     public boolean isFlowOutput() {
@@ -84,9 +86,10 @@ public class ProcessPort implements IOwsObject, Serializable {
     public boolean isGlobalInput() {
         return global && !isFlowInput();
     }
-    
+
     /**
      * A global process output is a local flow input.
+     *
      * @return
      */
     public boolean isGlobalOutput() {
@@ -98,8 +101,9 @@ public class ProcessPort implements IOwsObject, Serializable {
     }
 
     /**
-     * Sets global to true; flowInput depending on the parameter.
-     * Note: a global process output is a local flow input.
+     * Sets global to true; flowInput depending on the parameter. Note: a global
+     * process output is a local flow input.
+     *
      * @param isOutput
      */
     public void setGlobalOutput(boolean isOutput) {
@@ -108,8 +112,9 @@ public class ProcessPort implements IOwsObject, Serializable {
     }
 
     /**
-     * Sets global to true; flowInput depending on the parameter.
-     * Note: a global process input is a local flow output.
+     * Sets global to true; flowInput depending on the parameter. Note: a global
+     * process input is a local flow output.
+     *
      * @param isOutput
      */
     public void setGlobalInput(boolean isInput) {
@@ -137,6 +142,7 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     /**
      * Sets the identifier and resets the toolTipText.
+     *
      * @param owsIdentifier the owsIdentifier to set
      */
     @Override
@@ -155,6 +161,7 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     /**
      * Sets the title and resets the toolTipText.
+     *
      * @param owsTitle the owsTitle to set
      */
     @Override
@@ -173,6 +180,7 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     /**
      * Sets the abstract and resets the toolTipText.
+     *
      * @param owsAbstract the owsAbstract to set
      */
     @Override
@@ -183,16 +191,23 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     @Override
     public String toString() {
-        // TODO mocked!
-        if(null != getDatatype())
-            return getDatatype().name().substring(0,1).toUpperCase();
-        else
-          return getOwsTitle().length() < 3 ? getOwsTitle() : getOwsTitle().substring(0, 3) + "...";
+        if (null != getDatatype()) {
+            return getDatatype().name().substring(0, 1).toUpperCase();
+
+        } else if (null == getOwsTitle()) {
+            return "";
+
+        } else if (getOwsTitle().length() < 3) {
+            return getOwsTitle();
+
+        } else {
+            return getOwsTitle().substring(0, 3) + "...";
+        }
     }
 
     public String getToolTipText() {
-        if(null == toolTipText) {
-            if(null == getOwsTitle() || null == getOwsAbstract() || null == getOwsIdentifier()) {
+        if (null == toolTipText) {
+            if (null == getOwsTitle() || null == getOwsAbstract() || null == getOwsIdentifier()) {
                 return "";
             }
 
@@ -215,7 +230,7 @@ public class ProcessPort implements IOwsObject, Serializable {
         clone.flowInput = flowInput;
         clone.owsAbstract = owsAbstract;
         clone.owsIdentifier = owsIdentifier;
-        clone.owsTitle =owsTitle;
+        clone.owsTitle = owsTitle;
         clone.toolTipText = null; // indicate lazy init.
 
         return clone;

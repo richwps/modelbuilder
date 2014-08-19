@@ -14,6 +14,7 @@ import org.w3c.dom.Node;
 
 /**
  * Encodes additional GraphModel attributes (e.g. the name).
+ *
  * @author dziegenh
  */
 public class GraphModelCodec extends mxModelCodec {
@@ -32,6 +33,13 @@ public class GraphModelCodec extends mxModelCodec {
     }
 
     @Override
+    public Object decode(mxCodec dec, Node node, Object into) {
+        ProcessPortCodec.reset();
+        return super.decode(dec, node, into); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
+    @Override
     protected void encodeObject(mxCodec mxcdc, Object o, Node node) {
         super.encodeObject(mxcdc, o, node);
 
@@ -40,7 +48,7 @@ public class GraphModelCodec extends mxModelCodec {
             Element nodeEl = (Element) node;
             nodeEl.setAttribute("name", model.getName());
         }
-        
+
     }
 
 }

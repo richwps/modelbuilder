@@ -269,10 +269,12 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doUndo() {
         app.getUndoManager().undo();
+        app.updateGraphDependentActions();
     }
 
     private void doRedo() {
         app.getUndoManager().redo();
+        app.updateGraphDependentActions();
     }
 
     private void doReloadProcesses() {

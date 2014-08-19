@@ -40,8 +40,6 @@ public class AppGraphView extends GraphView {
                 switch (e.getKeyCode()) {
                     // Delete
                     case 127:
-                        Object[] selection = getSelection();
-//                            if (null != graphView.getSelection() && selection.length > 0) {
                         if (hasSelection()) {
                             int choice = JOptionPane.showConfirmDialog(getApp().getFrame(), AppConstants.CONFIRM_DELETE_CELLS, AppConstants.CONFIRM_DELETE_CELLS_TITLE, JOptionPane.YES_NO_OPTION);
                             if (choice == JOptionPane.YES_OPTION) {

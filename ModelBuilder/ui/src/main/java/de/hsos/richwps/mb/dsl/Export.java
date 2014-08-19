@@ -38,8 +38,6 @@ public class Export {
     protected Map<String, Reference> variables;
     protected Graph graph;
 
-    private HashMap<Object, String> uniqueIdentifiers = new HashMap<>();
-
     /**
      * Initializes the variables and fills the vertex lists
      *
@@ -74,7 +72,7 @@ public class Export {
         InReference inputReference = new InReference(owsIdentifier);
         Assignment assignment = new Assignment(variable, inputReference);
         // Save variable to variable reference map
-        this.variables.put(uniqueIdentifier, variable);
+        this.variables.put(source.getOwsIdentifier(), variable);
         // Write assignment to Worksequence
         Logger.log("Assignment: " + assignment.toNotation());
         ws.add(assignment);
@@ -102,10 +100,10 @@ public class Export {
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
             // Reading varibale from varibale reference map
-            Reference variable = this.variables.get(getUniqueIdentifier(source.getOwsIdentifier()));
+            Reference variable = this.variables.get(source.getOwsIdentifier());
             execute.addInput(variable, getOwsIdentifier(target.getOwsIdentifier()));
         }
-
+//Logger.log("EX ID: " +identifier);
         // Store outputs to variable refenrece map
         Object[] outgoing = graph.getOutgoingEdges(processVertex);
         for (Object out : outgoing) {
@@ -116,9 +114,9 @@ public class Export {
             String owsOutIdentifier = getOwsIdentifier(source.getOwsIdentifier());
 
             // Writing varibale to varibale reference map
-            VarReference variable = new VarReference(uniqueOutIdentifier);
+            VarReference variable = new VarReference(getUniqueIdentifier(source.getOwsIdentifier()));
             // @TODO: set correct variable value
-            Reference asd = this.variables.put(uniqueOutIdentifier, variable);
+            Reference asd = this.variables.put(source.getOwsIdentifier(), variable);
             execute.addOutput(owsOutIdentifier, variable);
         }
         Logger.log("Execute: " + execute.toNotation());
@@ -153,7 +151,7 @@ public class Export {
 //            String inIdentifier = source.getOwsIdentifier();
 //            String outIdentifier = target.getOwsIdentifier();
             // Reading varibale from varibale reference map
-            Reference variable = this.variables.get(uniqueInIdentifier);
+            Reference variable = this.variables.get(source.getOwsIdentifier());
             Reference outputReference = new OutReference(owsOutIdentifier);
             Assignment assignment = new Assignment(outputReference, variable);
             Logger.log("Assignment: " + assignment.toNotation());
@@ -179,7 +177,10 @@ public class Export {
         Logger.log("Sorting graph");
         for (mxICell cell : sorted) {
             if (this.graph.getGraphModel().isProcess(cell)) {
+                Logger.log(">>>>" + ((ProcessEntity) this.graph.getGraphModel().getValue(cell)).getOutputPorts().get(0).getOwsIdentifier() );
                 this.defineExecute(cell, ws);
+
+
             } else if (this.graph.getGraphModel().isFlowInput(cell)) {
                 this.defineOutput(cell, ws);
             } else if (this.graph.getGraphModel().isFlowOutput(cell)) {

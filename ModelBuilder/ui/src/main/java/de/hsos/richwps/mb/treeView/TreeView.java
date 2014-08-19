@@ -42,10 +42,17 @@ public class TreeView {
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
     }
 
+    /**
+     * Returns the Swing tree component.
+     * @return
+     */
     public JTree getGui() {
         return tree;
     }
 
+    /**
+     * Expands all tree rows.
+     */
     public void expandAll() {
         tree.cancelEditing();
         for (int i = 0; i < tree.getRowCount(); i++) {
@@ -53,6 +60,10 @@ public class TreeView {
         }
     }
 
+    /**
+     * Return the selected tree node.
+     * @return
+     */
     public DefaultMutableTreeNode getSelectedNode() {
         Object path = tree.getSelectionPath().getLastPathComponent();
         if (path instanceof DefaultMutableTreeNode) {
@@ -62,6 +73,10 @@ public class TreeView {
         return null;
     }
 
+    /**
+     * Returns true if to tree root has no children.
+     * @return
+     */
     public boolean isEmpty() {
         TreeModel model = getGui().getModel();
         return model.getChildCount(model.getRoot()) <= 0;
