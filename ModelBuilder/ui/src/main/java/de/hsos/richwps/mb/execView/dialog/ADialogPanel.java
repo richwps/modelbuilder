@@ -15,4 +15,8 @@ public abstract class ADialogPanel extends JPanel {
     public ExecuteRequestDTO getDTO() {
         return null;
     }
+    
+    public boolean isValidInput(){
+        return false;
+    }
 }

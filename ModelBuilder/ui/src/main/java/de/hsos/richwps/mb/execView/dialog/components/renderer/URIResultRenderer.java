@@ -7,6 +7,7 @@ import java.awt.datatransfer.StringSelection;
 import java.net.URI;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.border.TitledBorder;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -28,7 +29,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
      */
     public URIResultRenderer(String identifier, String reference) {
         initComponents();
-        this.identifier.setText(identifier);
+        this.setBorder(new TitledBorder(identifier));
         this.httpuri=reference;
         String abbString = StringUtils.abbreviateMiddle(httpuri, "[...]" ,50);
         this.uri.setText(abbString);
@@ -45,23 +46,13 @@ public class URIResultRenderer extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jLabel1 = new javax.swing.JLabel();
         uri = new javax.swing.JLabel();
         copyToClipBoard = new javax.swing.JButton();
-        identifier = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
-        setMinimumSize(new java.awt.Dimension(600, 200));
-        setPreferredSize(new java.awt.Dimension(600, 200));
+        setMinimumSize(new java.awt.Dimension(600, 100));
+        setPreferredSize(new java.awt.Dimension(600, 100));
         setLayout(new java.awt.GridBagLayout());
-
-        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        jLabel1.setText("Output:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel1, gridBagConstraints);
 
         uri.setForeground(java.awt.Color.blue);
         uri.setText("value");
@@ -74,8 +65,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -91,20 +81,21 @@ public class URIResultRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(copyToClipBoard, gridBagConstraints);
 
-        identifier.setText("jLabel2");
+        jLabel1.setMinimumSize(new java.awt.Dimension(450, 1));
+        jLabel1.setPreferredSize(new java.awt.Dimension(450, 1));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(identifier, gridBagConstraints);
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void copyToClipBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyToClipBoardActionPerformed
@@ -135,7 +126,6 @@ public class URIResultRenderer extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyToClipBoard;
-    private javax.swing.JLabel identifier;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel uri;
     // End of variables declaration//GEN-END:variables

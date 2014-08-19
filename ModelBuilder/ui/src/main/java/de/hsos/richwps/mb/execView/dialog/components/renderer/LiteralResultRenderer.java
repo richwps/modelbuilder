@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.execView.dialog.components.renderer;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -22,7 +23,7 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
      */
     public LiteralResultRenderer(String identifier, String value) {
         initComponents();
-        this.identifier.setText(identifier);
+        this.setBorder(new TitledBorder(identifier));
         this.value.setText(value);
         
     }
@@ -37,22 +38,12 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        jLabel1 = new javax.swing.JLabel();
         copyToClipBoard = new javax.swing.JButton();
-        identifier = new javax.swing.JLabel();
         value = new javax.swing.JTextArea();
 
-        setPreferredSize(new java.awt.Dimension(700, 400));
+        setMinimumSize(new java.awt.Dimension(600, 400));
+        setPreferredSize(new java.awt.Dimension(600, 400));
         setLayout(new java.awt.GridBagLayout());
-
-        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        jLabel1.setText("Output:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel1, gridBagConstraints);
 
         copyToClipBoard.setText("Copy To Clipboard");
         copyToClipBoard.addActionListener(new java.awt.event.ActionListener() {
@@ -69,20 +60,12 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(copyToClipBoard, gridBagConstraints);
 
-        identifier.setText("jLabel2");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(identifier, gridBagConstraints);
-
         value.setEditable(false);
         value.setColumns(20);
         value.setLineWrap(true);
         value.setRows(10);
-        value.setMinimumSize(new java.awt.Dimension(400, 200));
-        value.setPreferredSize(new java.awt.Dimension(400, 200));
+        value.setMinimumSize(new java.awt.Dimension(450, 300));
+        value.setPreferredSize(new java.awt.Dimension(450, 300));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -102,8 +85,6 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyToClipBoard;
-    private javax.swing.JLabel identifier;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextArea value;
     // End of variables declaration//GEN-END:variables
 }

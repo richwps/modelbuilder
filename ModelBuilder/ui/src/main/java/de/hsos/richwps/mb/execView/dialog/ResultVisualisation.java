@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.execView.dialog.components.renderer.LiteralResultRenderer;
 import de.hsos.richwps.mb.execView.dialog.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -12,8 +13,11 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observer;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 import layout.TableLayout;
 
 /**
@@ -31,6 +35,9 @@ public class ResultVisualisation extends ADialogPanel {
         this.dto = dto;
         this.renderers = new ArrayList<>();
         initComponents();
+        
+        ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
+        this.loadingLabel.setIcon(ico);
     }
 
     /**
@@ -144,6 +151,8 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setMinimumSize(new java.awt.Dimension(610, 600));
         jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();

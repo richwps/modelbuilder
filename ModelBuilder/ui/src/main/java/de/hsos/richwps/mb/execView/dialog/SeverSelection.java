@@ -1,9 +1,11 @@
-
 package de.hsos.richwps.mb.execView.dialog;
 
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
+import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -35,6 +37,30 @@ public class SeverSelection extends ADialogPanel {
         for (String s : this.remotes) {
             this.serverSelectionBox.addItem(s);
         }
+    }
+
+    @Override
+    public boolean isValidInput() {
+        String server = (String) this.serverSelectionBox.getSelectedItem();
+        // FIXME How else can we check the endpoints existence, and readiness?
+        // HTTP::HEAD Operation 405 Method Not Allowed, instead of 404?
+        // HTTP::GET Operation 405 Method Not Allowed, instead of 404?
+        try {
+            java.net.URL urlobj = new java.net.URL(server);
+            URLConnection conn = urlobj.openConnection();
+            conn.connect();
+            HttpURLConnection httpConnection = (HttpURLConnection) conn;
+            int resp = httpConnection.getResponseCode();
+            if (resp != 200) {
+                JOptionPane.showMessageDialog(this, "Unable to reach service.");
+                return false;
+            }
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Unable to reach service: " + server);
+            JOptionPane.showMessageDialog(this, "Unable to reach service.");
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import layout.TableLayout;
 
@@ -55,6 +56,11 @@ public class InputParameterization extends ADialogPanel {
     }
 
     private void showInputs() {
+         if(this.dto.getInputSpecifier().isEmpty()){
+            JOptionPane optionPane = new JOptionPane("Unable to load inputs.",  JOptionPane.WARNING_MESSAGE);
+            optionPane.setVisible(true);
+            return;
+        }
         for (IInputSpecifier specifier : this.dto.getInputSpecifier()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
                 this.inputs.add(new InputLiteralData((InputLiteralDataSpecifier) specifier));
@@ -139,6 +145,10 @@ public class InputParameterization extends ADialogPanel {
 
     public ExecuteRequestDTO getDTO() {
         return this.dto;
+    }
+    
+    public boolean isValidInput(){
+        return true;
     }
 
     /**

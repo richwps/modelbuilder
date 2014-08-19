@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.execView.dialog;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -32,6 +33,11 @@ public class ProcessSelection extends ADialogPanel {
     }
 
     private void init() {
+        if(this.processes.isEmpty()){
+            JOptionPane optionPane = new JOptionPane("Unable to load processes.",  JOptionPane.WARNING_MESSAGE);
+            optionPane.setVisible(true);
+            return;
+        }
         this.processesBox.removeAllItems();
         for (String process : this.processes) {
             this.processesBox.addItem(process);
@@ -48,6 +54,10 @@ public class ProcessSelection extends ADialogPanel {
         this.dto = new ExecuteRequestDTO();
         dto.setEndpoint(this.wpsurl);
         dto.setProcessid((String) this.processesBox.getSelectedItem());
+    }
+    
+    public boolean isValidInput(){
+        return true;
     }
 
     /**

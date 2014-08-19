@@ -15,6 +15,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import layout.TableLayout;
 
@@ -58,9 +59,12 @@ public class OutputParameterization extends ADialogPanel {
 
     private void showOutputs() {
 
-        System.out.println(this.dto.getOutputSepcifier());
-        System.out.println(this.dto.getOutputSepcifier().size());
-
+        if (this.dto.getOutputSepcifier().isEmpty()) {
+            JOptionPane optionPane = new JOptionPane("Unable to load outputs.", JOptionPane.WARNING_MESSAGE);
+            optionPane.setVisible(true);
+            return;
+        }
+        
         for (IOutputSpecifier specifier : this.dto.getOutputSepcifier()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
@@ -139,6 +143,10 @@ public class OutputParameterization extends ADialogPanel {
         return this.dto;
     }
 
+    
+    public boolean isValidInput(){
+        return true;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

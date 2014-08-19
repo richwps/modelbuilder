@@ -54,6 +54,7 @@ public class OutputLiteralData extends javax.swing.JPanel {
         abstractLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
         abstractValue = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(550, 113));
         setPreferredSize(new java.awt.Dimension(600, 200));
@@ -98,6 +99,8 @@ public class OutputLiteralData extends javax.swing.JPanel {
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
         titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -120,12 +123,23 @@ public class OutputLiteralData extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(abstractValue, gridBagConstraints);
+
+        jLabel1.setMinimumSize(new java.awt.Dimension(450, 1));
+        jLabel1.setPreferredSize(new java.awt.Dimension(450, 1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel abstractLabel;
     private javax.swing.JTextArea abstractValue;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JCheckBox selectOutput;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextArea titleValue;
