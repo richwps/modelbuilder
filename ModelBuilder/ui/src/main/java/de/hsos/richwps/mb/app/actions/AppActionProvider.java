@@ -22,7 +22,8 @@ public class AppActionProvider {
         DEPLOY,
         RELOAD_PROCESSES,
         SHOW_ERROR_MSG,
-        EXECUTE
+        EXECUTE,
+        ABOUT
     }
 
     private IAppActionHandler actionHandler;

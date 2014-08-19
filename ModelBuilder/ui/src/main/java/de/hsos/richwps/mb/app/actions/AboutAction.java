@@ -12,10 +12,10 @@ import de.hsos.richwps.mb.app.AppConstants;
  *
  * @author dziegenh
  */
-public class ExitAppAction extends AppAbstractAction {
+public class AboutAction extends AppAbstractAction {
 
-    public ExitAppAction(IAppActionHandler actionHandler) {
-        super(actionHandler, AppActionProvider.APP_ACTIONS.EXIT_APP, AppConstants.ICON_EXIT_KEY);
+    public AboutAction(IAppActionHandler actionHandler) {
+        super(actionHandler, AppActionProvider.APP_ACTIONS.ABOUT, AppConstants.ICON_ABOUT_KEY);
     }
 
 }

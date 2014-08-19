@@ -81,6 +81,9 @@ public class AppActionHandler implements IAppActionHandler {
             case EXECUTE:
                 doExecute();
                 break;
+            case ABOUT:
+                doAbout();
+                break;
 
             default:
             // do nothing
@@ -286,5 +289,9 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doExecute() {
         app.showExecute();
+    }
+
+    private void doAbout() {
+        app.showAbout();
     }
 }

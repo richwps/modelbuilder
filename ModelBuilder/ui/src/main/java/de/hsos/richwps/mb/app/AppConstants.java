@@ -61,6 +61,7 @@ public class AppConstants {
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
 
     // Dialoges
+    public static String DIALOG_BTN_CLOSE = "Close";
     public static String DIALOG_BTN_CANCEL = "Cancel";
     public static String DIALOG_BTN_OK = "Ok";
     public static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
@@ -71,6 +72,9 @@ public class AppConstants {
     public final static Point PREFERENCES_DIALOG_LOCATION = new Point(200, 150);
     public final static String PREFERENCES_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
     public final static String PREFERENCES_DIALOG_BTN_OK = DIALOG_BTN_OK;
+
+    // About Dialog
+    public final static String ABOUT_DIALOG_TITLE = "About";
 
     public enum PREFERENCES_TAB {
         SEMANTICPROXY,
@@ -124,14 +128,20 @@ public class AppConstants {
         {"REDO", "Redo"},
         {"DO_LAYOUT", "Layout"},
         {"DEPLOY", "Deploy"},
-        {"RELOAD_PROCESSES", "Reload processes"},};
+        {"RELOAD_PROCESSES", "Reload processes"},
+        {"EXECUTE", "Execute ..."},
+        {"ABOUT", "About"},
+    };
 
     /**
      * the keys refer to MenuBar enum.
      */
     public static final String[][] MENU_CAPTIONS = new String[][]{
         {"FILE", "File"},
-        {"EDIT", "Edit"},};
+        {"EDIT", "Edit"},
+        {"TOOLS", "Tools"},
+        {"HELP", "Help"},
+    };
 
     public static Object TREE_ROOT_NAME = "...";
     public static Object TREE_PROCESSES_NAME = "Processes";
@@ -207,6 +217,7 @@ public class AppConstants {
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
     public final static String ICON_EXECUTE_KEY = "richwps_icon_execute";
+    public final static String ICON_ABOUT_KEY = "richwps_icon_about";
 
     // Graph error messages
     public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";

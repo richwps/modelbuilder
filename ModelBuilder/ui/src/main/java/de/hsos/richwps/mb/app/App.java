@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.app;
 import de.hsos.richwps.mb.AppInfoTabs;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
+import de.hsos.richwps.mb.app.view.AboutFrame;
 import de.hsos.richwps.mb.app.view.AppFrame;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
@@ -320,10 +321,15 @@ public class App {
             remotes.add("http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
             remotes.add("http://richwps.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
             remotes.add("http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService");
-            execViewDialog = new ExecViewDialog(getFrame(), true, remotes);
+            execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
         }
         
         execViewDialog.setVisible(true);
+    }
+
+    void showAbout() {
+        AboutFrame aboutFrame = new AboutFrame(getFrame());
+        aboutFrame.setVisible(true);
     }
 
 }

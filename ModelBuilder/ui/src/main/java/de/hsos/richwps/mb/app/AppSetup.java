@@ -126,7 +126,7 @@ public class AppSetup {
         // Logo
         UIManager.put(AppConstants.ICON_MBLOGO_KEY, new ImageIcon(iconDir + "mb_logo.png", "mb logo icon"));
 
-        // File icons
+        // File Menu icons
         UIManager.put(AppConstants.ICON_NEW_KEY, new ImageIcon(iconDir + "document-new-6.png", "new icon"));
         UIManager.put(AppConstants.ICON_OPEN_KEY, new ImageIcon(iconDir + "document-open-2.png", "open icon"));
         UIManager.put(AppConstants.ICON_SAVE_KEY, new ImageIcon(iconDir + "document-save-5.png", "save icon"));
@@ -134,18 +134,23 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_PREFERENCES_KEY, new ImageIcon(iconDir + "system-settings.png", "prefs icon"));
         UIManager.put(AppConstants.ICON_EXIT_KEY, new ImageIcon(iconDir + "dialog-close-2.png", "exit icon"));
 
-        // Edit Icons
+        // Edit Menu Icons
         UIManager.put(AppConstants.ICON_UNDO_KEY, new ImageIcon(iconDir + "arrow-undo.png", "undo icon"));
         UIManager.put(AppConstants.ICON_REDO_KEY, new ImageIcon(iconDir + "arrow-redo.png", "redo icon"));
         UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
 
-        // to be sorted...
+        // Tools Menu Icons
+        UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));
+
+        // Help Menu Icons
+        UIManager.put(AppConstants.ICON_ABOUT_KEY, new ImageIcon(iconDir + "help-about-3.png", "about icon"));
+
+        // (unsorted Icons)
         UIManager.put(AppConstants.ICON_DEPLOY_KEY, new ImageIcon(iconDir + "server-go.png", "deploy icon"));
         UIManager.put(AppConstants.ICON_INFO_KEY, new ImageIcon(iconDir + "dialog-information-4.png", "info icon"));
         UIManager.put(AppConstants.ICON_RELOAD_KEY, new ImageIcon(iconDir + "database-refresh.png", "reload icon"));
         UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));
-        UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));
     }
 
 }
