@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 /**
@@ -81,7 +82,12 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.currentPanel.updateDTO();
         this.dto = this.currentPanel.getDTO();
 
-        this.provider.connect(this.dto.getEndpoint());
+        try {
+            this.provider.connect(this.dto.getEndpoint());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Unable to connect to service..");
+            return;
+        }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.dto);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);

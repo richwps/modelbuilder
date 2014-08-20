@@ -9,13 +9,13 @@ import java.util.List;
  */
 public interface IRichWPSProvider {
 
-    public void connect(final String wpsurl);
+    public void connect(final String wpsurl) throws Exception;
 
-    public void connect(final String wpsurl, final String wpsturl);
+    public void connect(final String wpsurl, final String wpsturl) throws Exception;
 
-    public void connect(final String wpsurl, final String wpsturl, final String testurl);
+    public void connect(final String wpsurl, final String wpsturl, final String testurl) throws Exception;
 
-    public void connect(final String wpsurl, final String wpsturl, final String testurl, final String profileurl);
+    public void connect(final String wpsurl, final String wpsturl, final String testurl, final String profileurl) throws Exception;
 
     public List<String> getAvailableProcesses(final String wpsurl);
     
