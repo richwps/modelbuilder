@@ -46,7 +46,6 @@ public class RichWPSProviderTest extends TestCase {
         } catch (Exception e) {
             fail("Unable to connect.");
         }
-
     }
 
     /**
@@ -101,8 +100,7 @@ public class RichWPSProviderTest extends TestCase {
         assertEquals(2, outputs.size()); //3 with BBOX suport
         assertEquals("ComplexOutputData", ((IOutputSpecifier)outputs.get(0)).getIdentifier());
         assertEquals("LiteralOutputData", ((IOutputSpecifier)outputs.get(1)).getIdentifier());
-        //assertEquals("BBOXOutputData", ((IOutputSpecifier)outputs.get(2)).getIdentifier());
-        
+        //assertEquals("BBOXOutputData", ((IOutputSpecifier)outputs.get(2)).getIdentifier());   
     }
 
     /**
@@ -149,5 +147,49 @@ public class RichWPSProviderTest extends TestCase {
         HashMap<String, Object> theResults = dto.getResults();
         assertNotNull(theResults);
     }*/
+    
+     public void testEchoProcess() {
+        System.out.println("simpleBuffer");
+        String processid = "org.n52.wps.server.algorithm.test.EchoProcess";
+
+        RichWPSProvider instance = new RichWPSProvider();
+        instance.connect(wpsurl);
+
+        ExecuteRequestDTO dto = new ExecuteRequestDTO();
+        dto.setEndpoint(wpsurl);
+        dto.setProcessid(processid);
+
+        dto = instance.describeProcess(dto);
+        List<IInputSpecifier> inputs = dto.getInputSpecifier();
+        System.out.println(inputs);
+        assertEquals(2, inputs.size());
+        InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
+        InputLiteralDataSpecifier literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        
+
+        HashMap<String, IInputArgument> ins = new HashMap<>();
+        InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "Hello World.");
+        InputComplexDataArgument arg2 = new InputComplexDataArgument(geomSpec);
+        arg2.setAsReference(true);
+        arg2.setURL("http://map.ices.dk/geoserver/sf/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sf:roads&maxFeatures=50");
+        arg2.setMimeType("text/xml");
+        ins.put("literalInput", arg1);
+        ins.put("complexInput", arg2);
+        dto.setInputArguments(ins);
+
+        HashMap<String, IOutputArgument> outs = new HashMap();
+        List<IOutputSpecifier> outputs = dto.getOutputSepcifier();
+        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
+        outarg.setAsReference(true);
+        outarg.setMimetype("text/html");
+        outs.put("result", outarg);
+
+        dto = instance.executeProcess(dto);
+
+        HashMap<String, Object> theResults = dto.getResults();
+        assertNotNull(theResults);
+    }
+    
 
 }
