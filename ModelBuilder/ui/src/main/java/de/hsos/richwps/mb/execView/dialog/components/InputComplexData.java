@@ -30,12 +30,25 @@ public class InputComplexData extends javax.swing.JPanel {
         String thetitel = specifier.getTitle();
 
         this.selectType.removeAllItems();
+
+
+
         for (java.util.List type : specifier.getTypes()) {
+            
             String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
             String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
             String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
-            String line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
-            this.selectType.addItem(line);
+            String line = "";
+
+            if (specifier.isDefaultType(type)){
+                line = "<html><b>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</b></html>";
+                this.selectType.addItem(line);
+                this.selectType.setSelectedItem(line);
+            } else {
+                line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
+                this.selectType.addItem(line);
+            }
+
         }
 
         //fixme
@@ -46,9 +59,9 @@ public class InputComplexData extends javax.swing.JPanel {
         this.abstractValue.setText(theabstract);
         String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) "+theidentifier));
+            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) "+theidentifier));
+            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
         }
         this.occurs.setText(occurstxt);
     }

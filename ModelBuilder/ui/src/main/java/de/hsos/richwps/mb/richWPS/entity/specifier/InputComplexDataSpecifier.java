@@ -24,6 +24,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     private int minOccur = 0;
     private int maxOccur = 0;
 
+    private List<String> defaulttype;
     private List<List> types;
     public final static int mimetype_IDX = 0;
     public final static int schema_IDX = 1;
@@ -31,6 +32,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
 
     /**
      * Constructs a new InputSpecifier for complex data.
+     *
      * @param description 52n InputDescriptionType.
      */
     public InputComplexDataSpecifier(InputDescriptionType description) {
@@ -44,6 +46,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
             this.theabstract = "";
         }
         this.titel = description.getTitle().getStringValue();
+
         ComplexDataCombinationsType subtypes = this.type.getSupported();
         ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
@@ -55,6 +58,13 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
             atype.add(thetype.getEncoding());
             this.types.add(atype);
         }
+        net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = this.type.getDefault();
+        ComplexDataDescriptionType thetype = thedefaulttype.getFormat();
+        this.defaulttype = new ArrayList();
+        defaulttype.add(thetype.getMimeType());
+        defaulttype.add(thetype.getSchema());
+        defaulttype.add(thetype.getEncoding());
+
         this.minOccur = description.getMinOccurs().intValue();
         this.maxOccur = description.getMaxOccurs().intValue();
     }
@@ -74,10 +84,6 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         return this.titel;
     }
 
-    public List<List> getTypes() {
-        return this.types;
-    }
-
     @Override
     public int getMinOccur() {
         return minOccur;
@@ -86,5 +92,20 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     @Override
     public int getMaxOccur() {
         return maxOccur;
+    }
+
+    public List<String> getDefaultType() {
+        return this.defaulttype;
+    }
+
+    public List<List> getTypes() {
+        return this.types;
+    }
+
+    public boolean isDefaultType(List type) {
+        if(type.equals(defaulttype)){
+            return true;   
+        }
+        return false;
     }
 }
