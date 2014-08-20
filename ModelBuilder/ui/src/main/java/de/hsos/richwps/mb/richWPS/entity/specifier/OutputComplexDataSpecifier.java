@@ -19,6 +19,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     private String theabstract;
     private String title;
     private List<List> types;
+    private List<String> defaulttype;
     public static int mimetype_IDX = 0;
     public static int schema_IDX = 1;
     public static int encoding_IDX = 2;
@@ -49,7 +50,14 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
             atype.add(thetype.getEncoding());
             this.types.add(atype);
         }
-        
+
+        net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = this.type.getDefault();
+        ComplexDataDescriptionType thetype = thedefaulttype.getFormat();
+        this.defaulttype = new ArrayList();
+        defaulttype.add(thetype.getMimeType());
+        defaulttype.add(thetype.getSchema());
+        defaulttype.add(thetype.getEncoding());
+
     }
 
     @Override
@@ -83,8 +91,19 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         this.theabstract = theabstract;
     }
 
+    public List<String> getDefaultType() {
+        return this.defaulttype;
+    }
+
     public List<List> getTypes() {
-        return types;
+        return this.types;
+    }
+
+    public boolean isDefaultType(List type) {
+        if (type.equals(defaulttype)) {
+            return true;
+        }
+        return false;
     }
 
 }

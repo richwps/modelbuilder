@@ -33,8 +33,16 @@ public class OutputComplexData extends javax.swing.JPanel {
             String amimetype = (String) type.get(OutputComplexDataSpecifier.mimetype_IDX);
             String aschema = (String) type.get(OutputComplexDataSpecifier.schema_IDX);
             String aencoding = (String) type.get(OutputComplexDataSpecifier.encoding_IDX);
-            String line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
-            this.selectType.addItem(line);
+            String line = "";
+
+            if (specifier.isDefaultType(type)){
+                line = "<html><b>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</b></html>";
+                this.selectType.addItem(line);
+                this.selectType.setSelectedItem(line);
+            } else {
+                line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
+                this.selectType.addItem(line);
+            }
         }
 
         //fixme
