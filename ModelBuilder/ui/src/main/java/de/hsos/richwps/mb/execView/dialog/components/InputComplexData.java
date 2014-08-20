@@ -18,12 +18,13 @@ public class InputComplexData extends javax.swing.JPanel {
 
     /**
      * Creates new form ComplexInput
+     *
      * @param specifier the specifier of the complexinputdata.
      */
     public InputComplexData(final InputComplexDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
-        
+
         String theidentifier = specifier.getIdentifier();
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
@@ -33,7 +34,7 @@ public class InputComplexData extends javax.swing.JPanel {
             String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
             String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
             String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
-            String line = "<html>"+amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding+"</html>";
+            String line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
             this.selectType.addItem(line);
         }
 
@@ -41,10 +42,15 @@ public class InputComplexData extends javax.swing.JPanel {
         this.id = theidentifier;
         //this.identifier.setText(theidentifier);
 
-        this.setBorder(new TitledBorder(theidentifier));
-
         this.titleValue.setText(thetitel);
         this.abstractValue.setText(theabstract);
+        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
+        if (this.specifier.getMinOccur() == 0) {
+            this.setBorder(new TitledBorder("(OPTIONAL) "+theidentifier));
+        } else {
+            this.setBorder(new TitledBorder("(MANDATORY) "+theidentifier));
+        }
+        this.occurs.setText(occurstxt);
     }
 
     public InputComplexDataSpecifier getSpecifier() {
@@ -90,6 +96,8 @@ public class InputComplexData extends javax.swing.JPanel {
         modeLabel = new javax.swing.JLabel();
         abstractValue = new javax.swing.JTextArea();
         titleValue = new javax.swing.JTextArea();
+        occursLabel = new javax.swing.JLabel();
+        occurs = new javax.swing.JLabel();
 
         setBorder(null);
         setMinimumSize(new java.awt.Dimension(550, 300));
@@ -103,7 +111,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(titleLabel, gridBagConstraints);
 
@@ -112,7 +120,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -149,7 +157,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -165,7 +173,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectTypeLabel, gridBagConstraints);
 
@@ -177,7 +185,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.gridy = 4;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(valueLabel, gridBagConstraints);
 
@@ -188,7 +196,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(abstractLabel, gridBagConstraints);
 
@@ -199,7 +207,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(modeLabel, gridBagConstraints);
 
@@ -232,6 +240,27 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(titleValue, gridBagConstraints);
+
+        occursLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        occursLabel.setText("Occurs:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(occursLabel, gridBagConstraints);
+
+        occurs.setText(".");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(occurs, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -240,6 +269,8 @@ public class InputComplexData extends javax.swing.JPanel {
     private javax.swing.JTextArea abstractValue;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel modeLabel;
+    private javax.swing.JLabel occurs;
+    private javax.swing.JLabel occursLabel;
     private javax.swing.JRadioButton selectByReference;
     private javax.swing.JRadioButton selectByValue;
     private javax.swing.JComboBox selectType;

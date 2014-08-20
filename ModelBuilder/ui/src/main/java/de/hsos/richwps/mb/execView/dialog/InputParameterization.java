@@ -151,12 +151,20 @@ public class InputParameterization extends ADialogPanel {
         for (JPanel panel : this.inputs) {
             if (panel instanceof InputComplexData) {
                 InputComplexData pan = (InputComplexData) panel;
+                //this parameter is optional
+                if(pan.getSpecifier().getMinOccur()==0){
+                    return true;
+                }
                 if (pan.getValue().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
                     return false;
                 }
             } else if (panel instanceof InputLiteralData) {
                 InputLiteralData pan = (InputLiteralData) panel;
+                //this parameter is optional
+                if(pan.getSpecifier().getMinOccur()==0){
+                    return true;
+                }
                 if (pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
                     return false;

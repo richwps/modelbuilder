@@ -36,15 +36,20 @@ public class ExecViewDialog extends javax.swing.JDialog {
      */
     public ExecViewDialog(java.awt.Frame parent, boolean modal, List<String> wpsurls) {
         super(parent, modal);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            Logger.getLogger(ExecViewDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.provider = new RichWPSProvider();
         this.dto = new ExecuteRequestDTO();
         this.remotes = wpsurls;
         this.initComponents();
         this.backButton.setVisible(false);
-        this.showServerSelection();
+        this.showServerSelection(false);
     }
 
-    private void showServerSelection() {
+    private void showServerSelection(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.serverselectionpanel = new SeverSelection(this.remotes, this.dto);
@@ -62,87 +67,101 @@ public class ExecViewDialog extends javax.swing.JDialog {
     /**
      * Switches from serverselectionpanel to processselectionpanel.
      */
-    private void showProcessSelection() {
-        if (this.currentPanel.isValidInput()) {
-            this.backButton.setVisible(true);
-            this.nextButton.setVisible(true);
-
-            //refresh the dto
-            this.currentPanel.updateDTO();
-            this.dto = this.currentPanel.getDTO();
-
-            this.provider.connect(this.dto.getEndpoint());
-            this.processesselectionpanel = new ProcessSelection(this.provider, this.dto);
-            this.remove(this.currentPanel);
-            this.currentPanel.setVisible(false);
-            this.add(this.processesselectionpanel);
-            this.pack();
-            this.currentPanel = processesselectionpanel;
+    private void showProcessSelection(boolean isBackAction) {
+        if (!isBackAction) {
+            if (!this.currentPanel.isValidInput()) {
+                return;
+            }
         }
+
+        this.backButton.setVisible(true);
+        this.nextButton.setVisible(true);
+
+        //refresh the dto
+        this.currentPanel.updateDTO();
+        this.dto = this.currentPanel.getDTO();
+
+        this.provider.connect(this.dto.getEndpoint());
+        this.processesselectionpanel = new ProcessSelection(this.provider, this.dto);
+        this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
+        this.add(this.processesselectionpanel);
+        this.pack();
+        this.currentPanel = processesselectionpanel;
+
     }
 
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
-    private void showParameterizeInputsPanel() {
-        if (this.currentPanel.isValidInput()) {
-            this.backButton.setVisible(true);
-            this.nextButton.setVisible(true);
-
-            //refresh the dto
-            this.currentPanel.updateDTO();
-            this.dto = this.currentPanel.getDTO();
-
-            this.inputspanel = new InputParameterization(this.provider, this.dto);
-            this.remove(this.currentPanel);
-            this.currentPanel.setVisible(false);
-            this.add(this.inputspanel);
-            this.pack();
-            this.currentPanel = inputspanel;
+    private void showParameterizeInputsPanel(boolean isBackAction) {
+        if (!isBackAction) {
+            if (!this.currentPanel.isValidInput()) {
+                return;
+            }
         }
+        this.backButton.setVisible(true);
+        this.nextButton.setVisible(true);
+
+        //refresh the dto
+        this.currentPanel.updateDTO();
+        this.dto = this.currentPanel.getDTO();
+
+        this.inputspanel = new InputParameterization(this.provider, this.dto);
+        this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
+        this.add(this.inputspanel);
+        this.pack();
+        this.currentPanel = inputspanel;
     }
 
     /**
      * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
-    private void showParameterizeOutputsPanel() {
-        if (this.currentPanel.isValidInput()) {
-            this.backButton.setVisible(true);
-            this.nextButton.setVisible(true);
-
-            //refresh the dto
-            this.currentPanel.updateDTO();
-            this.dto = this.currentPanel.getDTO();
-
-            this.outputsspanel = new OutputParameterization(this.provider, this.dto);
-            this.remove(this.currentPanel);
-            this.currentPanel.setVisible(false);
-            this.add(this.outputsspanel);
-            this.pack();
-            this.currentPanel = outputsspanel;
+    private void showParameterizeOutputsPanel(boolean isBackAction) {
+        if (!isBackAction) {
+            if (!this.currentPanel.isValidInput()) {
+                return;
+            }
         }
+        this.backButton.setVisible(true);
+        this.nextButton.setVisible(true);
+
+        //refresh the dto
+        this.currentPanel.updateDTO();
+        this.dto = this.currentPanel.getDTO();
+
+        this.outputsspanel = new OutputParameterization(this.provider, this.dto);
+        this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
+        this.add(this.outputsspanel);
+        this.pack();
+        this.currentPanel = outputsspanel;
+
     }
 
-    private void showResultPanel() {
-        if (this.currentPanel.isValidInput()) {
-
-            this.backButton.setVisible(true);
-            this.nextButton.setVisible(false);
-
-            //refresh the dto
-            this.currentPanel.updateDTO();
-            this.dto = this.currentPanel.getDTO();
-
-            this.resultpanel = new ResultVisualisation(this.provider, this.dto);
-            this.remove(this.currentPanel);
-            this.currentPanel.setVisible(false);
-            this.add(this.resultpanel);
-            this.pack();
-            this.currentPanel = resultpanel;
-            this.currentPanel.setVisible(true);
-
-            this.resultpanel.executeProcess();
+    private void showResultPanel(boolean isBackAction) {
+        if (!isBackAction) {
+            if (!this.currentPanel.isValidInput()) {
+                return;
+            }
         }
+        this.backButton.setVisible(true);
+        this.nextButton.setVisible(false);
+
+        //refresh the dto
+        this.currentPanel.updateDTO();
+        this.dto = this.currentPanel.getDTO();
+
+        this.resultpanel = new ResultVisualisation(this.provider, this.dto);
+        this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
+        this.add(this.resultpanel);
+        this.pack();
+        this.currentPanel = resultpanel;
+        this.currentPanel.setVisible(true);
+
+        this.resultpanel.executeProcess();
     }
 
     /**
@@ -199,31 +218,31 @@ public class ExecViewDialog extends javax.swing.JDialog {
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
         if (this.currentPanel == this.serverselectionpanel) {
-            this.showProcessSelection();
+            this.showProcessSelection(false);
         } else if (this.currentPanel == this.processesselectionpanel) {
-            this.showParameterizeInputsPanel();
+            this.showParameterizeInputsPanel(false);
         } else if (this.currentPanel == this.inputspanel) {
-            this.showParameterizeOutputsPanel();
+            this.showParameterizeOutputsPanel(false);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.showResultPanel();
+            this.showResultPanel(false);
         }
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
-        this.showServerSelection();     //Reset
+        this.showServerSelection(false);     //Reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         if (this.currentPanel == this.processesselectionpanel) {
-            this.showServerSelection();
+            this.showServerSelection(true);
         } else if (this.currentPanel == this.inputspanel) {
-            this.showProcessSelection();
+            this.showProcessSelection(true);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.showParameterizeInputsPanel();
+            this.showParameterizeInputsPanel(true);
         } else if (this.currentPanel == this.resultpanel) {
-            this.showParameterizeOutputsPanel();
+            this.showParameterizeOutputsPanel(true);
         }
     }//GEN-LAST:event_backButtonActionPerformed
 

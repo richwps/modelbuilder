@@ -27,17 +27,24 @@ public class ProcessSelection extends ADialogPanel {
         this.dto = dto;
         this.wpsurl = dto.getEndpoint();
         this.provider = provider;
-        this.processes = this.provider.getAvailableProcesses(wpsurl);
+        try {
+            this.processes = this.provider.getAvailableProcesses(wpsurl);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Unable to load processes.");
+            return;
+        }
         this.initComponents();
         this.init();
     }
 
     private void init() {
-        if(this.processes.isEmpty()){
+        this.processesBox.removeAllItems();
+        
+        if (this.processes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Unable to load processes.");
             return;
         }
-        this.processesBox.removeAllItems();
+        
         for (String process : this.processes) {
             this.processesBox.addItem(process);
         }
@@ -54,8 +61,8 @@ public class ProcessSelection extends ADialogPanel {
         dto.setEndpoint(this.wpsurl);
         dto.setProcessid((String) this.processesBox.getSelectedItem());
     }
-    
-    public boolean isValidInput(){
+
+    public boolean isValidInput() {
         return true;
     }
 
