@@ -74,10 +74,12 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         return this.types;
     }
 
+    @Override
     public int getMinOccur() {
         return minOccur;
     }
 
+    @Override
     public int getMaxOccur() {
         return maxOccur;
     }

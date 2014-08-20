@@ -21,11 +21,14 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
     public OutputLiteralDataSpecifier(OutputDescriptionType description) {
         this.description = description;
         this.identifier = description.getIdentifier().getStringValue();
-        this.theabstract = description.getAbstract().getStringValue();
+        if (description.getAbstract() != null) {
+            this.theabstract = description.getAbstract().getStringValue();
+        } else {
+            this.theabstract = "";
+        }
         this.title = description.getTitle().getStringValue();
         this.subtype = description.getLiteralOutput().getDataType().toString();
     }
-
 
     @Override
     public String getIdentifier() {

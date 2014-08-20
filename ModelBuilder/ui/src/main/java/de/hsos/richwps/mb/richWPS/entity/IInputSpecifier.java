@@ -11,4 +11,8 @@ public interface IInputSpecifier {
     public String getAbstract();
     
     public String getTitle();
+    
+    public int getMinOccur();
+    
+    public int getMaxOccur();
 }

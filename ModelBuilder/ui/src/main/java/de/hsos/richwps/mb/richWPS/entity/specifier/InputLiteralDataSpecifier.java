@@ -14,16 +14,10 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
     private String type;
     private String title;
     private String theabstract;
-    private String value;
     private int minOccur = 0;
     private int maxOccur = 0;
 
-    public InputLiteralDataSpecifier(final String identifier, final String type, final String title, final String theabstract) {
-        this.identifier = identifier;
-        this.type = type;
-        this.title = title;
-        this.theabstract = theabstract;
-    }
+    
 
     public InputLiteralDataSpecifier(final InputDescriptionType description) {
         this.identifier = description.getIdentifier().getStringValue();
@@ -62,26 +56,18 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         this.title = title;
     }
 
+    @Override
     public String getAbstract() {
         return theabstract;
     }
 
-    public void setAbstract(String theabstract) {
-        this.theabstract = theabstract;
-    }
 
-    public String getValue() {
-        return this.value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
+    @Override
     public int getMinOccur() {
         return minOccur;
     }
 
+    @Override
     public int getMaxOccur() {
         return maxOccur;
     }

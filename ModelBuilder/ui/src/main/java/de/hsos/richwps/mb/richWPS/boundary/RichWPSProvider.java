@@ -1,5 +1,8 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
+import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
@@ -18,6 +21,7 @@ import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionsDocument;
 import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientConfig;
+import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.WPSTClientSession;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
@@ -38,12 +42,12 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     private WPSTClientSession wpst;
 
-    @Override
     /**
      * Connects the provider to a WPS-server.
      *
      * @param wpsurl endpoint of WebProcessingService.
      */
+    @Override
     public void connect(String wpsurl) throws Exception {
         try {
             wps = WPSClientSession.getInstance();
@@ -54,18 +58,17 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
 
-    @Override
     /**
      * Connects the provider to a WPS-server with WPS-T functionality.
      *
      * @param wpsurl endpoint of WebProcessingService.
      * @param wpsturl endpoint of transactional interface.
      */
+    @Override
     public void connect(String wpsurl, String wpsturl) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
     /**
      * Connects the provider to a WPS-server with WPS-T and testing
      * functionality.
@@ -74,11 +77,11 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param wpsturl endpoint of transactional interface.
      * @param testurl endpoint of testing interface.
      */
+    @Override
     public void connect(String wpsurl, String wpsturl, String testurl) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
     /**
      * Connects the provider to a WPS-server with WPS-T, testing and profiling
      * functionality.
@@ -86,19 +89,20 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param wpsurl endpoint of WebProcessingService.
      * @param wpsturl endpoint of transactional interface.
      * @param testurl endpoint of testing interface.
-     * @param testurl endpoint of profiling interface.
+     * @param profileurl endpoint of profiling interface.
      */
+    @Override
     public void connect(String wpsurl, String wpsturl, String testurl, String profileurl) throws Exception {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
     /**
      * Lists all available processes.
      *
      * @param wpsurl endpoint of WebProcessingService.
      * @return list of processes.
      */
+    @Override
     public List<String> getAvailableProcesses(String wpsurl) {
         List<String> processes = new ArrayList<>();
 
@@ -118,22 +122,22 @@ public class RichWPSProvider implements IRichWPSProvider {
         return processes;
     }
 
-    @Override
     /**
      * Describes process and its' in and outputs.
      *
-     * @param ExecuteRequestDTO with endpoint and processid.
+     * @param dto ExecuteRequestDTO with endpoint and processid.
      * @return ExecuteRequestDTO with endpoint and processid an process
      * description.
      */
+    @Override
     public ExecuteRequestDTO describeProcess(ExecuteRequestDTO dto) {
 
         if (dto.getInputSpecifier().isEmpty()) {
-            dto = this.describeInputs(dto);
+            dto = this.execAddInputs(dto);
         }
 
         if (dto.getOutputSepcifier().isEmpty()) {
-            dto = this.describeOutputs(dto);
+            dto = this.execAddOutputs(dto);
         }
 
         return dto;
@@ -142,10 +146,11 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Describes process and its' in and outputs.
      *
-     * @param ExecuteRequestDTO with endpoint and processid and in- and
+     * @param dto ExecuteRequestDTO with endpoint and processid and in- and
      * outputarguments.
      * @return ExecuteRequestDTO with results or exception.
      */
+    @Override
     public ExecuteRequestDTO executeProcess(ExecuteRequestDTO dto) {
         ExecuteRequestDTO resultdto = dto;
         String wpsurl = dto.getEndpoint();
@@ -154,11 +159,11 @@ public class RichWPSProvider implements IRichWPSProvider {
         HashMap theinputs = dto.getInputArguments();
         HashMap theoutputs = dto.getOutputArguments();
 
-        ProcessDescriptionType description = this._describeProcess(wpsurl, processid);
+        ProcessDescriptionType description = this.getProcessDescriptionType(dto);
         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
 
-        this.prepareInputs(executeBuilder, theinputs);
-        this.prepareOutputs(executeBuilder, theoutputs);
+        this.execSetInputs(executeBuilder, theinputs);
+        this.execSetOutputs(executeBuilder, theoutputs);
 
         ExecuteDocument execute = null;
         Object responseObject = null;
@@ -174,62 +179,51 @@ public class RichWPSProvider implements IRichWPSProvider {
             de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, executing the process " + processid + ", " + e);
         }
 
-        resultdto = this.analyseResponse(execute, description, responseObject, dto);
+        resultdto = this.execAnalyseResponse(execute, description, responseObject, dto);
 
         return resultdto;
     }
 
-    private void prepareInputs(org.n52.wps.client.ExecuteRequestBuilder executeBuilder, HashMap theinputs) {
+    
 
-        java.util.Set<String> keys = theinputs.keySet();
-        for (String key : keys) {
-            Object o = theinputs.get(key);
+    /**
+     * Retreives and extracts the processdescription type from a given
+     * WPS-server.
+     *
+     * @param dto ExecuteRequestDTO with endpoint and process id.
+     * @return 52n processdescriptiontype.
+     */
+    private ProcessDescriptionType getProcessDescriptionType(ExecuteRequestDTO dto) {
+        ProcessDescriptionType description = null;
+        try {
+            this.wps = WPSClientSession.getInstance();
+            this.wps.connect(dto.getEndpoint());
 
-            if (o instanceof InputLiteralDataArgument) {
-                String value = ((InputLiteralDataArgument) o).getValue();
-                executeBuilder.addLiteralData(key, value);
-            } else if (o instanceof InputComplexDataArgument) {
-                InputComplexDataArgument param = (InputComplexDataArgument) o;
+            //discover
+            String[] processes = new String[1];
+            processes[0] = dto.getProcessid();
+            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, dto.getEndpoint());
+            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
+            ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
+            description = descs[0];
 
-                String url = param.getURL();
-                String mimetype = param.getMimeType();
-                String encoding = param.getEncoding();
-                String schema = param.getSchema();
-                executeBuilder.addComplexDataReference(key, url, schema, encoding, mimetype);
-            }
-            //FIXME add BoundingBox
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + dto.getProcessid() + ", " + e);
         }
+        return description;
     }
-
-    private void prepareOutputs(org.n52.wps.client.ExecuteRequestBuilder executeBuilder, HashMap theoutputs) {
-        java.util.Set<String> keys = theoutputs.keySet();
-
-        for (String key : keys) {
-            Object o = theoutputs.get(key);
-
-            if (o instanceof OutputLiteralDataArgument) {
-                executeBuilder.addOutput(key);
-            } else if (o instanceof OutputComplexDataArgument) {
-                OutputComplexDataArgument param = (OutputComplexDataArgument) o;
-                executeBuilder.addOutput(key);
-                boolean asReference = param.isAsReference();
-                String mimetype = param.getMimetype();
-                String encoding = param.getEncoding();
-                String schema = param.getSchema();
-
-                if (asReference) {
-                    executeBuilder.setAsReference(key, true);
-                }
-
-                executeBuilder.setMimeTypeForOutput(mimetype, key);
-                executeBuilder.setEncodingForOutput(encoding, key);
-                executeBuilder.setSchemaForOutput(schema, key);
-            }
-            //FIXME add BoundingBox
-        }
-    }
-
-    private ExecuteRequestDTO analyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequestDTO dto) {
+    
+    /**
+     * Analyses a given response and add specific results or exception to dto.
+     *
+     * @param execute 52n execute document.
+     * @param description 52n process description.
+     * @param responseObject 52n reponse object. Execute-response or exception.
+     * @param dto ExecuteRequestDTO with possible inputs (IInputSpecifier) and
+     * outputs (IOutputSpecifier).
+     * @return ExecuteRequestDTO with results or exception.
+     */
+    private ExecuteRequestDTO execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequestDTO dto) {
         java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
         System.out.println(file);
@@ -275,9 +269,8 @@ public class RichWPSProvider implements IRichWPSProvider {
                         }
                     }
                 }
-            } catch (Exception e) {
-                //throw new Exception("Unable to analyse response.");
-                e.printStackTrace();
+            } catch (WPSClientException e) {
+                de.hsos.richwps.mb.Logger.log("Debug: \n Unable to analyse response. " + e.getLocalizedMessage());
             }
         } else {
             net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) responseObject;
@@ -288,33 +281,16 @@ public class RichWPSProvider implements IRichWPSProvider {
         return resultdto;
     }
 
-    private ProcessDescriptionType _describeProcess(String wpsurl, String processid) {
-        ProcessDescriptionType description = null;
-        try {
-            this.wps = WPSClientSession.getInstance();
-            this.wps.connect(wpsurl);
-
-            //discover
-            String[] processes = new String[1];
-            processes[0] = processid;
-            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
-            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
-            ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
-            description = descs[0];
-
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + processid + ", " + e);
-        }
-        return description;
-    }
+    
 
     /**
-     * Describes a processs inputs.
+     * Add processs inputs to a dto.
      *
      * @param ExecuteRequestDTO with endpoint and processid.
      * @return ExecuteRequestDTO with list of input specifiers.
+     * @see IInputSpecifier
      */
-    private ExecuteRequestDTO describeInputs(ExecuteRequestDTO dto) {
+    private ExecuteRequestDTO execAddInputs(ExecuteRequestDTO dto) {
         try {
             String wpsurl = dto.getEndpoint();
             String[] processes = new String[1];
@@ -329,19 +305,20 @@ public class RichWPSProvider implements IRichWPSProvider {
                     dto.addInput(description);
                 }
             }
-        } catch (Exception e) {
+        } catch (WPSClientException e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n " + e.getLocalizedMessage());
         }
         return dto;
     }
 
     /**
-     * Describes a processs outputs.
+     * Adds processs outputs to a dto.
      *
      * @param ExecuteRequestDTO with endpoint and processid.
      * @return ExecuteRequestDTO with list of outputs specifiers.
+     * @see IOutputSpecifier
      */
-    private ExecuteRequestDTO describeOutputs(ExecuteRequestDTO dto) {
+    private ExecuteRequestDTO execAddOutputs(ExecuteRequestDTO dto) {
 
         try {
             String wpsurl = dto.getEndpoint();
@@ -357,9 +334,73 @@ public class RichWPSProvider implements IRichWPSProvider {
                     dto.addOutput(description);
                 }
             }
-        } catch (Exception e) {
+        } catch (WPSClientException e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n " + e.getLocalizedMessage());
         }
         return dto;
+    }
+    
+    /**
+     * Sets given inputs to  execute-request.
+     *
+     * @param executeBuilder 52n executebuilder.
+     * @param theinputs list of inputs (InputArguments) that should be set.
+     * @see IInputArgument
+     */
+    private void execSetInputs(org.n52.wps.client.ExecuteRequestBuilder executeBuilder, HashMap theinputs) {
+
+        java.util.Set<String> keys = theinputs.keySet();
+
+        for (String key : keys) {
+            Object o = theinputs.get(key);
+            if (o instanceof InputLiteralDataArgument) {
+                String value = ((InputLiteralDataArgument) o).getValue();
+                executeBuilder.addLiteralData(key, value);
+            } else if (o instanceof InputComplexDataArgument) {
+                InputComplexDataArgument param = (InputComplexDataArgument) o;
+
+                String url = param.getURL();
+                String mimetype = param.getMimeType();
+                String encoding = param.getEncoding();
+                String schema = param.getSchema();
+                executeBuilder.addComplexDataReference(key, url, schema, encoding, mimetype);
+            }
+            //FIXME add BoundingBox
+        }
+    }
+
+    /**
+     * Sets requested outputs to  execute-request.
+     *
+     * @param executeBuilder 52n executebuilder.
+     * @param theinputs list of outputs (OutputArgument) that should be set.
+     * @see IOutputArgument
+     */
+    private void execSetOutputs(org.n52.wps.client.ExecuteRequestBuilder executeBuilder, HashMap theoutputs) {
+        java.util.Set<String> keys = theoutputs.keySet();
+
+        for (String key : keys) {
+            Object o = theoutputs.get(key);
+
+            if (o instanceof OutputLiteralDataArgument) {
+                executeBuilder.addOutput(key);
+            } else if (o instanceof OutputComplexDataArgument) {
+                OutputComplexDataArgument param = (OutputComplexDataArgument) o;
+                executeBuilder.addOutput(key);
+                boolean asReference = param.isAsReference();
+                String mimetype = param.getMimetype();
+                String encoding = param.getEncoding();
+                String schema = param.getSchema();
+
+                if (asReference) {
+                    executeBuilder.setAsReference(key, true);
+                }
+
+                executeBuilder.setMimeTypeForOutput(mimetype, key);
+                executeBuilder.setEncodingForOutput(encoding, key);
+                executeBuilder.setSchemaForOutput(schema, key);
+            }
+            //FIXME add BoundingBox
+        }
     }
 }
