@@ -1,0 +1,65 @@
+application/x-zipped-shp
+application/img
+image/tiff
+image/geotiff
+application/geotiff
+application/dbase
+application/remap
+application/x-erdas-hfa
+application/x-netcdf
+application/dgn
+image/jpeg
+image/png
+application/x-geotiff
+application/hdf4-eos
+text/plain
+application/rData
+application/rData+Spatial
+application/rData+SpatialPoints
+application/rData+SpatialPolygons
+text/html
+application/rData,,base64
+application/rData+Spatial,,base64
+application/rData+SpatialPoints,,base64
+application/rData+SpatialPolygons,,base64
+application/x-zipped-shp,,base64
+application/img,,base64<
+image/tiff,,base64
+application/geotiff,,base64
+application/dbase,,base64
+application/remap,,base64
+application/x-erdas-hfa,,base64
+application/x-netcdf,,base64
+application/dgn,,base64
+image/jpeg,,base64
+image/png,,base64
+application/x-geotiff,,base64
+application/hdf4-eos,,base64
+text/plain,,base64
+text/xml,http://schemas.opengis.net/gml/3.1.1/base/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/3.1.1/base/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/3.1.0/base/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/3.0.1/base/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/3.0.0/base/feature.xsd,,
+text/xml; subtype=gml/3.0.0,http://schemas.opengis.net/gml/3.0.0/base/feature.xsd,,
+text/xml; subtype=gml/3.0.1,http://schemas.opengis.net/gml/3.0.1/base/feature.xsd,,
+text/xml; subtype=gml/3.1.0,http://schemas.opengis.net/gml/3.1.0/base/feature.xsd,,
+text/xml; subtype=gml/3.1.1,http://schemas.opengis.net/gml/3.1.1/base/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/3.2.1/base/feature.xsd,,
+text/xml; subtype=gml/3.2.1,http://schemas.opengis.net/gml/3.2.1/base/feature.xsd,,
+text/xml,http://www.opengeospatial.org/gmlpacket.xsd,,
+text/xml,http://geoserver.itc.nl:8080/wps/schemas/gml/2.1.2/gmlpacket.xsd,,
+text/xml,http://schemas.opengis.net/gml/2.1.2/gmlpacket.xsd,,
+text/xml,http://schemas.opengis.net/gml/2.1.2.1/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/2.1.2/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/2.1.1/feature.xsd,,
+text/xml,http://schemas.opengis.net/gml/2.0.0/feature.xsd,,
+text/xml; subtype=gml/2.0.0,http://schemas.opengis.net/gml/2.0.0/feature.xsd,,
+text/xml; subtype=gml/2.1.1,http://schemas.opengis.net/gml/2.1.1/feature.xsd,,
+text/xml; subtype=gml/2.1.2,http://schemas.opengis.net/gml/2.1.2/feature.xsd,,
+text/xml; subtype=gml/2.1.2.1,http://schemas.opengis.net/gml/2.1.2.1/feature.xsd,,
+application/x-zipped-shp,,base64,
+application/x-zipped-shp,,,
+application/vnd.google-earth.kml+xml,http://schemas.opengis.net/kml/2.2.0/ogckml22.xsd,,
+application/x-zipped-wkt,,Base64
+application/json,,,

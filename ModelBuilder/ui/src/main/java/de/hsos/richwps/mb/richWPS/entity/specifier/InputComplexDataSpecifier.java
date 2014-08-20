@@ -29,6 +29,10 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     public final static int schema_IDX = 1;
     public final static int encoding_IDX = 2;
 
+    /**
+     * Constructs a new InputSpecifier for complex data.
+     * @param description 52n InputDescriptionType.
+     */
     public InputComplexDataSpecifier(InputDescriptionType description) {
         this.description = description;
         this.type = description.getComplexData();
