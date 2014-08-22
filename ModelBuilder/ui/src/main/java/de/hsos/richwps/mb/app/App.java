@@ -12,6 +12,7 @@ import de.hsos.richwps.mb.execView.ExecViewDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
+import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
@@ -38,7 +39,7 @@ public class App {
     private AppActionProvider actionProvider;
 
     AppFrame frame;
-    private ProcessProvider processProvider;
+    private IProcessProvider processProvider;
 
     private TreenodeTransferHandler processTransferHandler;
 
@@ -96,7 +97,7 @@ public class App {
         this.currentModelFilename = name;
     }
 
-    ProcessProvider getProcessProvider() {
+    IProcessProvider getProcessProvider() {
         if (null == processProvider) {
             processProvider = new ProcessProvider();
             AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);

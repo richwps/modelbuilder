@@ -43,7 +43,9 @@ public class ProcessProvider implements IProcessProvider {
      *
      * @param url SemanticProxy URL
      * @return
+     * @throws java.lang.Exception
      */
+    @Override
     public boolean connect(String url) throws Exception {
         // init SP Client
         Vocabulary.init(new URL(url + "/resources/vocab"));
@@ -66,6 +68,7 @@ public class ProcessProvider implements IProcessProvider {
         return true;
     }
 
+    @Override
     public boolean isConnected() {
         return null != net;
     }

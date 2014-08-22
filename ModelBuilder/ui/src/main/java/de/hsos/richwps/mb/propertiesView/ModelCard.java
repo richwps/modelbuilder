@@ -20,7 +20,7 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
-public class ModelCard extends AbstractPropertiesCard {
+class ModelCard extends AbstractPropertiesCard {
 
     private TitledComponent modeldataPanel;
 

@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.entity;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import java.io.Serializable;
 
 /**
@@ -13,11 +14,11 @@ import java.io.Serializable;
  */
 public class ProcessPort implements IOwsObject, Serializable {
 
-    private ProcessPortDatatype datatype;
-//    private String datatype;
     private String owsIdentifier;
     private String owsTitle;
     private String owsAbstract;
+    private ProcessPortDatatype datatype;
+    private IDataTypeDescription dataTypeDescription;
 
     private String toolTipText = null;
 
@@ -36,6 +37,26 @@ public class ProcessPort implements IOwsObject, Serializable {
 
     public ProcessPort(ProcessPortDatatype processPortDatatype) {
         this(processPortDatatype, false);
+    }
+
+    public IDataTypeDescription getDataTypeDescription() {
+        return dataTypeDescription;
+    }
+
+    private String createIncompatibleDescriptionMessage(ProcessPortDatatype datatype, IDataTypeDescription dataTypeDescription) {
+        String msg = AppConstants.INCOMPATIBLE_DATATYPE_DESCRIPTION;
+        String msgDatatype = (null == datatype) ? "null" : datatype.toString();
+        String msgDescription = (null == dataTypeDescription) ? "null" : dataTypeDescription.getClass().getSimpleName();
+        return String.format(msg, msgDatatype, msgDescription);
+    }
+
+    public void setDataTypeDescription(IDataTypeDescription dataTypeDescription) {
+        if (!dataTypeDescription.isDescriptionFor(this.datatype)) {
+            String msg = createIncompatibleDescriptionMessage(this.datatype, dataTypeDescription);
+            throw new IllegalArgumentException(msg);
+        }
+
+        this.dataTypeDescription = dataTypeDescription;
     }
 
     public boolean isGlobal() {
@@ -126,11 +147,13 @@ public class ProcessPort implements IOwsObject, Serializable {
      * @param datatype the data to set
      */
     public void setDatatype(ProcessPortDatatype datatype) {
+        if (null != this.dataTypeDescription && !this.dataTypeDescription.isDescriptionFor(datatype)) {
+            String msg = createIncompatibleDescriptionMessage(datatype, this.dataTypeDescription);
+            throw new IllegalArgumentException(msg);
+        }
+
         this.datatype = datatype;
     }
-//    public void setDatatype(String datatype) {
-//        this.datatype = datatype;
-//    }
 
     /**
      * @return the owsIdentifier

@@ -16,7 +16,7 @@ import javax.swing.JPanel;
  *
  * @author dziegenh
  */
-public class MultiProcessCard extends JPanel {
+class MultiProcessCard extends JPanel {
 
     public MultiProcessCard() {
         super();

@@ -22,7 +22,7 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
-public class SingleProcessCard extends AbstractPortCard {
+class SingleProcessCard extends AbstractPortCard {
 
     private TitledComponent processPanel;
     private TitledComponent inputsPanel;

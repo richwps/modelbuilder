@@ -5,22 +5,22 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
-import de.hsos.richwps.mb.entity.ProcessEntity;
-import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 /**
  *
@@ -154,14 +154,15 @@ public class PropertiesView extends TitledComponent {
     private ModelCard getModelCard() {
         if (null == modelCard) {
             modelCard = new ModelCard(parentWindow, new JPanel());
-            for (final JTextField field : modelCard.getPropertyFields().values()) {
-                field.addFocusListener(new FocusAdapter() {
-                    @Override
-                    public void focusLost(FocusEvent e) {
-                        JTextField field = (JTextField) e.getSource();
-                        firePropertyChangeEvent(CARD.MODEL, field.getName(), getModelCard().getModel(), field.getText());
-                    }
-                });
+            for (final AbstractPropertyComponent property : modelCard.getPropertyFields()) {
+                if (property instanceof PropertyTextField) {
+                    property.getComponent().addFocusListener(new FocusAdapter() {
+                        @Override
+                        public void focusLost(FocusEvent e) {
+                            firePropertyChangeEvent(CARD.MODEL, property.getPropertyName(), getModelCard().getModel(), property.getValue());
+                        }
+                    });
+                }
             }
         }
 
@@ -187,20 +188,28 @@ public class PropertiesView extends TitledComponent {
     private GlobalPortCard getGlobalPortCard() {
         if (null == globalPortCard) {
             globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
-            Collection<Component> properties = globalPortCard.getPropertyComponents().values();
-            for (Component property : properties) {
-                if (property instanceof JTextField) {
-                    JTextField field = (JTextField) property;
-                    field.addFocusListener(new FocusAdapter() {
+            // add focus listener to fire property changes
+            for (final AbstractPropertyComponent property : globalPortCard.getPropertyFields()) {
+                if (property instanceof PropertyTextField) {
+                    property.getComponent().addFocusListener(new FocusAdapter() {
                         @Override
                         public void focusLost(FocusEvent e) {
-                            JTextField field = (JTextField) e.getSource();
-                            firePropertyChangeEvent(CARD.GLOBAL_PORT, field.getName(), getGlobalPortCard().getPort(), field.getText());
+                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertyName(), getGlobalPortCard().getPort(), property.getValue());
                         }
-
                     });
                 }
             }
+//                if (property instanceof PropertyTextField) {
+//                    JTextField field = (JTextField) property.getComponent();
+//                    field.addFocusListener(new FocusAdapter() {
+//                        @Override
+//                        public void focusLost(FocusEvent e) {
+//                            JTextField field = (JTextField) e.getSource();
+//                            firePropertyChangeEvent(CARD.GLOBAL_PORT, field.getName(), getGlobalPortCard().getPort(), field.getText());
+//                        }
+//                    });
+//                }
+//            }
         }
 
         return globalPortCard;

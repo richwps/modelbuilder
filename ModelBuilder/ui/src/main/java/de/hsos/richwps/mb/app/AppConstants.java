@@ -37,9 +37,12 @@ public class AppConstants {
     public final static int GRAPH_GRID_SIZE = 10;
 
     /**
-     * Ressources
+     * Ressources *
      */
-    private final static String FSEP = File.separator;
+    /**
+     * File.seperator shortcut.
+     */
+    public final static String FSEP = File.separator;
     /**
      *
      */
@@ -77,20 +80,19 @@ public class AppConstants {
     public final static String ABOUT_DIALOG_TITLE = "About";
 
     public enum PREFERENCES_TAB {
+
         SEMANTICPROXY,
         HTTPPROXY
     }
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
         {PREFERENCES_TAB.SEMANTICPROXY.name(), "SemanticProxy"},
-        {PREFERENCES_TAB.HTTPPROXY.name(), "Http Proxy"},
-    };
+        {PREFERENCES_TAB.HTTPPROXY.name(), "Http Proxy"},};
     // SP preferences
     public final static String PREFERENCES_TAB_SP_URL_LABEL = "SemanticProxy URL:";
     // Http proxy preferences
     public final static String PREFERENCES_TAB_HTTP_HOST_LABEL = "Proxy host:";
     public final static String PREFERENCES_TAB_HTTP_PORT_LABEL = "Proxy port:";
 
-    
     /**
      * Main MB Frame
      */
@@ -111,8 +113,7 @@ public class AppConstants {
     public static final String[][] INFOTABS = new String[][]{
         {INFOTAB_ID_EDITOR, "Model"},
         {INFOTAB_ID_SEMANTICPROXY, "SemanticProxy"},
-        {INFOTAB_ID_SERVER, "RichWPS-Server"},
-    };
+        {INFOTAB_ID_SERVER, "RichWPS-Server"},};
 
     /**
      * the keys refer to MenuBar enum.
@@ -130,8 +131,7 @@ public class AppConstants {
         {"DEPLOY", "Deploy"},
         {"RELOAD_PROCESSES", "Reload processes"},
         {"EXECUTE", "Execute ..."},
-        {"ABOUT", "About"},
-    };
+        {"ABOUT", "About"},};
 
     /**
      * the keys refer to MenuBar enum.
@@ -140,8 +140,7 @@ public class AppConstants {
         {"FILE", "File"},
         {"EDIT", "Edit"},
         {"TOOLS", "Tools"},
-        {"HELP", "Help"},
-    };
+        {"HELP", "Help"},};
 
     public static Object TREE_ROOT_NAME = "...";
     public static Object TREE_PROCESSES_NAME = "Processes";
@@ -243,5 +242,7 @@ public class AppConstants {
     public final static String SUB_TREEVIEW_TITLE = "Used elements";
 
     final static String DEPLOYMENT_FAILED = "Deployment failed!";
+
+    public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 
 }

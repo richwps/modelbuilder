@@ -8,12 +8,12 @@ package de.hsos.richwps.mb.propertiesView;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
-import java.util.Map;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import layout.TableLayout;
@@ -26,8 +26,15 @@ public class GlobalPortCard extends AbstractPortCard {
 
     private TitledComponent portPanel;
 
-    Map<String, Component> propertyFields;
+//    Map<String, Component> propertyFields;
     private ProcessPort port;
+
+    protected JTextField titleField;
+    protected JTextField abstractField;
+    protected JTextField identifierField;
+    protected MultilineLabel typeField;
+
+    protected JComboBox datatypeDescription;
 
     public GlobalPortCard(final Window parentWindow, final JPanel contentPanel) {
         super(parentWindow, contentPanel);
@@ -38,13 +45,27 @@ public class GlobalPortCard extends AbstractPortCard {
         String processTitle = AppConstants.PROPERTIES_GLOBALPORTDATA_TITLE;
         portPanel = createTitledComponent(processTitle, panelContent);
 
-        propertyFields = getPropertyFields(panelContent);
+        for (AbstractPropertyComponent field : propertyFields) {
+            switch (field.getPropertyName()) {
+                case PORT_TITLE:
+                    titleField = (JTextField) field.getComponent();
+                    break;
+                case PORT_ABSTRACT:
+                    abstractField = (JTextField) field.getComponent();
+                    break;
+                case PORT_IDENTIFIER:
+                    identifierField = (JTextField) field.getComponent();
+                    break;
+                case PORT_DATATYPE:
+                    typeField = (MultilineLabel) field.getComponent();
+                    break;
+                case PORT_DATATYPE_FORMAT:
+                    datatypeDescription = (JComboBox) field.getComponent();
+                    break;
+            }
+        }
 
         contentPanel.add(portPanel, "0 0");
-    }
-
-    Map<String, Component> getPropertyComponents() {
-        return this.propertyFields;
     }
 
     ProcessPort getPort() {
@@ -57,16 +78,11 @@ public class GlobalPortCard extends AbstractPortCard {
      * @param process
      */
     void setPort(ProcessPort port) {
-        if(!port.isGlobal()) {
+        if (!port.isGlobal()) {
             throw new IllegalArgumentException("Port is not global");
         }
-        
-        this.port = port;
 
-        JTextField titleField = (JTextField) propertyFields.get(AbstractPortCard.PORT_TITLE);
-        JTextField abstractField = (JTextField) propertyFields.get(AbstractPortCard.PORT_ABSTRACT);
-        JTextField identifierField = (JTextField) propertyFields.get(AbstractPortCard.PORT_IDENTIFIER);
-        MultilineLabel typeField = (MultilineLabel) propertyFields.get(AbstractPortCard.PORT_DATATYPE);
+        this.port = port;
 
         titleField.setText(port.getOwsTitle());
         abstractField.setText(port.getOwsAbstract());

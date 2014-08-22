@@ -5,12 +5,13 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Insets;
 import java.awt.Point;
@@ -19,8 +20,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -34,7 +35,7 @@ import javax.swing.border.EmptyBorder;
  *
  * @author dziegenh
  */
-public abstract class AbstractPropertiesCard extends JScrollPane {
+abstract class AbstractPropertiesCard extends JScrollPane {
 
     protected JPanel contentPanel;
 
@@ -54,7 +55,7 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
     protected Color portBorderColor = Color.LIGHT_GRAY.darker();
 
 //    protected HashMap<String, MultilineLabel> propertyFields;
-    protected HashMap<String, JTextField> propertyFields;
+    protected List<AbstractPropertyComponent> propertyFields;
     protected final Window parentWindow;
 
     public AbstractPropertiesCard(final Window parentWindow, final JPanel contentPanel) {
@@ -86,19 +87,20 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
      *
      * @return
      */
-    HashMap<String, JTextField> getPropertyFields() {
+    List<AbstractPropertyComponent> getPropertyFields() {
         if (null == propertyFields) {
-            propertyFields = new HashMap<String, JTextField>();
+            propertyFields = new LinkedList<>();
         }
         return propertyFields;
     }
 
     protected JTextField createEditablePropertyField(String property, String text) {
-        JTextField label = new JTextField(text);
+
+        PropertyTextField propertyField = new PropertyTextField(property, text);
+
+        JTextField label = (JTextField) propertyField.getComponent();
         CompoundBorder border = new CompoundBorder(new ColorBorder(headLabelBgColor, 2, 0, 0, 1), label.getBorder());
         label.setBorder(border);
-        label.setName(property);
-        label.setActionCommand(property); // necessary ???
         label.setFont(label.getFont().deriveFont(propertyFieldFontSize));
 
         // TODO try to find a better way to change the cursor (label.setCursor doesn't work)
@@ -113,7 +115,7 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
             }
         });
         
-        getPropertyFields().put(property, label);
+        getPropertyFields().add(propertyField);
         return label;
     }
     
@@ -173,18 +175,18 @@ public abstract class AbstractPropertiesCard extends JScrollPane {
         return label;
     }
 
-    protected Map<String, Component> getPropertyFields(Container container) {
-        HashMap<String, Component> properties = new HashMap<>();
-
-        for(Component component : container.getComponents()) {
-            String cName = component.getName();
-            if(null != cName && !cName.isEmpty()) {
-//                JTextField field = (JTextField) component;
-                properties.put(cName, component);
-            }
-        }
-
-        return properties;
-    }
+//    protected Map<String, Component> getPropertyFields(Container container) {
+//        HashMap<String, Component> properties = new HashMap<>();
+//
+//        for(Component component : container.getComponents()) {
+//            String cName = component.getName();
+//            if(null != cName && !cName.isEmpty()) {
+////                JTextField field = (JTextField) component;
+//                properties.put(cName, component);
+//            }
+//        }
+//
+//        return properties;
+//    }
 
 }

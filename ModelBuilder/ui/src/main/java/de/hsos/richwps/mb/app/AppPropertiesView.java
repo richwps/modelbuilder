@@ -78,7 +78,6 @@ public class AppPropertiesView extends PropertiesView {
                                     port.setOwsIdentifier(value);
                                     break;
                             }
-                            de.hsos.richwps.mb.Logger.log(newValue);
                         }
                         break;
 

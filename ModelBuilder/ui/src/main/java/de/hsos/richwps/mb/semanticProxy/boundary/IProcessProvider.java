@@ -21,4 +21,8 @@ public interface IProcessProvider {
 
     Collection<ProcessEntity> getServerProcesses(String server);
 
+    public boolean isConnected();
+
+    public boolean connect(String url) throws Exception;
+
 }

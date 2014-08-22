@@ -203,7 +203,6 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doSaveModel() {
 
-        // TODO check for missing ProcessEntities !!!
         String filename = app.getCurrentModelFilename();
         if (null == filename || filename.isEmpty()) {
             JOptionPane.showMessageDialog(app.getFrame(), AppConstants.SAVE_MODEL_FAILED);

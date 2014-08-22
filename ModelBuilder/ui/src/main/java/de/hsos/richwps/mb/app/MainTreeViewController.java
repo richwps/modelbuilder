@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import java.util.LinkedList;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -26,7 +27,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     @Override
     void fillTree() {
-        ProcessProvider processProvider = getProcessProvider();
+        IProcessProvider processProvider = getProcessProvider();
 
         // Remove existing child-nodes from root
         DefaultMutableTreeNode root = getRoot();
@@ -68,8 +69,8 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
             // add MOCK servers for Development -> to be removed!
             LinkedList<String> mockServers = new LinkedList<String>();
-            mockServers.add(processProvider.mockServer1);
-            mockServers.add(processProvider.mockServer2);
+            mockServers.add(((ProcessProvider) processProvider).mockServer1);
+            mockServers.add(((ProcessProvider) processProvider).mockServer2);
             for (String server : mockServers) {
                 DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
 
@@ -87,13 +88,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         // TODO MOCK!! Create and fill local elements node
         DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
-        // Outputs
-        ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-        ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-        cOut.setGlobalOutput(true);
-        lOut.setGlobalOutput(true);
-        local.add(new DefaultMutableTreeNode(cOut));
-        local.add(new DefaultMutableTreeNode(lOut));
         // inputs
         ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
@@ -101,6 +95,13 @@ public class MainTreeViewController extends AbstractTreeViewController {
         lIn.setGlobalOutput(false);
         local.add(new DefaultMutableTreeNode(cIn));
         local.add(new DefaultMutableTreeNode(lIn));
+        // Outputs
+        ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
+        ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+        cOut.setGlobalOutput(true);
+        lOut.setGlobalOutput(true);
+        local.add(new DefaultMutableTreeNode(cOut));
+        local.add(new DefaultMutableTreeNode(lOut));
 
         // add all child nodes to root
         root.add(processesNode);

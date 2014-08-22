@@ -5,7 +5,6 @@
  */
 package de.hsos.richwps.mb.dsl;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessPort;
@@ -92,11 +91,7 @@ public class GraphHandler {
             // b) build the just found unique identifer
             if (!port.getOwsIdentifier().equals(tmpId)) {
                 port.setOwsIdentifier(tmpId + " " + add);
-
-                Logger.log("set ID: '" + tmpId + " " + add + "'");
-
             }
-            Logger.log(port.getOwsIdentifier() +", "+ getUniqueIdentifier(port.getOwsIdentifier())+ ", "+getOwsIdentifier(port.getOwsIdentifier()));
         }
     }
 
