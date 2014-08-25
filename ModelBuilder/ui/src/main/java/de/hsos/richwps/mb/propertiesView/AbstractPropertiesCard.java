@@ -13,7 +13,7 @@ import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Insets;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
@@ -26,7 +26,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -39,22 +38,6 @@ abstract class AbstractPropertiesCard extends JScrollPane {
 
     protected JPanel contentPanel;
 
-    // TODO move magic numbers to config/create setters
-    protected double propertyBorderThickness = 1; // property row: height of the bottom border
-    protected final int COLUMN_1_WIDTH = 56;      // fixed width of first column ("header")
-    protected int titleHeight = 20;               // height of titles ("process", "inputs" etc.)
-    protected Insets labelInsets = new Insets(2, 5, 2, 5);
-    protected float propertyFieldFontSize = 10f;
-
-    protected Color headLabelBgColor = UIManager.getColor("Panel.background");
-    protected Color bodyLabelBgColor = Color.WHITE;
-
-    protected Color propertyTitleFgColor = Color.WHITE;
-    protected Color propertyTitleBgColor1 = Color.LIGHT_GRAY;
-    protected Color propertyTitleBgColor2 = Color.LIGHT_GRAY.darker();
-    protected Color portBorderColor = Color.LIGHT_GRAY.darker();
-
-//    protected HashMap<String, MultilineLabel> propertyFields;
     protected List<AbstractPropertyComponent> propertyFields;
     protected final Window parentWindow;
 
@@ -64,6 +47,13 @@ abstract class AbstractPropertiesCard extends JScrollPane {
         this.parentWindow = parentWindow;
         this.contentPanel = contentPanel;
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        getHorizontalScrollBar().addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                adjustContentPanelSize();
+            }
+        });
 
         addComponentListener(new ComponentAdapter() {
             @Override
@@ -77,10 +67,19 @@ abstract class AbstractPropertiesCard extends JScrollPane {
             // Otherwise, when resizing the panel to a smaller width, the
             // panel width would not adjust and the horizontal scrollbar appears
             public void componentResized(ComponentEvent e) {
-                contentPanel.revalidate();
-                contentPanel.repaint();
+                adjustContentPanelSize();
             }
         });
+    }
+
+    protected void adjustContentPanelSize() {
+        if (getHorizontalScrollBar().isVisible()) {
+            Dimension prefSize = contentPanel.getPreferredSize();
+            prefSize.width -= 2*getVerticalScrollBar().getWidth();
+            contentPanel.setPreferredSize(prefSize);
+        }
+        contentPanel.revalidate();
+        contentPanel.repaint();
     }
 
     /**
@@ -99,9 +98,9 @@ abstract class AbstractPropertiesCard extends JScrollPane {
         PropertyTextField propertyField = new PropertyTextField(property, text);
 
         JTextField label = (JTextField) propertyField.getComponent();
-        CompoundBorder border = new CompoundBorder(new ColorBorder(headLabelBgColor, 2, 0, 0, 1), label.getBorder());
+        CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
         label.setBorder(border);
-        label.setFont(label.getFont().deriveFont(propertyFieldFontSize));
+        label.setFont(label.getFont().deriveFont(PropertyCardsConfig.propertyFieldFontSize));
 
         // TODO try to find a better way to change the cursor (label.setCursor doesn't work)
         label.addMouseListener(new MouseAdapter() {
@@ -109,34 +108,35 @@ abstract class AbstractPropertiesCard extends JScrollPane {
             public void mouseEntered(MouseEvent e) {
                 parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
             }
+
             @Override
             public void mouseExited(MouseEvent e) {
                 parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             }
         });
-        
+
         getPropertyFields().add(propertyField);
         return label;
     }
-    
+
     protected TitledComponent createTitledComponent(String title, Component component) {
-        TitledComponent titledComponent = new TitledComponent(title, component, titleHeight, true);
-        titledComponent.setTitleFontColor(propertyTitleFgColor);
-        titledComponent.setTitleGradientColor1(propertyTitleBgColor1);
-        titledComponent.setTitleGradientColor2(propertyTitleBgColor2);
-        titledComponent.setTitleInsets(labelInsets);
+        TitledComponent titledComponent = new TitledComponent(title, component, PropertyCardsConfig.titleHeight, true);
+        titledComponent.setTitleFontColor(PropertyCardsConfig.propertyTitleFgColor);
+        titledComponent.setTitleGradientColor1(PropertyCardsConfig.propertyTitleBgColor1);
+        titledComponent.setTitleGradientColor2(PropertyCardsConfig.propertyTitleBgColor2);
+        titledComponent.setTitleInsets(PropertyCardsConfig.labelInsets);
         return titledComponent;
     }
 
     protected Component createColumn1Border() {
         JLabel border = new JLabel("");
-        border.setBorder(new ColorBorder(bodyLabelBgColor, 0, 0, (int) propertyBorderThickness, 0));
+        border.setBorder(new ColorBorder(PropertyCardsConfig.bodyLabelBgColor, 0, 0, (int) PropertyCardsConfig.propertyBorderThickness, 0));
         return border;
     }
 
     protected Component createColumn2Border() {
         JLabel border = new JLabel("");
-        border.setBorder(new ColorBorder(headLabelBgColor, 0, 0, (int) propertyBorderThickness, 0));
+        border.setBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 0, 0, (int) PropertyCardsConfig.propertyBorderThickness, 0));
         return border;
     }
 
@@ -147,7 +147,7 @@ abstract class AbstractPropertiesCard extends JScrollPane {
      * @return
      */
     protected MultilineLabel createHeadLabel(String text) {
-        return createMultilineLabel(text, headLabelBgColor);
+        return createMultilineLabel(text, PropertyCardsConfig.headLabelBgColor);
     }
 
     /**
@@ -157,7 +157,7 @@ abstract class AbstractPropertiesCard extends JScrollPane {
      * @return
      */
     protected MultilineLabel createBodyLabel(String text) {
-        MultilineLabel label = createMultilineLabel(text, bodyLabelBgColor);
+        MultilineLabel label = createMultilineLabel(text, PropertyCardsConfig.bodyLabelBgColor);
         label.setFocusable(true);
         return label;
     }
@@ -169,24 +169,10 @@ abstract class AbstractPropertiesCard extends JScrollPane {
     protected MultilineLabel createMultilineLabel(String text, Color background, boolean editable) {
         MultilineLabel label = new MultilineLabel(text);
         label.setBackground(background);
-        Border emptyBorder = new EmptyBorder(labelInsets);
+        Border emptyBorder = new EmptyBorder(PropertyCardsConfig.labelInsets);
         label.setBorder(emptyBorder);
 
         return label;
     }
-
-//    protected Map<String, Component> getPropertyFields(Container container) {
-//        HashMap<String, Component> properties = new HashMap<>();
-//
-//        for(Component component : container.getComponents()) {
-//            String cName = component.getName();
-//            if(null != cName && !cName.isEmpty()) {
-////                JTextField field = (JTextField) component;
-//                properties.put(cName, component);
-//            }
-//        }
-//
-//        return properties;
-//    }
 
 }

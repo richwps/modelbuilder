@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.io.mxCodecRegistry;
+import com.mxgraph.io.mxObjectCodec;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxStylesheet;
@@ -36,6 +37,8 @@ public class GraphSetup {
     public static void init() {
         // register codecs for custom classes
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity");
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ComplexDataTypeFormat()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionComplex()));
         mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
 //        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
         mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));

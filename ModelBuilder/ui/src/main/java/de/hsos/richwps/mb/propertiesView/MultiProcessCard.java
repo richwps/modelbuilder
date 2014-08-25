@@ -21,7 +21,7 @@ class MultiProcessCard extends JPanel {
     public MultiProcessCard() {
         super();
 
-        add(new JLabel(AppConstants.CARD_MULTI_PROCESS_SELECTION));
+        add(new JLabel(AppConstants.PROPERTIES_MULTI_ELEMENTS_SELECTION));
     }
 
     void setProcesses(List<ProcessEntity> processes) {

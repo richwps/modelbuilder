@@ -9,13 +9,13 @@ import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyComplexDataTypeFormat;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyMultilineLabel;
 import de.hsos.richwps.mb.semanticProxy.boundary.LoadDataTypesException;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.Window;
 import java.util.List;
@@ -33,18 +33,6 @@ public class AbstractPortCard extends AbstractPropertiesCard {
         super(parentWindow, contentPanel);
     }
 
-    /**
-     * Shortcut method.
-     *
-     * @param port
-     * @return
-     */
-//    protected JPanel createPortPanelContainer(ProcessPort port, boolean editable) {
-//        List<ProcessPort> tmpList = new LinkedList<>();
-//        tmpList.add(port);
-//        return createPortsPanelContainer(tmpList, editable);
-//        return createSinglePortPanelContainer
-//    }
     protected JPanel createPortsPanelContainer(List<ProcessPort> ports) {
         return createPortsPanelContainer(ports, false);
     }
@@ -52,46 +40,35 @@ public class AbstractPortCard extends AbstractPropertiesCard {
     protected JPanel createPortPanelContainer(ProcessPort port, boolean editable) {
         double P = TableLayout.PREFERRED;
 
-        double[][] layoutSize = new double[][]{{COLUMN_1_WIDTH, TableLayout.FILL}, {
-            P, propertyBorderThickness,
-            P, propertyBorderThickness,
-            P, propertyBorderThickness,
-            P, propertyBorderThickness,
-            P, P
-        }};
-//            int panelRowsPlusBorders = 2 * panelRows - 1; // additional rows for borders
-//            layoutSize[0] = new double[]{};
-//            layoutSize[1] = new double[panelRowsPlusBorders];
-//            for (int r = 0; r < panelRowsPlusBorders; r++) {
-//                layoutSize[1][r] = (1 == r % 2) ? propertyBorderThickness : P;
-//            }
+        double[][] layoutSize = new double[][]{
+            {PropertyCardsConfig.COLUMN_1_WIDTH, TableLayout.FILL},
+            {
+                P, PropertyCardsConfig.propertyBorderThickness,
+                P, PropertyCardsConfig.propertyBorderThickness,
+                P, PropertyCardsConfig.propertyBorderThickness,
+                P, PropertyCardsConfig.propertyBorderThickness,
+                P, P
+            }
+        };
+
         JPanel portPanel = new JPanel();
         portPanel.setLayout(new TableLayout(layoutSize));
-        portPanel.setBorder(new ColorBorder(propertyTitleBgColor2, 0, 0, 1, 0));
+        portPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
 
-        int r = 0;
-        r = createPortPanel(port, portPanel, editable);
-//                portPanel.add(createPortBorder(), "0 " + r + " 1 " + r++);
-//            }
-//        }
-
-        return portPanel;
+        return createPortPanel(port, portPanel, editable);
     }
 
     protected JPanel createPortsPanelContainer(List<ProcessPort> ports, boolean editable) {
 
-//                 TODO calculate/get the magic number !!
-//        int panelRows = 6 * ports.size();
         JPanel portsPanel = new JPanel();
         double P = TableLayout.PREFERRED;
 
         if (0 < ports.size()) {
             double[][] layoutSize = new double[2][];
-            int panelRowsPlusBorders = ports.size(); //2 * panelRows - 1; // additional rows for borders
+            int portPanels = ports.size();
             layoutSize[0] = new double[]{TableLayout.FILL};
-            layoutSize[1] = new double[panelRowsPlusBorders];
-            for (int r = 0; r < panelRowsPlusBorders; r++) {
-//                layoutSize[1][r] = (1 == r % 2) ? propertyBorderThickness : P;
+            layoutSize[1] = new double[portPanels];
+            for (int r = 0; r < portPanels; r++) {
                 layoutSize[1][r] = P;
             }
             portsPanel.setLayout(new TableLayout(layoutSize));
@@ -103,33 +80,6 @@ public class AbstractPortCard extends AbstractPropertiesCard {
 
         }
 
-        // TODO calculate/get the magic number !!
-//        int panelRows = 6 * ports.size();
-//
-//        JPanel portsPanel = new JPanel();
-//        double P = TableLayout.PREFERRED;
-//
-//        if (0 < panelRows) {
-//            double[][] layoutSize = new double[2][];
-//            int panelRowsPlusBorders = 2 * panelRows - 1; // additional rows for borders
-//            layoutSize[0] = new double[]{COLUMN_1_WIDTH, TableLayout.FILL};
-//            layoutSize[1] = new double[panelRowsPlusBorders];
-//            for (int r = 0; r < panelRowsPlusBorders; r++) {
-//                layoutSize[1][r] = (1 == r % 2) ? propertyBorderThickness : P;
-//            }
-//
-//            portsPanel.setLayout(new TableLayout(layoutSize));
-//            portsPanel.setBorder(new ColorBorder(propertyTitleBgColor2, 0, 0, 1, 0));
-//
-//            int r = 0;
-//            for (ProcessPort port : ports) {
-//                r = createPortPanel(port, portsPanel, r, editable);
-//                if (r != panelRows) {
-//                    portsPanel.add(createPortBorder(), "0 " + r + " 1 " + r++);
-//                }
-//            }
-//        }
-//
         return portsPanel;
     }
 
@@ -141,7 +91,7 @@ public class AbstractPortCard extends AbstractPropertiesCard {
      * @param rowOffset
      * @return
      */
-    protected int createPortPanel(ProcessPort port, Container parent, boolean editable) {
+    protected JPanel createPortPanel(ProcessPort port, JPanel parent, boolean editable) {
 
         int rowOffset = 0;
 
@@ -181,29 +131,33 @@ public class AbstractPortCard extends AbstractPropertiesCard {
         parent.add(createHeadLabel("Datatype"), "0 " + rowOffset);
         parent.add(createBodyComponent(PORT_DATATYPE, port.getDatatype().toString(), false), "1 " + rowOffset++);
 
-        // Row 8
-        parent.add(createColumn1Border(), "0 " + rowOffset);
-        parent.add(createColumn2Border(), "1 " + rowOffset++);
+        // only add format components if the datatype needs them
+        if (null == port.getDatatype() || port.getDatatype().equals(ProcessPortDatatype.COMPLEX)) {
+            // Row 8
+            parent.add(createColumn1Border(), "0 " + rowOffset);
+            parent.add(createColumn2Border(), "1 " + rowOffset++);
 
-        // Row 9
-        parent.add(createHeadLabel("Format"), "0 " + rowOffset);
-        // TODO move to create method
-        ComplexDataTypeFormat cdtvalue = null;
-        IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
-        if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-            DataTypeDescriptionComplex complexDescription = (DataTypeDescriptionComplex) dataTypeDescription;
-            cdtvalue = complexDescription.getFormat();
-        }
-        try {
-            PropertyComplexDataTypeFormat formatProperty = new PropertyComplexDataTypeFormat();
-            formatProperty.setEditable(editable);
-            formatProperty.setValue(cdtvalue);
-            parent.add(formatProperty.getComponent(), "1 " + rowOffset++);
-        } catch (LoadDataTypesException ex) {
-            // TODO handle or throw exception
+            // Row 9
+            parent.add(createHeadLabel("Format"), "0 " + rowOffset);
+            // TODO move to create method
+            ComplexDataTypeFormat cdtvalue = null;
+            IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+            if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
+                DataTypeDescriptionComplex complexDescription = (DataTypeDescriptionComplex) dataTypeDescription;
+                cdtvalue = complexDescription.getFormat();
+            }
+            try {
+                PropertyComplexDataTypeFormat formatProperty = new PropertyComplexDataTypeFormat();
+                formatProperty.setEditable(editable);
+                formatProperty.setValue(cdtvalue);
+                propertyFields.add(formatProperty);
+                parent.add(formatProperty.getComponent(), "1 " + rowOffset++);
+            } catch (LoadDataTypesException ex) {
+                // TODO handle or throw exception
+            }
         }
 
-        return rowOffset;
+        return parent;
     }
 
     // property constants.
@@ -218,38 +172,19 @@ public class AbstractPortCard extends AbstractPropertiesCard {
             return createEditablePropertyField(property, content);
 
         } else {
-            final Component c = createBodyLabel(content);
-            getPropertyFields().add(new AbstractPropertyComponent(property) {
-                @Override
-                public Object getValue() {
-                    return ((MultilineLabel) getComponent()).getText();
-                }
+            MultilineLabel labelComponent = createBodyLabel(content);
+            PropertyMultilineLabel propertyLabel = new PropertyMultilineLabel(property);
+            propertyLabel.setComponent(labelComponent);
+            propertyLabel.setEditable(false);
+            getPropertyFields().add(propertyLabel);
 
-                @Override
-                public void setValue(Object value) {
-                    ((MultilineLabel) getComponent()).setText((String) value);
-                }
-
-                @Override
-                public Component getComponent() {
-                    return c;
-                }
-
-                @Override
-                public void setEditable(boolean editable) {
-                    // nothing to edit
-                }
-
-            });
-
-            return c;
+            return labelComponent;
         }
-
     }
 
     protected Component createPortBorder() {
         JLabel border = new JLabel("");
-        border.setBorder(new ColorBorder(portBorderColor, 0, 0, (int) propertyBorderThickness, 0));
+        border.setBorder(new ColorBorder(PropertyCardsConfig.portBorderColor, 0, 0, (int) PropertyCardsConfig.propertyBorderThickness, 0));
         return border;
     }
 

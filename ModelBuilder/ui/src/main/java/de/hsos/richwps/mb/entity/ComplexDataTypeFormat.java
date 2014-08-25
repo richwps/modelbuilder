@@ -17,6 +17,12 @@ public class ComplexDataTypeFormat {
 
     private String toolTipText;
 
+    public ComplexDataTypeFormat() {
+        this.mimeType = "";
+        this.schema = "";
+        this.encoding = "";
+    }
+
     public ComplexDataTypeFormat(String mimeType, String schema, String encoding) {
         this.mimeType = mimeType;
         this.schema = schema;

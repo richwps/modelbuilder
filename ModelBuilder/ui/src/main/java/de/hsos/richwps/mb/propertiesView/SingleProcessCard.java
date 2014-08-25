@@ -120,8 +120,12 @@ class SingleProcessCard extends AbstractPortCard {
         JPanel processPanel = new JPanel();
 
         double P = TableLayout.PREFERRED;
-        processPanel.setLayout(new TableLayout(new double[][]{{COLUMN_1_WIDTH, TableLayout.FILL}, {P, propertyBorderThickness, P, propertyBorderThickness, P}}));
-        processPanel.setBorder(new ColorBorder(propertyTitleBgColor2, 0, 0, 1, 0));
+        final double[][] layout = new double[][]{
+            {PropertyCardsConfig.COLUMN_1_WIDTH, TableLayout.FILL},
+            {P, PropertyCardsConfig.propertyBorderThickness, P, PropertyCardsConfig.propertyBorderThickness, P}
+        };
+        processPanel.setLayout(new TableLayout(layout));
+        processPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
 
         processIdentifierLabel = createBodyLabel(process.getOwsIdentifier());
         processTitleLabel = createBodyLabel(process.getOwsTitle());
@@ -135,7 +139,7 @@ class SingleProcessCard extends AbstractPortCard {
         processPanel.add(createColumn1Border(), "0 " + y);
         processPanel.add(createColumn2Border(), "1 " + y);
         y++;
-        processPanel.add(createHeadLabel(AppConstants.PROCESS_IDENTIFIER_LABEL), "0 " + y);
+        processPanel.add(createHeadLabel(AppConstants.PROPERTIES_PROCESS_IDENTIFIER_LABEL), "0 " + y);
         processPanel.add(processIdentifierLabel, "1 " + y);
         y++;
         processPanel.add(createColumn1Border(), "0 " + y);

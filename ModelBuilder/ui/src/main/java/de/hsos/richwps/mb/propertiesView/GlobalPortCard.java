@@ -6,14 +6,15 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Container;
 import java.awt.Window;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import layout.TableLayout;
@@ -34,7 +35,7 @@ public class GlobalPortCard extends AbstractPortCard {
     protected JTextField identifierField;
     protected MultilineLabel typeField;
 
-    protected JComboBox datatypeDescription;
+    protected ComplexDataTypeFormatLabel datatypeDescription;
 
     public GlobalPortCard(final Window parentWindow, final JPanel contentPanel) {
         super(parentWindow, contentPanel);
@@ -60,7 +61,7 @@ public class GlobalPortCard extends AbstractPortCard {
                     typeField = (MultilineLabel) field.getComponent();
                     break;
                 case PORT_DATATYPE_FORMAT:
-                    datatypeDescription = (JComboBox) field.getComponent();
+                    datatypeDescription = (ComplexDataTypeFormatLabel) field.getComponent();
                     break;
             }
         }
@@ -88,6 +89,17 @@ public class GlobalPortCard extends AbstractPortCard {
         abstractField.setText(port.getOwsAbstract());
         identifierField.setText(port.getOwsIdentifier());
         typeField.setText(port.getDatatype().toString());
+
+        boolean hasDescription = (null != port.getDatatype()) && (port.getDatatype().equals(ProcessPortDatatype.COMPLEX));
+        datatypeDescription.setEditable(hasDescription);
+        if (hasDescription && null != port.getDataTypeDescription()) {
+            datatypeDescription.setComplexDataTypeFormat((ComplexDataTypeFormat) port.getDataTypeDescription());
+        } else {
+            datatypeDescription.setComplexDataTypeFormat(null);
+        }
+
+        // adjust content panel to remove the H-Scrollbar.
+//        adjustContentPanelSize();
     }
 
 }

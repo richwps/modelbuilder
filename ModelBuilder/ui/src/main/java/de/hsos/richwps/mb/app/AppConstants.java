@@ -101,11 +101,11 @@ public class AppConstants {
     public static final Point FRAME_DEFAULT_LOCATION = new Point(100, 100);
     public static final boolean FRAME_DEFAULT_MAXIMIZED = false;
     public static final Dimension LEFT_PANEL_MIN_SIZE = new Dimension(200, 200);
-    public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(200, 200);
-    public static final Dimension BOTTOM_TABS_MIN_SIZE = new Dimension(100, 150);
+    public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(250, 200);
 
+    // InfoTabs View
+    public static final Dimension INFOTABS_MIN_SIZE = new Dimension(100, 150);
     public static final Color INFOTABS_TEXTCOLOR = Color.GRAY;
-
     // Array of {tabId, tabTitle}-elements
     public final static String INFOTAB_ID_SERVER = "server";
     public final static String INFOTAB_ID_EDITOR = "editor";
@@ -142,24 +142,26 @@ public class AppConstants {
         {"TOOLS", "Tools"},
         {"HELP", "Help"},};
 
+    // Tree View
     public static Object TREE_ROOT_NAME = "...";
     public static Object TREE_PROCESSES_NAME = "Processes";
     public static Object TREE_DOWNLOADSERVICES_NAME = "Download Services";
     public static Object TREE_LOCALS_NAME = "Local";
 
     // Properties View
-    public final static String CARD_MULTI_PROCESS_SELECTION = "(multiple elements selected)";
+    public final static String PROPERTIES_MULTI_ELEMENTS_SELECTION = "(multiple elements selected)";
     public final static String PROPERTIES_PROCESS_TITLE = "Process";
     public final static String PROPERTIES_INPUTS_TITLE = "Inputs";
     public final static String PROPERTIES_OUTPUTS_TITLE = "Outputs";
     public final static String PROPERTIES_PANEL_TITLE = "Properties";
-    public final static String PROCESS_IDENTIFIER_LABEL = "Identifier";
-    public final static String PROCESS_ABSTRACT_LABEL = "Identifier";
-    public final static String PROCESS_TITLE_LABEL = "Identifier";
-    public final static String PORT_IDENTIFIER_LABEL = "Identifier";
-    public final static String PORT_ABSTRACT_LABEL = "Identifier";
-    public final static String PORT_TITLE_LABEL = "Identifier";
-    public final static String PORT_DATATYPE_LABEL = "Datatype";
+    public final static String PROPERTIES_PROCESS_IDENTIFIER_LABEL = "Identifier";
+    public final static String PROPERTIES_PROCESS_ABSTRACT_LABEL = "Identifier";
+    public final static String PROPERTIES_PROCESS_TITLE_LABEL = "Identifier";
+    public final static String PROPERTIES_PORT_IDENTIFIER_LABEL = "Identifier";
+    public final static String PROPERTIES_PORT_ABSTRACT_LABEL = "Identifier";
+    public final static String PROPERTIES_PORT_TITLE_LABEL = "Identifier";
+    public final static String PROPERTIES_PORT_DATATYPE_LABEL = "Datatype";
+    public final static String PROPERTIES_BTN_EDIT_FORMAT_TTT = "Select format";
 
     public final static String TREE_VIEW_TITLE = null;//"Modelling Elements";
     public final static String OVERVIEW_TITLE = null;
@@ -167,9 +169,11 @@ public class AppConstants {
 
     // TODO move & get colors from lookAndFeel / UIManager
     @Deprecated
-    public final static Color bgColor = new Color(222, 227, 250); // alt: (0xd0e0ff);
+    public final static Color bgColor = new Color(222, 227, 250);
     @Deprecated
-    public final static Color SELECTION_BG_COLOR = new Color(0xa0ace5); // 0xabb6f1);
+    public final static Color SELECTION_BG_COLOR = new Color(0xa0ace5);
+    @Deprecated
+    public final static Color SELECTION_FG_COLOR = Color.WHITE;
 
     /**
      * Messages
@@ -218,6 +222,7 @@ public class AppConstants {
     public final static String ICON_EXECUTE_KEY = "richwps_icon_execute";
     public final static String ICON_ABOUT_KEY = "richwps_icon_about";
     public final static String ICON_LOADING_STATUS_KEY = "richwps_icon_loading";
+    public final static String ICON_EDIT_KEY = "richwps_icon_edit";
 
     // Graph error messages
     public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";

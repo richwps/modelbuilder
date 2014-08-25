@@ -67,8 +67,12 @@ class ModelCard extends AbstractPropertiesCard {
         JPanel modeldataPanel = new JPanel();
 
         double P = TableLayout.PREFERRED;
-        modeldataPanel.setLayout(new TableLayout(new double[][]{{COLUMN_1_WIDTH, TableLayout.FILL}, {P, propertyBorderThickness, P, propertyBorderThickness, P}}));
-        modeldataPanel.setBorder(new ColorBorder(propertyTitleBgColor2, 0, 0, 1, 0));
+        final double[][] layout = new double[][]{
+            {PropertyCardsConfig.COLUMN_1_WIDTH, TableLayout.FILL},
+            {P, PropertyCardsConfig.propertyBorderThickness, P, PropertyCardsConfig.propertyBorderThickness, P}
+        };
+        modeldataPanel.setLayout(new TableLayout(layout));
+        modeldataPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
 
         String name = (null != model) ? model.getName() : "";
         nameLabel = createEditablePropertyField("name", name);

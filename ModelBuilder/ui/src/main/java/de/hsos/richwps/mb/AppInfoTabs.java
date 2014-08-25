@@ -19,7 +19,7 @@ public class AppInfoTabs extends InfoTabs {
 
     public AppInfoTabs() {
         setTextColor(AppConstants.INFOTABS_TEXTCOLOR);
-        setMinimumSize(AppConstants.BOTTOM_TABS_MIN_SIZE);
+        setMinimumSize(AppConstants.INFOTABS_MIN_SIZE);
 
         // Create/add tabs
         for (String[] tabData : AppConstants.INFOTABS) {
