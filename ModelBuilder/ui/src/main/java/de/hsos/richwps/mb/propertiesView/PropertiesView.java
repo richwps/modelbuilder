@@ -5,13 +5,17 @@
  */
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyComplexDataTypeFormat;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
+import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -188,7 +192,7 @@ public class PropertiesView extends TitledComponent {
     private GlobalPortCard getGlobalPortCard() {
         if (null == globalPortCard) {
             globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
-            // add focus listener to fire property changes
+            // add listeners to fire property changes
             for (final AbstractPropertyComponent property : globalPortCard.getPropertyFields()) {
                 if (property instanceof PropertyTextField) {
                     property.getComponent().addFocusListener(new FocusAdapter() {
@@ -197,19 +201,17 @@ public class PropertiesView extends TitledComponent {
                             firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertyName(), getGlobalPortCard().getPort(), property.getValue());
                         }
                     });
+
+                } else if(property instanceof PropertyComplexDataTypeFormat) {
+                    ComplexDataTypeFormatLabel component = (ComplexDataTypeFormatLabel) property.getComponent();
+                    component.addSelectionListener(new IFormatSelectionListener() {
+                        @Override
+                        public void formatSelected(ComplexDataTypeFormat format) {
+                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertyName(), getGlobalPortCard().getPort(), format);
+                        }
+                    });
                 }
             }
-//                if (property instanceof PropertyTextField) {
-//                    JTextField field = (JTextField) property.getComponent();
-//                    field.addFocusListener(new FocusAdapter() {
-//                        @Override
-//                        public void focusLost(FocusEvent e) {
-//                            JTextField field = (JTextField) e.getSource();
-//                            firePropertyChangeEvent(CARD.GLOBAL_PORT, field.getName(), getGlobalPortCard().getPort(), field.getText());
-//                        }
-//                    });
-//                }
-//            }
         }
 
         return globalPortCard;

@@ -6,6 +6,7 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
 import de.hsos.richwps.mb.semanticProxy.boundary.FormatProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.LoadDataTypesException;
@@ -31,6 +32,16 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent {
         formats.add(null);
         formats.addAll(FormatProvider.getInstance().getComplexDataTypes());
         component = new ComplexDataTypeFormatLabel(formats);
+        component.addSelectionListener(new IFormatSelectionListener() {
+            @Override
+            public void formatSelected(ComplexDataTypeFormat format) {
+                setFormat(format);
+            }
+        });
+    }
+
+    private void setFormat(ComplexDataTypeFormat format) {
+        this.format = format;
     }
 
     @Override

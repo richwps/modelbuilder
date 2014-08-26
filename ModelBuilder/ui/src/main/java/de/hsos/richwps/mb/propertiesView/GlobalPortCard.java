@@ -7,6 +7,7 @@ package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
@@ -92,14 +93,12 @@ public class GlobalPortCard extends AbstractPortCard {
 
         boolean hasDescription = (null != port.getDatatype()) && (port.getDatatype().equals(ProcessPortDatatype.COMPLEX));
         datatypeDescription.setEditable(hasDescription);
+        ComplexDataTypeFormat format = null;
         if (hasDescription && null != port.getDataTypeDescription()) {
-            datatypeDescription.setComplexDataTypeFormat((ComplexDataTypeFormat) port.getDataTypeDescription());
-        } else {
-            datatypeDescription.setComplexDataTypeFormat(null);
+            format = ((DataTypeDescriptionComplex) port.getDataTypeDescription()).getFormat();
         }
 
-        // adjust content panel to remove the H-Scrollbar.
-//        adjustContentPanelSize();
+        datatypeDescription.setComplexDataTypeFormat(format);
     }
 
 }

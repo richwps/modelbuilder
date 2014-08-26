@@ -7,6 +7,7 @@ package de.hsos.richwps.mb.ui;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.propertiesView.PropertyCardsConfig;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -28,10 +29,7 @@ import javax.swing.event.PopupMenuEvent;
 import layout.TableLayout;
 import org.apache.commons.lang3.SystemUtils;
 
-interface ISelectionListener {
 
-    void formatSelected(ComplexDataTypeFormat format);
-}
 
 /**
  * Frame containing a combobox for format selection.
@@ -41,7 +39,7 @@ interface ISelectionListener {
 class SelectFormatFrame extends JDialog {
 
     private final JComboBox comboBox;
-    private List<ISelectionListener> selectionListeners;
+    private List<IFormatSelectionListener> selectionListeners;
 
     SelectFormatFrame(List<ComplexDataTypeFormat> formats, ComplexDataTypeFormat selected) {
         super((Frame) null, "", true);
@@ -52,12 +50,12 @@ class SelectFormatFrame extends JDialog {
         comboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (ISelectionListener listener : getSelectionListeners()) {
+                for (IFormatSelectionListener listener : getSelectionListeners()) {
                     listener.formatSelected((ComplexDataTypeFormat) comboBox.getSelectedItem());
                 }
             }
         });
-        comboBox.addPopupMenuListener(new PopupMenuAdapter(){
+        comboBox.addPopupMenuListener(new PopupMenuAdapter() {
             @Override
             public void popupMenuCanceled(PopupMenuEvent e) {
                 dispose();
@@ -104,11 +102,11 @@ class SelectFormatFrame extends JDialog {
         super.setVisible(visible);
     }
 
-    void addSelectionListener(ISelectionListener listener) {
+    void addSelectionListener(IFormatSelectionListener listener) {
         getSelectionListeners().add(listener);
     }
 
-    private List<ISelectionListener> getSelectionListeners() {
+    private List<IFormatSelectionListener> getSelectionListeners() {
         if (null == selectionListeners) {
             selectionListeners = new LinkedList<>();
         }
@@ -130,6 +128,8 @@ public class ComplexDataTypeFormatLabel extends JPanel {
     private final Dimension editButtonSize = new Dimension(18, 18);
     private ComplexDataTypeFormat format;
 
+    private List<IFormatSelectionListener> selectionListeners;
+
     public ComplexDataTypeFormatLabel(List<ComplexDataTypeFormat> formats) {
         super();
 
@@ -150,11 +150,14 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                 btnLocation.x += editButton.getWidth();
                 selectFormatFrame.setLocation(btnLocation);
 
-                selectFormatFrame.addSelectionListener(new ISelectionListener() {
+                selectFormatFrame.addSelectionListener(new IFormatSelectionListener() {
                     @Override
                     public void formatSelected(ComplexDataTypeFormat format) {
                         setComplexDataTypeFormat(format);
                         selectFormatFrame.dispose();
+                        for(IFormatSelectionListener listener : getSelectionListeners()) {
+                            listener.formatSelected(format);
+                        }
                     }
                 });
 
@@ -177,6 +180,22 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         add(bar, "1 0");
     }
 
+    public void addSelectionListener(IFormatSelectionListener listener) {
+        getSelectionListeners().add(listener);
+    }
+
+    public void removeSelectionListener(IFormatSelectionListener listener) {
+        getSelectionListeners().remove(listener);
+    }
+
+    private List<IFormatSelectionListener> getSelectionListeners() {
+        if (null == selectionListeners) {
+            selectionListeners = new LinkedList<>();
+        }
+        return selectionListeners;
+
+    }
+
     private List<ComplexDataTypeFormat> getFormats() {
         return formats;
     }
@@ -191,7 +210,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
             editButton.setPreferredSize(new Dimension(0, 0));
         }
     }
-
+    
     public void setComplexDataTypeFormat(ComplexDataTypeFormat format) {
         this.format = format;
 

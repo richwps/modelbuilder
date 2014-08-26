@@ -5,6 +5,8 @@
  */
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
@@ -61,22 +63,25 @@ public class AppPropertiesView extends PropertiesView {
                     case GLOBAL_PORT:
                         Object newValue = event.getNewValue();
                         if (null != newValue
-                                && newValue instanceof String
                                 && (null != event.getSourceObject()
                                 && event.getSourceObject() instanceof ProcessPort)) {
 
                             ProcessPort port = (ProcessPort) event.getSourceObject();
-                            String value = (String) newValue;
-                            switch (event.getProperty()) {
-                                case AbstractPortCard.PORT_TITLE:
-                                    port.setOwsTitle(value);
-                                    break;
-                                case AbstractPortCard.PORT_ABSTRACT:
-                                    port.setOwsAbstract(value);
-                                    break;
-                                case AbstractPortCard.PORT_IDENTIFIER:
-                                    port.setOwsIdentifier(value);
-                                    break;
+                            if (newValue instanceof String) {
+                                String value = (String) newValue;
+                                switch (event.getProperty()) {
+                                    case AbstractPortCard.PORT_TITLE:
+                                        port.setOwsTitle(value);
+                                        break;
+                                    case AbstractPortCard.PORT_ABSTRACT:
+                                        port.setOwsAbstract(value);
+                                        break;
+                                    case AbstractPortCard.PORT_IDENTIFIER:
+                                        port.setOwsIdentifier(value);
+                                        break;
+                                }
+                            } else if (newValue instanceof ComplexDataTypeFormat) {
+                                port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
                             }
                         }
                         break;
