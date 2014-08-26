@@ -5,11 +5,13 @@
  */
 package de.hsos.richwps.mb.entity;
 
+import java.io.Serializable;
+
 /**
  *
  * @author dziegenh
  */
-public class DataTypeDescriptionComplex implements IDataTypeDescription {
+public class DataTypeDescriptionComplex implements IDataTypeDescription, Serializable {
 
     private ComplexDataTypeFormat format;
 

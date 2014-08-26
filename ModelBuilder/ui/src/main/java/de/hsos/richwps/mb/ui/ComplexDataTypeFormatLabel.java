@@ -216,7 +216,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
 
         String mimeType = "-", encoding = "-", schema = "-";
 
-        String toolTipText = "";
+        String toolTipText = "-";
         if (null != format) {
             mimeType = format.getMimeType();
             schema = format.getSchema();

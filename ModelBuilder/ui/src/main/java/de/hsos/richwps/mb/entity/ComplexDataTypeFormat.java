@@ -5,11 +5,14 @@
  */
 package de.hsos.richwps.mb.entity;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  *
  * @author dziegenh
  */
-public class ComplexDataTypeFormat {
+public class ComplexDataTypeFormat implements Serializable {
 
     private String mimeType;
     private String schema;
@@ -53,29 +56,68 @@ public class ComplexDataTypeFormat {
         this.encoding = encoding;
     }
 
+    public void setToolTipText(String text) {
+        this.toolTipText = text;
+    }
+
     public String getToolTipText() {
         if (null == toolTipText) {
             toolTipText
                     = "<html>MimeType: "
-                    + getValueForToolTip(mimeType)
+                    + ComplexDataTypeFormat.getValueForViews(mimeType)
                     + "<br/>Schema: "
-                    + getValueForToolTip(schema)
+                    + ComplexDataTypeFormat.getValueForViews(schema)
                     + "<br/>Encoding: "
-                    + getValueForToolTip(encoding)
+                    + ComplexDataTypeFormat.getValueForViews(encoding)
                     + "</html>";
         }
 
         return toolTipText;
     }
 
-    private String getValueForToolTip(String value) {
-        return (null == value) ? "-" : value;
+    public static String getValueForViews(String value) {
+        return (null == value || value.isEmpty()) ? "-" : value.trim();
     }
 
     @Override
-    public String toString() {
-        // TODO just tmp!!
-        return getToolTipText();
+    public boolean equals(Object obj) {
+        if (null == obj || !(obj instanceof ComplexDataTypeFormat)) {
+            return false;
+        }
+
+        ComplexDataTypeFormat other = (ComplexDataTypeFormat) obj;
+
+        boolean mimeEqual = valuesEqual(mimeType, other.mimeType);
+        boolean encoEqual = valuesEqual(encoding, other.encoding);
+        boolean scheEqual = valuesEqual(schema, other.schema);
+
+        return mimeEqual && encoEqual && scheEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        
+        String mime = ComplexDataTypeFormat.getValueForViews(this.mimeType);
+        String schem = ComplexDataTypeFormat.getValueForViews(this.schema);
+        String enc = ComplexDataTypeFormat.getValueForViews(this.encoding);
+
+        hash = 31 * hash + Objects.hashCode(mime);
+        hash = 17 * hash + Objects.hashCode(schem);
+        hash = 43 * hash + Objects.hashCode(enc);
+        
+        return hash;
+    }
+
+    private boolean valuesEqual(String val1, String val2) {
+        if (null == val1) {
+            val1 = "";
+        }
+        if (null == val2) {
+            val2 = "";
+        }
+
+        return val1.equals(val2);
     }
 
 }

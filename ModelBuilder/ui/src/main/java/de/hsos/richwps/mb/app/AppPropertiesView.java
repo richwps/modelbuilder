@@ -62,27 +62,31 @@ public class AppPropertiesView extends PropertiesView {
                         break;
                     case GLOBAL_PORT:
                         Object newValue = event.getNewValue();
-                        if (null != newValue
-                                && (null != event.getSourceObject()
+                        if ((null != event.getSourceObject()
                                 && event.getSourceObject() instanceof ProcessPort)) {
 
                             ProcessPort port = (ProcessPort) event.getSourceObject();
-                            if (newValue instanceof String) {
-                                String value = (String) newValue;
+//                            if (newValue instanceof String) {
+//                                String value = "";
+//                                if (null != newValue) {
+//                                    value = (String) newValue;
+//                                }
                                 switch (event.getProperty()) {
                                     case AbstractPortCard.PORT_TITLE:
-                                        port.setOwsTitle(value);
+                                        port.setOwsTitle((String) newValue);
                                         break;
                                     case AbstractPortCard.PORT_ABSTRACT:
-                                        port.setOwsAbstract(value);
+                                        port.setOwsAbstract((String) newValue);
                                         break;
                                     case AbstractPortCard.PORT_IDENTIFIER:
-                                        port.setOwsIdentifier(value);
+                                        port.setOwsIdentifier((String) newValue);
                                         break;
+                                    case AbstractPortCard.PORT_DATATYPE_FORMAT:
+                                        port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
                                 }
-                            } else if (newValue instanceof ComplexDataTypeFormat) {
-                                port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
-                            }
+//                            } else if (newValue instanceof ComplexDataTypeFormat) {
+//                                port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
+//                            }
                         }
                         break;
 

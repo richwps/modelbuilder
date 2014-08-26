@@ -30,7 +30,6 @@ public class ProcessPort implements IOwsObject, Serializable {
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
-//        this.datatype = processPortDatatype.name();
         this.datatype = processPortDatatype;
         this.global = global;
     }

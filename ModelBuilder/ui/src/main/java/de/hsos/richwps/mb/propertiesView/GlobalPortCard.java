@@ -91,7 +91,9 @@ public class GlobalPortCard extends AbstractPortCard {
         identifierField.setText(port.getOwsIdentifier());
         typeField.setText(port.getDatatype().toString());
 
-        boolean hasDescription = (null != port.getDatatype()) && (port.getDatatype().equals(ProcessPortDatatype.COMPLEX));
+        boolean hasDescription = (null != port.getDatatype()) 
+                && (port.getDatatype().equals(ProcessPortDatatype.COMPLEX))
+                && port.isGlobalInput();
         datatypeDescription.setEditable(hasDescription);
         ComplexDataTypeFormat format = null;
         if (hasDescription && null != port.getDataTypeDescription()) {
