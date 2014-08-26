@@ -190,5 +190,24 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
         return clone;
     }
 
+    /**
+     * OWS Processes are equal if server and identifier are equal.
+     * @param process
+     * @return
+     */
+    public boolean owsEquals(Object process) {
+        if(null == process)
+            return false;
+
+        if(!(process instanceof ProcessEntity))
+            return false;
+
+        ProcessEntity other = (ProcessEntity) process;
+
+        boolean serverEqual = getServer().equals(other.getServer());
+        boolean identifierEqual = getOwsIdentifier().equals(other.getOwsIdentifier());
+        
+        return serverEqual && identifierEqual;
+    }
 
 }

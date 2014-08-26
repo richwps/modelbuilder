@@ -393,6 +393,18 @@ public class Graph extends mxGraph {
         return processes;
     }
 
+   private List<mxCell> filterProcessCells(Object[] cells) {
+        List<mxCell> processCells = new LinkedList<>();
+        for (Object cell : cells) {
+            Object cellValue = getModel().getValue(cell);
+            if (cell instanceof mxCell && cellValue != null && cellValue instanceof ProcessEntity) {
+                processCells.add((mxCell) cell);
+            }
+        }
+
+        return processCells;
+    }
+
     /**
      * Returns currently selected process entities.
      *
@@ -413,6 +425,10 @@ public class Graph extends mxGraph {
         return filterProcessEntities(cells);
     }
 
+    public List<mxCell> getProcessCells() {
+        Object[] cells = getChildCells(getDefaultParent());
+        return filterProcessCells(cells);
+    }
     /**
      * Returns currently selected global ports.
      *

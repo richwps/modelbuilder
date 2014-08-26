@@ -62,8 +62,8 @@ public class AppGraphView extends GraphView {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                switch(e.getKeyCode()) {
-                    
+                switch (e.getKeyCode()) {
+
                     // move cells
                     case 37:
                         moveSelectedCells(-AppConstants.GRAPH_GRID_SIZE, 0);    // left
@@ -79,6 +79,26 @@ public class AppGraphView extends GraphView {
                         break;
 
                     default:
+                        break;
+                }
+            }
+        });
+
+        addModelElementsChangedListener(new ModelElementsChangedListener() {
+            @Override
+            public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
+                getApp().updateGraphDependentActions();
+
+                if (!type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
+                    return;
+                }
+
+                switch (changeType) {
+                    case ADDED:
+                        getApp().getSubTreeView().addNode(element);
+                        break;
+                    case REMOVED:
+                        getApp().getSubTreeView().removeNode(element);
                         break;
                 }
             }
@@ -106,25 +126,6 @@ public class AppGraphView extends GraphView {
             }
         });
 
-        addModelElementsChangedListener(new ModelElementsChangedListener() {
-            @Override
-            public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
-                getApp().updateGraphDependentActions();
-
-                if (!type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
-                    return;
-                }
-
-                switch (changeType) {
-                    case ADDED:
-                        getApp().getSubTreeView().addNode(element);
-                        break;
-                    case REMOVED:
-                        getApp().getSubTreeView().removeNode(element);
-                        break;
-                }
-            }
-        });
     }
 
     private App getApp() {

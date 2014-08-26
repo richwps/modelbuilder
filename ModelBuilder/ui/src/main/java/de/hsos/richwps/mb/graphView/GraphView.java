@@ -211,6 +211,7 @@ public class GraphView extends JPanel {
                         if (model.isProcess(cell)) {
                             Object value = ((mxCell) cell).getValue();
                             fireModelElementsChanged(value, ELEMENT_TYPE.PROCESS, change_type);
+
                         } else if (model.isGlobalPort(cell)) {
                             Object value = ((mxCell) cell).getValue();
                             fireModelElementsChanged(value, ELEMENT_TYPE.GLOBAL_PORT, change_type);
@@ -318,6 +319,10 @@ public class GraphView extends JPanel {
      */
     public List<ProcessEntity> getUsedProcesses() {
         return getGraph().getProcesses();
+    }
+
+    public List<mxCell> getProcessCells() {
+        return getGraph().getProcessCells();
     }
 
     /**

@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.util.HashMap;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,9 +29,10 @@ public class SubTreeViewController extends AbstractTreeViewController {
             root.removeAllChildren();
         }
 
-        for (ProcessEntity process : app.getGraphView().getUsedProcesses()) {
-//            root.add(new DefaultMutableTreeNode(process));
-            addNode(process);
+        for (mxCell cell : app.getGraphView().getProcessCells()) {
+            if (cell.getValue() instanceof ProcessEntity) {
+                addNode(cell.getValue());
+            }
         }
 
         updateUI();
@@ -111,7 +113,8 @@ public class SubTreeViewController extends AbstractTreeViewController {
 
         for (int i = 0; i < root.getChildCount(); i++) {
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
-            if (child.getUserObject().equals(userObject)) {
+//            if (child.getUserObject().equals(userObject)) {
+            if(userObjectsEqual(child.getUserObject(), userObject)) {
                 node = child;
                 // cancel loop
                 i = root.getChildCount();
@@ -119,6 +122,19 @@ public class SubTreeViewController extends AbstractTreeViewController {
         }
 
         return node;
+    }
+
+    private boolean userObjectsEqual(Object o1, Object o2) {
+        if(null == o1 || null == o2) {
+            return o1 == o2;
+        }
+
+        if(o1 instanceof ProcessEntity && o2 instanceof ProcessEntity) {
+            ProcessEntity pe1 = (ProcessEntity) o1;
+            return pe1.owsEquals(o2);
+        }
+
+        return o1.equals(o2);
     }
 
 }
