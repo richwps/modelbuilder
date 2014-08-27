@@ -133,7 +133,7 @@ class SingleProcessCard extends AbstractPortCard {
         processAbstractLabel = createBodyLabel(process.getOwsAbstract());
 
         int y = 0;
-        processPanel.add(createHeadLabel("Title"), "0 " + y);
+        processPanel.add(createHeadLabel(AppConstants.PROPERTIES_PORT_TITLE_LABEL), "0 " + y);
         processPanel.add(processTitleLabel, "1 " + y);
         y++;
         processPanel.add(createColumn1Border(), "0 " + y);
@@ -145,7 +145,7 @@ class SingleProcessCard extends AbstractPortCard {
         processPanel.add(createColumn1Border(), "0 " + y);
         processPanel.add(createColumn2Border(), "1 " + y);
         y++;
-        processPanel.add(createHeadLabel("Abstract"), "0 " + y);
+        processPanel.add(createHeadLabel(AppConstants.PROPERTIES_PROCESS_ABSTRACT_LABEL), "0 " + y);
         processPanel.add(processAbstractLabel, "1 " + y);
 
         return processPanel;

@@ -189,11 +189,42 @@ public class PropertiesView extends TitledComponent {
         return multiProcessCard;
     }
 
+    protected AbstractPropertyComponent getPropertyComponent(CARD card, String property) {
+        List<AbstractPropertyComponent> properties = null;
+
+        switch (card) {
+            case GLOBAL_PORT:
+                properties = getGlobalPortCard().getPropertyFields();
+                break;
+            case MODEL:
+                properties = getModelCard().getPropertyFields();
+                break;
+        }
+
+        for (AbstractPropertyComponent component : properties) {
+            if (component.getPropertyName().equals(property)) {
+                return component;
+            }
+        }
+
+        return null;
+    }
+
     private GlobalPortCard getGlobalPortCard() {
         if (null == globalPortCard) {
             globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
+
+            PropertyChangeListener changeListener = new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent event) {
+                    firePropertyChangeEvent(CARD.GLOBAL_PORT, event.getProperty(), event.getSourceObject(), event.getNewValue());
+                }
+            };
+
             // add listeners to fire property changes
             for (final AbstractPropertyComponent property : globalPortCard.getPropertyFields()) {
+                property.addChangeListener(changeListener);
+
                 if (property instanceof PropertyTextField) {
                     property.getComponent().addFocusListener(new FocusAdapter() {
                         @Override
@@ -202,7 +233,7 @@ public class PropertiesView extends TitledComponent {
                         }
                     });
 
-                } else if(property instanceof PropertyComplexDataTypeFormat) {
+                } else if (property instanceof PropertyComplexDataTypeFormat) {
                     ComplexDataTypeFormatLabel component = (ComplexDataTypeFormatLabel) property.getComponent();
                     component.addSelectionListener(new IFormatSelectionListener() {
                         @Override

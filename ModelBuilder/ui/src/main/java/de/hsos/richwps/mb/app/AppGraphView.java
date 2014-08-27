@@ -118,17 +118,20 @@ public class AppGraphView extends GraphView {
     void modelLoaded() {
         addUndoEventListener(new mxEventSource.mxIEventListener() {
             public void invoke(Object o, mxEventObject eo) {
-                Object editProperty = eo.getProperty("edit");
+                Object editProperty = eo.getProperty(PROPERTY_KEY_EDIT);
                 if (eo.getProperty("edit") instanceof mxUndoableEdit) {
                     mxUndoableEdit edit = (mxUndoableEdit) editProperty;
                     getApp().getUndoManager().addEdit(new AppUndoableEdit(this, edit, "Graph edit"));
+                    getApp().setChangesSaved(false);
                 }
             }
         });
 
+        app.setChangesSaved(true);
     }
 
     private App getApp() {
         return this.app;
     }
+
 }

@@ -46,6 +46,10 @@ public class GraphView extends JPanel {
     private LinkedList<ModelElementsChangedListener> modelElementsChangeListener;
     private IProcessProvider processProvider;
 
+    // there exist no mxGraph-Constants for the property keys :(
+    public static final String PROPERTY_KEY_EDIT = "edit";
+    public static final String PROPERTY_KEY_CELLS = "cells";
+
     public GraphView(IProcessProvider processProvider) {
         super();
         this.processProvider = processProvider;
@@ -145,15 +149,6 @@ public class GraphView extends JPanel {
     }
 
     /**
-     * Adds an listener for the events mxEvent.CELLS_ADDED, CELLS_REMOVE.
-     *
-     * @param listener
-     */
-//    public void addCellEventListener(mxEventSource.mxIEventListener listener) {
-//        getGraph().addListener(mxEvent.CELLS_ADDED, listener);
-//        getGraph().addListener(mxEvent.CELLS_REMOVED, listener);
-//    }
-    /**
      * Adds an listener for mxEvent.UNDO events to the model.
      *
      * @param listener
@@ -201,8 +196,7 @@ public class GraphView extends JPanel {
                         return;
                     }
 
-                    // there exists no mxGraph-Constants for the properties :(
-                    Object[] cells = (Object[]) eo.getProperty("cells");
+                    Object[] cells = (Object[]) eo.getProperty(PROPERTY_KEY_CELLS);
                     if (null == cells) {
                         return;
                     }
@@ -394,7 +388,7 @@ public class GraphView extends JPanel {
      *
      * @return
      */
-    public String getCurrentGraphName() {
+    public String getGraphName() {
         return getGraph().getGraphModel().getName();
     }
 

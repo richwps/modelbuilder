@@ -35,7 +35,7 @@ public class MbUndoManager extends UndoManager {
 
     List<UndoManagerChangeListener> getChangeListeners() {
         if(null == changeListeners) {
-            changeListeners = new LinkedList<UndoManagerChangeListener>();
+            changeListeners = new LinkedList<>();
         }
 
         return changeListeners;

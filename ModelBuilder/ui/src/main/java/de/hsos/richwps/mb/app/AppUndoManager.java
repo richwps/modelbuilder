@@ -8,6 +8,7 @@ package de.hsos.richwps.mb.app;
 import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
+import javax.swing.undo.UndoableEdit;
 
 /**
  *
@@ -23,19 +24,46 @@ public class AppUndoManager extends MbUndoManager {
         addChangeListener(new MbUndoManager.UndoManagerChangeListener() {
             @Override
             public void changed() {
-                AppAbstractAction undoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO);
-                undoAction.setName("Undo " + getPresentationName());
-                undoAction.setEnabled(canUndo());
 
+                String undoName = AppConstants.UNDOMANAGER_CANT_UNDO;
+                if(canUndo()) {
+                    undoName = "Undo " + getUndoPresentationName();
+                }
+                AppAbstractAction undoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO);
+                undoAction.setName(undoName);
+                undoAction.setEnabled(canUndo());
+                
+                String redoName = "Can't redo";
+                if(canRedo()) {
+                    redoName = "Redo " + getRedoPresentationName();
+                }
                 AppAbstractAction redoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REDO);
-                redoAction.setName("Redo " + getPresentationName());
+                redoAction.setName(redoName);
                 redoAction.setEnabled(canRedo());
             }
         });
     }
 
+    @Override
+    public synchronized boolean addEdit(UndoableEdit edit) {
+        return super.addEdit((AppUndoableEdit) edit);
+    }
+
+
     private AppActionProvider getActionProvider() {
         return app.getActionProvider();
     }
+
+    @Override
+    public String getUndoPresentationName() {
+        return ((AppUndoableEdit) editToBeUndone()).getPresentationName();
+    }
+
+    @Override
+    public String getRedoPresentationName() {
+        return ((AppUndoableEdit) editToBeRedone()).getPresentationName();
+    }
+
+
 
 }

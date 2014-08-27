@@ -92,7 +92,7 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doNewModel() {
         boolean doNew = true;
-        if (app.getUndoManager().canUndoOrRedo()) {
+        if (!app.areChangesSaved()) {
             int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
             doNew = choice == JOptionPane.YES_OPTION;
         }
@@ -103,6 +103,7 @@ public class AppActionHandler implements IAppActionHandler {
             app.getUndoManager().discardAllEdits();
             app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
             app.updateModelPropertiesView();
+            app.setChangesSaved(true);
         }
     }
 
@@ -122,7 +123,7 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doLoadModel() {
         boolean doLoad = true;
-        if (app.getUndoManager().canUndoOrRedo()) {
+        if (!app.areChangesSaved()) {
             int choice = JOptionPane.showConfirmDialog(
                     app.getFrame(),
                     AppConstants.CONFIRM_LOAD_MODEL,
@@ -143,7 +144,7 @@ public class AppActionHandler implements IAppActionHandler {
                 if (state == JFileChooser.APPROVE_OPTION) {
                     String filename = fc.getSelectedFile().getPath();
                     getGraphView().loadGraphFromXml(filename);
-                    String graphName = getGraphView().getCurrentGraphName();
+                    String graphName = getGraphView().getGraphName();
                     if (null == graphName) {
                         graphName = "";
                     }
@@ -182,7 +183,7 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doExit() {
         boolean doExit = true;
-        if (app.getUndoManager().canUndoOrRedo()) {
+        if (!app.areChangesSaved()) {
             int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_EXIT, AppConstants.CONFIRM_EXIT_TITLE, JOptionPane.YES_NO_OPTION);
             doExit = choice == JOptionPane.YES_OPTION;
         }
@@ -211,6 +212,7 @@ public class AppActionHandler implements IAppActionHandler {
 
         try {
             getGraphView().saveGraphToXml(filename);
+            app.setChangesSaved(true);
 
         } catch (Exception ex) {
             handleSaveModelFailedException(ex);
@@ -245,8 +247,8 @@ public class AppActionHandler implements IAppActionHandler {
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                 app.setCurrentModelFilename(filename);
                 app.getFrame().setGraphViewTitle(filename);
+                app.setChangesSaved(true);
 //                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
-
             } catch (Exception ex) {
                 handleSaveModelFailedException(ex);
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);

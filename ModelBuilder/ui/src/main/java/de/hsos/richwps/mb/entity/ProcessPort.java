@@ -14,9 +14,9 @@ import java.io.Serializable;
  */
 public class ProcessPort implements IOwsObject, Serializable {
 
-    private String owsIdentifier;
-    private String owsTitle;
-    private String owsAbstract;
+    private String owsIdentifier = "";
+    private String owsTitle = "";
+    private String owsAbstract = "";
     private ProcessPortDatatype datatype;
     private IDataTypeDescription dataTypeDescription;
 

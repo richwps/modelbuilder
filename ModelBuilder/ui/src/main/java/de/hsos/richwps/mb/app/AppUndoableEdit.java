@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.hsos.richwps.mb.app;
 
 import com.mxgraph.util.mxUndoableEdit;
+import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
@@ -48,10 +43,11 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
         if(action instanceof mxUndoableEdit) {
             mxUndoableEdit edit = (mxUndoableEdit) action;
             edit.undo();
-        }
 
-        // TODO ...
-//        if(action instanceof ...)
+        } else if(action instanceof UndoablePropertyChangeAction) {
+            UndoablePropertyChangeAction propertyAction = (UndoablePropertyChangeAction) action;
+            propertyAction.undo();
+        }
 
     }
 
@@ -62,10 +58,12 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
         if(action instanceof mxUndoableEdit) {
             mxUndoableEdit edit = (mxUndoableEdit) action;
             edit.redo();
+
+        } else if(action instanceof UndoablePropertyChangeAction) {
+            UndoablePropertyChangeAction propertyAction = (UndoablePropertyChangeAction) action;
+            propertyAction.redo();
         }
 
-        // TODO ...
-//        if(action instanceof ...)
     }
 
     @Override

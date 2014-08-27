@@ -13,6 +13,8 @@ import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
+import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -46,59 +48,88 @@ public class AppPropertiesView extends PropertiesView {
 
         addPropertyChangeListener(new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent event) {
-                switch (event.getSourceCard()) {
-                    case NO_SELECTION:
-                        break;
-                    case MODEL:
-                        // TODO move String to config or new properties model
-                        if (event.getProperty().equals("name")) {
-                            getGraphView().setGraphName((String) event.getNewValue());
-                        }
-                        break;
-                    case PROCESS_SINGLE_SELECTION:
-                        break;
-                    case PROCESS_MULTI_SELECTION:
-                        break;
-                    case GLOBAL_PORT:
-                        Object newValue = event.getNewValue();
-                        if ((null != event.getSourceObject()
-                                && event.getSourceObject() instanceof ProcessPort)) {
+            public void propertyChange(final PropertyChangeEvent event) {
+                final Object oldValue = setPropertyValue(event);
 
-                            ProcessPort port = (ProcessPort) event.getSourceObject();
-//                            if (newValue instanceof String) {
-//                                String value = "";
-//                                if (null != newValue) {
-//                                    value = (String) newValue;
-//                                }
-                                switch (event.getProperty()) {
-                                    case AbstractPortCard.PORT_TITLE:
-                                        port.setOwsTitle((String) newValue);
-                                        break;
-                                    case AbstractPortCard.PORT_ABSTRACT:
-                                        port.setOwsAbstract((String) newValue);
-                                        break;
-                                    case AbstractPortCard.PORT_IDENTIFIER:
-                                        port.setOwsIdentifier((String) newValue);
-                                        break;
-                                    case AbstractPortCard.PORT_DATATYPE_FORMAT:
-                                        port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
-                                }
-//                            } else if (newValue instanceof ComplexDataTypeFormat) {
-//                                port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
-//                            }
+                boolean bothNull = (null == event.getNewValue()) && (null == oldValue);
+                boolean valuesEqual = (null != event.getNewValue() && event.getNewValue().equals(oldValue))
+                        || (null != oldValue && oldValue.equals(event.getNewValue()));
+                if (!bothNull && !valuesEqual) {
+                    AbstractPropertyComponent component = getPropertyComponent(event.getSourceCard(), event.getProperty());
+                    UndoablePropertyChangeAction undoAction = new UndoablePropertyChangeAction(component, event, oldValue);
+                    undoAction.addChangeListener(new PropertyChangeListener() {
+                        @Override
+                        public void propertyChange(PropertyChangeEvent event) {
+                            setPropertyValue(event);
                         }
-                        break;
+                    });
 
-                    default:
-                    // nothing
+                    String undoTitle = String.format(AppConstants.PROPERTIES_PROPERTY_EDIT, event.getProperty());
+                    getApp().getUndoManager().addEdit(new AppUndoableEdit(this, undoAction, undoTitle));
                 }
             }
         });
+    }
+
+    private Object setPropertyValue(PropertyChangeEvent event) {
+        Object oldValue = null;
+
+        switch (event.getSourceCard()) {
+            case NO_SELECTION:
+                break;
+            case MODEL:
+                // TODO move String to config or new properties model
+                if (event.getProperty().equals("name")) {
+                    oldValue = getGraphView().getGraphName();
+                    getGraphView().setGraphName((String) event.getNewValue());
+                }
+                break;
+            case PROCESS_SINGLE_SELECTION:
+                break;
+            case PROCESS_MULTI_SELECTION:
+                break;
+            case GLOBAL_PORT:
+                Object newValue = event.getNewValue();
+                if ((null != event.getSourceObject()
+                        && event.getSourceObject() instanceof ProcessPort)) {
+
+                    ProcessPort port = (ProcessPort) event.getSourceObject();
+
+                    switch (event.getProperty()) {
+                        case AbstractPortCard.PORT_TITLE:
+                            oldValue = port.getOwsTitle();
+                            port.setOwsTitle((String) newValue);
+                            break;
+                        case AbstractPortCard.PORT_ABSTRACT:
+                            oldValue = port.getOwsAbstract();
+                            port.setOwsAbstract((String) newValue);
+                            break;
+                        case AbstractPortCard.PORT_IDENTIFIER:
+                            oldValue = port.getOwsIdentifier();
+                            port.setOwsIdentifier((String) newValue);
+                            break;
+                        case AbstractPortCard.PORT_DATATYPE_FORMAT:
+                            oldValue = port.getDataTypeDescription();
+                            if (null != oldValue) {
+                                oldValue = ((DataTypeDescriptionComplex) oldValue).getFormat();
+                            }
+                            port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
+                    }
+                }
+                break;
+
+            default:
+            // nothing
+        }
+
+        return oldValue;
     }
 
     private GraphView getGraphView() {
         return app.getGraphView();
     }
 
+    private App getApp() {
+        return this.app;
+    }
 }

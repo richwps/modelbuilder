@@ -63,6 +63,8 @@ public class App {
     private AppDeployManager deployManager;
     private ExecViewDialog execViewDialog;
 
+    private boolean changesSaved = false;
+
     /**
      * ModelBuilder entry point. Creates and connects all components.
      *
@@ -71,6 +73,16 @@ public class App {
     public App(String[] args) {
         boolean debugMode = Arrays.asList(args).contains("debug");
         AppSetup.setup(this, debugMode);
+    }
+
+
+    public boolean areChangesSaved() {
+        return changesSaved;
+    }
+
+    public void setChangesSaved(boolean changesSaved) {
+        this.changesSaved = changesSaved;
+        getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(!changesSaved);
     }
 
     /**

@@ -155,13 +155,20 @@ public class AppConstants {
     public final static String PROPERTIES_OUTPUTS_TITLE = "Outputs";
     public final static String PROPERTIES_PANEL_TITLE = "Properties";
     public final static String PROPERTIES_PROCESS_IDENTIFIER_LABEL = "Identifier";
-    public final static String PROPERTIES_PROCESS_ABSTRACT_LABEL = "Identifier";
+    public final static String PROPERTIES_PROCESS_ABSTRACT_LABEL = "Abstract";
     public final static String PROPERTIES_PROCESS_TITLE_LABEL = "Identifier";
     public final static String PROPERTIES_PORT_IDENTIFIER_LABEL = "Identifier";
     public final static String PROPERTIES_PORT_ABSTRACT_LABEL = "Identifier";
-    public final static String PROPERTIES_PORT_TITLE_LABEL = "Identifier";
+    public final static String PROPERTIES_PORT_TITLE_LABEL = "Title";
     public final static String PROPERTIES_PORT_DATATYPE_LABEL = "Datatype";
     public final static String PROPERTIES_BTN_EDIT_FORMAT_TTT = "Select format";
+    public final static String PROPERTIES_PROPERTY_EDIT = "edit property '%s'";
+    public final static String PROPERTIES_MODELDATA_TITLE = "Model";
+    public final static String PROPERTIES_MODELDATA_NAME = "Name";
+    public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
+    // Undo-/Redo-Manager
+    public final static String UNDOMANAGER_CANT_UNDO = "Can't undo";
+    public final static String UNDOMANAGER_CANT_REDO = "Can't redo";
 
     public final static String TREE_VIEW_TITLE = null;//"Modelling Elements";
     public final static String OVERVIEW_TITLE = null;
@@ -239,10 +246,6 @@ public class AppConstants {
     public static Color ERROR_MESSAGE_COLOR = Color.RED;
 
     public final static String ERROR_MSG_IS = "Error message is: ";
-
-    public final static String PROPERTIES_MODELDATA_TITLE = "Model";
-    public final static String PROPERTIES_MODELDATA_NAME = "Name";
-    public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
 
     public final static String SUB_TREEVIEW_TITLE = "Used elements";
 
