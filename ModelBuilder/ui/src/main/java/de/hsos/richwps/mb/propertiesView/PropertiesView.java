@@ -17,11 +17,13 @@ import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyComplexDataT
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Window;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -46,7 +48,20 @@ public class PropertiesView extends TitledComponent {
 
     public static enum CARD {
 
-        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT
+        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT;
+
+        private static final HashMap<CARD, String> namesForViews = new HashMap<>();
+
+        @Override
+        public String toString() {
+            if(namesForViews.containsKey(this)) {
+                return namesForViews.get(this);
+            }
+
+            String name = UiHelper.createStringForViews(name());
+            namesForViews.put(this, name);
+            return name;
+        }
     }
 
     private LinkedList<PropertyChangeListener> propertyChangeListeners;
@@ -214,17 +229,8 @@ public class PropertiesView extends TitledComponent {
         if (null == globalPortCard) {
             globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
 
-            PropertyChangeListener changeListener = new PropertyChangeListener() {
-                @Override
-                public void propertyChange(PropertyChangeEvent event) {
-                    firePropertyChangeEvent(CARD.GLOBAL_PORT, event.getProperty(), event.getSourceObject(), event.getNewValue());
-                }
-            };
-
             // add listeners to fire property changes
             for (final AbstractPropertyComponent property : globalPortCard.getPropertyFields()) {
-                property.addChangeListener(changeListener);
-
                 if (property instanceof PropertyTextField) {
                     property.getComponent().addFocusListener(new FocusAdapter() {
                         @Override

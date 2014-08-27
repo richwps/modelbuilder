@@ -38,7 +38,9 @@ public class UiHelper {
     }
 
     /**
-     * Calculates the center point of the first available graphics device (screen).
+     * Calculates the center point of the first available graphics device
+     * (screen).
+     *
      * @return
      */
     public static Point getFirstScreenCenter() {
@@ -48,8 +50,30 @@ public class UiHelper {
             return new Point(0, 0);
         }
         DisplayMode displayMode = devices[0].getDisplayMode();
-        return new Point(displayMode.getWidth()/2, displayMode.getHeight()/2);
-        
+        return new Point(displayMode.getWidth() / 2, displayMode.getHeight() / 2);
+
+    }
+
+    /**
+     * Replaces underscores with spaces and applies upperFirst to all words.
+     * @param constant
+     * @return
+     */
+    public static String createStringForViews(String constant) {
+        String[] splitted = constant.split("_");
+        String name = "";
+        for (String part : splitted) {
+            name += UiHelper.upperFirst(part);
+            name += " ";
+        }
+        name = name.trim();
+        return name;
+    }
+
+    public static String upperFirst(String string) {
+        return new StringBuilder(string.length())
+                .append(string.substring(0, 1).toUpperCase()) // upper first
+                .append(string.substring(1).toLowerCase()).toString();  // lower rest
     }
 
 }

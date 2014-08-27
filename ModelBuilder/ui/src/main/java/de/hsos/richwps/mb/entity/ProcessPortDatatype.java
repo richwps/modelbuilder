@@ -5,6 +5,8 @@
  */
 package de.hsos.richwps.mb.entity;
 
+import de.hsos.richwps.mb.ui.UiHelper;
+
 public enum ProcessPortDatatype {
 
     LITERAL,
@@ -13,9 +15,7 @@ public enum ProcessPortDatatype {
 
     @Override
     public String toString() {
-        return new StringBuilder(50)
-                .append(name().substring(0, 1)) // upper first
-                .append(name().substring(1).toLowerCase()).toString();  // lower others
+        return UiHelper.upperFirst(name());
     }
 
     /**

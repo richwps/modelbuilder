@@ -162,7 +162,7 @@ public class AppConstants {
     public final static String PROPERTIES_PORT_TITLE_LABEL = "Title";
     public final static String PROPERTIES_PORT_DATATYPE_LABEL = "Datatype";
     public final static String PROPERTIES_BTN_EDIT_FORMAT_TTT = "Select format";
-    public final static String PROPERTIES_PROPERTY_EDIT = "edit property '%s'";
+    public final static String PROPERTIES_PROPERTY_EDIT = "edit property '%s' of '%s'";
     public final static String PROPERTIES_MODELDATA_TITLE = "Model";
     public final static String PROPERTIES_MODELDATA_NAME = "Name";
     public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";

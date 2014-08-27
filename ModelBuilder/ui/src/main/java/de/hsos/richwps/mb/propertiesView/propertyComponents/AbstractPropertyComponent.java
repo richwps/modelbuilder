@@ -6,11 +6,7 @@
 
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
-import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
-import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import java.awt.Component;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -19,8 +15,6 @@ import java.util.List;
 public abstract class AbstractPropertyComponent {
 
     private String name;
-
-    private List<PropertyChangeListener> changeListeners;
 
     public AbstractPropertyComponent(String name) {
         this.name = name;
@@ -38,21 +32,4 @@ public abstract class AbstractPropertyComponent {
 
     public abstract void setEditable(boolean editable);
 
-    private List<PropertyChangeListener> getChangeListeners() {
-        if(null == changeListeners) {
-            changeListeners = new LinkedList<>();
-        }
-
-        return changeListeners;
-    }
-
-    public void addChangeListener(PropertyChangeListener listener) {
-        getChangeListeners().add(listener);
-    }
-
-    public void firePropertyChange() {
-        for(PropertyChangeListener listener : getChangeListeners()) {
-            listener.propertyChange(new PropertyChangeEvent(null, name, this, getValue()));
-        }
-    }
 }

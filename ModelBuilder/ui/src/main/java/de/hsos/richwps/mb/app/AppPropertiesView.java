@@ -15,6 +15,7 @@ import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.ui.UiHelper;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -30,6 +31,7 @@ public class AppPropertiesView extends PropertiesView {
         super(app.getFrame(), AppConstants.PROPERTIES_PANEL_TITLE);
         this.app = app;
 
+        // update properties view depending on the graph selection
         app.getGraphView().addSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
@@ -46,6 +48,7 @@ public class AppPropertiesView extends PropertiesView {
             }
         });
 
+        // listen to property changes and add them to the UndoManager
         addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(final PropertyChangeEvent event) {
@@ -55,28 +58,42 @@ public class AppPropertiesView extends PropertiesView {
                 boolean valuesEqual = (null != event.getNewValue() && event.getNewValue().equals(oldValue))
                         || (null != oldValue && oldValue.equals(event.getNewValue()));
                 if (!bothNull && !valuesEqual) {
+
+                    // get the component which represents the property in order to update it on undo/redo
                     AbstractPropertyComponent component = getPropertyComponent(event.getSourceCard(), event.getProperty());
                     UndoablePropertyChangeAction undoAction = new UndoablePropertyChangeAction(component, event, oldValue);
+
+                    // set property value when action is undone or redone
                     undoAction.addChangeListener(new PropertyChangeListener() {
                         @Override
                         public void propertyChange(PropertyChangeEvent event) {
                             setPropertyValue(event);
+                            showCard(event.getSourceCard());
                         }
                     });
 
-                    String undoTitle = String.format(AppConstants.PROPERTIES_PROPERTY_EDIT, event.getProperty());
+                    // Add undo action to undomanager
+                    String propertyName = UiHelper.createStringForViews(event.getProperty());
+                    String cardName = event.getSourceCard().toString();
+                    String undoTitle = String.format(AppConstants.PROPERTIES_PROPERTY_EDIT, propertyName, cardName);
                     getApp().getUndoManager().addEdit(new AppUndoableEdit(this, undoAction, undoTitle));
                 }
             }
         });
     }
 
+    /**
+     * Sets the (new) property value to the property source object.
+     * @param event
+     * @return
+     */
     private Object setPropertyValue(PropertyChangeEvent event) {
         Object oldValue = null;
 
         switch (event.getSourceCard()) {
             case NO_SELECTION:
                 break;
+                
             case MODEL:
                 // TODO move String to config or new properties model
                 if (event.getProperty().equals("name")) {
@@ -84,10 +101,12 @@ public class AppPropertiesView extends PropertiesView {
                     getGraphView().setGraphName((String) event.getNewValue());
                 }
                 break;
+
             case PROCESS_SINGLE_SELECTION:
                 break;
             case PROCESS_MULTI_SELECTION:
                 break;
+
             case GLOBAL_PORT:
                 Object newValue = event.getNewValue();
                 if ((null != event.getSourceObject()
