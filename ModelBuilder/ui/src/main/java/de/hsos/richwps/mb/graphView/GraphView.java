@@ -165,6 +165,22 @@ public class GraphView extends JPanel {
         return start;
     }
 
+    public void selectCellByValue(Object value) {
+        if(value instanceof GraphModel) {
+            getGraph().clearSelection();
+        }
+
+        else {
+            Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
+            for(Object cell : cells) {
+                Object cellValue = getGraph().getGraphModel().getValue(cell);
+                if(value.equals(cellValue)) {
+                    getGraph().setSelectionCell(cell);
+                }
+            }
+        }
+    }
+
     // constants for model element change listener
     public static enum ELEMENT_TYPE {
 

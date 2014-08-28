@@ -26,8 +26,8 @@ import javax.swing.JToolTip;
  */
 public class GraphComponent extends mxGraphComponent {
 
-    private JToolTip toolTip;
-    private String errorMsgColor;
+    private final JToolTip toolTip;
+    private final String errorMsgColor;
 
     public GraphComponent(mxGraph mxgrph) {
         super((Graph) mxgrph);
@@ -100,7 +100,7 @@ public class GraphComponent extends mxGraphComponent {
 
         if (!toolttipEmpty) {
             // remove closing html tag.
-            sb.append(targetTooltip.substring(0, targetTooltip.lastIndexOf("</html>")));
+            sb.append(targetTooltip.replace("</html>", ""));
 
             // only append an horizontal line if an error msg follows
             if (!noError) {

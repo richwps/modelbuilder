@@ -68,7 +68,8 @@ public class AppPropertiesView extends PropertiesView {
                         @Override
                         public void propertyChange(PropertyChangeEvent event) {
                             setPropertyValue(event);
-                            showCard(event.getSourceCard());
+                            // select source object in graph. this also triggers an update of the properties view.
+                            getGraphView().selectCellByValue(event.getSourceObject());
                         }
                     });
 
@@ -84,6 +85,7 @@ public class AppPropertiesView extends PropertiesView {
 
     /**
      * Sets the (new) property value to the property source object.
+     *
      * @param event
      * @return
      */
@@ -93,7 +95,7 @@ public class AppPropertiesView extends PropertiesView {
         switch (event.getSourceCard()) {
             case NO_SELECTION:
                 break;
-                
+
             case MODEL:
                 // TODO move String to config or new properties model
                 if (event.getProperty().equals("name")) {

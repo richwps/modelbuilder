@@ -163,12 +163,13 @@ public class Graph extends mxGraph {
         return super.getEdgeValidationError(edge, source, target);
     }
 
-    GraphWorkflowLayout getGraphWorkflowLayout() {
+    /**
+     * Returns the graph workflow layouter.
+     * @return
+     */
+    public GraphWorkflowLayout getGraphWorkflowLayout() {
         if (null == graphWorkflowLayout) {
-            // TODO move magic numbers to config/constants
             graphWorkflowLayout = new GraphWorkflowLayout(this);
-            graphWorkflowLayout.setCellGap(10);
-            graphWorkflowLayout.setGraphComponentGap(50);
         }
 
         return graphWorkflowLayout;
@@ -451,6 +452,18 @@ public class Graph extends mxGraph {
         return ports;
     }
 
+    private List<Object> filterGlobalPortCells(Object[] cells) {
+        List<Object> portCells = new LinkedList<>();
+        GraphModel model = getGraphModel();
+        for (Object cell : cells) {
+            if (model.isGlobalPort(cell)) {
+                portCells.add(cell);
+            }
+        }
+
+        return portCells;
+    }
+
     /**
      * Returns all global input and output ports which are used by the graph.
      *
@@ -459,6 +472,12 @@ public class Graph extends mxGraph {
     public List<ProcessPort> getGlobalPorts() {
         Object[] cells = getChildCells(getDefaultParent());
         return filterGlobalPorts(cells);
+    }
+
+
+    public List<Object> getGlobalPortCells() {
+        Object[] cells = getChildCells(getDefaultParent());
+        return filterGlobalPortCells(cells);
     }
 
     /**
@@ -476,6 +495,31 @@ public class Graph extends mxGraph {
         }
 
         return inputs;
+    }
+
+
+    public List<Object> getGlobalInputPortCells() {
+        List<Object> inputs = new LinkedList<>();
+        Object[] cells = getChildCells(getDefaultParent());
+        for (Object cell : cells) {
+            if (getGraphModel().isGlobalInputPort(cell)) {
+                inputs.add(cell);
+            }
+        }
+
+        return inputs;
+    }
+
+    public List<Object> getGlobalOutputPortCells() {
+        List<Object> outputs = new LinkedList<>();
+        Object[] cells = getChildCells(getDefaultParent());
+        for (Object cell : cells) {
+            if (getGraphModel().isGlobalOutputPort(cell)) {
+                outputs.add(cell);
+            }
+        }
+
+        return outputs;
     }
 
     /**
@@ -534,5 +578,19 @@ public class Graph extends mxGraph {
 
         return outputs;
     }
+
+    public static double getAbsoluteCellX(mxCell cell) {
+        double x = 0;
+        mxGeometry geom = cell.getGeometry();
+        if (geom.isRelative()) {
+            x = geom.getOffset().getX();
+            x += cell.getParent().getGeometry().getX();
+        } else {
+            x = geom.getX();
+        }
+
+        return x;
+    }
+
 
 }

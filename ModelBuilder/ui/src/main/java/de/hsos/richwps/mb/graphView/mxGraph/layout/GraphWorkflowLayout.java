@@ -14,6 +14,7 @@ import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.view.mxGraph;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import java.util.Arrays;
 
@@ -50,7 +51,7 @@ public class GraphWorkflowLayout extends mxGraphLayout {
     @Override
     public void execute(Object root) {
 
-        // A graph component contains connected cells. Graph components are not connected to each other!
+        // A graph component contains connected cells. Graph components are not connected to each other.
         Object[][] graphComponents = mxGraphStructure.getGraphComponents(ag);
         Object[] sinkVertices = {};
         Object[] sourceVertices = {};
@@ -99,11 +100,18 @@ public class GraphWorkflowLayout extends mxGraphLayout {
             int gcWidth = layoutComponent.getWidth(model);
             gcWidth += cellGap * layoutComponent.getNumCellsAtLevel(layoutComponent.getWidestLevel(model));
 
+            // the layout levels are computed, now compute the cells's x-position on each level.
+            layoutComponent.updateXPositions(model);
+            CellInfoXPosComparator cellInfoXPosComparator = new CellInfoXPosComparator(layoutComponent);
+
             // layout each level of current graphComponent
             int levelY = cellGap;
             for (int level = 0; level <= layoutComponent.getLongestPathLength(); level++) {
 
                 Object[] levelCells = layoutComponent.getCellsAtLevel(level);
+
+                Arrays.sort(levelCells, cellInfoXPosComparator);
+
                 int numLevelCells = levelCells.length;
                 int levelWidth = layoutComponent.getLevelWidth(model, level);
                 levelWidth += cellGap * numLevelCells;
@@ -119,6 +127,9 @@ public class GraphWorkflowLayout extends mxGraphLayout {
                     levelX += geom.getWidth() + cellGap;
 
                     model.setGeometry(cell, geom);
+
+                    // TODO dev!!
+//                    model.setValue(cell, layoutComponent.getCellInfo(cell).toString());
                 }
 
                 if (levelCells.length > 0) {
@@ -127,11 +138,98 @@ public class GraphWorkflowLayout extends mxGraphLayout {
             }
 
             renderX += gcWidth + graphComponentGap;
+
+            layoutGlobaPorts(model, layoutComponent);
         }
 
         model.endUpdate();
+
     }
 
+    void layoutGlobaPorts(GraphModel model, GraphLayoutComponent layoutComponent) {
+        layoutGlobaInputPorts(model, layoutComponent);
+        layoutGlobaOutputPorts(model, layoutComponent);
+    }
+    
+    void layoutGlobaInputPorts(GraphModel model, GraphLayoutComponent layoutComponent) {
+
+        mxCell xReferenceCell = null;
+
+        for (Object portCell : g.getGlobalInputPortCells()) {
+            mxCell cell = (mxCell) portCell;
+
+            xReferenceCell = null;
+
+            // get x position of connected reference port cell
+            Object[] edges = mxGraphModel.getOutgoingEdges(model, portCell);
+            if (edges.length > 0 && edges[0] instanceof GraphEdge) {
+                GraphEdge gEdge = (GraphEdge) edges[0];
+                xReferenceCell = gEdge.getTargetPortCell();
+            }
+
+            // set new x position
+            setCellCenteredToReference(cell, xReferenceCell, layoutComponent);
+        }
+
+    }
+
+    void layoutGlobaOutputPorts(GraphModel model, GraphLayoutComponent layoutComponent) {
+
+        mxCell xReferenceCell = null;
+
+        for (Object portCell : g.getGlobalOutputPortCells()) {
+            mxCell cell = (mxCell) portCell;
+
+            xReferenceCell = null;
+
+            // get x position of connected reference port cell
+            Object[] edges = mxGraphModel.getIncomingEdges(model, portCell);
+            if (edges.length > 0 && edges[0] instanceof GraphEdge) {
+                GraphEdge gEdge = (GraphEdge) edges[0];
+                xReferenceCell = gEdge.getSourcePortCell();
+            }
+
+            // set new x position
+            setCellCenteredToReference(cell, xReferenceCell, layoutComponent);
+        }
+
+    }
+
+    void setCellCenteredToReference(mxCell cell, mxCell referenceCell, GraphLayoutComponent layoutComponent) {
+        if (null != referenceCell) {
+            mxGeometry geom = cell.getGeometry();
+            double oldX = geom.getX();
+
+            // calculate center relative to reference cell
+            double refX = Graph.getAbsoluteCellX(referenceCell);
+            double refWidth = referenceCell.getGeometry().getWidth();
+            double cellWidth = geom.getWidth();
+            geom.setX(refX + (refWidth - cellWidth) / 2);
+            cell.setGeometry(geom);
+
+            // reset if an intersection was produced
+            boolean resetX = false;
+            Object[] cellsALevel = layoutComponent.getCellsAtLevel(layoutComponent.getCellLevel(cell));
+            for (Object aLevelCell : cellsALevel) {
+                if (!aLevelCell.equals(cell) && ((mxCell) aLevelCell).getGeometry().contains(geom.getX(), geom.getY())) {
+                    resetX = true;
+                }
+            }
+
+            if (resetX) {
+                geom.setX(oldX);
+                cell.setGeometry(geom);
+            }
+
+        }
+    }
+
+    /**
+     *
+     * @param graphComponent
+     * @param source
+     * @return
+     */
     /**
      *
      * @param graphComponent

@@ -11,18 +11,20 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import java.awt.BasicStroke;
 import java.util.Hashtable;
 
 /**
  * Basic setup (constants, styles, behaviour) for the RichWPS graph.
+ *
  * @author dziegenh
  */
 public class GraphSetup {
 
     // TODO move to config/constants
-    private static int fontSize = 15;
-    private static int spacing = 4;
+    private static final int fontSize = 15;
+    private static final int spacing = 4;
 
     final static int CELLS_VERTICAL_OFFSET = 100;
 
@@ -30,6 +32,10 @@ public class GraphSetup {
     static String STYLENAME_GLOBAL_OUTPUT = "PROCESS_OUTPUT";
     static String STYLENAME_PROCESS = "PROCESS";
     static String STYLENAME_LOCAL_PORT = "PORT";
+
+    // (auto-) Layout
+    static final int LAYOUT_COMPONENT_GAP = 50;
+    static final int LAYOUT_CELL_GAP = 20;
 
     /**
      * Initialises graph-independent codecs, constants etc.
@@ -55,6 +61,7 @@ public class GraphSetup {
 
     /**
      * Sets up a specific graph (styles, behaviour).
+     *
      * @param graph
      * @return
      */
@@ -75,6 +82,9 @@ public class GraphSetup {
         graph.setCellsMovable(!graph.isAutoLayout());
 
         graph.setGridSize(10);
+        GraphWorkflowLayout graphWorkflowLayout = graph.getGraphWorkflowLayout();
+        graphWorkflowLayout.setCellGap(LAYOUT_CELL_GAP);
+        graphWorkflowLayout.setGraphComponentGap(LAYOUT_COMPONENT_GAP);
 
         // size (ratio) of the connectable port part (in percent relative to port size)
         mxConstants.DEFAULT_HOTSPOT = graph.isAutoLayout() ? 1 : .5;

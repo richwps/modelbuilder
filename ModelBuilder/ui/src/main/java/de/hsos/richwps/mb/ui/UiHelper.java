@@ -56,11 +56,11 @@ public class UiHelper {
 
     /**
      * Replaces underscores with spaces and applies upperFirst to all words.
-     * @param constant
+     * @param string
      * @return
      */
-    public static String createStringForViews(String constant) {
-        String[] splitted = constant.split("_");
+    public static String createStringForViews(String string) {
+        String[] splitted = string.split("_");
         String name = "";
         for (String part : splitted) {
             name += UiHelper.upperFirst(part);
@@ -70,6 +70,11 @@ public class UiHelper {
         return name;
     }
 
+    /**
+     * Sets the first character to upper case and the others to lower case.
+     * @param string
+     * @return
+     */
     public static String upperFirst(String string) {
         return new StringBuilder(string.length())
                 .append(string.substring(0, 1).toUpperCase()) // upper first
