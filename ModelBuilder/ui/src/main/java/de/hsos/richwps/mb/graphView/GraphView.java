@@ -20,14 +20,12 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import layout.TableLayout;
@@ -70,10 +68,8 @@ public class GraphView extends JPanel {
             Graph graph = getGraph();
 
             graphComponent = new GraphComponent(graph);
-            graphComponent.setToolTips(true);
-            graphComponent.setBorder(new EmptyBorder(0, 0, 0, 0));
-            graphComponent.getViewport().setBackground(Color.WHITE); // TODO move value to config/constants !!
-        }
+            GraphSetup.setupGraphComponent((GraphComponent) graphComponent);
+       }
 
         return graphComponent;
     }

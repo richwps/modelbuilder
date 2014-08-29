@@ -224,12 +224,7 @@ public class GraphWorkflowLayout extends mxGraphLayout {
         }
     }
 
-    /**
-     *
-     * @param graphComponent
-     * @param source
-     * @return
-     */
+
     /**
      *
      * @param graphComponent

@@ -9,14 +9,17 @@ import com.mxgraph.swing.handler.mxCellHandler;
 import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.handler.mxVertexHandler;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.swing.view.mxInteractiveCanvas;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Stroke;
+import java.util.Hashtable;
 import javax.swing.JToolTip;
 
 /**
@@ -28,6 +31,23 @@ public class GraphComponent extends mxGraphComponent {
 
     private final JToolTip toolTip;
     private final String errorMsgColor;
+
+    @Override
+    public Hashtable<Object, Component[]> updateComponents(Object cell) {
+        Hashtable<Object, Component[]> updateComponents = super.updateComponents(cell); //To change body of generated methods, choose Tools | Templates.
+
+//        Logger.log(components);
+        Logger.log(
+                getGraphControl().getComponentCount()
+        );
+
+        return updateComponents;
+    }
+
+    @Override
+    public mxInteractiveCanvas createCanvas() {
+        return new GraphCanvas();
+    }
 
     public GraphComponent(mxGraph mxgrph) {
         super((Graph) mxgrph);

@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.graphView;
 
+import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
 import com.mxgraph.swing.util.mxSwingConstants;
@@ -7,13 +8,18 @@ import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxStylesheet;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphEdgeShape;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.util.Hashtable;
+import java.util.Map;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Basic setup (constants, styles, behaviour) for the RichWPS graph.
@@ -37,6 +43,11 @@ public class GraphSetup {
     static final int LAYOUT_COMPONENT_GAP = 50;
     static final int LAYOUT_CELL_GAP = 20;
 
+    public final static String STYLE_SHAPE = "GRAPH_EDGE";
+    private static float SELECTION_BORDER_WIDTH = 1.5f;
+
+    public final static Color GRAPH_BG_COLOR = Color.WHITE;
+
     /**
      * Initialises graph-independent codecs, constants etc.
      */
@@ -46,17 +57,21 @@ public class GraphSetup {
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ComplexDataTypeFormat()));
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionComplex()));
         mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
-//        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
         mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
 
-        // TODO move magic numbers etc. to config !!
+        // style for cell selection
         mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
-        float strokeWidth = 1.5f;
-        mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(strokeWidth,
+        mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(SELECTION_BORDER_WIDTH,
                 BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{
-                    3 * strokeWidth, 3 * strokeWidth}, 0.0f);
+                    3 * SELECTION_BORDER_WIDTH, 3 * SELECTION_BORDER_WIDTH}, 0.0f);
+
+        // custom edge shape for rendering
+        mxGraphics2DCanvas.putShape(STYLE_SHAPE, new GraphEdgeShape());
+
+        // Round edge size
+        mxConstants.LINE_ARCSIZE = 3.;
     }
 
     /**
@@ -91,10 +106,16 @@ public class GraphSetup {
 
         // EDGE STYLE
         mxStylesheet stylesheet = graph.getStylesheet();
-        stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_NOLABEL, "1");
-        stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_STROKECOLOR, "000000");
-        Object edgeStyle = graph.isAutoLayout() ? mxConstants.NONE : mxConstants.EDGESTYLE_TOPTOBOTTOM;
-        stylesheet.getDefaultEdgeStyle().put(mxConstants.STYLE_EDGE, edgeStyle);
+        Map<String, Object> edgeStyle = stylesheet.getDefaultEdgeStyle();
+        edgeStyle.put(mxConstants.STYLE_NOLABEL, "1");
+        edgeStyle.put(mxConstants.STYLE_STROKECOLOR, "000000");
+        Object styleEdge = mxConstants.EDGESTYLE_TOPTOBOTTOM;
+//        if (graph.isAutoLayout()) {
+//            edgeStyle = mxConstants.NONE;
+//        }
+        edgeStyle.put(mxConstants.STYLE_EDGE, styleEdge);
+        edgeStyle.put(mxConstants.STYLE_SHAPE, STYLE_SHAPE);
+        edgeStyle.put(mxConstants.STYLE_ROUNDED, "1");
         graph.setStylesheet(stylesheet);
 
         // PROCESS STYLE
@@ -144,6 +165,12 @@ public class GraphSetup {
         stylesheet.putCellStyle("PORT", portStyle);
 
         return graph;
+    }
+
+    static void setupGraphComponent(GraphComponent component) {
+            component.setToolTips(true);
+            component.setBorder(new EmptyBorder(0, 0, 0, 0));
+            component.getViewport().setBackground(GRAPH_BG_COLOR);
     }
 
 }
