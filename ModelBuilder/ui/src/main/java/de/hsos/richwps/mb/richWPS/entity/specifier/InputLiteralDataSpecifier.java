@@ -1,8 +1,10 @@
 package de.hsos.richwps.mb.richWPS.entity.specifier;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import java.math.BigInteger;
 import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.LiteralInputType;
+import org.n52.wps.client.transactional.BasicInputDescriptionType;
 
 /**
  *
@@ -49,7 +51,7 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
 
     @Override
     public String getTitle() {
-        return title;
+        return this.title;
     }
 
     public void setTitle(String title) {
@@ -70,6 +72,15 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
     @Override
     public int getMaxOccur() {
         return maxOccur;
+    }
+
+    @Override
+    public BasicInputDescriptionType toBasicInputDescriptionType() {
+        BasicInputDescriptionType desc;
+        desc = new BasicInputDescriptionType(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
+        
+        
+        return desc;
     }
 
 }

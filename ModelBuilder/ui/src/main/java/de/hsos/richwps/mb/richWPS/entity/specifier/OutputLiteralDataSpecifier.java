@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.richWPS.entity.specifier;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import net.opengis.wps.x100.OutputDescriptionType;
+import org.n52.wps.client.transactional.BasicOutputDescriptionType;
 import org.n52.wps.io.data.binding.literal.AbstractLiteralDataBinding;
 import org.n52.wps.io.data.binding.literal.LiteralIntBinding;
 import org.n52.wps.io.data.binding.literal.LiteralStringBinding;
@@ -68,6 +69,11 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
          * LiteralIntBinding.java LiteralLongBinding.java
          * LiteralShortBinding.java LiteralStringBinding.java
          */
+    }
+
+    @Override
+    public BasicOutputDescriptionType toBasicOutputDescriptionType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

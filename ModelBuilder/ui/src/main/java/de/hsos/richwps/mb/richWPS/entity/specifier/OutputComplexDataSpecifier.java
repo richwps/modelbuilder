@@ -7,6 +7,7 @@ import net.opengis.wps.x100.ComplexDataCombinationsType;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.SupportedComplexDataType;
+import org.n52.wps.client.transactional.BasicOutputDescriptionType;
 
 /**
  *
@@ -104,6 +105,11 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public BasicOutputDescriptionType toBasicOutputDescriptionType() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
