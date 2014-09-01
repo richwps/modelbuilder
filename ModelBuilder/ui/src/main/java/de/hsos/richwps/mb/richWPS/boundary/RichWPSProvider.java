@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.richWPS.boundary;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
+import de.hsos.richwps.mb.richWPS.entity.deploy.DeployRequestDTO;
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
@@ -24,6 +25,7 @@ import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.WPSTClientSession;
+import org.n52.wps.client.transactional.TrasactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 
 /**
@@ -50,8 +52,8 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public void connect(String wpsurl) throws Exception {
         try {
-            wps = WPSClientSession.getInstance();
-            wps.connect(wpsurl);
+            this.wps = WPSClientSession.getInstance();
+            this.wps.connect(wpsurl);
         } catch (Exception e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
             throw new Exception("Unable to connect to service.");
@@ -66,7 +68,21 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public void connect(String wpsurl, String wpsturl) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            this.wps = WPSClientSession.getInstance();
+            this.wps.connect(wpsurl);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service.");
+        }
+
+        try {
+            this.wpst = WPSTClientSession.getInstance();
+            this.wpst.connect(wpsurl, wpsturl);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service.");
+        }
     }
 
     /**
@@ -184,8 +200,6 @@ public class RichWPSProvider implements IRichWPSProvider {
         return resultdto;
     }
 
-    
-
     /**
      * Retreives and extracts the processdescription type from a given
      * WPS-server.
@@ -212,7 +226,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
         return description;
     }
-    
+
     /**
      * Analyses a given response and add specific results or exception to dto.
      *
@@ -281,8 +295,6 @@ public class RichWPSProvider implements IRichWPSProvider {
         return resultdto;
     }
 
-    
-
     /**
      * Add processs inputs to a dto.
      *
@@ -339,9 +351,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
         return dto;
     }
-    
+
     /**
-     * Sets given inputs to  execute-request.
+     * Sets given inputs to execute-request.
      *
      * @param executeBuilder 52n executebuilder.
      * @param theinputs list of inputs (InputArguments) that should be set.
@@ -370,7 +382,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Sets requested outputs to  execute-request.
+     * Sets requested outputs to execute-request.
      *
      * @param executeBuilder 52n executebuilder.
      * @param theinputs list of outputs (OutputArgument) that should be set.
@@ -402,5 +414,12 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
             //FIXME add BoundingBox
         }
+    }
+    
+    private boolean deploy(DeployRequestDTO dto){
+        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+        
+        builder.setDeployExecutionUnit(dto.getExecutionUnit());
+        return false;
     }
 }

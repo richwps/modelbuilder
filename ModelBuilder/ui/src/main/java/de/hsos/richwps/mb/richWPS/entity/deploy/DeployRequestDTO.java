@@ -4,6 +4,8 @@ import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import java.util.ArrayList;
 import java.util.List;
+import net.opengis.wps.x100.ExecuteResponseDocument;
+import net.opengis.wps.x100.ProcessDescriptionType;
 import org.n52.wps.client.transactional.BasicProcessDescriptionType;
 
 /**
@@ -58,7 +60,6 @@ public class DeployRequestDTO {
         this.executionUnit = "";
         this.inputs = new ArrayList<>();
         this.outputs = new ArrayList<>();
-
     }
 
     public String getEndpoint() {
@@ -115,6 +116,15 @@ public class DeployRequestDTO {
 
     public String getExecutionUnit() {
         return this.executionUnit;
+    }
+    
+    public BasicProcessDescriptionType toBasicProcessDescriptionType(){
+        BasicProcessDescriptionType ogctype;
+        //Convert Outputs
+        /*ProcessDescriptionType.ProcessOutputs outputs = ProcessDescriptionType.ProcessOutputs.Factory.newInstance();
+        for()*/
+        /*ogctype = new BasicProcessDescriptionType(this.identifier,this.title, this.processversion, );*/
+        return null;
     }
 
 }
