@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.ui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
@@ -80,5 +81,28 @@ public class UiHelper {
                 .append(string.substring(0, 1).toUpperCase()) // upper first
                 .append(string.substring(1).toLowerCase()).toString();  // lower rest
     }
+
+    /**
+     * Mixes color2 to color1.
+     * @param color1
+     * @param color2
+     * @param ratio the amount of color2.
+     * @return
+     */
+    public static Color mixColors(Color color1, Color color2, float ratio) {
+        ratio = Math.min(1f, ratio);
+        ratio = Math.max(0f, ratio);
+
+        float invRatio = 1 - ratio;
+        float[] c1Comps = color1.getRGBComponents(null);
+        float[] c2Comps = color2.getRGBComponents(null);
+
+        for(int i=0; i<c1Comps.length; i++) {
+            c1Comps[i] = invRatio * c1Comps[i] + ratio * c2Comps[i];
+        }
+
+        return new Color(c1Comps[0], c1Comps[1], c1Comps[2], c1Comps[3]);
+    }
+
 
 }
