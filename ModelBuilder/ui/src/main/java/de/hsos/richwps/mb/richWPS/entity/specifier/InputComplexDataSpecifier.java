@@ -176,7 +176,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         desc = new BasicInputDescriptionType(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
         desc.setAbstract(this.theabstract);
 
-//create supported type list
+        //create supported type list
         List<ComplexDataDescriptionType> supportedFormatList = new ArrayList();
         for (List atype : this.types) {
             String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);

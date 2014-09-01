@@ -3,10 +3,13 @@ package de.hsos.richwps.mb.richWPS.entity.specifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import net.opengis.wps.x100.ComplexDataCombinationType;
 import net.opengis.wps.x100.ComplexDataCombinationsType;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.SupportedComplexDataType;
+import org.n52.wps.client.transactional.BasicInputDescriptionType;
 import org.n52.wps.client.transactional.BasicOutputDescriptionType;
 
 /**
@@ -26,6 +29,17 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     public static int encoding_IDX = 2;
 
     private SupportedComplexDataType type;
+
+    /**
+     * Constructs a new empty OuputComplexDataSpecifier.
+     */
+    public OutputComplexDataSpecifier() {
+        this.identifier = "";
+        this.theabstract = "";
+        this.title = "";
+        this.types = new ArrayList<>();
+        this.defaulttype = new ArrayList<>();
+    }
 
     public OutputComplexDataSpecifier(OutputDescriptionType description) {
         this.description = description;
@@ -107,9 +121,94 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         return false;
     }
 
-    @Override
-    public BasicOutputDescriptionType toBasicOutputDescriptionType() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setTypes(List<List> types) {
+        this.types = types;
+    }
+
+    public void setDefaulttype(List<String> defaulttype) {
+        this.defaulttype = defaulttype;
+    }
+
+    @Override
+    public BasicOutputDescriptionType toBasicOutputDescriptionType() {
+
+         //create supported type list
+        ComplexDataCombinationsType supportedFormats = ComplexDataCombinationsType.Factory.newInstance();
+        int i = 0;
+        for (List atype : this.types) {
+            String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
+            String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
+            String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);
+
+            ComplexDataDescriptionType desctype = supportedFormats.addNewFormat();
+            desctype.setEncoding(encoding);
+            desctype.setMimeType(mimetype);
+            desctype.setSchema(schema);
+
+        }
+
+        //create defaulttype
+        String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
+        String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
+        String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
+        ComplexDataCombinationType ogcdefaulttype = BasicOutputDescriptionType.createComplexDataCombiType(mimetype, encoding, schema);
+
+        BasicOutputDescriptionType description = new BasicOutputDescriptionType(ogcdefaulttype, supportedFormats, this.identifier, this.title);
+        description.setAbstract(this.theabstract);
+
+        return description;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.identifier);
+        hash = 89 * hash + Objects.hashCode(this.theabstract);
+        hash = 89 * hash + Objects.hashCode(this.title);
+        hash = 89 * hash + Objects.hashCode(this.types);
+        hash = 89 * hash + Objects.hashCode(this.defaulttype);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OutputComplexDataSpecifier other = (OutputComplexDataSpecifier) obj;
+        if (!Objects.equals(this.identifier, other.identifier)) {
+            return false;
+        }
+        if (!Objects.equals(this.theabstract, other.theabstract)) {
+            return false;
+        }
+        if (!Objects.equals(this.title, other.title)) {
+            return false;
+        }
+        if (!Objects.equals(this.types, other.types)) {
+            return false;
+        }
+        if (!Objects.equals(this.defaulttype, other.defaulttype)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "OutputComplexDataSpecifier{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", types=" + types + ", defaulttype=" + defaulttype + '}';
+    }
+
+    
 }
