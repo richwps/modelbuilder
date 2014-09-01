@@ -35,7 +35,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     public final static int encoding_IDX = 2;
 
     /**
-     * Constructs an empty InputSpecifie.
+     * Constructs an empty InputSpecifier.
      */
     public InputComplexDataSpecifier() {
 

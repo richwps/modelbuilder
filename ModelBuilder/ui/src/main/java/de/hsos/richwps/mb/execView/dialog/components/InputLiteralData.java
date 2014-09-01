@@ -19,6 +19,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
         String datatype = this.specifier.getType();
+        String defaultvalue = this.specifier.getDefaultvalue();
         //fixme
         this.id = theidentifier;
         //        this.identifier.setText(theidentifier+ "("+datatype+"):");
@@ -35,6 +36,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         this.occurs.setText(occurstxt);
 
         this.type.setText(datatype);
+        this.value.setText(defaultvalue);
     }
 
     public InputLiteralDataSpecifier getSpecifier() {
