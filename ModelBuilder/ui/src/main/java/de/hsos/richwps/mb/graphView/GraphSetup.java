@@ -47,6 +47,9 @@ public class GraphSetup {
     private static float SELECTION_BORDER_WIDTH = 1.5f;
 
     public final static Color GRAPH_BG_COLOR = Color.WHITE;
+    public final static Color GRAPH_EDGE_SHIFTED_COLOR = new Color(240, 240, 250);
+    public final static Color GRAPH_EDGE_COLOR = (new Color(0xa0ace5)).darker().darker();
+    private final static double GRAPH_EDGE_ROUNDED_SIZE = 5.;
 
     /**
      * Initialises graph-independent codecs, constants etc.
@@ -71,7 +74,7 @@ public class GraphSetup {
         mxGraphics2DCanvas.putShape(STYLE_SHAPE, new GraphEdgeShape());
 
         // Round edge size
-        mxConstants.LINE_ARCSIZE = 3.;
+        mxConstants.LINE_ARCSIZE = GRAPH_EDGE_ROUNDED_SIZE;
     }
 
     /**
