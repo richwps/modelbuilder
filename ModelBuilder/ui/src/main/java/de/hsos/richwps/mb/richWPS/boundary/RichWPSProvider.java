@@ -8,8 +8,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -153,7 +153,7 @@ public class RichWPSProvider implements IRichWPSProvider {
 
      */
     @Override
-    public void describeProcess(RequestExecute dto) {
+    public void describeProcess(ExecuteRequest dto) {
         try {
             String wpsurl = dto.getEndpoint();
             String[] processes = new String[1];
@@ -184,7 +184,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * outputarguments.
      */
     @Override
-    public void executeProcess(RequestExecute dto) {
+    public void executeProcess(ExecuteRequest dto) {
 
         String wpsurl = dto.getEndpoint();
         String processid = dto.getIdentifier();
@@ -224,7 +224,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return <code>true</code> for deployment success.
      */
     @Override
-    public RequestDeploy deploy(final RequestDeploy dto) {
+    public DeployRequest deploy(final DeployRequest dto) {
         TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
 
         builder.setDeployExecutionUnit(dto.getExecutionUnit());
@@ -246,7 +246,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param dto ExecuteRequestDTO with endpoint and process id.
      * @return 52n processdescriptiontype.
      */
-    private ProcessDescriptionType getProcessDescriptionType(RequestExecute dto) {
+    private ProcessDescriptionType getProcessDescriptionType(ExecuteRequest dto) {
         ProcessDescriptionType description = null;
         try {
             this.wps = WPSClientSession.getInstance();
@@ -276,13 +276,13 @@ public class RichWPSProvider implements IRichWPSProvider {
      * outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    private void execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, RequestExecute dto) {
+    private void execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest dto) {
         java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
         System.out.println(file);
         WPSClientConfig.getInstance(file);
 
-        RequestExecute resultdto = dto;
+        ExecuteRequest resultdto = dto;
         HashMap theoutputs = dto.getOutputArguments();
         de.hsos.richwps.mb.Logger.log("Debug: " + responseObject.getClass());
         if (responseObject instanceof ExecuteResponseDocument) {
@@ -339,7 +339,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(RequestExecute dto, ProcessDescriptionType[] descs) {
+    private void execAddInputs(ExecuteRequest dto, ProcessDescriptionType[] descs) {
 
         for (ProcessDescriptionType process : descs) {
             ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
@@ -357,7 +357,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private void execAddOutputs(RequestExecute dto, ProcessDescriptionType[] descs) {
+    private void execAddOutputs(ExecuteRequest dto, ProcessDescriptionType[] descs) {
 
         for (ProcessDescriptionType process : descs) {
             ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();

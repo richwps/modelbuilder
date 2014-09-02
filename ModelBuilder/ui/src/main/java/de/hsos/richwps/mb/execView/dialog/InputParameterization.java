@@ -4,7 +4,7 @@ import de.hsos.richwps.mb.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.execView.dialog.components.InputComplexData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
@@ -25,7 +25,7 @@ public class InputParameterization extends ADialogPanel {
 
     private List<JPanel> inputs;
     private RichWPSProvider provider;
-    private RequestExecute dto;
+    private ExecuteRequest dto;
 
     /**
      * Creates new form ExecutePanel
@@ -40,7 +40,7 @@ public class InputParameterization extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public InputParameterization(final RichWPSProvider provider, RequestExecute dto) {
+    public InputParameterization(final RichWPSProvider provider, ExecuteRequest dto) {
         this.provider = provider;
         this.dto = dto;
         initComponents();
@@ -148,7 +148,7 @@ public class InputParameterization extends ADialogPanel {
      *
      * @return
      */
-    public RequestExecute getDTO() {
+    public ExecuteRequest getDTO() {
         return this.dto;
     }
 

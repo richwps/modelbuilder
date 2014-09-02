@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 public class SeverSelection extends ADialogPanel {
 
     private List<String> remotes;
-    private RequestExecute dto;
+    private ExecuteRequest dto;
 
     /**
      * Creates new form SeverSelection
@@ -30,7 +30,7 @@ public class SeverSelection extends ADialogPanel {
      * @param wpsurls
      * @param dto
      */
-    public SeverSelection(List<String> wpsurls, RequestExecute dto) {
+    public SeverSelection(List<String> wpsurls, ExecuteRequest dto) {
         this.remotes = wpsurls;
         this.dto = dto;
         this.initComponents();
@@ -77,7 +77,7 @@ public class SeverSelection extends ADialogPanel {
      */
     @Override
     public void updateDTO() {
-        this.dto = new RequestExecute();
+        this.dto = new ExecuteRequest();
         this.dto.setEndpoint((String) this.serverSelectionBox.getSelectedItem());
     }
 
@@ -86,7 +86,7 @@ public class SeverSelection extends ADialogPanel {
      * @return
      */
     @Override
-    public RequestExecute getDTO() {
+    public ExecuteRequest getDTO() {
         return dto;
     }
 

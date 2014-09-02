@@ -1,8 +1,8 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.*;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
+import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
@@ -113,7 +113,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        RequestExecute dto = new RequestExecute();
+        ExecuteRequest dto = new ExecuteRequest();
         dto.setEndpoint(wpsurl);
         dto.setIdentifier(processid);
         instance.describeProcess(dto);
@@ -141,7 +141,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        RequestExecute dto = new RequestExecute();
+        ExecuteRequest dto = new ExecuteRequest();
         dto.setEndpoint(wpsurl);
         dto.setIdentifier(processid);
 
@@ -187,7 +187,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        RequestExecute dto = new RequestExecute();
+        ExecuteRequest dto = new ExecuteRequest();
         dto.setEndpoint(wpsurl);
         dto.setIdentifier(processid);
 
@@ -219,7 +219,6 @@ public class RichWPSProviderTest extends TestCase {
         instance.executeProcess(dto);
 
         assertTrue(dto.isException());
-        
         assertNotNull(dto.getException());
     }
     
@@ -307,7 +306,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("testCreation");
-        RequestDeploy dto = new RequestDeploy("localhost", "test", "test", "1.0", "ROLA");
+        DeployRequest dto = new DeployRequest("localhost", "test", "test", "1.0", "ROLA");
         dto.addInput(this.createComplexDataInput());
         dto.addInput(this.createLiteralDataInput());
         dto.addOutput(this.createComplexDataOutput());

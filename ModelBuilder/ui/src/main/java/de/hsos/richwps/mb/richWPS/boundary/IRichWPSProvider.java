@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.util.List;
 
 /**
@@ -56,18 +56,18 @@ public interface IRichWPSProvider {
      *
      * @param dto
      */
-    public void describeProcess(RequestExecute dto);
+    public void describeProcess(ExecuteRequest dto);
 
     /**
      *
      * @param dto
      */
-    public void executeProcess(RequestExecute dto);
+    public void executeProcess(ExecuteRequest dto);
 
     /**
      *
      * @param dto
      * @return
      */
-    public RequestDeploy deploy(final RequestDeploy dto);
+    public DeployRequest deploy(final DeployRequest dto);
 }

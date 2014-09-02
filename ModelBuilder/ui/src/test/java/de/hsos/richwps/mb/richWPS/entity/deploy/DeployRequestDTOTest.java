@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.deploy;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
+import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
@@ -115,7 +115,7 @@ public class DeployRequestDTOTest {
     @Test
     public void testCreation() {
         System.out.println("testCreation");
-        RequestDeploy dto = new RequestDeploy("localhost", "test", "test", "1.0", "ROLA");
+        DeployRequest dto = new DeployRequest("localhost", "test", "test", "1.0", "ROLA");
         dto.addInput(this.createComplexDataInput());
         dto.addInput(this.createLiteralDataInput());
         dto.addOutput(this.createComplexDataOutput());

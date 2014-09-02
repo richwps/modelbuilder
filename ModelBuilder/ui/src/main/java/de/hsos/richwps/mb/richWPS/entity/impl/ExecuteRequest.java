@@ -21,7 +21,7 @@ import net.opengis.wps.x100.OutputDescriptionType;
  *
  * @author dalcacer
  */
-public class RequestExecute implements IRequest {
+public class ExecuteRequest implements IRequest {
 
     /**
      * The endpoint to call or discover.
@@ -68,7 +68,7 @@ public class RequestExecute implements IRequest {
     /**
      * Builds a new, blank, wps:execute()-request.
      */
-    public RequestExecute() {
+    public ExecuteRequest() {
         this.endpoint = new String();
         this.identifier = new String();
         this.processversion = new String();
@@ -300,7 +300,7 @@ public class RequestExecute implements IRequest {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RequestExecute other = (RequestExecute) obj;
+        final ExecuteRequest other = (ExecuteRequest) obj;
         if (!Objects.equals(this.endpoint, other.endpoint)) {
             return false;
         }

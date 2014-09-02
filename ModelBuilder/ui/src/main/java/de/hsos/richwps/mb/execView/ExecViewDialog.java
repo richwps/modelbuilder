@@ -7,7 +7,7 @@ import de.hsos.richwps.mb.execView.dialog.ProcessSelection;
 import de.hsos.richwps.mb.execView.dialog.ResultVisualisation;
 import de.hsos.richwps.mb.execView.dialog.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +28,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
     private ResultVisualisation resultpanel;
     private List<String> remotes;
     private RichWPSProvider provider;
-    private RequestExecute dto;
+    private ExecuteRequest dto;
 
     /**
      * Creates new form execViewDialog
@@ -41,7 +41,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
             Logger.getLogger(ExecViewDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.provider = new RichWPSProvider();
-        this.dto = new RequestExecute();
+        this.dto = new ExecuteRequest();
         this.remotes = wpsurls;
         this.initComponents();
         this.backButton.setVisible(false);

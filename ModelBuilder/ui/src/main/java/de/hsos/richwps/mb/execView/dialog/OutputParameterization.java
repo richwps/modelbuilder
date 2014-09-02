@@ -4,7 +4,7 @@ import de.hsos.richwps.mb.execView.dialog.components.OutputComplexData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputLiteralData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
@@ -25,7 +25,7 @@ public class OutputParameterization extends ADialogPanel {
 
     private List<JPanel> outputs;
     private RichWPSProvider provider;
-    private RequestExecute dto;
+    private ExecuteRequest dto;
 
     /**
      * Creates new form ExecutePanel
@@ -40,7 +40,7 @@ public class OutputParameterization extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public OutputParameterization(final RichWPSProvider provider, RequestExecute dto) {
+    public OutputParameterization(final RichWPSProvider provider, ExecuteRequest dto) {
         this.provider = provider;
         this.dto = dto;
         initComponents();
@@ -144,7 +144,7 @@ public class OutputParameterization extends ADialogPanel {
      * @return
      */
     @Override
-    public RequestExecute getDTO() {
+    public ExecuteRequest getDTO() {
         return this.dto;
     }
 

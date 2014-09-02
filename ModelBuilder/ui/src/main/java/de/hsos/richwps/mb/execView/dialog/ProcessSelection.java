@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.execView.dialog;
 
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -14,7 +14,7 @@ public class ProcessSelection extends ADialogPanel {
     private RichWPSProvider provider;
     private List<String> processes;
     private String wpsurl;
-    private RequestExecute dto;
+    private ExecuteRequest dto;
 
     /**
      * Creates new form ProcessSelection
@@ -28,7 +28,7 @@ public class ProcessSelection extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public ProcessSelection(RichWPSProvider provider, RequestExecute dto) {
+    public ProcessSelection(RichWPSProvider provider, ExecuteRequest dto) {
         this.dto = dto;
         this.wpsurl = dto.getEndpoint();
         this.provider = provider;
@@ -60,7 +60,7 @@ public class ProcessSelection extends ADialogPanel {
      * @return
      */
     @Override
-    public RequestExecute getDTO() {
+    public ExecuteRequest getDTO() {
         return dto;
     }
 
@@ -69,7 +69,7 @@ public class ProcessSelection extends ADialogPanel {
      */
     @Override
     public void updateDTO() {
-        this.dto = new RequestExecute();
+        this.dto = new ExecuteRequest();
         dto.setEndpoint(this.wpsurl);
         dto.setIdentifier((String) this.processesBox.getSelectedItem());
     }

@@ -14,7 +14,7 @@ import org.n52.wps.client.transactional.ProcessDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class RequestDeploy implements IRequest {
+public class DeployRequest implements IRequest {
 
     /**
      * The endpoint to call or discover.
@@ -62,7 +62,7 @@ public class RequestDeploy implements IRequest {
     /**
      *
      */
-    public RequestDeploy() {
+    public DeployRequest() {
         this.endpoint = "";
         this.identifier = "";
         this.title = "";
@@ -83,7 +83,7 @@ public class RequestDeploy implements IRequest {
      * @param processversion
      * @param deploymentprofile
      */
-    public RequestDeploy(final String endpoint, final String identifier,
+    public DeployRequest(final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {
         this.endpoint = endpoint;
         this.identifier = identifier;
@@ -360,7 +360,7 @@ public class RequestDeploy implements IRequest {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final RequestDeploy other = (RequestDeploy) obj;
+        final DeployRequest other = (DeployRequest) obj;
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }
