@@ -54,6 +54,9 @@ public class AppActionHandler implements IAppActionHandler {
             case SAVE_MODEL_AS:
                 doSaveModelAs();
                 break;
+            case OPEN_LAST_FILE:
+                doOpenLastFile();
+                break;
             case SHOW_PREFERENCES:
                 doPreferencesDialog();
                 break;
@@ -133,48 +136,87 @@ public class AppActionHandler implements IAppActionHandler {
         }
 
         if (doLoad) {
-            try {
+//            try {
 
-                JFileChooser fc = new JFileChooser();
-                fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
+            JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
 
-                setupFileChooser(fc);
+            setupFileChooser(fc);
 
-                int state = fc.showOpenDialog(app.getFrame());
-                if (state == JFileChooser.APPROVE_OPTION) {
-                    String filename = fc.getSelectedFile().getPath();
-                    getGraphView().loadGraphFromXml(filename);
-                    String graphName = getGraphView().getGraphName();
-                    if (null == graphName) {
-                        graphName = "";
-                    }
-                    app.setCurrentModelFilename(filename);
-//                    app.getFrame().setGraphViewTitle(graphName);
-                    app.getFrame().setGraphViewTitle(filename);
-                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
-                    app.getUndoManager().discardAllEdits();
-                    // A new model has been loaded => add change listener e
-                    app.modelLoaded();
-
-                    rememberLastDir(fc.getSelectedFile());
-                }
-
-            } catch (Exception ex) {
-                StringBuilder sb = new StringBuilder(100);
-                sb.append(AppConstants.LOAD_MODEL_FAILED);
-                sb.append("\n");
-                sb.append(AppConstants.SEE_LOGGING_TABS);
-                JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
-
-                sb = new StringBuilder(100);
-                sb.append(AppConstants.LOAD_MODEL_FAILED);
-                sb.append("\n");
-                sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
-                AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
-
-                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
+            int state = fc.showOpenDialog(app.getFrame());
+            if (state == JFileChooser.APPROVE_OPTION) {
+                String filename = fc.getSelectedFile().getPath();
+                loadModelFromFile(filename);
+//                    getGraphView().loadGraphFromXml(filename);
+//                    String graphName = getGraphView().getGraphName();
+//                    if (null == graphName) {
+//                        graphName = "";
+//                    }
+//                    app.setCurrentModelFilename(filename);
+////                    app.getFrame().setGraphViewTitle(graphName);
+//                    app.getFrame().setGraphViewTitle(filename);
+//                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
+//                    app.getUndoManager().discardAllEdits();
+//                    // A new model has been loaded => add change listener e
+//                    app.modelLoaded();
+//
+//                    rememberLastDir(fc.getSelectedFile());
             }
+//
+//            } catch (Exception ex) {
+//                StringBuilder sb = new StringBuilder(100);
+//                sb.append(AppConstants.LOAD_MODEL_FAILED);
+//                sb.append("\n");
+//                sb.append(AppConstants.SEE_LOGGING_TABS);
+//                JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
+//
+//                sb = new StringBuilder(100);
+//                sb.append(AppConstants.LOAD_MODEL_FAILED);
+//                sb.append("\n");
+//                sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
+//                AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+//
+//                app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
+//            }
         }
+    }
+
+    private boolean loadModelFromFile(String filename) {
+        try {
+            getGraphView().loadGraphFromXml(filename);
+            String graphName = getGraphView().getGraphName();
+            if (null == graphName) {
+                graphName = "";
+            }
+            app.setCurrentModelFilename(filename);
+//                    app.getFrame().setGraphViewTitle(graphName);
+            app.getFrame().setGraphViewTitle(filename);
+            app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
+            app.getUndoManager().discardAllEdits();
+            // A new model has been loaded => add change listener e
+            app.modelLoaded();
+
+            rememberLastDir(new File(filename));
+            AppConfig.getConfig().put(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), filename);
+
+        } catch (Exception ex) {
+            StringBuilder sb = new StringBuilder(100);
+            sb.append(AppConstants.LOAD_MODEL_FAILED);
+            sb.append("\n");
+            sb.append(AppConstants.SEE_LOGGING_TABS);
+            JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
+
+            sb = new StringBuilder(100);
+            sb.append(AppConstants.LOAD_MODEL_FAILED);
+            sb.append("\n");
+            sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
+            AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+
+            app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
+            return false;
+        }
+
+        return true;
     }
 
     private void doPreferencesDialog() {
@@ -248,6 +290,8 @@ public class AppActionHandler implements IAppActionHandler {
                 app.setCurrentModelFilename(filename);
                 app.getFrame().setGraphViewTitle(filename);
                 app.setChangesSaved(true);
+                AppConfig.getConfig().put(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), filename);
+
 //                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
             } catch (Exception ex) {
                 handleSaveModelFailedException(ex);
@@ -294,5 +338,10 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doAbout() {
         app.showAbout();
+    }
+
+    private void doOpenLastFile() {
+        String filename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
+        loadModelFromFile(filename);
     }
 }

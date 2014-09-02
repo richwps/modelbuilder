@@ -9,6 +9,7 @@ import com.mxgraph.swing.view.mxInteractiveCanvas;
 import com.mxgraph.util.mxPoint;
 import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.ui.UiHelper;
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,14 +19,14 @@ import java.util.List;
  */
 public class GraphCanvas extends mxInteractiveCanvas {
 
-    private double normalize(double x) {
-        if (x == 0) {
-            return 0;
-        }
-        return x / Math.abs(x);
-    }
-
     private static int BEAUTIFY_WIDTH = 2;
+    
+    private static Color GRAPH_BG = GraphSetup.GRAPH_BG_COLOR;
+//new Color(
+//            GraphSetup.GRAPH_BG_COLOR.getRed(),
+//            GraphSetup.GRAPH_BG_COLOR.getGreen(),
+//            GraphSetup.GRAPH_BG_COLOR.getBlue(),
+//            0);
 
     public void paintPolyline(mxPoint[] points, boolean rounded, boolean beautifyIntersections) {
 
@@ -79,10 +80,10 @@ public class GraphCanvas extends mxInteractiveCanvas {
                 paintPolyline(pArray, rounded);
                 if (1 == a % 2) {
                     ratio = ((float) (a+1))/pArrays.size();
-//                    ratio = (float) Math.log(w);
-//Logger.log(""+w+": "+ratio);
-//Logger.log(UiHelper.mixColors(GraphSetup.GRAPH_EDGE_SHIFTED_COLOR, GraphSetup.GRAPH_BG_COLOR, ratio));
-                    g.setColor(UiHelper.mixColors(GraphSetup.GRAPH_EDGE_SHIFTED_COLOR, GraphSetup.GRAPH_BG_COLOR, ratio));
+                    ratio = (float) Math.sqrt(ratio);
+//                    ratio *= ratio;
+//                    ratio *= ratio;
+                    g.setColor(UiHelper.mixColors(GraphSetup.GRAPH_EDGE_SHIFTED_COLOR, GRAPH_BG, ratio));
                 }
                 a++;
             }
@@ -93,4 +94,10 @@ public class GraphCanvas extends mxInteractiveCanvas {
         paintPolyline(points, rounded);
     }
 
+    private double normalize(double x) {
+        if (x == 0) {
+            return 0;
+        }
+        return x / Math.abs(x);
+    }
 }

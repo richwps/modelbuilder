@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.AppFrame;
 import de.hsos.richwps.mb.app.view.AppSplashScreen;
@@ -68,7 +69,16 @@ public class AppSetup {
                 }
             });
         }
-
+        
+        // Load last used filename
+        String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
+        File lastFile = new File(lastFilename);
+        AppAbstractAction lastFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_LAST_FILE);
+        lastFileAction.setEnabled(lastFile.exists());
+        if (lastFile.exists()) {
+            lastFileAction.setName(UiHelper.limitString(lastFilename, 50));
+        }
+        
         splash.showMessageAndProgress("Creating window", 15);
 
         // Create frame.
@@ -116,7 +126,6 @@ public class AppSetup {
         app.modelLoaded();
     }
 
-
     /**
      * Loads icons into UIManager.
      */
@@ -152,7 +161,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));
         UIManager.put(AppConstants.ICON_EDIT_KEY, new ImageIcon(iconDir + "table-edit.png", "edit icon"));
-        
+
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
     }
 

@@ -36,8 +36,11 @@ public abstract class AppAbstractAction extends AbstractAction {
         String name = AppMenuBar.getMenuItemCaption(item);
 
         putValue(Action.NAME, name);
-        putValue(Action.SMALL_ICON, UIManager.getIcon(iconKey));
         putValue(Action.SHORT_DESCRIPTION, name);
+        
+        if (null != iconKey) {
+            putValue(Action.SMALL_ICON, UIManager.getIcon(iconKey));
+        }
     }
 
     public void setActionSource(Object actionSource) {

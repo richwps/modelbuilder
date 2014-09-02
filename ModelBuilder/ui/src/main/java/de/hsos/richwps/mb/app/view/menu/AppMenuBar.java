@@ -73,7 +73,9 @@ public class AppMenuBar extends JMenuBar {
     }
 
     /**
-     * Creates a menu item for the given {@link AppActionProvider.APP_ACTION} using the {@link AppActionProvider}.
+     * Creates a menu item for the given {@link AppActionProvider.APP_ACTION}
+     * using the {@link AppActionProvider}.
+     *
      * @param menu
      * @param item
      * @return
@@ -89,8 +91,11 @@ public class AppMenuBar extends JMenuBar {
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.LOAD_MODEL);
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SAVE_MODEL);
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS);
-        mFile.addSeparator();
-        createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES);
+        AppAbstractAction openLastAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_LAST_FILE);
+        if (openLastAction.isEnabled()) {
+            mFile.addSeparator();
+            createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.OPEN_LAST_FILE, openLastAction);
+        }
         mFile.addSeparator();
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.EXIT_APP);
 
@@ -104,6 +109,8 @@ public class AppMenuBar extends JMenuBar {
         createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.REDO);
         mEdit.addSeparator();
         createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.DO_LAYOUT);
+        mEdit.addSeparator();
+        createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES);
 
         return mEdit;
     }
@@ -118,7 +125,7 @@ public class AppMenuBar extends JMenuBar {
 
     @Override
     public JMenu getHelpMenu() {
-        JMenu mHelp =  new JMenu(getMenuItemCaption(MENUS.HELP));
+        JMenu mHelp = new JMenu(getMenuItemCaption(MENUS.HELP));
 
         createAndAddMenuItem(mHelp, AppActionProvider.APP_ACTIONS.ABOUT);
 

@@ -48,7 +48,7 @@ public class GraphSetup {
 
     public final static Color GRAPH_BG_COLOR = Color.WHITE;
     public final static Color GRAPH_EDGE_SHIFTED_COLOR = new Color(240, 240, 250);
-    public final static Color GRAPH_EDGE_COLOR = (new Color(0xa0ace5)).darker().darker();
+    public final static Color GRAPH_EDGE_COLOR = Color.BLACK; //(new Color(0xa0ace5)).darker().darker();
     private final static double GRAPH_EDGE_ROUNDED_SIZE = 5.;
 
     /**

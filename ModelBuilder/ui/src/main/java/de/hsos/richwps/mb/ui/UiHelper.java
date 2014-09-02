@@ -57,6 +57,7 @@ public class UiHelper {
 
     /**
      * Replaces underscores with spaces and applies upperFirst to all words.
+     *
      * @param string
      * @return
      */
@@ -73,6 +74,7 @@ public class UiHelper {
 
     /**
      * Sets the first character to upper case and the others to lower case.
+     *
      * @param string
      * @return
      */
@@ -84,6 +86,7 @@ public class UiHelper {
 
     /**
      * Mixes color2 to color1.
+     *
      * @param color1
      * @param color2
      * @param ratio the amount of color2.
@@ -97,12 +100,40 @@ public class UiHelper {
         float[] c1Comps = color1.getRGBComponents(null);
         float[] c2Comps = color2.getRGBComponents(null);
 
-        for(int i=0; i<c1Comps.length; i++) {
+        for (int i = 0; i < c1Comps.length; i++) {
             c1Comps[i] = invRatio * c1Comps[i] + ratio * c2Comps[i];
         }
 
         return new Color(c1Comps[0], c1Comps[1], c1Comps[2], c1Comps[3]);
     }
 
+    /**
+     * Limits the String's length by removing characters from its center and
+     * adding placeholder characters.
+     *
+     * @param string
+     * @param maxLength
+     * @return
+     */
+    public static String limitString(String string, int maxLength) {
+        final int length = string.length();
+
+        if (null == string || length <= maxLength) {
+            return string;
+        }
+
+        String placeholder = " ... ";
+        maxLength += placeholder.length();
+
+        int tooMuch = (length - maxLength) / 2;
+        String part1 = string.substring(0, length / 2 - tooMuch);
+        String part2 = string.substring(length / 2 + tooMuch);
+        StringBuilder sb = new StringBuilder(maxLength);
+        sb.append(part1);
+        sb.append(placeholder);
+        sb.append(part2);
+
+        return sb.toString();
+    }
 
 }

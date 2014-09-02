@@ -17,13 +17,19 @@ import java.util.logging.Logger;
 public class AppActionProvider {
 
     public static enum APP_ACTIONS {
-        NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, SHOW_PREFERENCES, EXIT_APP,
-        UNDO, REDO, DO_LAYOUT,
+        // FILE
+        NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_LAST_FILE, EXIT_APP, 
+        // EDIT
+        UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
+        // TOOLS
+        EXECUTE,
+        // HELP
+        ABOUT,
+        
+        // (others)
         DEPLOY,
         RELOAD_PROCESSES,
         SHOW_ERROR_MSG,
-        EXECUTE,
-        ABOUT
     }
 
     private IAppActionHandler actionHandler;
