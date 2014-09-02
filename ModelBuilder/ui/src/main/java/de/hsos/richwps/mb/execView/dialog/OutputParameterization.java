@@ -1,7 +1,5 @@
 package de.hsos.richwps.mb.execView.dialog;
 
-import de.hsos.richwps.mb.execView.dialog.components.InputComplexData;
-import de.hsos.richwps.mb.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputComplexData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputLiteralData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -12,8 +10,6 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,24 +46,24 @@ public class OutputParameterization extends ADialogPanel {
         initComponents();
 
         String selectedserver = this.dto.getEndpoint();
-        String selectedprocess = this.dto.getProcessid();
+        String selectedprocess = this.dto.getIdentifier();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
 
         this.outputs = new ArrayList<>();
-        this.dto = this.provider.describeProcess(dto);
+        this.provider.describeProcess(this.dto);
         this.showOutputs();
     }
 
     private void showOutputs() {
 
-        if (this.dto.getOutputSepcifier().isEmpty()) {
+        if (this.dto.getOutputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load outputs.", JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
 
-        for (IOutputSpecifier specifier : this.dto.getOutputSepcifier()) {
+        for (IOutputSpecifier specifier : this.dto.getOutputs()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof OutputComplexDataSpecifier) {

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestCase;
-import net.opengis.wps.x100.ProcessDescriptionType;
 
 /**
  *
@@ -116,15 +115,15 @@ public class RichWPSProviderTest extends TestCase {
 
         RequestExecute dto = new RequestExecute();
         dto.setEndpoint(wpsurl);
-        dto.setProcessid(processid);
-        RequestExecute result = instance.describeProcess(dto);
-        List<IInputSpecifier> inputs = result.getInputSpecifier();
+        dto.setIdentifier(processid);
+        instance.describeProcess(dto);
+        List<IInputSpecifier> inputs = dto.getInputs();
         assertEquals(2, inputs.size()); //3 with BBOX suport
         assertEquals("ComplexInputData", ((IInputSpecifier) inputs.get(0)).getIdentifier());
         assertEquals("LiteralInputData", ((IInputSpecifier) inputs.get(1)).getIdentifier());
         //assertEquals("BBOxInputData", ((IInputSpecifier) inputs.get(2)).getIdentifier());
 
-        List<IOutputSpecifier> outputs = result.getOutputSepcifier();
+        List<IOutputSpecifier> outputs = dto.getOutputs();
         assertEquals(2, outputs.size()); //3 with BBOX suport
         assertEquals("ComplexOutputData", ((IOutputSpecifier) outputs.get(0)).getIdentifier());
         assertEquals("LiteralOutputData", ((IOutputSpecifier) outputs.get(1)).getIdentifier());
@@ -144,10 +143,10 @@ public class RichWPSProviderTest extends TestCase {
 
         RequestExecute dto = new RequestExecute();
         dto.setEndpoint(wpsurl);
-        dto.setProcessid(processid);
+        dto.setIdentifier(processid);
 
-        dto = instance.describeProcess(dto);
-        List<IInputSpecifier> inputs = dto.getInputSpecifier();
+        instance.describeProcess(dto);
+        List<IInputSpecifier> inputs = dto.getInputs();
         
         assertEquals(2, inputs.size());
         InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
@@ -164,14 +163,14 @@ public class RichWPSProviderTest extends TestCase {
         dto.setInputArguments(ins);
 
         HashMap<String, IOutputArgument> outs = new HashMap();
-        List<IOutputSpecifier> outputs = dto.getOutputSepcifier();
+        List<IOutputSpecifier> outputs = dto.getOutputs();
         OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
 
-        dto = instance.executeProcess(dto);
+        instance.executeProcess(dto);
 
         HashMap<String, Object> theResults = dto.getResults();
         assertNotNull(theResults);
@@ -190,10 +189,10 @@ public class RichWPSProviderTest extends TestCase {
 
         RequestExecute dto = new RequestExecute();
         dto.setEndpoint(wpsurl);
-        dto.setProcessid(processid);
+        dto.setIdentifier(processid);
 
-        dto = instance.describeProcess(dto);
-        List<IInputSpecifier> inputs = dto.getInputSpecifier();
+        instance.describeProcess(dto);
+        List<IInputSpecifier> inputs = dto.getInputs();
         
         assertEquals(2, inputs.size());
         InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
@@ -210,14 +209,14 @@ public class RichWPSProviderTest extends TestCase {
         dto.setInputArguments(ins);
 
         HashMap<String, IOutputArgument> outs = new HashMap();
-        List<IOutputSpecifier> outputs = dto.getOutputSepcifier();
+        List<IOutputSpecifier> outputs = dto.getOutputs();
         OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
 
-        dto = instance.executeProcess(dto);
+        instance.executeProcess(dto);
 
         assertTrue(dto.isException());
         

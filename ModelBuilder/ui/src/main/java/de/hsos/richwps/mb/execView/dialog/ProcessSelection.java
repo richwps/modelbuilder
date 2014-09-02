@@ -59,7 +59,7 @@ public class ProcessSelection extends ADialogPanel {
     public void updateDTO() {
         this.dto = new RequestExecute();
         dto.setEndpoint(this.wpsurl);
-        dto.setProcessid((String) this.processesBox.getSelectedItem());
+        dto.setIdentifier((String) this.processesBox.getSelectedItem());
     }
 
     public boolean isValidInput() {

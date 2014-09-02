@@ -13,6 +13,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -72,7 +74,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
-            
+
         } catch (Exception e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
             throw new Exception("Unable to connect to service.");
@@ -144,21 +146,31 @@ public class RichWPSProvider implements IRichWPSProvider {
      * Describes process and its' in and outputs.
      *
      * @param dto ExecuteRequestDTO with endpoint and processid.
-     * @return ExecuteRequestDTO with endpoint and processid an process
-     * description.
+
      */
     @Override
-    public RequestExecute describeProcess(RequestExecute dto) {
+    public void describeProcess(RequestExecute dto) {
+        try {
+            String wpsurl = dto.getEndpoint();
+            String[] processes = new String[1];
+            processes[0] = dto.getIdentifier();
+            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
+            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
+            ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
 
-        if (dto.getInputSpecifier().isEmpty()) {
-            dto = this.execAddInputs(dto);
+            if (dto.getInputs().isEmpty()) {
+                this.execAddInputs(dto, descs);
+            }
+
+            if (dto.getOutputs().isEmpty()) {
+                //dto =
+                this.execAddOutputs(dto, descs);
+            }
+
+            
+        } catch (WPSClientException ex) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n " + ex.getLocalizedMessage());
         }
-
-        if (dto.getOutputSepcifier().isEmpty()) {
-            dto = this.execAddOutputs(dto);
-        }
-
-        return dto;
     }
 
     /**
@@ -169,10 +181,10 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with results or exception.
      */
     @Override
-    public RequestExecute executeProcess(RequestExecute dto) {
-        RequestExecute resultdto = dto;
+    public void executeProcess(RequestExecute dto) {
+
         String wpsurl = dto.getEndpoint();
-        String processid = dto.getProcessid();
+        String processid = dto.getIdentifier();
 
         HashMap theinputs = dto.getInputArguments();
         HashMap theoutputs = dto.getOutputArguments();
@@ -197,16 +209,15 @@ public class RichWPSProvider implements IRichWPSProvider {
             de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, executing the process " + processid + ", " + e);
         }
 
-        resultdto = this.execAnalyseResponse(execute, description, responseObject, dto);
+        this.execAnalyseResponse(execute, description, responseObject, dto);
 
-        return resultdto;
     }
 
     /**
      * Deploys a new process.
      *
      * @param dto DeployRequestDTO.
-     * @see  DeployRequest
+     * @see DeployRequest
      * @return <code>true</code> for deployment success.
      */
     @Override
@@ -240,14 +251,14 @@ public class RichWPSProvider implements IRichWPSProvider {
 
             //discover
             String[] processes = new String[1];
-            processes[0] = dto.getProcessid();
+            processes[0] = dto.getIdentifier();
             ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, dto.getEndpoint());
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
             description = descs[0];
 
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + dto.getProcessid() + ", " + e);
+            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + dto.getIdentifier() + ", " + e);
         }
         return description;
     }
@@ -262,7 +273,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    private RequestExecute execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, RequestExecute dto) {
+    private void execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, RequestExecute dto) {
         java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
         System.out.println(file);
@@ -277,7 +288,6 @@ public class RichWPSProvider implements IRichWPSProvider {
 
             try {
                 java.util.Set<String> keys = theoutputs.keySet();
-
                 for (String key : keys) {
                     Object o = theoutputs.get(key);
                     if (o instanceof OutputLiteralDataArgument) {
@@ -317,7 +327,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             de.hsos.richwps.mb.Logger.log("Debug: \n Unable to analyse response. Response is Exception: " + exception.toString());
             de.hsos.richwps.mb.Logger.log("Debug: \n " + exception.getExceptionReport());
         }
-        return resultdto;
     }
 
     /**
@@ -327,25 +336,15 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private RequestExecute execAddInputs(RequestExecute dto) {
-        try {
-            String wpsurl = dto.getEndpoint();
-            String[] processes = new String[1];
-            processes[0] = dto.getProcessid();
-            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
-            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
-            ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
-            for (ProcessDescriptionType process : descs) {
-                ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
-                InputDescriptionType[] _inputs = inputs.getInputArray();
-                for (InputDescriptionType description : _inputs) {
-                    dto.addInput(description);
-                }
+    private void execAddInputs(RequestExecute dto, ProcessDescriptionType[] descs) {
+
+        for (ProcessDescriptionType process : descs) {
+            ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
+            InputDescriptionType[] _inputs = inputs.getInputArray();
+            for (InputDescriptionType description : _inputs) {
+                dto.addInput(description);
             }
-        } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n " + e.getLocalizedMessage());
         }
-        return dto;
     }
 
     /**
@@ -355,26 +354,16 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private RequestExecute execAddOutputs(RequestExecute dto) {
+    private void execAddOutputs(RequestExecute dto, ProcessDescriptionType[] descs) {
 
-        try {
-            String wpsurl = dto.getEndpoint();
-            String[] processes = new String[1];
-            processes[0] = dto.getProcessid();
-            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
-            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
-            ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
-            for (ProcessDescriptionType process : descs) {
-                ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
-                OutputDescriptionType[] _outputs = outputs.getOutputArray();
-                for (OutputDescriptionType description : _outputs) {
-                    dto.addOutput(description);
-                }
+        for (ProcessDescriptionType process : descs) {
+            ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
+            OutputDescriptionType[] _outputs = outputs.getOutputArray();
+            for (OutputDescriptionType description : _outputs) {
+                dto.addOutput(description);
             }
-        } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n " + e.getLocalizedMessage());
         }
-        return dto;
+
     }
 
     /**

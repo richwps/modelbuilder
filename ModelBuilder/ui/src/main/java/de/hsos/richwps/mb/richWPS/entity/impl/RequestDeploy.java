@@ -14,7 +14,7 @@ import org.n52.wps.client.transactional.ProcessDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class RequestDeploy implements IRequest{
+public class RequestDeploy implements IRequest {
 
     /**
      * The endpoint to call or discover.
@@ -50,6 +50,15 @@ public class RequestDeploy implements IRequest{
 
     private boolean keepExecUnit;
 
+    /**
+     * Exception instead of result.
+     */
+    private boolean wasException = false;
+    /**
+     * Exception text.
+     */
+    private String exception = "";
+
     public RequestDeploy() {
         this.endpoint = "";
         this.identifier = "";
@@ -63,7 +72,8 @@ public class RequestDeploy implements IRequest{
         this.keepExecUnit = false;
     }
 
-    public RequestDeploy(final String endpoint, final String identifier, final String title, final String processversion, final String deploymentprofile) {
+    public RequestDeploy(final String endpoint, final String identifier,
+            final String title, final String processversion, final String deploymentprofile) {
         this.endpoint = endpoint;
         this.identifier = identifier;
         this.title = title;
@@ -109,6 +119,7 @@ public class RequestDeploy implements IRequest{
         this.processversion = processversion;
     }
 
+    @Override
     public List<IInputSpecifier> getInputs() {
         return inputs;
     }
@@ -121,6 +132,7 @@ public class RequestDeploy implements IRequest{
         this.inputs.add(specifier);
     }
 
+    @Override
     public List<IOutputSpecifier> getOutputs() {
         return outputs;
     }
@@ -163,6 +175,19 @@ public class RequestDeploy implements IRequest{
 
     public void setKeepExecUnit(boolean keepExecUnit) {
         this.keepExecUnit = keepExecUnit;
+    }
+
+    public boolean isException() {
+        return wasException;
+    }
+
+    public String getException() {
+        return exception;
+    }
+
+    public void addException(final String message){
+        wasException=true;
+        this.exception=message;
     }
 
     public ProcessDescriptionType toProcessDescriptionType() {
@@ -246,5 +271,4 @@ public class RequestDeploy implements IRequest{
     public String toString() {
         return "DeployRequestDTO{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", title=" + title + ", processversion=" + processversion + ", inputs=" + inputs + ", outputs=" + outputs + ", executionUnit=" + executionUnit + ", deploymentprofile=" + deploymentprofile + ", theabstract=" + theabstract + ", keepExecUnit=" + keepExecUnit + '}';
     }
-
 }

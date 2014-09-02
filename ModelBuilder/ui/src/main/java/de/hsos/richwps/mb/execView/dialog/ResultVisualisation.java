@@ -10,13 +10,10 @@ import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Observer;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
@@ -37,7 +34,7 @@ public class ResultVisualisation extends ADialogPanel {
         this.dto = dto;
         this.renderers = new ArrayList<>();
         initComponents();
-        this.selectedProcess.setText(dto.getProcessid());
+        this.selectedProcess.setText(dto.getIdentifier());
         this.selectedServer.setText(dto.getEndpoint());
         ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
         this.loadingLabel.setIcon(ico);
@@ -150,7 +147,7 @@ public class ResultVisualisation extends ADialogPanel {
         }
 
         public void run() {
-            this.dto = this.provider.executeProcess(this.dto);
+            this.provider.executeProcess(this.dto);
             this.parent.update(this.dto);
         }
     }

@@ -21,9 +21,9 @@ public interface IRichWPSProvider {
 
     public List<String> getAvailableProcesses(final String wpsurl);
 
-    public RequestExecute describeProcess(RequestExecute dto);
+    public void describeProcess(RequestExecute dto);
 
-    public RequestExecute executeProcess(final RequestExecute dto);
+    public void executeProcess(RequestExecute dto);
 
     public RequestDeploy deploy(final RequestDeploy dto);
 }

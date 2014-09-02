@@ -10,8 +10,6 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,20 +46,20 @@ public class InputParameterization extends ADialogPanel {
         initComponents();
         this.inputs = new ArrayList<>();
         String selectedserver = this.dto.getEndpoint();
-        String selectedprocess = this.dto.getProcessid();
+        String selectedprocess = this.dto.getIdentifier();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
-        this.dto = this.provider.describeProcess(dto);
+        this.provider.describeProcess(this.dto);
         this.showInputs();
     }
 
     private void showInputs() {
-        if (this.dto.getInputSpecifier().isEmpty()) {
+        if (this.dto.getInputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load inputs.", JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
-        for (IInputSpecifier specifier : this.dto.getInputSpecifier()) {
+        for (IInputSpecifier specifier : this.dto.getInputs()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
                 this.inputs.add(new InputLiteralData((InputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof InputComplexDataSpecifier) {

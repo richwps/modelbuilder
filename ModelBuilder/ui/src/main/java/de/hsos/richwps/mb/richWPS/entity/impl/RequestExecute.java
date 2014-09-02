@@ -20,16 +20,20 @@ import net.opengis.wps.x100.OutputDescriptionType;
  *
  * @author dalcacer
  */
-public class RequestExecute implements IRequest{
+public class RequestExecute implements IRequest {
 
     /**
      * The endpoint to call or discover.
      */
-    private String endpoint;
+    private String endpoint = "";
     /**
      * The id of the process which shall be executed.
      */
-    private String processid;
+    private String identifier = "";
+    /**
+     * The versio nof this process.
+     */
+    private String processversion="";
     /**
      * List of available process inputs and their specification/types.
      */
@@ -50,29 +54,32 @@ public class RequestExecute implements IRequest{
      * The actual results.
      */
     private HashMap<String, Object> results;
-    
+
     /**
      * Exception instead of result.
      */
-    private boolean wasException=false;
+    private boolean wasException = false;
     /**
      * Exception text.
      */
-    private String exception="";
+    private String exception = "";
 
     /**
-     * Builds a new, blank, data transfer object.
+     * Builds a new, blank, wps:execute()-request.
      */
     public RequestExecute() {
         this.endpoint = new String();
-        this.processid = new String();
+        this.identifier = new String();
+        this.processversion=new String();
         this.availableinputs = new ArrayList<>();
         this.actualinputs = new HashMap<>();
         this.availableoutputs = new ArrayList<>();
         this.actualoutputs = new HashMap<>();
         this.results = new HashMap<>();
     }
-
+    
+    
+    @Override
     public String getEndpoint() {
         return endpoint;
     }
@@ -81,16 +88,32 @@ public class RequestExecute implements IRequest{
         this.endpoint = endpoint;
     }
 
-    public String getProcessid() {
-        return processid;
+    @Override
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setProcessid(String processid) {
-        this.processid = processid;
+    public void setIdentifier(String processid) {
+        this.identifier = processid;
     }
 
-    public List<IInputSpecifier> getInputSpecifier() {
+    @Override
+    public List<IInputSpecifier> getInputs() {
         return this.availableinputs;
+    }
+
+    @Override
+    public List<IOutputSpecifier> getOutputs() {
+        return this.availableoutputs;
+    }
+    
+    @Override    
+    public String getProcessversion(){
+        return this.processversion;
+    }
+    
+    public void setProcessVersion(String version){
+        this.processversion=version;
     }
 
     public HashMap<String, IInputArgument> getInputArguments() {
@@ -101,10 +124,6 @@ public class RequestExecute implements IRequest{
         this.actualinputs = arguments;
     }
 
-    public List<IOutputSpecifier> getOutputSepcifier() {
-        return this.availableoutputs;
-    }
-
     public HashMap<String, IOutputArgument> getOutputArguments() {
         return this.actualoutputs;
     }
@@ -113,19 +132,20 @@ public class RequestExecute implements IRequest{
         this.actualoutputs = arguments;
     }
 
+    @Override
     public boolean isException() {
         return wasException;
     }
-
-    
+    @Override
     public String getException() {
         return exception;
     }
 
-    public void setException(String exception) {
-        this.exception = exception;
+    @Override
+    public void addException(final String message) {
+        wasException = true;
+        this.exception = message;
     }
-    
 
     /**
      * Adds an input specification to the list of available inputs.
@@ -171,10 +191,5 @@ public class RequestExecute implements IRequest{
 
     public void addResult(final String key, final Object value) {
         this.results.put(key, value);
-    }
-    
-    public void addException(final String message){
-        wasException=true;
-        this.exception=message;
     }
 }

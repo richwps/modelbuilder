@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.execView;
 
-import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.execView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.execView.dialog.InputParameterization;
 import de.hsos.richwps.mb.execView.dialog.OutputParameterization;
@@ -9,7 +8,6 @@ import de.hsos.richwps.mb.execView.dialog.ResultVisualisation;
 import de.hsos.richwps.mb.execView.dialog.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
