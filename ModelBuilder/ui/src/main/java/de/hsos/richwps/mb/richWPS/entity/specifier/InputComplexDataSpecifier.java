@@ -9,7 +9,7 @@ import net.opengis.wps.x100.ComplexDataCombinationsType;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.SupportedComplexDataInputType;
-import org.n52.wps.client.transactional.BasicInputDescriptionType;
+import org.n52.wps.client.transactional.InputDescriptionTypeBuilder;
 
 /**
  * Specifies a complexdata input.
@@ -171,9 +171,9 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     }
 
     @Override
-    public BasicInputDescriptionType toBasicInputDescriptionType() {
-        BasicInputDescriptionType desc;
-        desc = new BasicInputDescriptionType(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
+    public InputDescriptionType toInputDescription() {
+        InputDescriptionTypeBuilder desc;
+        desc = new InputDescriptionTypeBuilder(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
         desc.setAbstract(this.theabstract);
 
         //create supported type list
@@ -182,7 +182,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
             String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
             String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
             String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);
-            ComplexDataDescriptionType ogctype = BasicInputDescriptionType.createComplexDataDescriptionType(mimetype, encoding, schema);
+            ComplexDataDescriptionType ogctype = InputDescriptionTypeBuilder.createComplexDataDescriptionType(mimetype, encoding, schema);
             supportedFormatList.add(ogctype);
         }
 
@@ -190,10 +190,10 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
         String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
         String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
-        ComplexDataDescriptionType ogcdefaulttype = BasicInputDescriptionType.createComplexDataDescriptionType(mimetype, encoding, schema);
+        ComplexDataDescriptionType ogcdefaulttype = InputDescriptionTypeBuilder.createComplexDataDescriptionType(mimetype, encoding, schema);
 
         desc.addNewComplexData(ogcdefaulttype, supportedFormatList, BigInteger.valueOf(this.maximumMegabytes));
-        return desc;
+        return desc.getIdt();
     }
 
     @Override

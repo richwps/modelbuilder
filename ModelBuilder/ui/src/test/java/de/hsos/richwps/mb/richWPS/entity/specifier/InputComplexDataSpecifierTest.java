@@ -2,13 +2,14 @@ package de.hsos.richwps.mb.richWPS.entity.specifier;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.opengis.wps.x100.InputDescriptionType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.n52.wps.client.transactional.BasicInputDescriptionType;
+import org.n52.wps.client.transactional.InputDescriptionTypeBuilder;
 
 /**
  *
@@ -63,10 +64,9 @@ public class InputComplexDataSpecifierTest {
         specifier.setDefaulttype(atype);
         specifier.setMaximumMegabytes(5);
 
-        BasicInputDescriptionType ogctype = specifier.toBasicInputDescriptionType();
-        InputComplexDataSpecifier specifier2 = new InputComplexDataSpecifier(ogctype.getIdt());
+        InputDescriptionType ogctype = specifier.toInputDescription();
+        InputComplexDataSpecifier specifier2 = new InputComplexDataSpecifier(ogctype);
 
-        
         assertEquals(specifier2, specifier);
     }
 

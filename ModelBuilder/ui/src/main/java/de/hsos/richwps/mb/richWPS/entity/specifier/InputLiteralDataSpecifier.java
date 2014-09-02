@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.LiteralInputType;
-import org.n52.wps.client.transactional.BasicInputDescriptionType;
+import org.n52.wps.client.transactional.InputDescriptionTypeBuilder;
 
 /**
  *
@@ -118,13 +118,13 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
     }
 
     @Override
-    public BasicInputDescriptionType toBasicInputDescriptionType() {
-        BasicInputDescriptionType desc;
-        desc = new BasicInputDescriptionType(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
+    public InputDescriptionType toInputDescription() {
+        InputDescriptionTypeBuilder desc;
+        desc = new InputDescriptionTypeBuilder(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
         desc.setAbstract(this.theabstract);
         
         desc.addNewLiteralData(this.typeReference, this.defaultvalue);
-        return desc;
+        return desc.getIdt();
     }
 
     @Override

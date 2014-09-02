@@ -9,8 +9,7 @@ import net.opengis.wps.x100.ComplexDataCombinationsType;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.SupportedComplexDataType;
-import org.n52.wps.client.transactional.BasicInputDescriptionType;
-import org.n52.wps.client.transactional.BasicOutputDescriptionType;
+import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
 
 /**
  *
@@ -138,11 +137,10 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     }
 
     @Override
-    public BasicOutputDescriptionType toBasicOutputDescriptionType() {
+    public OutputDescriptionType toOutputDescription() {
 
          //create supported type list
         ComplexDataCombinationsType supportedFormats = ComplexDataCombinationsType.Factory.newInstance();
-        int i = 0;
         for (List atype : this.types) {
             String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
             String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
@@ -152,19 +150,18 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
             desctype.setEncoding(encoding);
             desctype.setMimeType(mimetype);
             desctype.setSchema(schema);
-
         }
 
         //create defaulttype
         String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
         String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
         String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
-        ComplexDataCombinationType ogcdefaulttype = BasicOutputDescriptionType.createComplexDataCombiType(mimetype, encoding, schema);
+        ComplexDataCombinationType ogcdefaulttype = OutputDescriptionTypeBuilder.createComplexDataCombiType(mimetype, encoding, schema);
 
-        BasicOutputDescriptionType description = new BasicOutputDescriptionType(ogcdefaulttype, supportedFormats, this.identifier, this.title);
+        OutputDescriptionTypeBuilder description = new OutputDescriptionTypeBuilder(ogcdefaulttype, supportedFormats, this.identifier, this.title);
         description.setAbstract(this.theabstract);
 
-        return description;
+        return description.getOdt();
     }
 
     @Override

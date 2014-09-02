@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity;
 
-import org.n52.wps.client.transactional.BasicOutputDescriptionType;
+import net.opengis.wps.x100.OutputDescriptionType;
 
 /**
  *
@@ -14,6 +14,6 @@ public interface IOutputSpecifier {
     
     public String getTitle();
     
-    public BasicOutputDescriptionType toBasicOutputDescriptionType();
+    public OutputDescriptionType toOutputDescription();
     
 }

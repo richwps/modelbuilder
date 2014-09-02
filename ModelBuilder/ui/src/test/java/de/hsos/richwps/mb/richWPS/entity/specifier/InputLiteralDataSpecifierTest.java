@@ -1,18 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.hsos.richwps.mb.richWPS.entity.specifier;
 
+import net.opengis.wps.x100.InputDescriptionType;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.n52.wps.client.transactional.BasicInputDescriptionType;
+import org.n52.wps.client.transactional.InputDescriptionTypeBuilder;
 
 /**
  *
@@ -53,9 +48,9 @@ public class InputLiteralDataSpecifierTest {
         specifier.setMaxOccur(1);
         specifier.setType(("xs:string"));
         specifier.setDefaultvalue("aab");
-        BasicInputDescriptionType ogctype = specifier.toBasicInputDescriptionType();
-       
-        InputLiteralDataSpecifier specifier2 = new InputLiteralDataSpecifier(ogctype.getIdt());
+        
+        InputDescriptionType ogctype = specifier.toInputDescription();
+        InputLiteralDataSpecifier specifier2 = new InputLiteralDataSpecifier(ogctype);
         assertEquals(specifier, specifier2);
     }
 }

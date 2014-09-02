@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.hsos.richwps.mb.richWPS.entity.specifier;
 
 import java.util.ArrayList;
@@ -15,7 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.n52.wps.client.transactional.BasicOutputDescriptionType;
+import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
 
 /**
  *
@@ -66,8 +60,8 @@ public class OutputComplexDataSpecifierTest {
         specifier.setTypes(types);
         specifier.setDefaulttype(atype);
         
-        BasicOutputDescriptionType description = specifier.toBasicOutputDescriptionType();
-        OutputComplexDataSpecifier specifier2 = new OutputComplexDataSpecifier(description.getOdt());
+        OutputDescriptionType description = specifier.toOutputDescription();
+        OutputComplexDataSpecifier specifier2 = new OutputComplexDataSpecifier(description);
         assertEquals(specifier, specifier2);
     }
     

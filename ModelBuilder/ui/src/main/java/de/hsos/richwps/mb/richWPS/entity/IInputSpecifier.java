@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity;
 
-import org.n52.wps.client.transactional.BasicInputDescriptionType;
+import net.opengis.wps.x100.InputDescriptionType;
 
 /**
  *
@@ -18,5 +18,5 @@ public interface IInputSpecifier {
     
     public int getMaxOccur();
     
-    public BasicInputDescriptionType toBasicInputDescriptionType();
+    public InputDescriptionType toInputDescription();
 }

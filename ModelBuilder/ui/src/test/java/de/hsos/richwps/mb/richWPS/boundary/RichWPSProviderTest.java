@@ -2,18 +2,21 @@ package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
 import de.hsos.richwps.mb.richWPS.entity.*;
+import de.hsos.richwps.mb.richWPS.entity.deploy.DeployRequestDTO;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import junit.framework.TestCase;
+import net.opengis.wps.x100.ProcessDescriptionType;
 
 /**
  *
@@ -145,7 +148,7 @@ public class RichWPSProviderTest extends TestCase {
 
         dto = instance.describeProcess(dto);
         List<IInputSpecifier> inputs = dto.getInputSpecifier();
-        System.out.println(inputs);
+        
         assertEquals(2, inputs.size());
         InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
         InputLiteralDataSpecifier literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
@@ -191,7 +194,7 @@ public class RichWPSProviderTest extends TestCase {
 
         dto = instance.describeProcess(dto);
         List<IInputSpecifier> inputs = dto.getInputSpecifier();
-        System.out.println(inputs);
+        
         assertEquals(2, inputs.size());
         InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
         InputLiteralDataSpecifier literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
@@ -217,7 +220,101 @@ public class RichWPSProviderTest extends TestCase {
         dto = instance.executeProcess(dto);
 
         assertTrue(dto.isException());
-        System.out.println(dto.getException());
+        
         assertNotNull(dto.getException());
+    }
+    
+     private IInputSpecifier createComplexDataInput() {
+        InputComplexDataSpecifier specifier;
+        specifier = new InputComplexDataSpecifier();
+        specifier.setIdentifier("aabb input.");
+        specifier.setTitle("aabb input.");
+        specifier.setMinOccur(0);
+        specifier.setMaxOccur(1);
+        specifier.setAbstract("aabb's abstract.");
+        
+        List<String> atype = new ArrayList<>();
+        atype.add("application/xml");   // mimetype
+        atype.add("");  // schema
+        atype.add("");  // encoding
+        List<String> anothertype = new ArrayList<>();
+        anothertype.add("text/xml");   // mimetype
+        anothertype.add("");  // schema
+        anothertype.add("");  // encoding
+        
+        List<List> types = new ArrayList<>();
+        types.add(atype);
+        types.add(anothertype);
+        
+        specifier.setTypes(types);
+        specifier.setDefaulttype(atype);
+        specifier.setMaximumMegabytes(5);
+        return specifier;
+    }
+
+    private IInputSpecifier createLiteralDataInput() {
+        InputLiteralDataSpecifier specifier = new InputLiteralDataSpecifier();
+        specifier.setIdentifier("aabb");
+        specifier.setTitle("aabb");
+        specifier.setAbstract("aabb's abstract");
+        specifier.setMinOccur(0);
+        specifier.setMaxOccur(1);
+        specifier.setType(("xs:string"));
+        specifier.setDefaultvalue("aab");
+        return specifier;
+    }
+
+    private IOutputSpecifier createComplexDataOutput() {
+        OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
+        specifier.setIdentifier("aabb");
+        specifier.setTitle("aabb");
+        specifier.setTheabstract("aabb's abstract");
+        
+        List<String> atype = new ArrayList<>();
+        atype.add("application/xml");   // mimetype
+        atype.add("");  // schema
+        atype.add("");  // encoding
+        List<String> anothertype = new ArrayList<>();
+        anothertype.add("text/xml");   // mimetype
+        anothertype.add("");  // schema
+        anothertype.add("");  // encoding
+        
+        List<List> types = new ArrayList<>();
+        types.add(atype);
+        types.add(anothertype);
+        
+        specifier.setTypes(types);
+        specifier.setDefaulttype(atype);
+        return specifier;
+    }
+
+    private IOutputSpecifier createLiteralDataOutput() {
+        OutputLiteralDataSpecifier specifier = new OutputLiteralDataSpecifier();
+        specifier.setIdentifier("aabb");
+        specifier.setTitle("aabb");
+        specifier.setAbstract("aabb's abstract");
+        specifier.setType("xs:string");
+        return specifier;
+    }
+
+     public void testDeploy() {
+        System.out.println("testDeploy");
+        
+
+        RichWPSProvider instance = new RichWPSProvider();
+        try {
+            instance.connect(wpsurl, wpsurl);
+        } catch (Exception ex) {
+            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("testCreation");
+        DeployRequestDTO dto = new DeployRequestDTO("localhost", "test", "test", "1.0");
+        dto.addInput(this.createComplexDataInput());
+        dto.addInput(this.createLiteralDataInput());
+        dto.addOutput(this.createComplexDataOutput());
+        dto.addOutput(this.createLiteralDataOutput());
+        dto.setExecutionUnit("Execunit.");
+        
+        instance.deploy(dto);
     }
 }
