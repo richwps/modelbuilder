@@ -2,10 +2,8 @@ package de.hsos.richwps.mb.richWPS.entity.specifier;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import java.util.Objects;
-import net.opengis.ows.x11.DomainMetadataType;
-import net.opengis.wps.x100.LiteralOutputType;
 import net.opengis.wps.x100.OutputDescriptionType;
-import org.n52.wps.client.transactional.BasicOutputDescriptionType;
+import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
 import org.n52.wps.io.data.binding.literal.AbstractLiteralDataBinding;
 import org.n52.wps.io.data.binding.literal.LiteralIntBinding;
 import org.n52.wps.io.data.binding.literal.LiteralStringBinding;
@@ -111,15 +109,14 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
     }
 
     @Override
-    public BasicOutputDescriptionType toBasicOutputDescriptionType() {
+    public OutputDescriptionType toOutputDescription() {
 
         
-        BasicOutputDescriptionType ogctype = new BasicOutputDescriptionType(identifier, title);
+        OutputDescriptionTypeBuilder ogctype = new OutputDescriptionTypeBuilder(identifier, title);
         ogctype.setAbstract(this.theabstract);
         ogctype.addNewLiteralOutput(this.typereference);
 
-        System.out.println(ogctype.getOdt().toString());
-        return ogctype;
+        return ogctype.getOdt();
     }
 
     @Override

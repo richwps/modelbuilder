@@ -4,9 +4,9 @@ import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import java.util.ArrayList;
 import java.util.List;
-import net.opengis.wps.x100.ExecuteResponseDocument;
+import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionType;
-import org.n52.wps.client.transactional.BasicProcessDescriptionType;
+import org.n52.wps.client.transactional.ProcessDescriptionTypeBuilder;
 
 /**
  *
@@ -14,7 +14,7 @@ import org.n52.wps.client.transactional.BasicProcessDescriptionType;
  */
 public class DeployRequestDTO {
 
-    BasicProcessDescriptionType processdescription;
+    ProcessDescriptionTypeBuilder processdescription;
     /**
      * The endpoint to call or discover.
      */
@@ -102,6 +102,10 @@ public class DeployRequestDTO {
         this.inputs = inputs;
     }
 
+    public void addInput(IInputSpecifier specifier){
+        this.inputs.add(specifier);
+    }
+    
     public List<IOutputSpecifier> getOutputs() {
         return outputs;
     }
@@ -109,22 +113,38 @@ public class DeployRequestDTO {
     public void setOutputs(List<IOutputSpecifier> outputs) {
         this.outputs = outputs;
     }
+    
+    public void addOutput(IOutputSpecifier specifier){
+        this.outputs.add(specifier);
+    }
 
-    public void setExecutionUnit(String eu) {
-        this.executionUnit = eu;
+    public void setExecutionUnit(String execunit) {
+        this.executionUnit = execunit;
     }
 
     public String getExecutionUnit() {
         return this.executionUnit;
     }
-    
-    public BasicProcessDescriptionType toBasicProcessDescriptionType(){
-        BasicProcessDescriptionType ogctype;
-        //Convert Outputs
-        /*ProcessDescriptionType.ProcessOutputs outputs = ProcessDescriptionType.ProcessOutputs.Factory.newInstance();
-        for()*/
-        /*ogctype = new BasicProcessDescriptionType(this.identifier,this.title, this.processversion, );*/
-        return null;
+
+    public ProcessDescriptionType toProcessDescriptionType() {
+        ProcessDescriptionTypeBuilder description;
+        //Convert outputs from IOutputSpecifier-list to OutputDescriptionType-array.
+        ProcessDescriptionType.ProcessOutputs ogcoutputs = ProcessDescriptionType.ProcessOutputs.Factory.newInstance();
+        OutputDescriptionType[] outputarray = new OutputDescriptionType[this.outputs.size()];
+        int i = 0;
+        for (IOutputSpecifier specifier : this.outputs) {
+            OutputDescriptionType atype = specifier.toOutputDescription();
+            outputarray[i++] = atype;
+        }
+        ogcoutputs.setOutputArray(outputarray);
+        description = new ProcessDescriptionTypeBuilder(this.identifier, this.title, this.processversion, ogcoutputs);
+
+        //Convert inputs from IInputSpecifier-list to InputDescriptionType and add them.
+        for (IInputSpecifier specifier : this.inputs) {
+            description.addNewInputToDataInputs(specifier.toInputDescription());
+        }
+
+        return description.getPdt();
     }
 
 }

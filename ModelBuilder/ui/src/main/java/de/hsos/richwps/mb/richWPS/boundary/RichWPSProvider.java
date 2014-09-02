@@ -12,6 +12,8 @@ import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -416,10 +418,17 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
     
-    private boolean deploy(DeployRequestDTO dto){
+    public boolean deploy(DeployRequestDTO dto){
         TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
         
         builder.setDeployExecutionUnit(dto.getExecutionUnit());
+        builder.setDeployProcessDescription(dto.toProcessDescriptionType());
+        builder.setDeploymentProfileName("ROLA");
+        try {
+            System.out.println(builder.getDeploydocument());
+        } catch (WPSClientException ex) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument."+ex.getLocalizedMessage());
+        }
         return false;
     }
 }
