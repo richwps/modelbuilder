@@ -25,6 +25,12 @@ public interface IRequest {
      * @return
      */
     public String getProcessversion();
+    
+        /**
+     *
+     * @return
+     */
+    public String getAbstract();
 
     /**
      *

@@ -150,7 +150,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * Describes process and its' in and outputs.
      *
      * @param dto ExecuteRequestDTO with endpoint and processid.
-
+     *
      */
     @Override
     public void describeProcess(ExecuteRequest dto) {
@@ -162,16 +162,23 @@ public class RichWPSProvider implements IRichWPSProvider {
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
 
+            ProcessDescriptionType processdescriptions = descs[0];
+            if (processdescriptions.getProcessVersion() != null) {
+                dto.setProcessVersion(processdescriptions.getProcessVersion());
+            }
+
+            if (processdescriptions.getAbstract() != null) {
+                dto.setAbstract(processdescriptions.getAbstract().getStringValue());
+            }
+
             if (dto.getInputs().isEmpty()) {
-                this.execAddInputs(dto, descs);
+                this.execAddInputs(dto, processdescriptions);
             }
 
             if (dto.getOutputs().isEmpty()) {
-                //dto =
-                this.execAddOutputs(dto, descs);
+                this.execAddOutputs(dto, processdescriptions);
             }
 
-            
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n " + ex.getLocalizedMessage());
         }
@@ -339,14 +346,11 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(ExecuteRequest dto, ProcessDescriptionType[] descs) {
-
-        for (ProcessDescriptionType process : descs) {
-            ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
-            InputDescriptionType[] _inputs = inputs.getInputArray();
-            for (InputDescriptionType description : _inputs) {
-                dto.addInput(description);
-            }
+    private void execAddInputs(ExecuteRequest dto, ProcessDescriptionType process) {
+        ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
+        InputDescriptionType[] _inputs = inputs.getInputArray();
+        for (InputDescriptionType description : _inputs) {
+            dto.addInput(description);
         }
     }
 
@@ -357,16 +361,13 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private void execAddOutputs(ExecuteRequest dto, ProcessDescriptionType[] descs) {
+    private void execAddOutputs(ExecuteRequest dto, ProcessDescriptionType process) {
 
-        for (ProcessDescriptionType process : descs) {
-            ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
-            OutputDescriptionType[] _outputs = outputs.getOutputArray();
-            for (OutputDescriptionType description : _outputs) {
-                dto.addOutput(description);
-            }
+        ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
+        OutputDescriptionType[] _outputs = outputs.getOutputArray();
+        for (OutputDescriptionType description : _outputs) {
+            dto.addOutput(description);
         }
-
     }
 
     /**

@@ -32,9 +32,14 @@ public class ExecuteRequest implements IRequest {
      */
     private String identifier = "";
     /**
-     * The versio nof this process.
+     * The version of this process.
      */
     private String processversion = "";
+    
+        /**
+     * The abstract.
+     */
+    private String theabstract = "";
     /**
      * List of available process inputs and their specification/types.
      */
@@ -140,6 +145,17 @@ public class ExecuteRequest implements IRequest {
         return this.processversion;
     }
 
+    @Override
+    public String getAbstract() {
+        return theabstract;
+    }
+
+    public void setAbstract(String theabstract) {
+        this.theabstract = theabstract;
+    }
+
+    
+    
     /**
      *
      * @param version
