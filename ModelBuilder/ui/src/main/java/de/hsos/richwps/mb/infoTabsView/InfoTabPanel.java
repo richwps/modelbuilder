@@ -7,6 +7,7 @@ package de.hsos.richwps.mb.infoTabsView;
 
 import java.awt.Color;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import layout.TableLayout;
@@ -18,6 +19,7 @@ import layout.TableLayout;
 public class InfoTabPanel extends JPanel {
 
     private JTextArea textArea;
+    private final JScrollPane scrollPane;
 
     public InfoTabPanel() {
 
@@ -26,7 +28,7 @@ public class InfoTabPanel extends JPanel {
         textArea = new JTextArea();
         textArea.setEditable(false);
 
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane = new JScrollPane(textArea);
 
         setLayout(fillLayout);
         add(scrollPane, "0 0");
@@ -50,6 +52,11 @@ public class InfoTabPanel extends JPanel {
 
     String getOutput() {
         return textArea.getText();
+    }
+
+    void scrollToBottom() {
+        JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
+        scrollBar.setValue(scrollBar.getMaximum());
     }
 
 }

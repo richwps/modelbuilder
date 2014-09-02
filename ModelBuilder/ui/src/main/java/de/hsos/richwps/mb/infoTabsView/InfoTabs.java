@@ -83,6 +83,7 @@ public class InfoTabs extends JTabbedPane {
 
         infoTabPanel.appendOutput(value.toString());
         infoTabPanel.appendOutput(newline);
+        infoTabPanel.scrollToBottom();
 
         if (!getSelectedComponent().equals(infoTabPanel)) {
             setTabStatus(getIndex(tabId), false);
