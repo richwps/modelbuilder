@@ -30,8 +30,20 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
 
     private List<String> defaulttype;
     private List<List> types;
+
+    /**
+     *
+     */
     public final static int mimetype_IDX = 0;
+
+    /**
+     *
+     */
     public final static int schema_IDX = 1;
+
+    /**
+     *
+     */
     public final static int encoding_IDX = 2;
 
     /**
@@ -93,83 +105,160 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getIdentifier() {
         return this.identifier;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getAbstract() {
         return this.theabstract;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getTitle() {
         return this.title;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getMinOccur() {
         return minOccur;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getMaxOccur() {
         return maxOccur;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getDefaultType() {
         return this.defaulttype;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<List> getTypes() {
         return this.types;
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public boolean isDefaultType(List type) {
         return type.equals(defaulttype);
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(SupportedComplexDataInputType type) {
         this.ogctype = type;
     }
 
+    /**
+     *
+     * @param identifier
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     *
+     * @param titel
+     */
     public void setTitle(String titel) {
         this.title = titel;
     }
 
+    /**
+     *
+     * @param theabstract
+     */
     public void setAbstract(String theabstract) {
         this.theabstract = theabstract;
     }
 
+    /**
+     *
+     * @param minOccur
+     */
     public void setMinOccur(int minOccur) {
         this.minOccur = minOccur;
     }
 
+    /**
+     *
+     * @param maxOccur
+     */
     public void setMaxOccur(int maxOccur) {
         this.maxOccur = maxOccur;
     }
 
+    /**
+     *
+     * @param defaulttype
+     */
     public void setDefaulttype(List<String> defaulttype) {
         this.defaulttype = defaulttype;
     }
 
+    /**
+     *
+     * @param types
+     */
     public void setTypes(List<List> types) {
         this.types = types;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMaximumMegabytes() {
         return maximumMegabytes;
     }
 
+    /**
+     *
+     * @param maximumMegabytes
+     */
     public void setMaximumMegabytes(int maximumMegabytes) {
         this.maximumMegabytes = maximumMegabytes;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public InputDescriptionType toInputDescription() {
         InputDescriptionTypeBuilder desc;
@@ -196,11 +285,19 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         return desc.getIdt();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "InputComplexDataSpecifier{" + " identifier=" + identifier + ", title=" + title + ", theabstract=" + theabstract + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + ", maximumMegabytes=" + maximumMegabytes + ", defaulttype=" + defaulttype + ", types=" + types + '}';
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -215,6 +312,11 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

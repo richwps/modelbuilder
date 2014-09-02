@@ -11,19 +11,63 @@ import java.util.List;
  */
 public interface IRichWPSProvider {
 
+    /**
+     *
+     * @param wpsurl
+     * @throws Exception
+     */
     public void connect(final String wpsurl) throws Exception;
 
+    /**
+     *
+     * @param wpsurl
+     * @param wpsturl
+     * @throws Exception
+     */
     public void connect(final String wpsurl, final String wpsturl) throws Exception;
 
+    /**
+     *
+     * @param wpsurl
+     * @param wpsturl
+     * @param testurl
+     * @throws Exception
+     */
     public void connect(final String wpsurl, final String wpsturl, final String testurl) throws Exception;
 
+    /**
+     *
+     * @param wpsurl
+     * @param wpsturl
+     * @param testurl
+     * @param profileurl
+     * @throws Exception
+     */
     public void connect(final String wpsurl, final String wpsturl, final String testurl, final String profileurl) throws Exception;
 
+    /**
+     *
+     * @param wpsurl
+     * @return
+     */
     public List<String> getAvailableProcesses(final String wpsurl);
 
+    /**
+     *
+     * @param dto
+     */
     public void describeProcess(RequestExecute dto);
 
+    /**
+     *
+     * @param dto
+     */
     public void executeProcess(RequestExecute dto);
 
+    /**
+     *
+     * @param dto
+     * @return
+     */
     public RequestDeploy deploy(final RequestDeploy dto);
 }

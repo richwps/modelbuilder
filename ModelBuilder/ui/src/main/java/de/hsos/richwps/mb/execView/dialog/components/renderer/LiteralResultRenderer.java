@@ -20,6 +20,8 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
 
     /**
      * Creates new form FeatureCollectionRenderer
+     * @param identifier
+     * @param value
      */
     public LiteralResultRenderer(String identifier, String value) {
         initComponents();

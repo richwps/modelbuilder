@@ -20,6 +20,8 @@ public class ExceptionRenderer extends javax.swing.JPanel {
 
     /**
      * Creates new form FeatureCollectionRenderer
+     * @param identifier
+     * @param value
      */
     public ExceptionRenderer(String identifier, String value) {
         initComponents();

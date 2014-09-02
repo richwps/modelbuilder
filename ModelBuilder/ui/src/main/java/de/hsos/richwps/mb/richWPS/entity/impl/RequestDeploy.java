@@ -59,6 +59,9 @@ public class RequestDeploy implements IRequest {
      */
     private String exception = "";
 
+    /**
+     *
+     */
     public RequestDeploy() {
         this.endpoint = "";
         this.identifier = "";
@@ -72,6 +75,14 @@ public class RequestDeploy implements IRequest {
         this.keepExecUnit = false;
     }
 
+    /**
+     *
+     * @param endpoint
+     * @param identifier
+     * @param title
+     * @param processversion
+     * @param deploymentprofile
+     */
     public RequestDeploy(final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {
         this.endpoint = endpoint;
@@ -87,109 +98,213 @@ public class RequestDeploy implements IRequest {
         this.keepExecUnit = false;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEndpoint() {
         return endpoint;
     }
 
+    /**
+     *
+     * @param endpoint
+     */
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     *
+     * @param identifier
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getProcessversion() {
         return processversion;
     }
 
+    /**
+     *
+     * @param processversion
+     */
     public void setProcessversion(String processversion) {
         this.processversion = processversion;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<IInputSpecifier> getInputs() {
         return inputs;
     }
 
+    /**
+     *
+     * @param inputs
+     */
     public void setInputs(List<IInputSpecifier> inputs) {
         this.inputs = inputs;
     }
 
+    /**
+     *
+     * @param specifier
+     */
     public void addInput(IInputSpecifier specifier) {
         this.inputs.add(specifier);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<IOutputSpecifier> getOutputs() {
         return outputs;
     }
 
+    /**
+     *
+     * @param outputs
+     */
     public void setOutputs(List<IOutputSpecifier> outputs) {
         this.outputs = outputs;
     }
 
+    /**
+     *
+     * @param specifier
+     */
     public void addOutput(IOutputSpecifier specifier) {
         this.outputs.add(specifier);
     }
 
+    /**
+     *
+     * @param execunit
+     */
     public void setExecutionUnit(String execunit) {
         this.executionUnit = execunit;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getExecutionUnit() {
         return this.executionUnit;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDeploymentprofile() {
         return deploymentprofile;
     }
 
+    /**
+     *
+     * @param deploymentprofile
+     */
     public void setDeploymentprofile(String deploymentprofile) {
         this.deploymentprofile = deploymentprofile;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getAbstract() {
         return theabstract;
     }
 
+    /**
+     *
+     * @param theabstract
+     */
     public void setAbstract(String theabstract) {
         this.theabstract = theabstract;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isKeepExecUnit() {
         return keepExecUnit;
     }
 
+    /**
+     *
+     * @param keepExecUnit
+     */
     public void setKeepExecUnit(boolean keepExecUnit) {
         this.keepExecUnit = keepExecUnit;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isException() {
         return wasException;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getException() {
         return exception;
     }
 
+    /**
+     *
+     * @param message
+     */
     public void addException(final String message){
         wasException=true;
         this.exception=message;
     }
 
+    /**
+     *
+     * @return
+     */
     public ProcessDescriptionType toProcessDescriptionType() {
         ProcessDescriptionTypeBuilder description;
         //Convert outputs from IOutputSpecifier-list to OutputDescriptionType-array.
@@ -212,6 +327,10 @@ public class RequestDeploy implements IRequest {
         return description.getPdt();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -228,6 +347,11 @@ public class RequestDeploy implements IRequest {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -267,6 +391,10 @@ public class RequestDeploy implements IRequest {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "DeployRequestDTO{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", title=" + title + ", processversion=" + processversion + ", inputs=" + inputs + ", outputs=" + outputs + ", executionUnit=" + executionUnit + ", deploymentprofile=" + deploymentprofile + ", theabstract=" + theabstract + ", keepExecUnit=" + keepExecUnit + '}';

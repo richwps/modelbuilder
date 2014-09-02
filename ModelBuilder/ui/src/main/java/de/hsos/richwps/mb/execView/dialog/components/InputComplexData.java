@@ -66,23 +66,43 @@ public class InputComplexData extends javax.swing.JPanel {
         this.occurs.setText(occurstxt);
     }
 
+    /**
+     *
+     * @return
+     */
     public InputComplexDataSpecifier getSpecifier() {
         return this.specifier;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isReference() {
         return this.selectByReference.isSelected();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isValue() {
         return this.selectByValue.isSelected();
     }
 
+    /**
+     *
+     * @return
+     */
     public java.util.List getMimeType() {
         int idx = this.selectType.getSelectedIndex();
         return specifier.getTypes().get(idx);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getValue() {
         return this.value.getText();
     }

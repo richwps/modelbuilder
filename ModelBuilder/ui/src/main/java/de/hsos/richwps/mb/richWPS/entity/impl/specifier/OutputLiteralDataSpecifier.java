@@ -44,6 +44,10 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         this.typereference = type;
     }
 
+    /**
+     *
+     * @param description
+     */
     public OutputLiteralDataSpecifier(OutputDescriptionType description) {
         this.description = description;
         this.identifier = description.getIdentifier().getStringValue();
@@ -56,41 +60,78 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         this.typereference = description.getLiteralOutput().getDataType().getReference();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getIdentifier() {
         return this.identifier;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getAbstract() {
         return this.theabstract;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getTitle() {
         return this.title;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getType() {
         return typereference;
     }
 
+    /**
+     *
+     * @param subtype
+     */
     public void setType(String subtype) {
         this.typereference = subtype;
     }
 
+    /**
+     *
+     * @param identifier
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     *
+     * @param theabstract
+     */
     public void setAbstract(String theabstract) {
         this.theabstract = theabstract;
     }
 
+    /**
+     *
+     * @param subtype
+     * @return
+     */
     public Class typeToClass(String subtype) {
         if (subtype.equals("xs:string")) {
             return LiteralStringBinding.class;
@@ -108,6 +149,10 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
          */
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public OutputDescriptionType toOutputDescription() {
 
@@ -119,6 +164,10 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         return ogctype.getOdt();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -129,6 +178,11 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -153,6 +207,10 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "OutputLiteralDataSpecifier{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", typereference=" + typereference + '}';

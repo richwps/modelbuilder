@@ -12,20 +12,37 @@ public class InputLiteralDataArgument implements IInputArgument{
     private InputLiteralDataSpecifier specifier;
     private String value;
 
+    /**
+     *
+     * @param specifier
+     */
     public InputLiteralDataArgument(InputLiteralDataSpecifier specifier) {
         this.specifier = specifier;
         this.value = "";
     }
 
+    /**
+     *
+     * @param specifier
+     * @param value
+     */
     public InputLiteralDataArgument(InputLiteralDataSpecifier specifier, String value) {
         this.specifier = specifier;
         this.value = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getValue() {
         return this.value;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getIdentifier() {
         return this.specifier.getIdentifier();
     }

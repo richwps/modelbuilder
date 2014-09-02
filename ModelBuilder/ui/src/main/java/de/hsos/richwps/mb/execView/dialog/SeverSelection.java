@@ -25,6 +25,11 @@ public class SeverSelection extends ADialogPanel {
         this.init();
     }
 
+    /**
+     *
+     * @param wpsurls
+     * @param dto
+     */
     public SeverSelection(List<String> wpsurls, RequestExecute dto) {
         this.remotes = wpsurls;
         this.dto = dto;
@@ -39,6 +44,10 @@ public class SeverSelection extends ADialogPanel {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isValidInput() {
         String server = (String) this.serverSelectionBox.getSelectedItem();
@@ -63,12 +72,19 @@ public class SeverSelection extends ADialogPanel {
         return true;
     }
 
+    /**
+     *
+     */
     @Override
     public void updateDTO() {
         this.dto = new RequestExecute();
         this.dto.setEndpoint((String) this.serverSelectionBox.getSelectedItem());
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public RequestExecute getDTO() {
         return dto;

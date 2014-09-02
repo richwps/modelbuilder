@@ -29,6 +29,11 @@ public class ResultVisualisation extends ADialogPanel {
     private RichWPSProvider provider;
     private RequestExecute dto;
 
+    /**
+     *
+     * @param provider
+     * @param dto
+     */
     public ResultVisualisation(RichWPSProvider provider, RequestExecute dto) {
         this.provider = provider;
         this.dto = dto;
@@ -123,11 +128,18 @@ public class ResultVisualisation extends ADialogPanel {
         this.loadingLabel.setVisible(false);
     }
 
+    /**
+     *
+     */
     @Override
     public void updateDTO() {
         //nop
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public RequestExecute getDTO() {
         //nop

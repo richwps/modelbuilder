@@ -51,6 +51,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * Connects the provider to a WPS-server.
      *
      * @param wpsurl endpoint of WebProcessingService.
+     * @throws java.lang.Exception
      */
     @Override
     public void connect(String wpsurl) throws Exception {
@@ -68,6 +69,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      *
      * @param wpsurl endpoint of WebProcessingService.
      * @param wpsturl endpoint of transactional interface.
+     * @throws java.lang.Exception
      */
     @Override
     public void connect(String wpsurl, String wpsturl) throws Exception {
@@ -96,6 +98,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param wpsurl endpoint of WebProcessingService.
      * @param wpsturl endpoint of transactional interface.
      * @param testurl endpoint of testing interface.
+     * @throws java.lang.Exception
      */
     @Override
     public void connect(String wpsurl, String wpsturl, String testurl) throws Exception {
@@ -110,6 +113,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param wpsturl endpoint of transactional interface.
      * @param testurl endpoint of testing interface.
      * @param profileurl endpoint of profiling interface.
+     * @throws java.lang.Exception
      */
     @Override
     public void connect(String wpsurl, String wpsturl, String testurl, String profileurl) throws Exception {
@@ -178,7 +182,6 @@ public class RichWPSProvider implements IRichWPSProvider {
      *
      * @param dto ExecuteRequestDTO with endpoint and processid and in- and
      * outputarguments.
-     * @return ExecuteRequestDTO with results or exception.
      */
     @Override
     public void executeProcess(RequestExecute dto) {

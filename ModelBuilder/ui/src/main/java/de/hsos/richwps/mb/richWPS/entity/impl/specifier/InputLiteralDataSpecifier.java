@@ -34,6 +34,10 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         this.maxOccur = 0;
     }
 
+    /**
+     *
+     * @param description
+     */
     public InputLiteralDataSpecifier(final InputDescriptionType description) {
         this.identifier = description.getIdentifier().getStringValue();
 
@@ -51,72 +55,135 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         this.defaultvalue = thetype.getDefaultValue();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getIdentifier() {
         return this.identifier;
     }
 
+    /**
+     *
+     * @param identifier
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setType(String type) {
         this.typeReference = type;
     }
 
+    /**
+     *
+     * @param minOccur
+     */
     public void setMinOccur(int minOccur) {
         this.minOccur = minOccur;
     }
 
+    /**
+     *
+     * @param maxOccur
+     */
     public void setMaxOccur(int maxOccur) {
         this.maxOccur = maxOccur;
     }
     
-
+    /**
+     *
+     * @return
+     */
     public String getType() {
         return this.typeReference;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void setSubtype(String type) {
         this.typeReference = type;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getTitle() {
         return this.title;
     }
 
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getAbstract() {
         return theabstract;
     }
 
+    /**
+     *
+     * @param theabstract
+     */
     public void setAbstract(String theabstract) {
         this.theabstract = theabstract;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getMinOccur() {
         return minOccur;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getMaxOccur() {
         return maxOccur;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDefaultvalue() {
         return defaultvalue;
     }
 
+    /**
+     *
+     * @param defaultvalue
+     */
     public void setDefaultvalue(String defaultvalue) {
         this.defaultvalue = defaultvalue;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public InputDescriptionType toInputDescription() {
         InputDescriptionTypeBuilder desc;
@@ -127,6 +194,10 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         return desc.getIdt();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -140,6 +211,11 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

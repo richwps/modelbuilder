@@ -17,6 +17,7 @@ public class OutputComplexData extends javax.swing.JPanel {
 
     /**
      * Creates new form OutputsParamPanel
+     * @param specifier
      */
     public OutputComplexData(OutputComplexDataSpecifier specifier) {
         initComponents();
@@ -54,19 +55,35 @@ public class OutputComplexData extends javax.swing.JPanel {
         this.abstractValue.setText(theabstract);
     }
 
+    /**
+     *
+     * @return
+     */
     public OutputComplexDataSpecifier getSpecifier() {
         return this.specifier;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSelected() {
         return this.selectOutput.isSelected();
     }
 
+    /**
+     *
+     * @return
+     */
     public java.util.List getType() {
         int idx = this.selectType.getSelectedIndex();
         return specifier.getTypes().get(idx);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean asReference() {
         return this.selectAsReference.isSelected();
     }

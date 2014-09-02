@@ -13,6 +13,7 @@ public class OutputLiteralData extends javax.swing.JPanel {
     
     /**
      * Creates new form OutputLiteralData
+     * @param specifier
      */
     public OutputLiteralData(final OutputLiteralDataSpecifier specifier) {
         this.specifier = specifier;
@@ -31,11 +32,18 @@ public class OutputLiteralData extends javax.swing.JPanel {
         
     }
 
-    
+    /**
+     *
+     * @return
+     */
     public OutputLiteralDataSpecifier getSpecifier(){
         return this.specifier;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean isSelected(){
         return this.selectOutput.isSelected();
     }

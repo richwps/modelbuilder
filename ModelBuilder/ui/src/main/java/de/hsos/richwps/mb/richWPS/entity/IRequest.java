@@ -8,13 +8,52 @@ import java.util.List;
  */
 public interface IRequest {
     
-        public String getEndpoint();
-        public String getIdentifier();
-        public String getProcessversion();
-        public List<IInputSpecifier> getInputs();
-        public List<IOutputSpecifier> getOutputs();
-        public boolean isException();
-        public String getException();
-        public void addException(final String message);
+    /**
+     *
+     * @return
+     */
+    public String getEndpoint();
+
+    /**
+     *
+     * @return
+     */
+    public String getIdentifier();
+
+    /**
+     *
+     * @return
+     */
+    public String getProcessversion();
+
+    /**
+     *
+     * @return
+     */
+    public List<IInputSpecifier> getInputs();
+
+    /**
+     *
+     * @return
+     */
+    public List<IOutputSpecifier> getOutputs();
+
+    /**
+     *
+     * @return
+     */
+    public boolean isException();
+
+    /**
+     *
+     * @return
+     */
+    public String getException();
+
+    /**
+     *
+     * @param message
+     */
+    public void addException(final String message);
         
 }

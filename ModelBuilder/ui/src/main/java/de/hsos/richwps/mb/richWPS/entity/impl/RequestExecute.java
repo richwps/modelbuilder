@@ -12,6 +12,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifi
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 
@@ -33,7 +34,7 @@ public class RequestExecute implements IRequest {
     /**
      * The versio nof this process.
      */
-    private String processversion="";
+    private String processversion = "";
     /**
      * List of available process inputs and their specification/types.
      */
@@ -70,77 +71,137 @@ public class RequestExecute implements IRequest {
     public RequestExecute() {
         this.endpoint = new String();
         this.identifier = new String();
-        this.processversion=new String();
+        this.processversion = new String();
         this.availableinputs = new ArrayList<>();
         this.actualinputs = new HashMap<>();
         this.availableoutputs = new ArrayList<>();
         this.actualoutputs = new HashMap<>();
         this.results = new HashMap<>();
     }
-    
-    
+
+    /**
+     *
+     * @return
+     */
     @Override
     public String getEndpoint() {
         return endpoint;
     }
 
+    /**
+     *
+     * @param endpoint
+     */
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getIdentifier() {
         return identifier;
     }
 
+    /**
+     *
+     * @param processid
+     */
     public void setIdentifier(String processid) {
         this.identifier = processid;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<IInputSpecifier> getInputs() {
         return this.availableinputs;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public List<IOutputSpecifier> getOutputs() {
         return this.availableoutputs;
     }
-    
-    @Override    
-    public String getProcessversion(){
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getProcessversion() {
         return this.processversion;
     }
-    
-    public void setProcessVersion(String version){
-        this.processversion=version;
+
+    /**
+     *
+     * @param version
+     */
+    public void setProcessVersion(String version) {
+        this.processversion = version;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<String, IInputArgument> getInputArguments() {
         return this.actualinputs;
     }
 
+    /**
+     *
+     * @param arguments
+     */
     public void setInputArguments(HashMap<String, IInputArgument> arguments) {
         this.actualinputs = arguments;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<String, IOutputArgument> getOutputArguments() {
         return this.actualoutputs;
     }
 
+    /**
+     *
+     * @param arguments
+     */
     public void setOutputArguments(HashMap<String, IOutputArgument> arguments) {
         this.actualoutputs = arguments;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public boolean isException() {
         return wasException;
     }
+
+    /**
+     *
+     * @return
+     */
     @Override
     public String getException() {
         return exception;
     }
 
+    /**
+     *
+     * @param message
+     */
     @Override
     public void addException(final String message) {
         wasException = true;
@@ -181,15 +242,105 @@ public class RequestExecute implements IRequest {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap<String, Object> getResults() {
         return results;
     }
 
+    /**
+     *
+     * @param results
+     */
     public void setResults(HashMap<String, Object> results) {
         this.results = results;
     }
 
+    /**
+     *
+     * @param key
+     * @param value
+     */
     public void addResult(final String key, final Object value) {
         this.results.put(key, value);
     }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 11 * hash + Objects.hashCode(this.endpoint);
+        hash = 11 * hash + Objects.hashCode(this.identifier);
+        hash = 11 * hash + Objects.hashCode(this.processversion);
+        hash = 11 * hash + Objects.hashCode(this.availableinputs);
+        hash = 11 * hash + Objects.hashCode(this.availableoutputs);
+        hash = 11 * hash + Objects.hashCode(this.actualinputs);
+        hash = 11 * hash + Objects.hashCode(this.actualoutputs);
+        hash = 11 * hash + Objects.hashCode(this.results);
+        hash = 11 * hash + (this.wasException ? 1 : 0);
+        hash = 11 * hash + Objects.hashCode(this.exception);
+        return hash;
+    }
+
+    /**
+     *
+     * @param obj
+     * @return
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final RequestExecute other = (RequestExecute) obj;
+        if (!Objects.equals(this.endpoint, other.endpoint)) {
+            return false;
+        }
+        if (!Objects.equals(this.identifier, other.identifier)) {
+            return false;
+        }
+        if (!Objects.equals(this.processversion, other.processversion)) {
+            return false;
+        }
+        if (!Objects.equals(this.availableinputs, other.availableinputs)) {
+            return false;
+        }
+        if (!Objects.equals(this.availableoutputs, other.availableoutputs)) {
+            return false;
+        }
+        if (!Objects.equals(this.actualinputs, other.actualinputs)) {
+            return false;
+        }
+        if (!Objects.equals(this.actualoutputs, other.actualoutputs)) {
+            return false;
+        }
+        if (!Objects.equals(this.results, other.results)) {
+            return false;
+        }
+        if (this.wasException != other.wasException) {
+            return false;
+        }
+        if (!Objects.equals(this.exception, other.exception)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "RequestExecute{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", processversion=" + processversion + ", availableinputs=" + availableinputs + ", availableoutputs=" + availableoutputs + ", actualinputs=" + actualinputs + ", actualoutputs=" + actualoutputs + ", results=" + results + ", wasException=" + wasException + ", exception=" + exception + '}';
+    }
+
 }

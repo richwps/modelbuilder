@@ -26,6 +26,8 @@ public class URIResultRenderer extends javax.swing.JPanel {
 
     /**
      * Creates new form FeatureCollectionRenderer
+     * @param identifier
+     * @param reference
      */
     public URIResultRenderer(String identifier, String reference) {
         initComponents();

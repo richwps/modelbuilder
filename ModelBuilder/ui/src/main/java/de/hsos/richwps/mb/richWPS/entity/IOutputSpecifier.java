@@ -8,12 +8,28 @@ import net.opengis.wps.x100.OutputDescriptionType;
  */
 public interface IOutputSpecifier {
     
+    /**
+     *
+     * @return
+     */
     public String getIdentifier();
     
+    /**
+     *
+     * @return
+     */
     public String getAbstract();
     
+    /**
+     *
+     * @return
+     */
     public String getTitle();
     
+    /**
+     *
+     * @return
+     */
     public OutputDescriptionType toOutputDescription();
     
 }

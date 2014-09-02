@@ -8,15 +8,39 @@ import net.opengis.wps.x100.InputDescriptionType;
  */
 public interface IInputSpecifier {
     
+    /**
+     *
+     * @return
+     */
     public String getIdentifier();
     
+    /**
+     *
+     * @return
+     */
     public String getAbstract();
     
+    /**
+     *
+     * @return
+     */
     public String getTitle();
     
+    /**
+     *
+     * @return
+     */
     public int getMinOccur();
     
+    /**
+     *
+     * @return
+     */
     public int getMaxOccur();
     
+    /**
+     *
+     * @return
+     */
     public InputDescriptionType toInputDescription();
 }

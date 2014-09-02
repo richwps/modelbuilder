@@ -94,6 +94,9 @@ public class InputParameterization extends ADialogPanel {
         this.jScrollPane1.setViewportView(inputsPanel);
     }
 
+    /**
+     *
+     */
     @Override
     public void updateDTO() {
         HashMap<String, IInputArgument> theinputs = new HashMap<>();
@@ -141,10 +144,18 @@ public class InputParameterization extends ADialogPanel {
         this.dto.setInputArguments(theinputs);
     }
 
+    /**
+     *
+     * @return
+     */
     public RequestExecute getDTO() {
         return this.dto;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isValidInput() {
         for (JPanel panel : this.inputs) {
             if (panel instanceof InputComplexData) {

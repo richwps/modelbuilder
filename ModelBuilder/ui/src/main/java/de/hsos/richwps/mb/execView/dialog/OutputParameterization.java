@@ -95,6 +95,9 @@ public class OutputParameterization extends ADialogPanel {
         this.outputsPanelScrollPane.setViewportView(outputsPanel);
     }
 
+    /**
+     *
+     */
     @Override
     public void updateDTO() {
         HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
@@ -136,11 +139,19 @@ public class OutputParameterization extends ADialogPanel {
         this.dto.setOutputArguments(theoutputs);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public RequestExecute getDTO() {
         return this.dto;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isValidInput() {
         boolean someThingSelected = false;
         for (JPanel panel : this.outputs) {

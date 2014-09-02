@@ -23,6 +23,11 @@ public class ProcessSelection extends ADialogPanel {
         this.initComponents();
     }
 
+    /**
+     *
+     * @param provider
+     * @param dto
+     */
     public ProcessSelection(RichWPSProvider provider, RequestExecute dto) {
         this.dto = dto;
         this.wpsurl = dto.getEndpoint();
@@ -50,11 +55,18 @@ public class ProcessSelection extends ADialogPanel {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public RequestExecute getDTO() {
         return dto;
     }
 
+    /**
+     *
+     */
     @Override
     public void updateDTO() {
         this.dto = new RequestExecute();
@@ -62,6 +74,10 @@ public class ProcessSelection extends ADialogPanel {
         dto.setIdentifier((String) this.processesBox.getSelectedItem());
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isValidInput() {
         return true;
     }

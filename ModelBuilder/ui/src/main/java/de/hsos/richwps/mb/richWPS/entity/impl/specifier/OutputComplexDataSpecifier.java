@@ -23,8 +23,20 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     private String title;
     private List<List> types;
     private List<String> defaulttype;
+
+    /**
+     *
+     */
     public static int mimetype_IDX = 0;
+
+    /**
+     *
+     */
     public static int schema_IDX = 1;
+
+    /**
+     *
+     */
     public static int encoding_IDX = 2;
 
     private SupportedComplexDataType type;
@@ -40,6 +52,10 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         this.defaulttype = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param description
+     */
     public OutputComplexDataSpecifier(OutputDescriptionType description) {
         this.description = description;
 
@@ -74,45 +90,86 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getIdentifier() {
         return this.identifier;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getAbstract() {
         return this.theabstract;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getTitle() {
         return this.title;
     }
 
+    /**
+     *
+     * @return
+     */
     public OutputDescriptionType getDescription() {
         return description;
     }
 
+    /**
+     *
+     * @param description
+     */
     public void setDescription(OutputDescriptionType description) {
         this.description = description;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTheabstract() {
         return theabstract;
     }
 
+    /**
+     *
+     * @param theabstract
+     */
     public void setTheabstract(String theabstract) {
         this.theabstract = theabstract;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<String> getDefaultType() {
         return this.defaulttype;
     }
 
+    /**
+     *
+     * @return
+     */
     public List<List> getTypes() {
         return this.types;
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public boolean isDefaultType(List type) {
         if (type.equals(defaulttype)) {
             return true;
@@ -120,22 +177,42 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         return false;
     }
 
+    /**
+     *
+     * @param identifier
+     */
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 
+    /**
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     *
+     * @param types
+     */
     public void setTypes(List<List> types) {
         this.types = types;
     }
 
+    /**
+     *
+     * @param defaulttype
+     */
     public void setDefaulttype(List<String> defaulttype) {
         this.defaulttype = defaulttype;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public OutputDescriptionType toOutputDescription() {
 
@@ -164,6 +241,10 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         return description.getOdt();
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -175,6 +256,11 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         return hash;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -202,6 +288,10 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "OutputComplexDataSpecifier{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", types=" + types + ", defaulttype=" + defaulttype + '}';

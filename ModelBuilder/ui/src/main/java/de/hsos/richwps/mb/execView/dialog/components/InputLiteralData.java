@@ -12,6 +12,10 @@ public class InputLiteralData extends javax.swing.JPanel {
     private String id;
     private InputLiteralDataSpecifier specifier;
 
+    /**
+     *
+     * @param specifier
+     */
     public InputLiteralData(InputLiteralDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
@@ -39,10 +43,18 @@ public class InputLiteralData extends javax.swing.JPanel {
         this.value.setText(defaultvalue);
     }
 
+    /**
+     *
+     * @return
+     */
     public InputLiteralDataSpecifier getSpecifier() {
         return this.specifier;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getText() {
         return this.value.getText();
     }

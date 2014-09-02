@@ -9,13 +9,24 @@ import javax.swing.JPanel;
  */
 public abstract class ADialogPanel extends JPanel {
 
+    /**
+     *
+     */
     public void updateDTO() {
     }
 
+    /**
+     *
+     * @return
+     */
     public RequestExecute getDTO() {
         return null;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean isValidInput(){
         return false;
     }
