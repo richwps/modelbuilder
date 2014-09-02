@@ -1,15 +1,15 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
-import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import de.hsos.richwps.mb.richWPS.entity.*;
-import de.hsos.richwps.mb.richWPS.entity.deploy.DeployRequestDTO;
-import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,10 +114,10 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        ExecuteRequestDTO dto = new ExecuteRequestDTO();
+        RequestExecute dto = new RequestExecute();
         dto.setEndpoint(wpsurl);
         dto.setProcessid(processid);
-        ExecuteRequestDTO result = instance.describeProcess(dto);
+        RequestExecute result = instance.describeProcess(dto);
         List<IInputSpecifier> inputs = result.getInputSpecifier();
         assertEquals(2, inputs.size()); //3 with BBOX suport
         assertEquals("ComplexInputData", ((IInputSpecifier) inputs.get(0)).getIdentifier());
@@ -142,7 +142,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        ExecuteRequestDTO dto = new ExecuteRequestDTO();
+        RequestExecute dto = new RequestExecute();
         dto.setEndpoint(wpsurl);
         dto.setProcessid(processid);
 
@@ -188,7 +188,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        ExecuteRequestDTO dto = new ExecuteRequestDTO();
+        RequestExecute dto = new RequestExecute();
         dto.setEndpoint(wpsurl);
         dto.setProcessid(processid);
 
@@ -308,7 +308,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("testCreation");
-        DeployRequestDTO dto = new DeployRequestDTO("localhost", "test", "test", "1.0");
+        RequestDeploy dto = new RequestDeploy("localhost", "test", "test", "1.0", "ROLA");
         dto.addInput(this.createComplexDataInput());
         dto.addInput(this.createLiteralDataInput());
         dto.addOutput(this.createComplexDataOutput());

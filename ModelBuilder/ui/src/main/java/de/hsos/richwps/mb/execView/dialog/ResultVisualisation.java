@@ -6,9 +6,9 @@ import de.hsos.richwps.mb.execView.dialog.components.renderer.LiteralResultRende
 import de.hsos.richwps.mb.execView.dialog.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -30,9 +30,9 @@ public class ResultVisualisation extends ADialogPanel {
 
     private List<JPanel> renderers;
     private RichWPSProvider provider;
-    private ExecuteRequestDTO dto;
+    private RequestExecute dto;
 
-    public ResultVisualisation(RichWPSProvider provider, ExecuteRequestDTO dto) {
+    public ResultVisualisation(RichWPSProvider provider, RequestExecute dto) {
         this.provider = provider;
         this.dto = dto;
         this.renderers = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ResultVisualisation extends ADialogPanel {
         mt.start();
     }
 
-    private void update(ExecuteRequestDTO dto) {
+    private void update(RequestExecute dto) {
         this.dto = dto;
         if (this.dto.isException()) {
             renderException(dto);
@@ -63,7 +63,7 @@ public class ResultVisualisation extends ADialogPanel {
         }
     }
 
-    private void renderResults(ExecuteRequestDTO dto) {
+    private void renderResults(RequestExecute dto) {
         this.dto = dto;
         HashMap results = this.dto.getResults();
         HashMap arguments = this.dto.getOutputArguments();
@@ -108,7 +108,7 @@ public class ResultVisualisation extends ADialogPanel {
         this.loadingLabel.setVisible(false);
     }
 
-    private void renderException(ExecuteRequestDTO dto) {
+    private void renderException(RequestExecute dto) {
         this.dto = dto;
         ExceptionRenderer r = new ExceptionRenderer("", dto.getException());
         this.remove(this.jScrollPane1);
@@ -132,18 +132,18 @@ public class ResultVisualisation extends ADialogPanel {
     }
 
     @Override
-    public ExecuteRequestDTO getDTO() {
+    public RequestExecute getDTO() {
         //nop
         return this.dto;
     }
 
     private class ExecuteThread extends Thread {
 
-        private ExecuteRequestDTO dto;
+        private RequestExecute dto;
         private RichWPSProvider provider;
         private ResultVisualisation parent;
 
-        public ExecuteThread(ResultVisualisation parent, ExecuteRequestDTO dto, RichWPSProvider provider) {
+        public ExecuteThread(ResultVisualisation parent, RequestExecute dto, RichWPSProvider provider) {
             this.parent = parent;
             this.dto = dto;
             this.provider = provider;

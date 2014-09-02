@@ -4,12 +4,12 @@ import de.hsos.richwps.mb.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.execView.dialog.components.InputComplexData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class InputParameterization extends ADialogPanel {
 
     private List<JPanel> inputs;
     private RichWPSProvider provider;
-    private ExecuteRequestDTO dto;
+    private RequestExecute dto;
 
     /**
      * Creates new form ExecutePanel
@@ -42,7 +42,7 @@ public class InputParameterization extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public InputParameterization(final RichWPSProvider provider, ExecuteRequestDTO dto) {
+    public InputParameterization(final RichWPSProvider provider, RequestExecute dto) {
         this.provider = provider;
         this.dto = dto;
         initComponents();
@@ -143,7 +143,7 @@ public class InputParameterization extends ADialogPanel {
         this.dto.setInputArguments(theinputs);
     }
 
-    public ExecuteRequestDTO getDTO() {
+    public RequestExecute getDTO() {
         return this.dto;
     }
 

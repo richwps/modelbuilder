@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog;
 
-import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import javax.swing.JPanel;
 
 /**
@@ -12,7 +12,7 @@ public abstract class ADialogPanel extends JPanel {
     public void updateDTO() {
     }
 
-    public ExecuteRequestDTO getDTO() {
+    public RequestExecute getDTO() {
         return null;
     }
     

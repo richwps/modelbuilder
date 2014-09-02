@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.specifier;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import java.util.ArrayList;
 import java.util.List;
 import net.opengis.wps.x100.OutputDescriptionType;

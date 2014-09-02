@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import javax.swing.border.TitledBorder;
 
 /**

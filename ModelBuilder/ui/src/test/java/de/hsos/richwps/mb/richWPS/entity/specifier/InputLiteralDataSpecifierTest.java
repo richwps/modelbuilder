@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.specifier;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import net.opengis.wps.x100.InputDescriptionType;
 import org.junit.After;
 import org.junit.AfterClass;

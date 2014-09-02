@@ -3,17 +3,16 @@ package de.hsos.richwps.mb.richWPS.boundary;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.deploy.DeployRequestDTO;
-import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
-import de.hsos.richwps.mb.richWPS.entity.execute.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -73,6 +72,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
+            
         } catch (Exception e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
             throw new Exception("Unable to connect to service.");
@@ -148,7 +148,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * description.
      */
     @Override
-    public ExecuteRequestDTO describeProcess(ExecuteRequestDTO dto) {
+    public RequestExecute describeProcess(RequestExecute dto) {
 
         if (dto.getInputSpecifier().isEmpty()) {
             dto = this.execAddInputs(dto);
@@ -169,8 +169,8 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with results or exception.
      */
     @Override
-    public ExecuteRequestDTO executeProcess(ExecuteRequestDTO dto) {
-        ExecuteRequestDTO resultdto = dto;
+    public RequestExecute executeProcess(RequestExecute dto) {
+        RequestExecute resultdto = dto;
         String wpsurl = dto.getEndpoint();
         String processid = dto.getProcessid();
 
@@ -203,13 +203,36 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
+     * Deploys a new process.
+     *
+     * @param dto DeployRequestDTO.
+     * @see  DeployRequest
+     * @return <code>true</code> for deployment success.
+     */
+    @Override
+    public RequestDeploy deploy(final RequestDeploy dto) {
+        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+
+        builder.setDeployExecutionUnit(dto.getExecutionUnit());
+        builder.setDeployProcessDescription(dto.toProcessDescriptionType());
+        builder.setDeploymentProfileName(dto.getDeploymentprofile());
+        builder.setKeepExecutionUnit(dto.isKeepExecUnit());
+        try {
+            System.out.println(builder.getDeploydocument());
+        } catch (WPSClientException ex) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
+        }
+        return dto;
+    }
+
+    /**
      * Retreives and extracts the processdescription type from a given
      * WPS-server.
      *
      * @param dto ExecuteRequestDTO with endpoint and process id.
      * @return 52n processdescriptiontype.
      */
-    private ProcessDescriptionType getProcessDescriptionType(ExecuteRequestDTO dto) {
+    private ProcessDescriptionType getProcessDescriptionType(RequestExecute dto) {
         ProcessDescriptionType description = null;
         try {
             this.wps = WPSClientSession.getInstance();
@@ -239,13 +262,13 @@ public class RichWPSProvider implements IRichWPSProvider {
      * outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    private ExecuteRequestDTO execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequestDTO dto) {
+    private RequestExecute execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, RequestExecute dto) {
         java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
         System.out.println(file);
         WPSClientConfig.getInstance(file);
 
-        ExecuteRequestDTO resultdto = dto;
+        RequestExecute resultdto = dto;
         HashMap theoutputs = dto.getOutputArguments();
         de.hsos.richwps.mb.Logger.log("Debug: " + responseObject.getClass());
         if (responseObject instanceof ExecuteResponseDocument) {
@@ -304,7 +327,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private ExecuteRequestDTO execAddInputs(ExecuteRequestDTO dto) {
+    private RequestExecute execAddInputs(RequestExecute dto) {
         try {
             String wpsurl = dto.getEndpoint();
             String[] processes = new String[1];
@@ -332,7 +355,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private ExecuteRequestDTO execAddOutputs(ExecuteRequestDTO dto) {
+    private RequestExecute execAddOutputs(RequestExecute dto) {
 
         try {
             String wpsurl = dto.getEndpoint();
@@ -417,18 +440,5 @@ public class RichWPSProvider implements IRichWPSProvider {
             //FIXME add BoundingBox
         }
     }
-    
-    public boolean deploy(DeployRequestDTO dto){
-        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
-        
-        builder.setDeployExecutionUnit(dto.getExecutionUnit());
-        builder.setDeployProcessDescription(dto.toProcessDescriptionType());
-        builder.setDeploymentProfileName("ROLA");
-        try {
-            System.out.println(builder.getDeploydocument());
-        } catch (WPSClientException ex) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument."+ex.getLocalizedMessage());
-        }
-        return false;
-    }
+
 }

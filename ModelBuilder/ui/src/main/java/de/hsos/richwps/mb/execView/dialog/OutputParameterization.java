@@ -5,13 +5,13 @@ import de.hsos.richwps.mb.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputComplexData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputLiteralData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.execute.ExecuteRequestDTO;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestExecute;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.execute.OutputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class OutputParameterization extends ADialogPanel {
 
     private List<JPanel> outputs;
     private RichWPSProvider provider;
-    private ExecuteRequestDTO dto;
+    private RequestExecute dto;
 
     /**
      * Creates new form ExecutePanel
@@ -44,7 +44,7 @@ public class OutputParameterization extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public OutputParameterization(final RichWPSProvider provider, ExecuteRequestDTO dto) {
+    public OutputParameterization(final RichWPSProvider provider, RequestExecute dto) {
         this.provider = provider;
         this.dto = dto;
         initComponents();
@@ -141,7 +141,7 @@ public class OutputParameterization extends ADialogPanel {
     }
 
     @Override
-    public ExecuteRequestDTO getDTO() {
+    public RequestExecute getDTO() {
         return this.dto;
     }
 

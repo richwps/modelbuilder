@@ -1,13 +1,14 @@
-package de.hsos.richwps.mb.richWPS.entity.execute;
+package de.hsos.richwps.mb.richWPS.entity.impl;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ import net.opengis.wps.x100.OutputDescriptionType;
  *
  * @author dalcacer
  */
-public class ExecuteRequestDTO {
+public class RequestExecute implements IRequest{
 
     /**
      * The endpoint to call or discover.
@@ -62,7 +63,7 @@ public class ExecuteRequestDTO {
     /**
      * Builds a new, blank, data transfer object.
      */
-    public ExecuteRequestDTO() {
+    public RequestExecute() {
         this.endpoint = new String();
         this.processid = new String();
         this.availableinputs = new ArrayList<>();

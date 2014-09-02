@@ -1,10 +1,38 @@
 <html>
     <head>
-        <title>RichWPS</title>
+        <title>richWPS.boundary</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Boundary to bordering RichWPS servers.</div>
+        <div>
+            <p>Interface to bordering RichWPS servers.</p>
+            <p>
+                Used to wps-/wpst-Requestss against a given RichWPS server.
+                Therefore it makes use of <b>ExecuteRequestDTO</b>
+                and <b>DeployRequestDTO</b>.
+            </p>
+            <p>
+                As the connect-Methods imply, a RichWPS server is <b>uniquely</b> 
+                identified by a wps-endpoint. A RichWPS server wit transactional
+                capabilities is instantiated with both, the wps- and
+                wpst-endpoint.
+            </p>
+
+            <p><b>ExecuteRequestDTO</b>
+                Object that can be used to perfom an
+                wps:describeProcess()- and wps:execute()-Request.
+                Object that starts out with an endpoint and a processidentifier.
+                The RichWPSProvider can then be used to describe the remote process
+                by retreiving according IInputSpecifiers and IOutputSpecifiers.
+                Based on those descriptions IInputArguments and IOutputArguments 
+                can be set. Once set, the RichWPSProvider is able to 
+                perform an wps:execute()-Request and to obtain the resulting data.
+            </p>
+            <p><b>DeployRequestDTO</b>
+                Object that can be used to perform an wpst:deploy()-Request.
+            </p>
+        </div>
+
     </body>
 </html>

@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import javax.swing.border.TitledBorder;
 import net.opengis.wps.x100.ComplexDataCombinationsType;
 import net.opengis.wps.x100.ComplexDataDescriptionType;

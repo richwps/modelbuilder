@@ -1,11 +1,12 @@
 package de.hsos.richwps.mb.richWPS.entity.deploy;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.RequestDeploy;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.List;
 import net.opengis.wps.x100.ProcessDescriptionType;
@@ -114,7 +115,7 @@ public class DeployRequestDTOTest {
     @Test
     public void testCreation() {
         System.out.println("testCreation");
-        DeployRequestDTO dto = new DeployRequestDTO("localhost", "test", "test", "1.0");
+        RequestDeploy dto = new RequestDeploy("localhost", "test", "test", "1.0", "ROLA");
         dto.addInput(this.createComplexDataInput());
         dto.addInput(this.createLiteralDataInput());
         dto.addOutput(this.createComplexDataOutput());

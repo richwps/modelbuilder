@@ -1,16 +1,25 @@
 <html>
     <head>
-        <title>entity</title>
+        <title>richWPS.entity</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>Contains input sepcifiers and arguments, as well as output specifiers
-            and arguments.
-            <ul>
-                <li>Specifiers are used in a discovery and read-only context.</li>
-                <li>Arguments are used to parameterize an execute request.</li>
-            </ul>
+        <div>
+            <p>
+                Interfaces for <b>requests</b>, <b>specifiers</b> and 
+                <b>arguments</b> that are used by this boundary.
+            </p>
+
+            <p>
+
+                <b>Specifiers</b> are used in a discovery and creational- or readonly. context.
+                E.g. when <i>describing</i> a process or creating a <i>processdescription</i>
+                for deployment.
+                <br/>
+                <b>Arguments</b> are used to parameterize an inputs/outputs with values,
+                so that they can be used for <i>execute requests</i>.
+            <p>
         </div>
     </body>
 </html>
