@@ -25,7 +25,7 @@ public class InputParameterization extends ADialogPanel {
 
     private List<JPanel> inputs;
     private RichWPSProvider provider;
-    private ExecuteRequest dto;
+    private ExecuteRequest request;
 
     /**
      * Creates new form ExecutePanel
@@ -42,24 +42,24 @@ public class InputParameterization extends ADialogPanel {
      */
     public InputParameterization(final RichWPSProvider provider, ExecuteRequest dto) {
         this.provider = provider;
-        this.dto = dto;
+        this.request = dto;
         initComponents();
         this.inputs = new ArrayList<>();
-        String selectedserver = this.dto.getEndpoint();
-        String selectedprocess = this.dto.getIdentifier();
+        String selectedserver = this.request.getEndpoint();
+        String selectedprocess = this.request.getIdentifier();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
-        this.provider.describeProcess(this.dto);
+        this.provider.describeProcess(this.request);
         this.showInputs();
     }
 
     private void showInputs() {
-        if (this.dto.getInputs().isEmpty()) {
+        if (this.request.getInputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load inputs.", JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
-        for (IInputSpecifier specifier : this.dto.getInputs()) {
+        for (IInputSpecifier specifier : this.request.getInputs()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
                 this.inputs.add(new InputLiteralData((InputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof InputComplexDataSpecifier) {
@@ -98,7 +98,7 @@ public class InputParameterization extends ADialogPanel {
      *
      */
     @Override
-    public void updateDTO() {
+    public void updateRequest() {
         HashMap<String, IInputArgument> theinputs = new HashMap<>();
 
         for (JPanel panel : this.inputs) {
@@ -141,15 +141,15 @@ public class InputParameterization extends ADialogPanel {
             }
             //FIXME BoundingBox
         }
-        this.dto.setInputArguments(theinputs);
+        this.request.setInputArguments(theinputs);
     }
 
     /**
      *
      * @return
      */
-    public ExecuteRequest getDTO() {
-        return this.dto;
+    public ExecuteRequest getRequest() {
+        return this.request;
     }
 
     /**

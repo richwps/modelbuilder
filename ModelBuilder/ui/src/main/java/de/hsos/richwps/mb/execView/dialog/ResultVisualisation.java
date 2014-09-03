@@ -27,7 +27,7 @@ public class ResultVisualisation extends ADialogPanel {
 
     private List<JPanel> renderers;
     private RichWPSProvider provider;
-    private ExecuteRequest dto;
+    private ExecuteRequest request;
 
     /**
      *
@@ -36,7 +36,7 @@ public class ResultVisualisation extends ADialogPanel {
      */
     public ResultVisualisation(RichWPSProvider provider, ExecuteRequest dto) {
         this.provider = provider;
-        this.dto = dto;
+        this.request = dto;
         this.renderers = new ArrayList<>();
         initComponents();
         this.selectedProcess.setText(dto.getIdentifier());
@@ -52,13 +52,13 @@ public class ResultVisualisation extends ADialogPanel {
         this.jScrollPane1.setVisible(false);
         this.loadingLabel.setVisible(true);
 
-        ExecuteThread mt = new ExecuteThread(this, this.dto, this.provider);
+        ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
         mt.start();
     }
 
     private void update(ExecuteRequest dto) {
-        this.dto = dto;
-        if (this.dto.isException()) {
+        this.request = dto;
+        if (this.request.isException()) {
             renderException(dto);
         } else {
             this.renderResults(dto);
@@ -66,9 +66,9 @@ public class ResultVisualisation extends ADialogPanel {
     }
 
     private void renderResults(ExecuteRequest dto) {
-        this.dto = dto;
-        HashMap results = this.dto.getResults();
-        HashMap arguments = this.dto.getOutputArguments();
+        this.request = dto;
+        HashMap results = this.request.getResults();
+        HashMap arguments = this.request.getOutputArguments();
         java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();
@@ -111,7 +111,7 @@ public class ResultVisualisation extends ADialogPanel {
     }
 
     private void renderException(ExecuteRequest dto) {
-        this.dto = dto;
+        this.request = dto;
         ExceptionRenderer r = new ExceptionRenderer("", dto.getException());
         this.remove(this.jScrollPane1);
         GridBagConstraints g = new GridBagConstraints();
@@ -132,7 +132,7 @@ public class ResultVisualisation extends ADialogPanel {
      *
      */
     @Override
-    public void updateDTO() {
+    public void updateRequest() {
         //nop
     }
 
@@ -141,9 +141,9 @@ public class ResultVisualisation extends ADialogPanel {
      * @return
      */
     @Override
-    public ExecuteRequest getDTO() {
+    public ExecuteRequest getRequest() {
         //nop
-        return this.dto;
+        return this.request;
     }
 
     private class ExecuteThread extends Thread {

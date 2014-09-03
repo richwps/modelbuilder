@@ -106,7 +106,7 @@ public interface IRichWPSProvider {
      * Undeploys a given process, via wpst:undeploy()-Request.
      *
      * @param request DeployRequest.
-     * @see DeployRequest
+     * @see UneployRequest
      */
     public void undeployProcess(UndeployRequest request);
 

@@ -14,7 +14,7 @@ public class ProcessSelection extends ADialogPanel {
     private RichWPSProvider provider;
     private List<String> processes;
     private String wpsurl;
-    private ExecuteRequest dto;
+    private ExecuteRequest request;
 
     /**
      * Creates new form ProcessSelection
@@ -29,7 +29,7 @@ public class ProcessSelection extends ADialogPanel {
      * @param dto
      */
     public ProcessSelection(RichWPSProvider provider, ExecuteRequest dto) {
-        this.dto = dto;
+        this.request = dto;
         this.wpsurl = dto.getEndpoint();
         this.provider = provider;
         try {
@@ -60,18 +60,18 @@ public class ProcessSelection extends ADialogPanel {
      * @return
      */
     @Override
-    public ExecuteRequest getDTO() {
-        return dto;
+    public ExecuteRequest getRequest() {
+        return request;
     }
 
     /**
      *
      */
     @Override
-    public void updateDTO() {
-        this.dto = new ExecuteRequest();
-        dto.setEndpoint(this.wpsurl);
-        dto.setIdentifier((String) this.processesBox.getSelectedItem());
+    public void updateRequest() {
+        this.request = new ExecuteRequest();
+        request.setEndpoint(this.wpsurl);
+        request.setIdentifier((String) this.processesBox.getSelectedItem());
     }
 
     /**

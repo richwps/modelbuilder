@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 public class SeverSelection extends ADialogPanel {
 
     private List<String> remotes;
-    private ExecuteRequest dto;
+    private ExecuteRequest request;
 
     /**
      * Creates new form SeverSelection
@@ -32,7 +32,7 @@ public class SeverSelection extends ADialogPanel {
      */
     public SeverSelection(List<String> wpsurls, ExecuteRequest dto) {
         this.remotes = wpsurls;
-        this.dto = dto;
+        this.request = dto;
         this.initComponents();
         this.init();
     }
@@ -76,9 +76,9 @@ public class SeverSelection extends ADialogPanel {
      *
      */
     @Override
-    public void updateDTO() {
-        this.dto = new ExecuteRequest();
-        this.dto.setEndpoint((String) this.serverSelectionBox.getSelectedItem());
+    public void updateRequest() {
+        this.request = new ExecuteRequest();
+        this.request.setEndpoint((String) this.serverSelectionBox.getSelectedItem());
     }
 
     /**
@@ -86,8 +86,8 @@ public class SeverSelection extends ADialogPanel {
      * @return
      */
     @Override
-    public ExecuteRequest getDTO() {
-        return dto;
+    public ExecuteRequest getRequest() {
+        return request;
     }
 
     /**

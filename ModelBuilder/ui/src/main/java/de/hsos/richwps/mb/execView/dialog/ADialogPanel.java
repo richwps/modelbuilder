@@ -12,14 +12,14 @@ public abstract class ADialogPanel extends JPanel {
     /**
      *
      */
-    public void updateDTO() {
+    public void updateRequest() {
     }
 
     /**
      *
      * @return
      */
-    public ExecuteRequest getDTO() {
+    public ExecuteRequest getRequest() {
         return null;
     }
     

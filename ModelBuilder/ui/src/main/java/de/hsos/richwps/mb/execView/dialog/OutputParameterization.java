@@ -25,7 +25,7 @@ public class OutputParameterization extends ADialogPanel {
 
     private List<JPanel> outputs;
     private RichWPSProvider provider;
-    private ExecuteRequest dto;
+    private ExecuteRequest request;
 
     /**
      * Creates new form ExecutePanel
@@ -42,28 +42,28 @@ public class OutputParameterization extends ADialogPanel {
      */
     public OutputParameterization(final RichWPSProvider provider, ExecuteRequest dto) {
         this.provider = provider;
-        this.dto = dto;
+        this.request = dto;
         initComponents();
 
-        String selectedserver = this.dto.getEndpoint();
-        String selectedprocess = this.dto.getIdentifier();
+        String selectedserver = this.request.getEndpoint();
+        String selectedprocess = this.request.getIdentifier();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
 
         this.outputs = new ArrayList<>();
-        this.provider.describeProcess(this.dto);
+        this.provider.describeProcess(this.request);
         this.showOutputs();
     }
 
     private void showOutputs() {
 
-        if (this.dto.getOutputs().isEmpty()) {
+        if (this.request.getOutputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load outputs.", JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
 
-        for (IOutputSpecifier specifier : this.dto.getOutputs()) {
+        for (IOutputSpecifier specifier : this.request.getOutputs()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof OutputComplexDataSpecifier) {
@@ -99,7 +99,7 @@ public class OutputParameterization extends ADialogPanel {
      *
      */
     @Override
-    public void updateDTO() {
+    public void updateRequest() {
         HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
 
         for (JPanel panel : this.outputs) {
@@ -136,7 +136,7 @@ public class OutputParameterization extends ADialogPanel {
             }
             //FIXME BoundingBox
         }
-        this.dto.setOutputArguments(theoutputs);
+        this.request.setOutputArguments(theoutputs);
     }
 
     /**
@@ -144,8 +144,8 @@ public class OutputParameterization extends ADialogPanel {
      * @return
      */
     @Override
-    public ExecuteRequest getDTO() {
-        return this.dto;
+    public ExecuteRequest getRequest() {
+        return this.request;
     }
 
     /**

@@ -28,7 +28,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
     private ResultVisualisation resultpanel;
     private List<String> remotes;
     private RichWPSProvider provider;
-    private ExecuteRequest dto;
+    private ExecuteRequest request;
 
     /**
      * Creates new form execViewDialog
@@ -41,7 +41,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
             Logger.getLogger(ExecViewDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.provider = new RichWPSProvider();
-        this.dto = new ExecuteRequest();
+        this.request = new ExecuteRequest();
         this.remotes = wpsurls;
         this.initComponents();
         this.backButton.setVisible(false);
@@ -51,7 +51,7 @@ public class ExecViewDialog extends javax.swing.JDialog {
     private void showServerSelection(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
-        this.serverselectionpanel = new SeverSelection(this.remotes, this.dto);
+        this.serverselectionpanel = new SeverSelection(this.remotes, this.request);
 
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
@@ -76,17 +76,17 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.backButton.setVisible(true);
         this.nextButton.setVisible(true);
 
-        //refresh the dto
-        this.currentPanel.updateDTO();
-        this.dto = this.currentPanel.getDTO();
+        //refresh the request
+        this.currentPanel.updateRequest();
+        this.request = this.currentPanel.getRequest();
 
         try {
-            this.provider.connect(this.dto.getEndpoint());
+            this.provider.connect(this.request.getEndpoint());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unable to connect to service..");
             return;
         }
-        this.processesselectionpanel = new ProcessSelection(this.provider, this.dto);
+        this.processesselectionpanel = new ProcessSelection(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.processesselectionpanel);
@@ -107,11 +107,11 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.backButton.setVisible(true);
         this.nextButton.setVisible(true);
 
-        //refresh the dto
-        this.currentPanel.updateDTO();
-        this.dto = this.currentPanel.getDTO();
+        //refresh the request
+        this.currentPanel.updateRequest();
+        this.request = this.currentPanel.getRequest();
 
-        this.inputspanel = new InputParameterization(this.provider, this.dto);
+        this.inputspanel = new InputParameterization(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.inputspanel);
@@ -131,11 +131,11 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.backButton.setVisible(true);
         this.nextButton.setVisible(true);
 
-        //refresh the dto
-        this.currentPanel.updateDTO();
-        this.dto = this.currentPanel.getDTO();
+        //refresh the request
+        this.currentPanel.updateRequest();
+        this.request = this.currentPanel.getRequest();
 
-        this.outputsspanel = new OutputParameterization(this.provider, this.dto);
+        this.outputsspanel = new OutputParameterization(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.outputsspanel);
@@ -153,11 +153,11 @@ public class ExecViewDialog extends javax.swing.JDialog {
         this.backButton.setVisible(true);
         this.nextButton.setVisible(false);
 
-        //refresh the dto
-        this.currentPanel.updateDTO();
-        this.dto = this.currentPanel.getDTO();
+        //refresh the request
+        this.currentPanel.updateRequest();
+        this.request = this.currentPanel.getRequest();
 
-        this.resultpanel = new ResultVisualisation(this.provider, this.dto);
+        this.resultpanel = new ResultVisualisation(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.resultpanel);
