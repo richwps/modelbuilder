@@ -1,7 +1,9 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import java.util.List;
 
 /**
@@ -77,27 +79,46 @@ public interface IRichWPSProvider {
     public List<String> getAvailableProcesses(final String wpsurl);
 
     /**
-     * Describes process and its' in and outputs.
+     * Describes a process, via wps:describeProcess()-Request.
      *
-     * @param dto ExecuteRequestDTO with endpoint and processid.
+     * @param request ExecuteRequest with endpoint and processid.
      *
      */
-    public void describeProcess(ExecuteRequest dto);
+    public void describeProcess(ExecuteRequest request);
 
     /**
-     * Describes process and its' in and outputs.
+     * Executes a process, via wps:execute()-Request.
      *
-     * @param dto ExecuteRequestDTO with endpoint and processid and in- and
+     * @param request ExecuteRequest with endpoint and processid and in- and
      * outputarguments.
      */
-    public void executeProcess(ExecuteRequest dto);
+    public void executeProcess(ExecuteRequest request);
 
     /**
-     * Deploys a new process.
+     * Deploys a process, via wpst:deploy()-Request.
      *
-     * @param dto DeployRequestDTO.
+     * @param request DeployRequest.
      * @see DeployRequest
+     */
+    public void deployProcess(DeployRequest request);
+
+    /**
+     * Undeploys a given process, via wpst:undeploy()-Request.
+     *
+     * @param request DeployRequest.
+     * @see DeployRequest
+     */
+    public void undeployProcess(UndeployRequest request);
+
+    /**
+     * Performs a request.
+     *
+     * @param request IRequest.
+     * @see IRequest
+     * @see ExecuteRequest
+     * @see DeployRequest
+     * @see UndeployRequest
      * @return <code>true</code> for deployment success.
      */
-    public DeployRequest deploy(final DeployRequest dto);
+    public void request(IRequest request);
 }

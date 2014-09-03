@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import net.opengis.wps.x100.OutputDescriptionType;

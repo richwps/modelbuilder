@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.deploy;
+package de.hsos.richwps.mb.richWPS.entity.impl;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -21,9 +21,9 @@ import static org.junit.Assert.*;
  *
  * @author dalcacer
  */
-public class DeployRequestDTOTest {
+public class DeployRequestTest {
 
-    public DeployRequestDTOTest() {
+    public DeployRequestTest() {
     }
 
     @BeforeClass

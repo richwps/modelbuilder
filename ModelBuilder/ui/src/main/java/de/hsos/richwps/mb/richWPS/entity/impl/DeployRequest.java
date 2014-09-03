@@ -11,6 +11,8 @@ import net.opengis.wps.x100.ProcessDescriptionType;
 import org.n52.wps.client.transactional.ProcessDescriptionTypeBuilder;
 
 /**
+ * Represents a DeployRequest. The RichWPSProvider is able to perform a
+ * wpst:deploy()-Request with this object.
  *
  * @author dalcacer
  */
@@ -26,8 +28,14 @@ public class DeployRequest implements IRequest {
      */
     private String identifier;
 
+    /**
+     * The title of the process.
+     */
     private String title;
 
+    /**
+     * The processversion.
+     */
     private String processversion;
 
     /**
@@ -44,10 +52,20 @@ public class DeployRequest implements IRequest {
      */
     private String executionUnit;
 
+    /**
+     * The deploymentprofile for the execution unit.
+     */
     private String deploymentprofile;
 
+    /**
+     * The processes' abstract.
+     */
     private String theabstract;
 
+    /**
+     * A flag that indicates if the execution unit should be stored when
+     * wps:undeploy() is called.
+     */
     private boolean keepExecUnit;
 
     /**
@@ -60,7 +78,7 @@ public class DeployRequest implements IRequest {
     private String exception = "";
 
     /**
-     *
+     * Constructs a new DeployRequest.
      */
     public DeployRequest() {
         this.endpoint = "";
@@ -76,6 +94,7 @@ public class DeployRequest implements IRequest {
     }
 
     /**
+     * Constructs a new DeployRequest.
      *
      * @param endpoint
      * @param identifier
@@ -296,9 +315,9 @@ public class DeployRequest implements IRequest {
      *
      * @param message
      */
-    public void addException(final String message){
-        wasException=true;
-        this.exception=message;
+    public void addException(final String message) {
+        wasException = true;
+        this.exception += message;
     }
 
     /**

@@ -4,17 +4,17 @@ import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -63,7 +63,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             throw new Exception("Unable to connect to service.");
         }
     }
-    
+
     /**
      * Connects the provider to a WPS-server.
      *
@@ -106,8 +106,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             throw new Exception("Unable to connect to service.");
         }
     }
-    
-     /**
+
+    /**
      * Disconnects the provider to a WPS-server with WPS-T functionality.
      *
      * @param wpsurl endpoint of WebProcessingService.
@@ -132,7 +132,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             throw new Exception("Unable to connect to service.");
         }
     }
-
 
     /**
      * Connects the provider to a WPS-server with WPS-T and testing
@@ -192,34 +191,34 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Describes process and its' in and outputs.
      *
-     * @param dto ExecuteRequestDTO with endpoint and processid.
+     * @param request ExecuteRequestDTO with endpoint and processid.
      *
      */
     @Override
-    public void describeProcess(ExecuteRequest dto) {
+    public void describeProcess(ExecuteRequest request) {
         try {
-            String wpsurl = dto.getEndpoint();
+            String wpsurl = request.getEndpoint();
             String[] processes = new String[1];
-            processes[0] = dto.getIdentifier();
+            processes[0] = request.getIdentifier();
             ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
 
             ProcessDescriptionType processdescriptions = descs[0];
             if (processdescriptions.getProcessVersion() != null) {
-                dto.setProcessVersion(processdescriptions.getProcessVersion());
+                request.setProcessVersion(processdescriptions.getProcessVersion());
             }
 
             if (processdescriptions.getAbstract() != null) {
-                dto.setAbstract(processdescriptions.getAbstract().getStringValue());
+                request.setAbstract(processdescriptions.getAbstract().getStringValue());
             }
 
-            if (dto.getInputs().isEmpty()) {
-                this.execAddInputs(dto, processdescriptions);
+            if (request.getInputs().isEmpty()) {
+                this.execAddInputs(request, processdescriptions);
             }
 
-            if (dto.getOutputs().isEmpty()) {
-                this.execAddOutputs(dto, processdescriptions);
+            if (request.getOutputs().isEmpty()) {
+                this.execAddOutputs(request, processdescriptions);
             }
 
         } catch (WPSClientException ex) {
@@ -230,19 +229,19 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Describes process and its' in and outputs.
      *
-     * @param dto ExecuteRequestDTO with endpoint and processid and in- and
+     * @param request ExecuteRequestDTO with endpoint and processid and in- and
      * outputarguments.
      */
     @Override
-    public void executeProcess(ExecuteRequest dto) {
+    public void executeProcess(ExecuteRequest request) {
 
-        String wpsurl = dto.getEndpoint();
-        String processid = dto.getIdentifier();
+        String wpsurl = request.getEndpoint();
+        String processid = request.getIdentifier();
 
-        HashMap theinputs = dto.getInputArguments();
-        HashMap theoutputs = dto.getOutputArguments();
+        HashMap theinputs = request.getInputArguments();
+        HashMap theoutputs = request.getOutputArguments();
 
-        ProcessDescriptionType description = this.getProcessDescriptionType(dto);
+        ProcessDescriptionType description = this.getProcessDescriptionType(request);
         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
 
         this.execSetInputs(executeBuilder, theinputs);
@@ -262,78 +261,120 @@ public class RichWPSProvider implements IRichWPSProvider {
             de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, executing the process " + processid + ", " + e);
         }
 
-        this.execAnalyseResponse(execute, description, responseObject, dto);
+        this.execAnalyseResponse(execute, description, responseObject, request);
 
     }
 
     /**
      * Deploys a new process.
      *
-     * @param dto DeployRequestDTO.
+     * @param request DeployRequestDTO.
      * @see DeployRequest
      * @return <code>true</code> for deployment success.
      */
     @Override
-    public DeployRequest deploy(final DeployRequest dto) {
+    public void deployProcess(DeployRequest request) {
         TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
 
-        builder.setDeployExecutionUnit(dto.getExecutionUnit());
-        builder.setDeployProcessDescription(dto.toProcessDescriptionType());
-        builder.setDeploymentProfileName(dto.getDeploymentprofile());
-        builder.setKeepExecutionUnit(dto.isKeepExecUnit());
+        builder.setDeployExecutionUnit(request.getExecutionUnit());
+        builder.setDeployProcessDescription(request.toProcessDescriptionType());
+        builder.setDeploymentProfileName(request.getDeploymentprofile());
+        builder.setKeepExecutionUnit(request.isKeepExecUnit());
         try {
             System.out.println(builder.getDeploydocument());
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
         }
-        return dto;
+    }
+
+    /**
+     * Undeploys a given process.
+     *
+     * @param request DeployRequestDTO.
+     * @see UndeployRequest
+     * @return <code>true</code> for deployment success.
+     */
+    @Override
+    public void undeployProcess(UndeployRequest request) {
+
+        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+
+        builder.setIdentifier(request.getIdentifier());
+
+        try {
+            System.out.println(builder.getUndeploydocument());
+        } catch (WPSClientException ex) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Performs a request.
+     *
+     * @param request IRequest.
+     * @see IRequest
+     * @see ExecuteRequest
+     * @see DeployRequest
+     * @see UndeployRequest
+     * @return <code>true</code> for deployment success.
+     */
+    @Override
+    public void request(IRequest request) {
+        if (request instanceof ExecuteRequest) {
+            this.executeProcess((ExecuteRequest) request);
+        } else if (request instanceof DeployRequest) {
+            this.deployProcess((DeployRequest) request);
+        } else if (request instanceof UndeployRequest) {
+            this.undeployProcess((UndeployRequest) request);
+        }
     }
 
     /**
      * Retreives and extracts the processdescription type from a given
      * WPS-server.
      *
-     * @param dto ExecuteRequestDTO with endpoint and process id.
+     * @param request ExecuteRequestDTO with endpoint and process id.
      * @return 52n processdescriptiontype.
      */
-    private ProcessDescriptionType getProcessDescriptionType(ExecuteRequest dto) {
+    private ProcessDescriptionType getProcessDescriptionType(ExecuteRequest request) {
         ProcessDescriptionType description = null;
         try {
             this.wps = WPSClientSession.getInstance();
-            this.wps.connect(dto.getEndpoint());
+            this.wps.connect(request.getEndpoint());
 
             //discover
             String[] processes = new String[1];
-            processes[0] = dto.getIdentifier();
-            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, dto.getEndpoint());
+            processes[0] = request.getIdentifier();
+            ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, request.getEndpoint());
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
             description = descs[0];
 
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + dto.getIdentifier() + ", " + e);
+            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + request.getIdentifier() + ", " + e);
         }
         return description;
     }
 
     /**
-     * Analyses a given response and add specific results or exception to dto.
+     * Analyses a given response and add specific results or exception to
+     * request.
      *
      * @param execute 52n execute document.
      * @param description 52n process description.
      * @param responseObject 52n reponse object. Execute-response or exception.
-     * @param dto ExecuteRequestDTO with possible inputs (IInputSpecifier) and
-     * outputs (IOutputSpecifier).
+     * @param request ExecuteRequestDTO with possible inputs (IInputSpecifier)
+     * and outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    private void execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest dto) {
+    private void execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
         java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
         System.out.println(file);
         WPSClientConfig.getInstance(file);
 
-        ExecuteRequest resultdto = dto;
-        HashMap theoutputs = dto.getOutputArguments();
+        ExecuteRequest resultrequest = request;
+        HashMap theoutputs = request.getOutputArguments();
         de.hsos.richwps.mb.Logger.log("Debug: " + responseObject.getClass());
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
@@ -355,7 +396,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                                 de.hsos.richwps.mb.Logger.log("#thevalue " + value);
                             }
                         }
-                        dto.addResult(key, value);
+                        request.addResult(key, value);
 
                     } else if (o instanceof OutputComplexDataArgument) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
@@ -363,7 +404,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                         OutputComplexDataArgument argument = (OutputComplexDataArgument) o;
                         if (argument.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
-                            dto.addResult(key, httpkvpref);
+                            request.addResult(key, httpkvpref);
                         } else {
                             // FIXME proper analytics for different bindings.
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);//FIXME
@@ -376,40 +417,40 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
         } else {
             net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) responseObject;
-            resultdto.addException(exception.getExceptionReport().toString());
+            resultrequest.addException(exception.getExceptionReport().toString());
             de.hsos.richwps.mb.Logger.log("Debug: \n Unable to analyse response. Response is Exception: " + exception.toString());
             de.hsos.richwps.mb.Logger.log("Debug: \n " + exception.getExceptionReport());
         }
     }
 
     /**
-     * Add processs inputs to a dto.
+     * Add processs inputs to a request.
      *
      * @param ExecuteRequestDTO with endpoint and processid.
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(ExecuteRequest dto, ProcessDescriptionType process) {
+    private void execAddInputs(ExecuteRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
         InputDescriptionType[] _inputs = inputs.getInputArray();
         for (InputDescriptionType description : _inputs) {
-            dto.addInput(description);
+            request.addInput(description);
         }
     }
 
     /**
-     * Adds processs outputs to a dto.
+     * Adds processs outputs to a request.
      *
      * @param ExecuteRequestDTO with endpoint and processid.
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private void execAddOutputs(ExecuteRequest dto, ProcessDescriptionType process) {
+    private void execAddOutputs(ExecuteRequest request, ProcessDescriptionType process) {
 
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
         OutputDescriptionType[] _outputs = outputs.getOutputArray();
         for (OutputDescriptionType description : _outputs) {
-            dto.addOutput(description);
+            request.addOutput(description);
         }
     }
 

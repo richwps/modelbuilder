@@ -17,7 +17,8 @@ import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 
 /**
- * An object used to parameterize and prepare execute requests.
+ * Represents a ExecuteRequest. The RichWPSProvider is able to perform a
+ * wps:execute()-Request with this object.
  *
  * @author dalcacer
  */
@@ -35,8 +36,8 @@ public class ExecuteRequest implements IRequest {
      * The version of this process.
      */
     private String processversion = "";
-    
-        /**
+
+    /**
      * The abstract.
      */
     private String theabstract = "";
@@ -71,7 +72,7 @@ public class ExecuteRequest implements IRequest {
     private String exception = "";
 
     /**
-     * Builds a new, blank, wps:execute()-request.
+     * Constructs a new ExecuteRequest.
      */
     public ExecuteRequest() {
         this.endpoint = new String();
@@ -154,8 +155,6 @@ public class ExecuteRequest implements IRequest {
         this.theabstract = theabstract;
     }
 
-    
-    
     /**
      *
      * @param version
@@ -221,7 +220,7 @@ public class ExecuteRequest implements IRequest {
     @Override
     public void addException(final String message) {
         wasException = true;
-        this.exception = message;
+        this.exception += message;
     }
 
     /**
