@@ -230,6 +230,8 @@ public class AppConstants {
     public final static String ICON_ABOUT_KEY = "richwps_icon_about";
     public final static String ICON_LOADING_STATUS_KEY = "richwps_icon_loading";
     public final static String ICON_EDIT_KEY = "richwps_icon_edit";
+    public final static String ICON_ADD_KEY = "richwps_icon_add";
+    public final static String ICON_DELETE_KEY = "richwps_icon_delete";
 
     // Graph error messages
     public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";

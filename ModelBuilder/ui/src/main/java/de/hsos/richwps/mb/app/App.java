@@ -60,7 +60,7 @@ public class App {
     private JPanel subTreeViewPanel;
     private SubTreeViewController subTreeView;
     private AppPreferencesDialog preferencesDialog;
-    private AppDeployManager deployManager;
+//    private AppDeployManager deployManager;
     private ExecViewDialog execViewDialog;
 
     private boolean changesSaved = false;
@@ -320,9 +320,9 @@ public class App {
     }
 
     void deploy() {
-        if (null == deployManager) {
-            deployManager = new AppDeployManager(this);
-        }
+//        if (null == deployManager) {
+           AppDeployManager deployManager = new AppDeployManager(this);
+//        }
 
         deployManager.deploy();
     }

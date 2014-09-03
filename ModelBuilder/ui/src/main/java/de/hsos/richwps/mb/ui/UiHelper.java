@@ -11,6 +11,7 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Window;
 
 /**
  *
@@ -134,6 +135,23 @@ public class UiHelper {
         sb.append(part2);
 
         return sb.toString();
+    }
+
+    /**
+     * Sets a window's location so that the window will be centered relative to
+     * another window.
+     *
+     * @param centerMe
+     * @param window
+     */
+    public static void centerToWindow(Window centerMe, Window window) {
+        Point wLoc = window.getLocation();
+        Dimension wSize = window.getSize();
+        Dimension cSize = centerMe.getSize();
+
+        int x = wLoc.x + (wSize.width - cSize.width) / 2;
+        int y = wLoc.y + wSize.height / 2 - cSize.height / 3 * 2;
+        centerMe.setLocation(x, y);
     }
 
 }

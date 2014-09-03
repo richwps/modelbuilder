@@ -12,7 +12,6 @@ import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.view.mxInteractiveCanvas;
 import com.mxgraph.view.mxCellState;
 import com.mxgraph.view.mxGraph;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Component;
 import java.awt.Graphics;
@@ -35,12 +34,7 @@ public class GraphComponent extends mxGraphComponent {
     @Override
     public Hashtable<Object, Component[]> updateComponents(Object cell) {
         Hashtable<Object, Component[]> updateComponents = super.updateComponents(cell); //To change body of generated methods, choose Tools | Templates.
-
-//        Logger.log(components);
-        Logger.log(
-                getGraphControl().getComponentCount()
-        );
-
+        // TODO use this to find edge intersections???
         return updateComponents;
     }
 
