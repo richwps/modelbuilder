@@ -63,6 +63,23 @@ public class RichWPSProvider implements IRichWPSProvider {
             throw new Exception("Unable to connect to service.");
         }
     }
+    
+    /**
+     * Connects the provider to a WPS-server.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @throws java.lang.Exception
+     */
+    @Override
+    public void disconnect(String wpsurl) throws Exception {
+        try {
+            this.wps = WPSClientSession.getInstance();
+            this.wps.disconnect(wpsurl);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service.");
+        }
+    }
 
     /**
      * Connects the provider to a WPS-server with WPS-T functionality.
@@ -76,7 +93,6 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
-
         } catch (Exception e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
             throw new Exception("Unable to connect to service.");
@@ -90,6 +106,33 @@ public class RichWPSProvider implements IRichWPSProvider {
             throw new Exception("Unable to connect to service.");
         }
     }
+    
+     /**
+     * Disconnects the provider to a WPS-server with WPS-T functionality.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsturl endpoint of transactional interface.
+     * @throws java.lang.Exception
+     */
+    @Override
+    public void disconnect(String wpsurl, String wpsturl) throws Exception {
+        try {
+            this.wps = WPSClientSession.getInstance();
+            this.wps.disconnect(wpsurl);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service.");
+        }
+
+        try {
+            this.wpst = WPSTClientSession.getInstance();
+            this.wpst.disconnect(wpsurl);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service.");
+        }
+    }
+
 
     /**
      * Connects the provider to a WPS-server with WPS-T and testing
