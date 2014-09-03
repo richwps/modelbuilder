@@ -121,6 +121,8 @@ public class SelectDeployConfigView extends JPanel {
                         DeployConfig config = configDialog.getConfig();
                         if (null != config) {
                             listModel.addElement(config);
+                            int idx = listModel.getSize()-1;
+                            viewList.getSelectionModel().setSelectionInterval(idx, idx);
                             viewList.invalidate();
                             viewList.updateUI();
                         }
@@ -161,10 +163,6 @@ public class SelectDeployConfigView extends JPanel {
 
         return button;
     }
-
-//    public void addListDataListener(ListDataListener listener) {
-//        viewList.getModel().addListDataListener(listener);
-//    }
 
     public void addSelectConfigListener(ListSelectionListener listener) {
         viewList.getSelectionModel().addListSelectionListener(listener);
