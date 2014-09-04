@@ -3,7 +3,7 @@ package de.hsos.richwps.mb.app;
 import de.hsos.richwps.mb.AppInfoTabs;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
-import de.hsos.richwps.mb.app.view.AboutFrame;
+import de.hsos.richwps.mb.app.view.AboutDialog;
 import de.hsos.richwps.mb.app.view.AppFrame;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
@@ -342,8 +342,8 @@ public class App {
     }
 
     void showAbout() {
-        AboutFrame aboutFrame = new AboutFrame(getFrame());
-        aboutFrame.setVisible(true);
+        AboutDialog aboutDialog = new AboutDialog(getFrame());
+        aboutDialog.setVisible(true);
     }
 
 }

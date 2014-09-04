@@ -91,10 +91,10 @@ public class AppMenuBar extends JMenuBar {
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.LOAD_MODEL);
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SAVE_MODEL);
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS);
-        AppAbstractAction openLastAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_LAST_FILE);
-        if (openLastAction.isEnabled()) {
+        AppAbstractAction openRecentAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
+        if (openRecentAction.isEnabled()) {
             mFile.addSeparator();
-            createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.OPEN_LAST_FILE, openLastAction);
+            createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE, openRecentAction);
         }
         mFile.addSeparator();
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.EXIT_APP);

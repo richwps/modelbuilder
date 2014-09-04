@@ -57,8 +57,9 @@ public class AppConstants {
     public final static String RES_IMAGES_DIR = RESOURCES_DIR + FSEP + "images";
 
     public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
+    public static String ABOUT_IMAGE = RES_IMAGES_DIR + FSEP + "about.png";
 
-    public final static String SEMANTICPROXY_DEFAULT_URL = "http://localhost:4567/semanticproxy/resources";
+    public final static String SEMANTICPROXY_DEFAULT_URL = "http://richwps.edvsz.hs-osnabrueck.de/semanticproxy/resources";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. Please check the configuration.";
     public final static String SEMANTICPROXY_RECEIVE_ERROR = "An error occured while receiving from SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
@@ -77,7 +78,46 @@ public class AppConstants {
     public final static String PREFERENCES_DIALOG_BTN_OK = DIALOG_BTN_OK;
 
     // About Dialog
+    /**
+     * Title of the about dialog.
+     */
     public final static String ABOUT_DIALOG_TITLE = "About";
+    /**
+     * Size of the about dialog.
+     */
+    public static Dimension ABOUT_DIALOG_SIZE = new Dimension(400, 500);
+    /**
+     * Content of the about dialog.
+     */
+    public static String ABOUT_DIALOG_TEXT = "<html>"
+            + "The <b>RichWPS ModelBuilder</b> is part of the RichWPS research project.<br />"
+            + "<br />"
+            + "RichWPS is a corporate project of<br />"
+            + "<span style=\"color:#37ABC8;\">&#149;</span>&nbsp;<b>Disy Informationssysteme GmbH</b><br />"
+            + "&nbsp;&nbsp;&nbsp;Ludwig-Erhard-Allee 6, 76131 Karlsruhe<br />"
+            + "<span style=\"color:#37ABC8;\">&#149;</span>&nbsp;<b>Hochschule Osnabrück, Fakultät Ingenieurwissenschaften und Informatik</b><br />"
+            + "&nbsp;&nbsp;&nbsp;Albrecht-str. 30, 49076 Osnabrück<br />"
+            + "<span style=\"color:#37ABC8;\">&#149;</span>&nbsp;<b>Bundesanstalt für Wasserbau, Dienststelle Hamburg</b><br />"
+            + "&nbsp;&nbsp;&nbsp;Wedeler Landstr. 157, 22559 Hamburg<br />"
+            + "<span style=\"color:#37ABC8;\">&#149;</span>&nbsp;<b>Landesbetrieb Küstenschutz, Nationalpark und  Meeresschutz Schleswig-Holstein</b><br />"
+            + "&nbsp;&nbsp;&nbsp;Schloßgarten 1, 25829 Tönning<br />"
+            + "<br />"
+            + "RichWPS is funded by Germany's <b>Federal Ministry of Education and Research</b>."
+            + "</html>";
+    /**
+     * Text of the about dialog "close" button.
+     */
+    public final static String ABOUT_DIALOG_BTN_CLOSE = DIALOG_BTN_CLOSE;
+
+    /**
+     * Number of visible characters of the "recent file" path.
+     */
+    public static final int RECENT_FILE_VISIBLE_WIDTH = 50;
+
+    /**
+     * Title of deploy dialog.
+     */
+    public final static String DEPLOY_DIALOG_TITLE = "Deploy process";
 
     public enum PREFERENCES_TAB {
 
@@ -178,7 +218,7 @@ public class AppConstants {
     @Deprecated
     public final static Color bgColor = new Color(222, 227, 250);
     @Deprecated
-    public final static Color SELECTION_BG_COLOR = new Color(0xa0ace5);
+    public final static Color SELECTION_BG_COLOR = new Color(0x37ABC8); //new Color(0xa0ace5);
     @Deprecated
     public final static Color SELECTION_FG_COLOR = Color.WHITE;
 
@@ -210,7 +250,6 @@ public class AppConstants {
     /**
      * UIManager keys.
      */
-    public final static String ICON_MBLOGO_KEY = "rwps_icon_mblogo";
     // Icons
     public final static String ICON_NEW_KEY = "rwps_icon_new";
     public final static String ICON_OPEN_KEY = "rwps_icon_load";
@@ -232,6 +271,9 @@ public class AppConstants {
     public final static String ICON_EDIT_KEY = "richwps_icon_edit";
     public final static String ICON_ADD_KEY = "richwps_icon_add";
     public final static String ICON_DELETE_KEY = "richwps_icon_delete";
+    // Images
+    public final static String ICON_ABOUTIMAGE_KEY = "richwps_image_about";
+    public final static String ICON_MBLOGO_KEY = "rwps_image_mblogo";
 
     // Graph error messages
     public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";

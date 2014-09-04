@@ -56,6 +56,48 @@ public class AppSetup {
 
         splash.showMessage("Loading resources");
 
+        // Load colors
+        String[] bgColorKeys = new String[]{
+            "CheckBoxMenuItem.selectionBackground",
+            "ComboBox.selectionBackground",
+            "EditorPane.selectionBackground",
+            "List.selectionBackground",
+            "Menu.selectionBackground",
+            "MenuItem.selectionBackground",
+            "RadioButtonMenuItem.selectionBackground",
+            "PasswordField.selectionBackground",
+            "ProgressBar.foreground",
+            "ProgressBar.selectionBackground",
+            "Table.selectionBackground",
+            "TextArea.selectionBackground",
+            "TextField.selectionBackground",
+            "TextPane.selectionBackground",
+            "Tree.selectionBackground"
+        };
+        for (String key : bgColorKeys) {
+            UIManager.put(key, AppConstants.SELECTION_BG_COLOR);
+        }
+        String[] fgColorKeys = new String[]{
+            "CheckBoxMenuItem.selectionForeground",
+            "ComboBox.selectionForeground",
+            "EditorPane.selectionForeground",
+            "List.selectionForeground",
+            "Menu.selectionForeground",
+            "MenuItem.selectionForeground",
+            "RadioButtonMenuItem.selectionForeground",
+            "PasswordField.selectionForeground",
+            "ProgressBar.background",
+            "ProgressBar.selectionForeground",
+            "Table.selectionForeground",
+            "TextArea.selectionForeground",
+            "TextField.selectionForeground",
+            "TextPane.selectionForeground",
+            "Tree.selectionForeground"
+        };
+        for (String key : fgColorKeys) {
+            UIManager.put(key, AppConstants.SELECTION_FG_COLOR);
+        }
+
         // Load icons etc. into UIManager
         loadIcons();
 
@@ -69,16 +111,16 @@ public class AppSetup {
                 }
             });
         }
-        
+
         // Load last used filename
         String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
         File lastFile = new File(lastFilename);
-        AppAbstractAction lastFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_LAST_FILE);
-        lastFileAction.setEnabled(lastFile.exists());
+        AppAbstractAction recentFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
+        recentFileAction.setEnabled(lastFile.exists());
         if (lastFile.exists()) {
-            lastFileAction.setName(UiHelper.limitString(lastFilename, 50));
+            recentFileAction.setName(lastFilename);
         }
-        
+
         splash.showMessageAndProgress("Creating window", 15);
 
         // Create frame.
@@ -132,8 +174,8 @@ public class AppSetup {
     public static void loadIcons() {
         String iconDir = AppConstants.RES_ICONS_DIR + File.separator;
 
-        // Logo
-        UIManager.put(AppConstants.ICON_MBLOGO_KEY, new ImageIcon(iconDir + "mb_logo.png", "mb logo icon"));
+        // App Icon
+        UIManager.put(AppConstants.ICON_MBLOGO_KEY, new ImageIcon(iconDir + "mb_logo.png", "mb logo image"));
 
         // File Menu icons
         UIManager.put(AppConstants.ICON_NEW_KEY, new ImageIcon(iconDir + "document-new-6.png", "new icon"));

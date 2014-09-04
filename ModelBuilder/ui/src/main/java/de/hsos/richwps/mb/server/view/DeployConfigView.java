@@ -43,8 +43,8 @@ public class DeployConfigView extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(e.getSource() instanceof TextField) {
-                    TextField textField = (TextField) e.getSource();
-                    setConfigValue((DeployConfigField)textField.getUserObject(), textField.getText());
+                    TextField<DeployConfigField> textField = (TextField) e.getSource();
+                    setConfigValue(textField.getUserObject(), textField.getText());
                 }
             }
         };

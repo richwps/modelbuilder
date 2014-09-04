@@ -7,16 +7,17 @@ package de.hsos.richwps.mb.app.view.preferences;
 
 import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.ui.MbDialog;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -26,20 +27,18 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
-public class AppPreferencesDialog extends JDialog {
+public class AppPreferencesDialog extends MbDialog {
 
     private boolean init;
 
-    private JFrame parentFrame;
     private double f;
     private double p;
     private JTabbedPane tabsPanel;
 
     private HashMap<AppConstants.PREFERENCES_TAB, AbstractPreferencesTab> prefTabs;
 
-    public AppPreferencesDialog(JFrame parent) {
-        super(parent, AppConstants.PREFERENCES_DIALOG_TITLE, true);
-        this.parentFrame = parent;
+    public AppPreferencesDialog(Window parent) {
+        super(parent, AppConstants.PREFERENCES_DIALOG_TITLE);
     }
 
     public void init() {
@@ -103,6 +102,7 @@ public class AppPreferencesDialog extends JDialog {
         });
 
         JButton btnOk = new JButton(AppConstants.PREFERENCES_DIALOG_BTN_OK);
+        btnOk.setFont(btnOk.getFont().deriveFont(Font.BOLD));
         btnOk.setPreferredSize(AppConstants.DIALOG_BTN_SIZE);
         btnOk.addActionListener(new ActionListener() {
             @Override

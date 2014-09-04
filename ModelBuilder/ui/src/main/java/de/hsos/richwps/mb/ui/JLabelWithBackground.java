@@ -22,6 +22,11 @@ public class JLabelWithBackground extends JLabel {
         super();
     }
 
+    public JLabelWithBackground(Color background) {
+        super();
+        setBackground(background);
+    }
+
     public JLabelWithBackground(Icon icon) {
         super(icon);
     }

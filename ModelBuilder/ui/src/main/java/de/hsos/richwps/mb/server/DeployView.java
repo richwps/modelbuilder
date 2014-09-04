@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import layout.TableLayout;
@@ -46,7 +47,7 @@ public class DeployView extends MbDialog {
         Container content = getContentPane();
         double[][] layoutSize = new double[][]{
             {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED},
-            {TableLayout.PREFERRED, TableLayout.FILL, TableLayout.PREFERRED}
+            {TableLayout.PREFERRED, TableLayout.PREFERRED, TableLayout.FILL, TableLayout.PREFERRED}
         };
         content.removeAll();
         content.setLayout(new TableLayout(layoutSize));
@@ -77,9 +78,13 @@ public class DeployView extends MbDialog {
             }
         });
 
-        content.add(selectView, "0 0 2 0");
-        content.add(cancelButton, "1 2");
-        content.add(okButton, "2 2");
+        int y = 0;
+        content.add(new JLabel("Select deployment configuration:"), "0 "+y+" 2 "+y);
+        y++;
+        content.add(selectView, "0 "+y+" 2 "+y);
+        y+=2;
+        content.add(cancelButton, "1 "+y);
+        content.add(okButton, "2 "+y);
     }
 
     protected void updateButtons() {
@@ -87,4 +92,7 @@ public class DeployView extends MbDialog {
         okButton.setEnabled(hasSelection);
     }
 
+    public DeployConfig getConfig() {
+        return selectView.getSelectedConfig();
+    }
 }

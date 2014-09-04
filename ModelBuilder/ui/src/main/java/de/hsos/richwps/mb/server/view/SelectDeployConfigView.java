@@ -57,7 +57,7 @@ public class SelectDeployConfigView extends JPanel {
     }
 
     public void init(List<DeployConfig> configs) {
-        double[][] layoutSize = new double[][] {
+        double[][] layoutSize = new double[][]{
             {TableLayout.FILL, TableLayout.PREFERRED},
             {TableLayout.PREFERRED, TableLayout.FILL}
         };
@@ -108,9 +108,10 @@ public class SelectDeployConfigView extends JPanel {
     }
 
     private JButton createAddButton() {
-        JButton addConfigButton = new JButton(UIManager.getIcon(AppConstants.ICON_ADD_KEY));
+        JButton button = new JButton(UIManager.getIcon(AppConstants.ICON_ADD_KEY));
+        button.setToolTipText("Create a new configuration");
 
-        addConfigButton.addActionListener(new ActionListener() {
+        button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DeployConfig config = new DeployConfig();
@@ -121,7 +122,7 @@ public class SelectDeployConfigView extends JPanel {
                         DeployConfig config = configDialog.getConfig();
                         if (null != config) {
                             listModel.addElement(config);
-                            int idx = listModel.getSize()-1;
+                            int idx = listModel.getSize() - 1;
                             viewList.getSelectionModel().setSelectionInterval(idx, idx);
                             viewList.invalidate();
                             viewList.updateUI();
@@ -133,11 +134,13 @@ public class SelectDeployConfigView extends JPanel {
             }
         });
 
-        return addConfigButton;
+        return button;
     }
 
     private JButton createEditButton() {
         JButton button = new JButton(UIManager.getIcon(AppConstants.ICON_EDIT_KEY));
+        button.setToolTipText("Edit selected configuration");
+
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -150,6 +153,7 @@ public class SelectDeployConfigView extends JPanel {
 
     private JButton createDeleteButton() {
         JButton button = new JButton(UIManager.getIcon(AppConstants.ICON_DELETE_KEY));
+        button.setToolTipText("Delete selected configuration");
 
         button.addActionListener(new ActionListener() {
             @Override
