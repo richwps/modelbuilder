@@ -26,17 +26,23 @@ public class PreferencesHttpProxy extends AbstractPreferencesTab {
 
         setLayout(new TableLayout(new double[][]{{f}, {p, p, p, p, f}}));
 
-        String host = AppConfig.getConfig().get(hostKey, "");
-        hostField = createAndAddTextField(host, AppConstants.PREFERENCES_TAB_HTTP_HOST_LABEL, 0);
-
-        String port = AppConfig.getConfig().get(portKey, "");
-        portField = createAndAddTextField(port, AppConstants.PREFERENCES_TAB_HTTP_PORT_LABEL, 2);
+        hostField = createAndAddTextField("", AppConstants.PREFERENCES_TAB_HTTP_HOST_LABEL, 0);
+        portField = createAndAddTextField("", AppConstants.PREFERENCES_TAB_HTTP_PORT_LABEL, 2);
     }
 
     @Override
     void save() {
         saveSystemProperty("http.proxyHost", hostField.getText(), hostKey);
         saveSystemProperty("http.proxyPort", portField.getText(), portKey);
+    }
+
+    @Override
+    void load() {
+        String host = AppConfig.getConfig().get(hostKey, "");
+        hostField.setText(host);
+
+        String port = AppConfig.getConfig().get(portKey, "");
+        portField.setText(port);
     }
 
     private void saveSystemProperty(String property, String value, String configKey) {

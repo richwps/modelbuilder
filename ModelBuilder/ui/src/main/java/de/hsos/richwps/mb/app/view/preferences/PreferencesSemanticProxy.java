@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.hsos.richwps.mb.app.view.preferences;
 
 import de.hsos.richwps.mb.app.AppConfig;
@@ -13,6 +12,7 @@ import layout.TableLayout;
 
 /**
  * SemanticProxy preferences tab.
+ *
  * @author dziegenh
  */
 public class PreferencesSemanticProxy extends AbstractPreferencesTab {
@@ -22,17 +22,21 @@ public class PreferencesSemanticProxy extends AbstractPreferencesTab {
 
     public PreferencesSemanticProxy() {
         super();
-        
-        setLayout(new TableLayout(new double[][] {{f},{p,p,f}}));
 
-        String defaultUrl = AppConstants.SEMANTICPROXY_DEFAULT_URL;
-        String url = AppConfig.getConfig().get(urlKey, defaultUrl);
-        urlField = createAndAddTextField(url, AppConstants.PREFERENCES_TAB_SP_URL_LABEL, 0);
+        setLayout(new TableLayout(new double[][]{{f}, {p, p, f}}));
+        urlField = createAndAddTextField("", AppConstants.PREFERENCES_TAB_SP_URL_LABEL, 0);
     }
 
     @Override
     void save() {
         AppConfig.getConfig().put(urlKey, urlField.getText());
+    }
+
+    @Override
+    void load() {
+        String defaultUrl = AppConstants.SEMANTICPROXY_DEFAULT_URL;
+        String url = AppConfig.getConfig().get(urlKey, defaultUrl);
+        urlField.setText(url);
     }
 
 }

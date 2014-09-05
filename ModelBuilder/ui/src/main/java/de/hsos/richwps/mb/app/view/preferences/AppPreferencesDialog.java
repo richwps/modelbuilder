@@ -9,17 +9,9 @@ import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.MbDialog;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.HashMap;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import layout.TableLayout;
 
@@ -38,32 +30,36 @@ public class AppPreferencesDialog extends MbDialog {
     private HashMap<AppConstants.PREFERENCES_TAB, AbstractPreferencesTab> prefTabs;
 
     public AppPreferencesDialog(Window parent) {
-        super(parent, AppConstants.PREFERENCES_DIALOG_TITLE);
+        super(parent, AppConstants.PREFERENCES_DIALOG_TITLE, MB_DIALOG_BUTTONS.CANCEL_OK);
     }
 
     public void init() {
         if (!this.init) {
             f = TableLayout.FILL;
             p = TableLayout.PREFERRED;
-            setLayout(new TableLayout(new double[][]{{f}, {f, p}}));
+            setLayout(new TableLayout(new double[][]{{f}, {f}}));
             setSize(getStartSize());
             setLocation(getStartLocation());
 
-            // save config on close
-            addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    saveDialogAppearance();
-                }
-            });
-
             // add tabs
             prefTabs = new HashMap<>();
-            add(createTabPanel(),"0 0");
-            add(createBottomButtons(), "0 1");
+            add(createTabPanel(), "0 0");
 
             init = true;
         }
+    }
+
+    @Override
+    protected void handleCancel() {
+        saveDialogAppearance();
+        super.handleCancel();
+    }
+
+    @Override
+    protected void handleOk() {
+        saveDialogAppearance();
+        savePreferences();
+        super.handleOk();
     }
 
     JTabbedPane createTabPanel() {
@@ -76,9 +72,10 @@ public class AppPreferencesDialog extends MbDialog {
     }
 
     private String getTabTitle(AppConstants.PREFERENCES_TAB tab) {
-        for(String[] tabData : AppConstants.PREFERENCES_TAB_TITLE) {
-            if(tabData[0].equals(tab.name()))
+        for (String[] tabData : AppConstants.PREFERENCES_TAB_TITLE) {
+            if (tabData[0].equals(tab.name())) {
                 return tabData[1];
+            }
         }
         return null;
     }
@@ -86,37 +83,6 @@ public class AppPreferencesDialog extends MbDialog {
     private void addTab(AbstractPreferencesTab component, AppConstants.PREFERENCES_TAB prefTab) {
         this.prefTabs.put(prefTab, component);
         tabsPanel.add(component, getTabTitle(prefTab));
-    }
-
-    JPanel createBottomButtons() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new TableLayout(new double[][]{{f, p, p}, {p}}));
-
-        JButton btnCancel = new JButton(AppConstants.PREFERENCES_DIALOG_BTN_CANCEL);
-        btnCancel.setPreferredSize(AppConstants.DIALOG_BTN_SIZE);
-        btnCancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-
-        JButton btnOk = new JButton(AppConstants.PREFERENCES_DIALOG_BTN_OK);
-        btnOk.setFont(btnOk.getFont().deriveFont(Font.BOLD));
-        btnOk.setPreferredSize(AppConstants.DIALOG_BTN_SIZE);
-        btnOk.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                savePreferences();
-                dispose();
-            }
-        });
-
-        panel.add(new JLabel(""), "0 0");
-        panel.add(btnCancel, "1 0");
-        panel.add(btnOk, "2 0");
-
-        return panel;
     }
 
     /**
@@ -143,8 +109,22 @@ public class AppPreferencesDialog extends MbDialog {
     }
 
     private void savePreferences() {
-        for(AbstractPreferencesTab tab : this.prefTabs.values()) {
+        for (AbstractPreferencesTab tab : this.prefTabs.values()) {
             tab.save();
         }
+    }
+
+    private void loadPreferences() {
+        for (AbstractPreferencesTab tab : this.prefTabs.values()) {
+            tab.load();
+        }
+    }
+
+    @Override
+    public void setVisible(boolean b) {
+        if (b) {
+            loadPreferences();
+        }
+        super.setVisible(b);
     }
 }
