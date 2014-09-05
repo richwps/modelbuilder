@@ -248,6 +248,13 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "InputLiteralDataSpecifier{" + "identifier=" + identifier + ", typeReference=" + typeReference + ", title=" + title + ", theabstract=" + theabstract + ", defaultvalue=" + defaultvalue + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + '}';
+    }
+    
+    
     
     
 
