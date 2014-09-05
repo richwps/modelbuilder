@@ -3,6 +3,8 @@ package de.hsos.richwps.mb.dsl;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.Assignment;
+import de.hsos.richwps.dsl.api.elements.Binding;
+import de.hsos.richwps.dsl.api.elements.Endpoint;
 import de.hsos.richwps.dsl.api.elements.Execute;
 import de.hsos.richwps.dsl.api.elements.InReference;
 import de.hsos.richwps.dsl.api.elements.OutReference;
@@ -17,6 +19,7 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,14 +29,15 @@ import java.util.Map;
  *
  * @author Jewgeni Kovalev
  * @author dziegenh
+ * @author dalcacer
  */
 public class Export {
 
     /**
      * Variable reference map input variables are stored to the reference map at
-     * the beginning process outputs are stored to variables in the reference
-     * map process inputs get their values from the reference map output
-     * variables get their values from the reference map
+ the beginning pe outputs are stored to variables in the reference
+ map pe inputs get their values from the reference map output
+ variables get their values from the reference map
      */
     protected Map<String, Reference> variables;
     protected Graph graph;
@@ -79,22 +83,51 @@ public class Export {
     }
 
     /**
-     * Adds one process execute statement to worksequence, gets inputs from
-     * variables, stores outputs to variables
+     * Adds one pe execute statement to worksequence, gets inputs from
+ variables, stores outputs to variables
      *
      * @param processVertex
-     * @param ws Wroksequence to write to
+     * @param ws Wroksequence to write to.
+     * @param isLocalBinding information about binding type.
      * @throws Exception
      */
-    protected void defineExecute(mxICell processVertex, Worksequence ws) throws Exception {
+    protected void defineExecute(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
         GraphModel model = graph.getGraphModel();
 
-        // Get inputs from variable reference map
+         // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
-        ProcessEntity process = (ProcessEntity) processVertex.getValue();
+        ProcessEntity pe = (ProcessEntity) processVertex.getValue();
         // @TODO: identifier not ideal, not in $org/name$ syntax
-        String identifier = process.getOwsIdentifier();
-        Execute execute = new Execute(identifier);
+        String identifier = pe.getOwsIdentifier();
+
+        String rolaidentifier ="";
+        Binding bindingA;
+        if(isLocalBinding){
+            rolaidentifier="local/"+identifier;
+            bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
+            
+        }else{
+            URL aURL = new URL(pe.getServer());
+            String servershorthand = aURL.getHost();
+            de.hsos.richwps.mb.Logger.log("Hostname: "+servershorthand);
+            servershorthand=servershorthand.substring(5,10);
+            rolaidentifier=servershorthand+"/"+identifier;
+            
+            bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
+            Endpoint e = new Endpoint();
+            
+            e.setProtocol(aURL.getProtocol());
+            e.setHost(aURL.getHost());
+            if(aURL.getPort()!=-1){
+                e.setPort(aURL.getPort());
+            }
+            e.setPath(aURL.getPath());
+            bindingA.setEndpoint(e);
+        }
+        
+        ws.add(bindingA);
+       
+        Execute execute = new Execute(rolaidentifier);
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
@@ -103,7 +136,7 @@ public class Export {
             Reference variable = this.variables.get(source.getOwsIdentifier());
             execute.addInput(variable, getOwsIdentifier(target.getOwsIdentifier()));
         }
-//Logger.log("EX ID: " +identifier);
+        //Logger.log("EX ID: " +identifier);
         // Store outputs to variable refenrece map
         Object[] outgoing = graph.getOutgoingEdges(processVertex);
         for (Object out : outgoing) {
@@ -160,12 +193,12 @@ public class Export {
     }
 
     /**
-     * Launches the exporting process and writes results to specifed file
+     * Launches the exporting pe and writes results to specifed file
      *
      * @param path file to write to
      * @throws Exception
      */
-    public void export(String path) throws Exception {
+    public void export(String path, String wpstendpoint) throws Exception {
         Writer writer = new Writer();
         Worksequence ws = new Worksequence();
 
@@ -177,9 +210,22 @@ public class Export {
         Logger.log("Sorting graph");
         for (mxICell cell : sorted) {
             if (this.graph.getGraphModel().isProcess(cell)) {
-                Logger.log(">>>>" + ((ProcessEntity) this.graph.getGraphModel().getValue(cell)).getOutputPorts().get(0).getOwsIdentifier() );
-                this.defineExecute(cell, ws);
+                ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
 
+                String baseuria = wpstendpoint.replace("/WPST", "");
+                String baseurib = pe.getServer().replace("/WebProcessingService", "");
+                boolean isLocalBinding = baseuria.equals(baseurib);
+
+                Logger.log(">>>>" + pe.getOutputPorts().get(0).getOwsIdentifier());
+
+                this.defineExecute(cell, ws, isLocalBinding);
+                /*if (isLocalBinding) {
+                 Logger.log(">>>> Generating local Execute for " + pe.getOwsIdentifier());
+                    
+                 } else {
+                 Logger.log(">>>> Generating remote Execute for " + pe.getOwsIdentifier());
+                 this.defineRemoteExecute(cell, ws);
+                 }*/
 
             } else if (this.graph.getGraphModel().isFlowInput(cell)) {
                 this.defineOutput(cell, ws);

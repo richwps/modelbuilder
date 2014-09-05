@@ -3,20 +3,20 @@ package de.hsos.richwps.mb.richWPS.entity;
 import java.util.List;
 
 /**
- *
+ * Interface that represents an wps:/wpst:-request.
  * @author dalcacer
  */
 public interface IRequest {
     
     /**
-     *
-     * @return
+     * The endpoint the request should be directed to.
+     * @return endpoint the request should be directed to.
      */
     public String getEndpoint();
 
     /**
-     *
-     * @return
+     * In context of wps: the processidentifier which should be used.
+     * @return processidentifier which should be used.
      */
     public String getIdentifier();
 

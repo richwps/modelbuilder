@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.entity;
 
 import java.awt.datatransfer.DataFlavor;
@@ -29,6 +24,7 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
     private String toolTipText;
+    private boolean isLocal;
 
     public ProcessEntity() {
         this("", "");
@@ -37,6 +33,7 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
     public ProcessEntity(String server, String owsIdentifier) {
         this.server = server;
         this.owsIdentifier = owsIdentifier;
+        this.isLocal=false;
 
         this.inputPorts = new LinkedList<>();
         this.outputPorts = new LinkedList<>();
@@ -101,6 +98,15 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
         return outputPorts.size();
     }
 
+    public boolean isIsLocal() {
+        return isLocal;
+    }
+
+    public void setIsLocal(boolean isLocal) {
+        this.isLocal = isLocal;
+    }
+
+    
     @Override
     public String toString() {
         return getOwsTitle();

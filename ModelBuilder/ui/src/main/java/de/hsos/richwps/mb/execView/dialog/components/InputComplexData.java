@@ -51,7 +51,7 @@ public class InputComplexData extends javax.swing.JPanel {
 
         }
 
-        //fixme
+        //FIXME
         this.id = theidentifier;
         //this.identifier.setText(theidentifier);
 

@@ -42,6 +42,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author dziegenh
+ * @author dalcacer
  */
 public class AppDeployManager {
 
@@ -59,10 +60,69 @@ public class AppDeployManager {
         return app.getFrame();
     }
 
+    /**
+     * Starts the Deploy-Dialog.
+     */
     boolean deploy() {
-        final String rola = generateRola();
+        //Start a Dialog.
+
+        final DeployView deployView = new DeployView(getFrame(), AppConstants.DEPLOY_DIALOG_TITLE);
+
+        // TODO persist model's configs and get persisted configs
+        LinkedList<DeployConfig> configs = new LinkedList<>();
+        {
+            DeployConfig mockConfig = new DeployConfig();
+            mockConfig.setValue(DeployConfigField.ENDPOINT, "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPST");
+            mockConfig.setValue(DeployConfigField.ABSTRACT, "ABSTRACT");
+            mockConfig.setValue(DeployConfigField.IDENTIFIER, "IDENTIFIER");
+            mockConfig.setValue(DeployConfigField.TITLE, "TITLE");
+            mockConfig.setValue(DeployConfigField.VERSION, "VERSION");
+            configs.add(mockConfig);
+        }
+
+        deployView.init(configs);
+
+        deployView.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                DeployConfig wpstconfig = deployView.getConfig();
+                final String rola = _generateRola(wpstconfig);
+                if (null == rola) {
+                    de.hsos.richwps.mb.Logger.log(("No rola at all :("));
+                }
+                _performDeployment(wpstconfig, rola);
+            }
+        });
+        deployView.setVisible(true);
+        return true;
+    }
+
+    private String _generateRola(DeployConfig config) {
+        String wpstendpoint = config.getValue(DeployConfigField.ENDPOINT);
+
+//        instance.deploy(dto);
+//        instance.disconnect(wpsurl, wpsturl);
+        final String rola = this.generateDSL(wpstendpoint);
         if (null == rola) {
-            return false;
+            return null;
+        }
+        return rola;
+    }
+
+    private boolean _performDeployment(DeployConfig config, String rola) {
+        String wpstendpoint = config.getValue(DeployConfigField.ENDPOINT);
+        String identifier = config.getValue(DeployConfigField.IDENTIFIER);
+        String title = config.getValue(DeployConfigField.TITLE);
+        String processversion = config.getValue(DeployConfigField.VERSION);
+        String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
+
+        DeployRequest dto = new DeployRequest(wpstendpoint, identifier, title, processversion, rola);
+        dto.setAbstract(wpsAbstract);
+        try {
+            assembleDeployRequest(dto);
+        } catch (GraphToRequestTransformationException ex) {
+            // TODO create msg dialog
+            Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         // TODO create gui for wpsurl etc. !!
@@ -78,55 +138,20 @@ public class AppDeployManager {
             return false;
         }
 
-        final DeployView deployView = new DeployView(getFrame(), AppConstants.DEPLOY_DIALOG_TITLE);
-
-        // TODO persist model's configs and get persisted configs
-        LinkedList<DeployConfig> configs = new LinkedList<>();
-        {
-            DeployConfig mockConfig = new DeployConfig();
-            mockConfig.setValue(DeployConfigField.ENDPOINT, "ENDPOINT");
-            mockConfig.setValue(DeployConfigField.ABSTRACT, "ABSTRACT");
-            mockConfig.setValue(DeployConfigField.IDENTIFIER, "IDENTIFIER");
-            mockConfig.setValue(DeployConfigField.TITLE, "TITLE");
-            mockConfig.setValue(DeployConfigField.VERSION, "VERSION");
-            configs.add(mockConfig);
-        }
-
-        deployView.init(configs);
-
-        deployView.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                DeployConfig config = deployView.getConfig();
-
-                String endpoint = config.getValue(DeployConfigField.ENDPOINT);
-                String identifier = config.getValue(DeployConfigField.IDENTIFIER);
-                String title = config.getValue(DeployConfigField.TITLE);
-                String processversion = config.getValue(DeployConfigField.VERSION);
-                String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
-
-                DeployRequest dto = new DeployRequest(endpoint, identifier, title, processversion, rola);
-                dto.setAbstract(wpsAbstract);
-                try {
-                    assembleDeployRequest(dto);
-                } catch (GraphToRequestTransformationException ex) {
-                    // TODO create msg dialog
-                    Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-        deployView.setVisible(true);
-
-//        instance.deploy(dto);
-//        instance.disconnect(wpsurl, wpsturl);
         return true;
     }
 
-    private String generateRola() {
+    /**
+     * 
+     * @param wpstendpoint WPST-endpoint for automatic detection of local bindings.
+     * @return 
+     */
+    private String generateDSL(String wpstendpoint) {
         try {
             String dslFile = "generated.rola";
+            //FIXME mv to tmp System.getProperty("java.io.tmpdir")
 //            new Export(getGraphView().getGraph().clone()).export(dslFile);
-            new Export(getGraphView().getGraph()).export(dslFile);
+            new Export(getGraphView().getGraph()).export(dslFile, wpstendpoint);
 
             String content = null;
             File file = new File(dslFile); //for ex foo.txt
