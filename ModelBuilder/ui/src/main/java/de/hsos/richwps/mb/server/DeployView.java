@@ -32,7 +32,7 @@ public class DeployView extends MbDialog {
     private SelectDeployConfigView selectView;
 
     public DeployView(Window parent, String title) {
-        super(parent, title);
+        super(parent, title, MB_DIALOG_BUTTONS.CANCEL_OK);
 
         this.parent = parent;
         Dimension size = new Dimension(480, 160);

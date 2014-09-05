@@ -128,7 +128,7 @@ public class AppConstants {
         {PREFERENCES_TAB.SEMANTICPROXY.name(), "SemanticProxy"},
         {PREFERENCES_TAB.HTTPPROXY.name(), "Http Proxy"},};
     // SP preferences
-    public final static String PREFERENCES_TAB_SP_URL_LABEL = "SemanticProxy URL:";
+    public final static String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
     // Http proxy preferences
     public final static String PREFERENCES_TAB_HTTP_HOST_LABEL = "Proxy host:";
     public final static String PREFERENCES_TAB_HTTP_PORT_LABEL = "Proxy port:";

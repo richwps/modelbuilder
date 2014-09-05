@@ -11,7 +11,6 @@ import de.hsos.richwps.mb.ui.MbDialog;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -182,7 +181,7 @@ public class SelectDeployConfigView extends JPanel {
         private final DeployConfigView configView;
 
         private EditDeployConfigDialog(Window parent, String title, DeployConfig config) {
-            super(parent, title);
+            super(parent, title, MB_DIALOG_BUTTONS.CANCEL_OK);
 
             this.config = config;
 
@@ -192,36 +191,27 @@ public class SelectDeployConfigView extends JPanel {
             setMinimumSize(dialogSize);
 
             double[][] size = new double[][]{
-                {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED},
-                {TableLayout.FILL, TableLayout.PREFERRED}
+                {TableLayout.FILL},
+                {TableLayout.FILL}
             };
             Container content = getContentPane();
             content.setLayout(new TableLayout(size));
 
             configView = new DeployConfigView(config);
             configView.init();
-            content.add(configView, "0 0 2 0");
+            content.add(configView, "0 0");
+        }
 
-            JButton cancelButton = new JButton(AppConstants.DIALOG_BTN_CANCEL);
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    deleteConfig();
-                    dispose();
-                }
-            });
-            content.add(cancelButton, "1 1");
+        @Override
+        protected void handleCancel() {
+            deleteConfig();
+            super.handleCancel();
+        }
 
-            JButton okButton = new JButton(AppConstants.DIALOG_BTN_OK);
-            okButton.setFont(okButton.getFont().deriveFont(Font.BOLD));
-            okButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    configView.updateAllFields();
-                    dispose();
-                }
-            });
-            content.add(okButton, "2 1");
+        @Override
+        protected void handleOk() {
+            configView.saveTextFieldValuesToConfig();
+            super.handleOk();
         }
 
         public DeployConfig getConfig() {

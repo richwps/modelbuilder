@@ -67,7 +67,7 @@ public class DeployConfigView extends JPanel {
         return config;
     }
 
-    public void updateAllFields() {
+    public void saveTextFieldValuesToConfig() {
         for(Component c : getComponents()) {
             if(c instanceof TextField) {
                 TextField<DeployConfigField> textField = (TextField) c;

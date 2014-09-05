@@ -27,6 +27,9 @@ abstract class AbstractPreferencesTab extends JPanel {
 
     abstract void save();
 
+    abstract void load();
+
+
     protected JTextField createAndAddTextField(String text, String caption, int layoutY) {
         JTextField field = new JTextField(text);
         JLabel fieldLabel = new JLabel(caption);
