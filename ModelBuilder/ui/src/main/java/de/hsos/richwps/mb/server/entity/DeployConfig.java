@@ -19,7 +19,7 @@ public class DeployConfig implements Serializable {
     public DeployConfig() {
         fields = new HashMap<>(DeployConfigField.values().length);
 
-        for(DeployConfigField field : DeployConfigField.values()) {
+        for (DeployConfigField field : DeployConfigField.values()) {
             fields.put(field, "");
         }
     }
@@ -36,6 +36,15 @@ public class DeployConfig implements Serializable {
     public String toString() {
         // TODO return something that identifies the configuration
         return fields.get(DeployConfigField.ENDPOINT);
+    }
+
+    public DeployConfig clone() {
+        DeployConfig clone = new DeployConfig();
+        for (DeployConfigField field : DeployConfigField.values()) {
+            clone.setValue(field, getValue(field));
+        }
+
+        return clone;
     }
 
 }

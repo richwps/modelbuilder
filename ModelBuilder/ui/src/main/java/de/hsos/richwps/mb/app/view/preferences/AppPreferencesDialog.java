@@ -30,7 +30,7 @@ public class AppPreferencesDialog extends MbDialog {
     private HashMap<AppConstants.PREFERENCES_TAB, AbstractPreferencesTab> prefTabs;
 
     public AppPreferencesDialog(Window parent) {
-        super(parent, AppConstants.PREFERENCES_DIALOG_TITLE, MB_DIALOG_BUTTONS.CANCEL_OK);
+        super(parent, AppConstants.PREFERENCES_DIALOG_TITLE, (BTN_ID_OK | BTN_ID_CANCEL));
     }
 
     public void init() {
@@ -50,17 +50,22 @@ public class AppPreferencesDialog extends MbDialog {
     }
 
     @Override
-    protected void handleCancel() {
-        saveDialogAppearance();
-        super.handleCancel();
+    protected void handleDialogButton(int buttonId) {
+        switch (buttonId) {
+            case BTN_ID_CANCEL:
+                saveDialogAppearance();
+                break;
+
+            case BTN_ID_OK:
+                saveDialogAppearance();
+                savePreferences();
+                break;
+
+        }
+
+        super.handleDialogButton(buttonId); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    protected void handleOk() {
-        saveDialogAppearance();
-        savePreferences();
-        super.handleOk();
-    }
 
     JTabbedPane createTabPanel() {
         tabsPanel = new JTabbedPane();

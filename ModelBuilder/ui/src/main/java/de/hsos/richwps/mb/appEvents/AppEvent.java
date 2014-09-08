@@ -6,7 +6,7 @@
 package de.hsos.richwps.mb.appEvents;
 
 /**
- * Model class used by the AppEvent-Service.
+ * Entity the AppEvent-Service.
  * @author dziegenh
  */
 public class AppEvent {

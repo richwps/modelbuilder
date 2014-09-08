@@ -7,6 +7,7 @@ package de.hsos.richwps.mb.server.view;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.server.entity.DeployConfig;
+import de.hsos.richwps.mb.server.entity.DeployConfigField;
 import de.hsos.richwps.mb.ui.MbDialog;
 import java.awt.Color;
 import java.awt.Container;
@@ -181,7 +182,7 @@ public class SelectDeployConfigView extends JPanel {
         private final DeployConfigView configView;
 
         private EditDeployConfigDialog(Window parent, String title, DeployConfig config) {
-            super(parent, title, MB_DIALOG_BUTTONS.CANCEL_OK);
+            super(parent, title, (BTN_ID_OK | BTN_ID_CANCEL));
 
             this.config = config;
 
@@ -203,15 +204,38 @@ public class SelectDeployConfigView extends JPanel {
         }
 
         @Override
-        protected void handleCancel() {
-            deleteConfig();
-            super.handleCancel();
+        protected void handleDialogButton(int buttonId) {
+            switch (buttonId) {
+                case BTN_ID_OK:
+                    if (!handleOk()) {
+                        return;
+                    }
+                    break;
+
+                case BTN_ID_CANCEL:
+                    deleteConfig();
+                    break;
+            }
+
+            super.handleDialogButton(buttonId);
         }
 
-        @Override
-        protected void handleOk() {
+        protected boolean handleOk() {
+            DeployConfig tmpConfig = configView.getConfig().clone();
             configView.saveTextFieldValuesToConfig();
-            super.handleOk();
+
+            // assert endpoint value
+            String endpoint = config.getValue(DeployConfigField.ENDPOINT);
+            if (null == endpoint || endpoint.isEmpty()) {
+                JOptionPane.showMessageDialog(parent, "An endpoint must be specified.", "Error in configuration", JOptionPane.ERROR_MESSAGE);
+
+                // restore config values
+                config.setValue(DeployConfigField.ENDPOINT, tmpConfig.getValue(DeployConfigField.ENDPOINT));
+                configView.update();
+                return false;
+            }
+
+            return true;
         }
 
         public DeployConfig getConfig() {

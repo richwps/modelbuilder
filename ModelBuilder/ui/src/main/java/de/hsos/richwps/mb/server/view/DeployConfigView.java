@@ -76,4 +76,28 @@ public class DeployConfigView extends JPanel {
         }
     }
 
+    void setConfigValues(DeployConfig config) {
+        for(Component c : getComponents()) {
+            if(c instanceof TextField) {
+                TextField<DeployConfigField> textField = (TextField) c;
+                final DeployConfigField field = textField.getUserObject();
+                String value = config.getValue(field);
+                textField.setText(value);
+
+                this.config.setValue(field, value);
+            }
+        }
+    }
+    
+    
+    void update() {
+        for(Component c : getComponents()) {
+            if(c instanceof TextField) {
+                TextField<DeployConfigField> textField = (TextField) c;
+                final DeployConfigField field = textField.getUserObject();
+                textField.setText(config.getValue(field));
+            }
+        }
+    }
+
 }

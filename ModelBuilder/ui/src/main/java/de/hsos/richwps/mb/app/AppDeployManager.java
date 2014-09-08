@@ -21,8 +21,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import de.hsos.richwps.mb.server.DeployView;
-import de.hsos.richwps.mb.server.Mock;
+import de.hsos.richwps.mb.server.boundary.DeployView;
 import de.hsos.richwps.mb.server.entity.DeployConfig;
 import de.hsos.richwps.mb.server.entity.DeployConfigField;
 import de.hsos.richwps.mb.server.exception.GraphToRequestTransformationException;
@@ -188,7 +187,7 @@ public class AppDeployManager {
             sb.append('\n');
             sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, exMsg));
 
-            AppEventService.getInstance().fireAppEvent(sb.toString(), Mock.getInstance());
+            AppEventService.getInstance().fireAppEvent(sb.toString(), AppConstants.INFOTAB_ID_SERVER);
             Logger
                     .getLogger(App.class
                             .getName()).log(Level.SEVERE, null, ex);

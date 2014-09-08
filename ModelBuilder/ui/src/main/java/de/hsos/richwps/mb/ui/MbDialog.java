@@ -33,11 +33,15 @@ public class MbDialog extends JDialog {
 
     private JPanel buttonPanel;
 
+    public final static int BTN_ID_NONE = 0;
+    public final static int BTN_ID_CLOSE = 1 << 0;
+    public final static int BTN_ID_OK = 1 << 1;
+    public final static int BTN_ID_CANCEL = 1 << 2;
 
-    public enum MB_DIALOG_BUTTONS {
-
-        NONE, CLOSE, CANCEL_OK
-    }
+    /**
+     * Holds instances of the dialog buttons ("ok", "cancel" etc).
+     */
+    private JButton[] dialogButtons = new JButton[3];
 
     protected Window parent;
 
@@ -46,15 +50,15 @@ public class MbDialog extends JDialog {
     private static Insets borderInsets = new Insets(2, 2, 2, 2);
 
     public MbDialog(Window parent, String title) {
-        this(parent, title, MB_DIALOG_BUTTONS.NONE);
+        this(parent, title, MbDialog.BTN_ID_NONE);
     }
 
-    public MbDialog(Window parent, String title, MB_DIALOG_BUTTONS buttons) {
+    public MbDialog(Window parent, String title, int buttonIds) {
         super(parent, title, JDialog.ModalityType.APPLICATION_MODAL);
 
         this.parent = parent;
         contentPane.setBorder(new EmptyBorder(MbDialog.borderInsets));
-        createDialogButtons(buttons);
+        createDialogButtons(buttonIds);
 
         addKeyBindings();
     }
@@ -73,64 +77,53 @@ public class MbDialog extends JDialog {
         return contentPane;
     }
 
-    private void createDialogButtons(MB_DIALOG_BUTTONS buttons) {
+    private void createDialogButtons(int buttons) {
         buttonPanel = null;
         JButton okButton = null;
         JButton cancelButton = null;
+        JButton closeButton = null;
         double[][] size;
 
         // create desired button panel
-        if (null != buttons) {
-            switch (buttons) {
-                case CLOSE:
-                    buttonPanel = new JPanel();
+        if ((buttons & BTN_ID_CLOSE) > 0) {
+            buttonPanel = new JPanel();
 
-                    size = new double[][]{
-                        {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
-                        {TableLayout.PREFERRED}
-                    };
-                    buttonPanel.setLayout(new TableLayout(size));
-                    okButton = new JButton(AppConstants.DIALOG_BTN_CLOSE);
-                    buttonPanel.add(okButton, "1 0");
-                    break;
+            size = new double[][]{
+                {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
+                {TableLayout.PREFERRED}
+            };
+            buttonPanel.setLayout(new TableLayout(size));
+            closeButton = new JButton(AppConstants.DIALOG_BTN_CLOSE);
+            buttonPanel.add(closeButton, "1 0");
+        }
 
-                case CANCEL_OK:
-                    buttonPanel = new JPanel();
+        if ((buttons & (BTN_ID_CANCEL | BTN_ID_OK)) > 0) {
+            buttonPanel = new JPanel();
 
-                    size = new double[][]{
-                        {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED},
-                        {TableLayout.PREFERRED}
-                    };
-                    buttonPanel.setLayout(new TableLayout(size));
+            size = new double[][]{
+                {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED},
+                {TableLayout.PREFERRED}
+            };
+            buttonPanel.setLayout(new TableLayout(size));
 
-                    cancelButton = new JButton(AppConstants.DIALOG_BTN_CANCEL);
-                    okButton = new JButton(AppConstants.DIALOG_BTN_OK);
+            cancelButton = new JButton(AppConstants.DIALOG_BTN_CANCEL);
+            okButton = new JButton(AppConstants.DIALOG_BTN_OK);
 
-                    buttonPanel.add(cancelButton, "1 0");
-                    buttonPanel.add(okButton, "2 0");
-                    break;
-
-                default:
-            }
+            buttonPanel.add(cancelButton, "1 0");
+            buttonPanel.add(okButton, "2 0");
         }
 
         if (null != okButton) {
+            setDialogButton(BTN_ID_OK, okButton);
             okButton.setFont(okButton.getFont().deriveFont(Font.BOLD));
-            okButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    handleOk();
-                }
-            });
+        }
+
+        if (null != closeButton) {
+            setDialogButton(BTN_ID_CLOSE, closeButton);
         }
 
         if (null != cancelButton) {
-            cancelButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    handleCancel();
-                }
-            });
+            setDialogButton(BTN_ID_CANCEL, cancelButton);
         }
 
         if (null != buttonPanel) {
@@ -147,43 +140,45 @@ public class MbDialog extends JDialog {
     }
 
     /**
-     * Can be implemented by subclasses to respond to a click on the Ok-Button.
+     * Gets a dialog button by its id.
+     *
+     * @param buttonId
+     * @return
      */
-    protected void handleOk() {
-        dispose();
+    protected JButton getDialogButton(int buttonId) {
+        if (isValidButtonId(buttonId)) {
+            try {
+                return dialogButtons[UiHelper.getExponent(buttonId)];
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        // no such button
+        return null;
     }
 
     /**
-     * Can be implemented by subclasses to respond to cancel-like dialog
-     * closing..
+     * Puts the specified dialog button into the button array and adds an
+     * actionListener as the default action handler.
+     *
+     * @param buttonId
+     * @param button
      */
-    protected void handleCancel() {
-        dispose();
+    protected void setDialogButton(final int buttonId, JButton button) {
+        if (isValidButtonId(buttonId)) {
+            dialogButtons[UiHelper.getExponent(buttonId)] = button;
+
+            // delegate action to handler
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handleDialogButton(buttonId);
+                }
+            });
+        }
     }
 
-//    @Override
-//    public Component add(Component comp) {
-//        return getContentPane().add(comp);
-//    }
-//
-//    @Override
-//    public void add(Component comp, Object constraints) {
-//        if (!comp.equals(getContentPane())) {
-//            super.getContentPane().add(comp, constraints);
-//        } else {
-//            super.add(comp, constraints);
-//        }
-//    }
-//
-//    @Override
-//    public Component add(Component comp, int index) {
-//        return getContentPane().add(comp, index);
-//    }
-//
-//    @Override
-//    public void add(Component comp, Object constraints, int index) {
-//        super.getContentPane().add(comp, constraints, index);
-//    }
     @Override
     public void setBackground(Color bgColor) {
         if (null != buttonPanel) {
@@ -201,8 +196,9 @@ public class MbDialog extends JDialog {
         KeyStroke windowCloseStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
         im.put(windowCloseStroke, windowCloseKey);
         am.put(windowCloseKey, new AbstractAction() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                handleCancel();
+                handleDialogButton(BTN_ID_CANCEL);
             }
         });
         // "ok" & "close" key (enter/return)
@@ -210,9 +206,27 @@ public class MbDialog extends JDialog {
         KeyStroke windowOkStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         im.put(windowOkStroke, windowOkKey);
         am.put(windowOkKey, new AbstractAction() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                handleOk();
+                handleDialogButton(BTN_ID_OK);
             }
         });
     }
+
+    private boolean isValidButtonId(int buttonId) {
+        // limit for valid button ids
+        return buttonId < (1 << 30);
+    }
+
+    /**
+     * Can be implemented by subbers to respond to dialog button actions.
+     */
+    protected void handleDialogButton(int buttonId) {
+        dispose();
+    }
+
+    protected boolean isTheDialogButton(int questionableButtonId, int desiredButtonId) {
+        return (questionableButtonId & desiredButtonId) > 1;
+    }
+
 }

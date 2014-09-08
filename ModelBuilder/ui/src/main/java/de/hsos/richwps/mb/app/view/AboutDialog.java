@@ -18,7 +18,7 @@ import layout.TableLayout;
 public class AboutDialog extends MbDialog {
 
     public AboutDialog(Window parent) {
-        super(parent, AppConstants.ABOUT_DIALOG_TITLE, MB_DIALOG_BUTTONS.CLOSE);
+        super(parent, AppConstants.ABOUT_DIALOG_TITLE, BTN_ID_CLOSE);
 
         if (parent == null) {
             throw new IllegalArgumentException("AboutDialog parent can not be null");

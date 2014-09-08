@@ -154,4 +154,19 @@ public class UiHelper {
         centerMe.setLocation(x, y);
     }
 
+    public static int getExponent(int baseTwoInt) {
+        int exp = 0;
+
+        while ((1<<exp) < (Integer.MAX_VALUE ) && (1<<exp) > 0) {
+            if (((baseTwoInt >> exp) & 1) == 1) {
+                return exp;
+            }
+            exp++;
+        }
+
+        return 0;
+    }
+
+    public static boolean is32BitVM = System.getProperty("os.arch").contains("x86");
+
 }

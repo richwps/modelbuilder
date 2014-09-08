@@ -12,7 +12,6 @@ import de.hsos.richwps.mb.app.view.AppSplashScreen;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
-import de.hsos.richwps.mb.server.Mock;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -152,7 +151,7 @@ public class AppSetup {
         // connect to SP and fill tree with services etc. received from SP
         app.fillMainTree();
         // TODO mocked server class for app events -> replace when server client exists!!
-        AppEventService.getInstance().addSourceCommand(Mock.getInstance(), AppConstants.INFOTAB_ID_SERVER);
+        AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_SERVER, AppConstants.INFOTAB_ID_SERVER);
 
         splash.showMessageAndProgress("ModelBuilder is ready!", 100);
 

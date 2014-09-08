@@ -150,7 +150,7 @@ public class ProcessProvider implements IProcessProvider {
         for (WPS wps : wpss) {
             try {
                 if (server.equals(wps.getEndpoint())) {
-                    LinkedList<ProcessEntity> serverProcesses = new LinkedList<ProcessEntity>();
+                    LinkedList<ProcessEntity> serverProcesses = new LinkedList<>();
                     ProcessEntity process = null;
 
                     for (de.hsos.richwps.sp.client.wps.gettypes.Process spProcess : wps.getProcesses()) {
@@ -198,7 +198,7 @@ public class ProcessProvider implements IProcessProvider {
             }
         }
 
-        LinkedList<ProcessEntity> ps = new LinkedList<ProcessEntity>();
+        LinkedList<ProcessEntity> ps = new LinkedList<>();
 
         ProcessEntity process;
         ProcessPort port;
