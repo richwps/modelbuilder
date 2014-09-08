@@ -10,6 +10,7 @@
 
     <name>RichWPS ModelBuilder</name>
     <url>http://maven.apache.org</url>
+    <description>RichWPS ModelBuilder.</description>
   
     <modules>
         <module>ui</module>
