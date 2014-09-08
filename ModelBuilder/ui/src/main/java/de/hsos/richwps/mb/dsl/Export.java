@@ -12,13 +12,13 @@ import de.hsos.richwps.dsl.api.elements.Reference;
 import de.hsos.richwps.dsl.api.elements.VarReference;
 import de.hsos.richwps.dsl.api.elements.Worksequence;
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
-import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +35,9 @@ public class Export {
 
     /**
      * Variable reference map input variables are stored to the reference map at
- the beginning pe outputs are stored to variables in the reference
- map pe inputs get their values from the reference map output
- variables get their values from the reference map
+     * the beginning pe outputs are stored to variables in the reference map pe
+     * inputs get their values from the reference map output variables get their
+     * values from the reference map
      */
     protected Map<String, Reference> variables;
     protected Graph graph;
@@ -84,50 +84,49 @@ public class Export {
 
     /**
      * Adds one pe execute statement to worksequence, gets inputs from
- variables, stores outputs to variables
+     * variables, stores outputs to variables
      *
      * @param processVertex
-     * @param ws Wroksequence to write to.
+     * @param ws Worksequence to write to.
      * @param isLocalBinding information about binding type.
-     * @throws Exception
+     * @throws Exception.
      */
     protected void defineExecute(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
-        
-         // Get inputs from variable reference map
+
+        // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
         ProcessEntity pe = (ProcessEntity) processVertex.getValue();
         // @TODO: identifier not ideal, not in $org/name$ syntax
         String identifier = pe.getOwsIdentifier();
-
-        String rolaidentifier ="";
+        
+        String rolaidentifier = "";
         Binding bindingA;
-        if(isLocalBinding){
-            rolaidentifier="local/"+identifier;
+        if (isLocalBinding) {
+            rolaidentifier = "local/" + identifier;
             bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
-            
-        }else{
+
+        } else {
             URL aURL = new URL(pe.getServer());
             String servershorthand = aURL.getHost();
-            de.hsos.richwps.mb.Logger.log("Hostname: "+servershorthand);
-            servershorthand=servershorthand.substring(5,10);
-            rolaidentifier=servershorthand+"/"+identifier;
-            
+            de.hsos.richwps.mb.Logger.log("Hostname: " + servershorthand);
+            rolaidentifier = "remote/" + identifier;
+
             bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
-            
+
             Endpoint e = new Endpoint();
             e.setProtocol(aURL.getProtocol());
             e.setHost(aURL.getHost());
-            if(aURL.getPort()!=-1){
+            if (aURL.getPort() != -1) {
                 e.setPort(aURL.getPort());
-            }else{
+            } else {
                 e.setPort(80);
             }
             e.setPath(aURL.getPath());
             bindingA.setEndpoint(e);
         }
-        
+
         ws.add(bindingA);
-       
+
         Execute execute = new Execute(rolaidentifier);
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
@@ -208,13 +207,19 @@ public class Export {
         // Topological sort is used to resolve dependencies
         TopologicalSorter sorter = new TopologicalSorter();
         List<mxICell> sorted = sorter.sort(graph);
+        
         Logger.log("Sorting graph");
         for (mxICell cell : sorted) {
             if (this.graph.getGraphModel().isProcess(cell)) {
+                //no edges, nothing todo!
+                if(this.graph.getGraphModel().getEdgeCount(cell)==0){
+                    return; 
+                }
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
 
-                String baseuria = wpstendpoint.replace("/WPST", "");
-                String baseurib = pe.getServer().replace("/WebProcessingService", "");
+                //local/remote identification based on hostname.
+                String baseuria = wpstendpoint.replace(AppConstants.DEFAULT_WPST_ENDPOINT, "");
+                String baseurib = pe.getServer().replace(AppConstants.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
 
                 this.defineExecute(cell, ws, isLocalBinding);

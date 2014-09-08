@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import java.awt.Color;
@@ -13,6 +8,7 @@ import java.io.File;
 /**
  *
  * @author dziegenh
+ * @author dalcacer
  */
 public class AppConstants {
 
@@ -297,4 +293,8 @@ public class AppConstants {
 
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 
+   
+    public final static String DEFAULT_WPST_ENDPOINT = "/WPST";
+    public final static String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";  
+    public final static String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
 }
