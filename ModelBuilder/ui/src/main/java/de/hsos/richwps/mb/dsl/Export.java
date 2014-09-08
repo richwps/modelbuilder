@@ -92,8 +92,7 @@ public class Export {
      * @throws Exception
      */
     protected void defineExecute(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
-        GraphModel model = graph.getGraphModel();
-
+        
          // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
         ProcessEntity pe = (ProcessEntity) processVertex.getValue();
@@ -114,12 +113,14 @@ public class Export {
             rolaidentifier=servershorthand+"/"+identifier;
             
             bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
-            Endpoint e = new Endpoint();
             
+            Endpoint e = new Endpoint();
             e.setProtocol(aURL.getProtocol());
             e.setHost(aURL.getHost());
             if(aURL.getPort()!=-1){
                 e.setPort(aURL.getPort());
+            }else{
+                e.setPort(80);
             }
             e.setPath(aURL.getPath());
             bindingA.setEndpoint(e);
@@ -216,16 +217,7 @@ public class Export {
                 String baseurib = pe.getServer().replace("/WebProcessingService", "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
 
-                Logger.log(">>>>" + pe.getOutputPorts().get(0).getOwsIdentifier());
-
                 this.defineExecute(cell, ws, isLocalBinding);
-                /*if (isLocalBinding) {
-                 Logger.log(">>>> Generating local Execute for " + pe.getOwsIdentifier());
-                    
-                 } else {
-                 Logger.log(">>>> Generating remote Execute for " + pe.getOwsIdentifier());
-                 this.defineRemoteExecute(cell, ws);
-                 }*/
 
             } else if (this.graph.getGraphModel().isFlowInput(cell)) {
                 this.defineOutput(cell, ws);
