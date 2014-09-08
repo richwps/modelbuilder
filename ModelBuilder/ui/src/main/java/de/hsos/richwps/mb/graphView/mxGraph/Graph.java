@@ -165,6 +165,7 @@ public class Graph extends mxGraph {
 
     /**
      * Returns the graph workflow layouter.
+     *
      * @return
      */
     public GraphWorkflowLayout getGraphWorkflowLayout() {
@@ -394,7 +395,7 @@ public class Graph extends mxGraph {
         return processes;
     }
 
-   private List<mxCell> filterProcessCells(Object[] cells) {
+    private List<mxCell> filterProcessCells(Object[] cells) {
         List<mxCell> processCells = new LinkedList<>();
         for (Object cell : cells) {
             Object cellValue = getModel().getValue(cell);
@@ -430,6 +431,7 @@ public class Graph extends mxGraph {
         Object[] cells = getChildCells(getDefaultParent());
         return filterProcessCells(cells);
     }
+
     /**
      * Returns currently selected global ports.
      *
@@ -474,7 +476,6 @@ public class Graph extends mxGraph {
         return filterGlobalPorts(cells);
     }
 
-
     public List<Object> getGlobalPortCells() {
         Object[] cells = getChildCells(getDefaultParent());
         return filterGlobalPortCells(cells);
@@ -496,7 +497,6 @@ public class Graph extends mxGraph {
 
         return inputs;
     }
-
 
     public List<Object> getGlobalInputPortCells() {
         List<Object> inputs = new LinkedList<>();
@@ -592,5 +592,8 @@ public class Graph extends mxGraph {
         return x;
     }
 
+    public int getGraphComponentsCount() {
+        return mxGraphStructure.getGraphComponents(ag).length;
+    }
 
 }
