@@ -207,16 +207,13 @@ public class Export {
         // Topological sort is used to resolve dependencies
         TopologicalSorter sorter = new TopologicalSorter();
         List<mxICell> sorted = sorter.sort(graph);
-        
         Logger.log("Sorting graph");
+        
         for (mxICell cell : sorted) {
             if (this.graph.getGraphModel().isProcess(cell)) {
-                //no edges, nothing todo!
-                if(this.graph.getGraphModel().getEdgeCount(cell)==0){
-                    return; 
-                }
+              
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
-
+                
                 //local/remote identification based on hostname.
                 String baseuria = wpstendpoint.replace(AppConstants.DEFAULT_WPST_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(AppConstants.DEFAULT_WPS_ENDPOINT, "");

@@ -73,28 +73,34 @@ public class TopologicalSorter {
             // Pick any vertix without dependencies and move to sorted list
             mxICell vertex = this.verticesWithoutDependencies.iterator().next();
             this.verticesWithoutDependencies.remove(vertex);
-            this.sorted.add(vertex);
+
             Logger.log(getCellName(vertex) + " was resolved and added to sorted List.");
             // Resolve dependencies on child vertices
             Object[] outgoing = graph.getOutgoingEdges(vertex);
-            for (Object edge : outgoing) {
-                mxICell child = ((GraphEdge) edge).getTarget();
-                List<mxICell> dependencies = this.unresolvedDependencies.get(child);
-                dependencies.remove(vertex);
-                Logger.log("Outgoing connection to " + getCellName(child) + " resolved.");
-                // Queue child vertix if it has no further dependencies
-                if (dependencies.isEmpty()) {
-                    this.verticesWithoutDependencies.add(child);
-                    Logger.log(getCellName(child) + "has no further dependencies.");
+            //No edges? Nothing to do!
+            if (outgoing.length != 0) {
+                this.sorted.add(vertex);
+
+                for (Object edge : outgoing) {
+                    mxICell child = ((GraphEdge) edge).getTarget();
+                    List<mxICell> dependencies = this.unresolvedDependencies.get(child);
+                    dependencies.remove(vertex);
+                    Logger.log("Outgoing connection to " + getCellName(child) + " resolved.");
+                    // Queue child vertix if it has no further dependencies
+                    if (dependencies.isEmpty()) {
+                        this.verticesWithoutDependencies.add(child);
+                        Logger.log(getCellName(child) + "has no further dependencies.");
+                    }
                 }
             }
         }
-        
+
         return sorted;
     }
 
     /**
      * Gets a readable cell name for debugging
+     *
      * @TODO delete this function after testing
      * @param cell
      * @return readable cell name
