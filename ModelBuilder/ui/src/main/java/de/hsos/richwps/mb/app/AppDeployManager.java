@@ -71,7 +71,7 @@ public class AppDeployManager {
         LinkedList<DeployConfig> configs = new LinkedList<>();
         {
             DeployConfig mockConfig = new DeployConfig();
-            mockConfig.setValue(DeployConfigField.ENDPOINT, "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPST");
+            mockConfig.setValue(DeployConfigField.ENDPOINT, "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T");
             mockConfig.setValue(DeployConfigField.ABSTRACT, "ABSTRACT");
             mockConfig.setValue(DeployConfigField.IDENTIFIER, "IDENTIFIER");
             mockConfig.setValue(DeployConfigField.TITLE, "TITLE");
