@@ -12,6 +12,9 @@ import java.util.List;
  * @author dalcacer
  */
 public interface IRichWPSProvider {
+    public static final String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";
+    public static final String DEFAULT_WPST_ENDPOINT = "/WPS-T";
+    public static final String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
 
     /**
      * Connects the provider to a WPS-server.

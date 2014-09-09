@@ -166,7 +166,7 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
-        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(1);
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
@@ -212,7 +212,7 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
-        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(1);
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
@@ -290,9 +290,9 @@ public class RichWPSProviderTest extends TestCase {
 
     private IOutputSpecifier createLiteralDataOutput() {
         OutputLiteralDataSpecifier specifier = new OutputLiteralDataSpecifier();
-        specifier.setIdentifier("aabb");
-        specifier.setTitle("aabb");
-        specifier.setAbstract("aabb's abstract");
+        specifier.setIdentifier("identifier");
+        specifier.setTitle("");
+        specifier.setAbstract("identifier {NF/DI}.");
         specifier.setType("xs:string");
         return specifier;
     }
@@ -312,8 +312,86 @@ public class RichWPSProviderTest extends TestCase {
         request.addInput(this.createLiteralDataInput());
         request.addOutput(this.createComplexDataOutput());
         request.addOutput(this.createLiteralDataOutput());
-        request.setExecutionUnit("Execunit.");
+        request.setExecutionUnit("var.reportingareas = in.reportingareas\n"
+                + "var.identifier = in.identifier\n"
+                + "bind process http richwps.edvsz.hs-osnabrueck.de 80 /wps/WebProcessingService lkn.macrophyte.selectReportingArea to remote/lkn.macrophyte.selectReportingArea\n"
+                + "execute remote/lkn.macrophyte.selectReportingArea with var.identifier as in.areaname var.reportingareas as in.reportingareas  store out.selectedarea as var.out.selectedarea ");
 
+        instance.deployProcess(request);
+    }
+
+    private IInputSpecifier createComplexDataInput1() {
+        InputComplexDataSpecifier specifier;
+        specifier = new InputComplexDataSpecifier();
+        specifier.setIdentifier("reportingareas");
+        specifier.setTitle("");
+        specifier.setMinOccur(1);
+        specifier.setMaxOccur(1);
+        specifier.setAbstract(".");
+
+        List<String> atype = new ArrayList<>();
+        atype.add("application/json");   // mimetype
+        atype.add("");  // schema
+        atype.add("");  // encoding
+
+        List<List> types = new ArrayList<>();
+        types.add(atype);
+
+        specifier.setTypes(types);
+        specifier.setDefaulttype(atype);
+        specifier.setMaximumMegabytes(50);
+        return specifier;
+    }
+
+    private IInputSpecifier createLiteralDataInput1() {
+        InputLiteralDataSpecifier specifier = new InputLiteralDataSpecifier();
+        specifier.setIdentifier("identifier");
+        specifier.setTitle("");
+        specifier.setAbstract("{NF/DI}");
+        specifier.setMinOccur(1);
+        specifier.setMaxOccur(1);
+        specifier.setType(("xs:string"));
+        specifier.setDefaultvalue("NF");
+        return specifier;
+    }
+
+    private IOutputSpecifier createComplexDataOutput1() {
+        OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
+        specifier.setIdentifier("selectedarea");
+        specifier.setTitle("");
+        specifier.setTheabstract("");
+
+        List<String> atype = new ArrayList<>();
+        atype.add("application/xml");   // mimetype
+        atype.add("");  // schema
+        atype.add("");  // encoding
+
+        List<List> types = new ArrayList<>();
+        types.add(atype);
+
+        specifier.setTypes(types);
+        specifier.setDefaulttype(atype);
+        return specifier;
+    }
+
+    public void testDeploy1() {
+        System.out.println("testDeploy1");
+        String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
+        String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T";
+        RichWPSProvider instance = new RichWPSProvider();
+        try {
+            instance.connect(wpsurl, wpsturl);
+        } catch (Exception ex) {
+            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        DeployRequest request = new DeployRequest(wpsturl, "rola.SelectRepArea.Wrapper", "A title", "2", "rola");
+        request.addInput(this.createComplexDataInput1());
+        request.addInput(this.createLiteralDataInput1());
+        request.addOutput(this.createComplexDataOutput1());
+        request.setExecutionUnit("var.identifier = in.identifier\n" +
+"bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
+"execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea ");
         instance.deployProcess(request);
     }
 

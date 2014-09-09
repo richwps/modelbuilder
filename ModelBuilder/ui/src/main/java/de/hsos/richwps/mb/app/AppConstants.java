@@ -297,7 +297,4 @@ public class AppConstants {
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 
    
-    public final static String DEFAULT_WPST_ENDPOINT = "/WPS-T";
-    public final static String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";  
-    public final static String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
 }

@@ -12,13 +12,13 @@ import de.hsos.richwps.dsl.api.elements.Reference;
 import de.hsos.richwps.dsl.api.elements.VarReference;
 import de.hsos.richwps.dsl.api.elements.Worksequence;
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
+import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -215,8 +215,8 @@ public class Export {
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
                 
                 //local/remote identification based on hostname.
-                String baseuria = wpstendpoint.replace(AppConstants.DEFAULT_WPST_ENDPOINT, "");
-                String baseurib = pe.getServer().replace(AppConstants.DEFAULT_WPS_ENDPOINT, "");
+                String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
+                String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
 
                 this.defineExecute(cell, ws, isLocalBinding);

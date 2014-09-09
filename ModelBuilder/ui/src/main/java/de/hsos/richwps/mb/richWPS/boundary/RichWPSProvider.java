@@ -170,20 +170,27 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public List<String> getAvailableProcesses(String wpsurl) {
-        List<String> processes = new ArrayList<>();
 
+        List<String> processes = new ArrayList<>();
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
             ProcessDescriptionsDocument pdd = this.wps.describeAllProcesses(wpsurl);
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessBriefType[] descs = descriptions.getProcessDescriptionArray();
+
             for (ProcessBriefType process : descs) {
-                String identifier = process.getIdentifier().getStringValue();
-                processes.add(identifier);
+                if (process.getIdentifier() != null) {
+                    String identifier = process.getIdentifier().getStringValue();
+                    processes.add(identifier);
+                } else {
+                    //de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()" + process);
+                }
             }
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()#WPSClientException:\n " + e);
         } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n " + e.getLocalizedMessage());
+            de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()#Exception:\n " + e);
         }
         return processes;
     }
@@ -281,7 +288,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         builder.setDeploymentProfileName(request.getDeploymentprofile());
         builder.setKeepExecutionUnit(request.isKeepExecUnit());
         try {
-            System.out.println(builder.getDeploydocument());
+            de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
+            Object o = this.wpst.deploy(request.getEndpoint(), builder.getDeploydocument());
+            de.hsos.richwps.mb.Logger.log("Debug:\n" + o);
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
         }

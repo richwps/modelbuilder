@@ -72,6 +72,11 @@ public class ExecuteRequest implements IRequest {
     private String exception = "";
 
     /**
+     * The corresponding serverid.
+     */
+    private String serverid = "";
+
+    /**
      * Constructs a new ExecuteRequest.
      */
     public ExecuteRequest() {
@@ -83,6 +88,7 @@ public class ExecuteRequest implements IRequest {
         this.availableoutputs = new ArrayList<>();
         this.actualoutputs = new HashMap<>();
         this.results = new HashMap<>();
+        this.serverid = new String();
     }
 
     /**
@@ -100,6 +106,17 @@ public class ExecuteRequest implements IRequest {
      */
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getServerId() {
+        if (this.serverid.length() == 0) {
+            return this.endpoint;
+        }
+        return serverid;
     }
 
     /**

@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
+import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
@@ -24,6 +26,11 @@ public class UndeployRequest implements IRequest {
      * Exception text.
      */
     private String exception = "";
+    
+       /**
+     * The corresponding serverid.
+     */
+    private String serverid = "";
 
     public UndeployRequest(String endpoint, String identifier) {
         this.endpoint = endpoint;
@@ -41,6 +48,19 @@ public class UndeployRequest implements IRequest {
         return this.identifier;
     }
 
+     
+    /**
+     *
+     * @return
+     */
+    public String getServerId() {
+        if (this.serverid.length() == 0) {
+            String uri = this.endpoint;
+            uri = uri.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+            return uri;
+        }
+        return serverid;
+    }
     /**
      *
      * @return

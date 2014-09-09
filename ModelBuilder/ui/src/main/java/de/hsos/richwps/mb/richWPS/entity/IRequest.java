@@ -61,5 +61,10 @@ public interface IRequest {
      * @param message
      */
     public void addException(final String message);
-        
+   
+    
+    /**
+     * 
+     */
+    public String getServerId();
 }

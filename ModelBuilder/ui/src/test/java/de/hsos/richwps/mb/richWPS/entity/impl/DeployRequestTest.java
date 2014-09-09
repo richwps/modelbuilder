@@ -115,13 +115,13 @@ public class DeployRequestTest {
     @Test
     public void testCreation() {
         System.out.println("testCreation");
-        DeployRequest dto = new DeployRequest("localhost", "test", "test", "1.0", "ROLA");
-        dto.addInput(this.createComplexDataInput());
-        dto.addInput(this.createLiteralDataInput());
-        dto.addOutput(this.createComplexDataOutput());
-        dto.addOutput(this.createLiteralDataOutput());
+        DeployRequest request = new DeployRequest("localhost", "test", "test", "1.0", "ROLA");
+        request.addInput(this.createComplexDataInput());
+        request.addInput(this.createLiteralDataInput());
+        request.addOutput(this.createComplexDataOutput());
+        request.addOutput(this.createLiteralDataOutput());
         
-        ProcessDescriptionType description = dto.toProcessDescriptionType();
+        ProcessDescriptionType description = request.toProcessDescriptionType();
         assertNotNull(description);
     }
 
