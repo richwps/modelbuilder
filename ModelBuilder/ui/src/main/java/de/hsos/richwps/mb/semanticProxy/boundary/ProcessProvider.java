@@ -132,7 +132,7 @@ public class ProcessProvider implements IProcessProvider {
                     }
 
                 }
-            } catch (RDFException ex) {
+            } catch (Exception ex) {
                 fireSpReceiveExceptionAsAppEvent(ex);
             }
         }
@@ -141,10 +141,6 @@ public class ProcessProvider implements IProcessProvider {
 
     @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
-        return getServerProcesses(server, false);
-    }
-
-    public Collection<ProcessEntity> getServerProcesses(String server, boolean withPorts) {
 
         // find desired endpoint (server)
         for (WPS wps : wpss) {
@@ -160,40 +156,13 @@ public class ProcessProvider implements IProcessProvider {
                         process.setOwsAbstract(spProcess.getAbstract());
                         process.setOwsTitle(spProcess.getTitle());
 
-//                        if (withPorts) {
-//                            // Map input ports
-//                            try {
-//                                for (Input spInput : spProcess.getInputs()) {
-//                                    ProcessPort inPort = new ProcessPort(getDatatype(spInput.getInputFormChoice()));
-//                                    inPort.setOwsIdentifier(spInput.getIdentifier());
-//                                    inPort.setOwsAbstract(spInput.getAbstract());
-//                                    inPort.setOwsTitle(spInput.getTitle());
-//                                    process.addInputPort(inPort);
-//                                }
-//                            } catch (Exception ex) {
-//                                fireSpReceiveExceptionAsAppEvent(ex);
-//                            }
-//
-//                            // Map output ports
-//                            try {
-//                                for (Output spOutput : spProcess.getOutputs()) {
-//                                    ProcessPort outPort = new ProcessPort(getDatatype(spOutput.getOutputFormChoice()));
-//                                    outPort.setOwsIdentifier(spOutput.getIdentifier());
-//                                    outPort.setOwsAbstract(spOutput.getAbstract());
-//                                    outPort.setOwsTitle(spOutput.getTitle());
-//                                    process.addOutputPort(outPort);
-//                                }
-//                            } catch (Exception ex) {
-//                                fireSpReceiveExceptionAsAppEvent(ex);
-//                            }
-//                        }
                         // add process to current server's list
                         serverProcesses.add(process);
                     }
 
                     return serverProcesses;
                 }
-            } catch (RDFException ex) {
+            } catch (Exception ex) {
                 fireSpReceiveExceptionAsAppEvent(ex);
             }
         }
