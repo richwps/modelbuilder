@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.ui;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GradientPaint;
@@ -55,7 +56,7 @@ public class ComponentTitle extends JLabel {
         // TODO move magic numbers to config/constants
         setBorder(new EmptyBorder(5, 5, 5, 5));
         gradientColor1 = Color.WHITE;
-        gradientColor2 = new Color(193, 230, 238);  // TODO get color from UIManager
+        gradientColor2 = AppConstants.SELECTION_BG_COLOR; //new Color(193, 230, 238);  // TODO get color from UIManager
     }
 
     public void setGradientColor1(Color color) {

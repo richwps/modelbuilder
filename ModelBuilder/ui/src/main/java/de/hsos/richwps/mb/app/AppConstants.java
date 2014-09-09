@@ -53,7 +53,6 @@ public class AppConstants {
     public final static String RES_IMAGES_DIR = RESOURCES_DIR + FSEP + "images";
 
     public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
-    public static String ABOUT_IMAGE = RES_IMAGES_DIR + FSEP + "about.png";
 
     public final static String SEMANTICPROXY_DEFAULT_URL = "http://richwps.edvsz.hs-osnabrueck.de/semanticproxy/resources";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. Please check the configuration.";
@@ -81,11 +80,15 @@ public class AppConstants {
     /**
      * Size of the about dialog.
      */
-    public static Dimension ABOUT_DIALOG_SIZE = new Dimension(400, 500);
+    public final static Dimension ABOUT_DIALOG_SIZE = new Dimension(400, 490);
+    /**
+     * Main about dialog image.
+     */
+    public final static String ABOUT_IMAGE = RES_IMAGES_DIR + FSEP + "about3.png"; // "about.png" // <-- old RichWPS turquoise
     /**
      * Content of the about dialog.
      */
-    public static String ABOUT_DIALOG_TEXT = "<html>"
+    public final static String ABOUT_DIALOG_TEXT = "<html>"
             + "The <b>RichWPS ModelBuilder</b> is part of the RichWPS research project.<br />"
             + "<br />"
             + "RichWPS is a corporate project of<br />"
@@ -212,9 +215,9 @@ public class AppConstants {
 
     // TODO move & get colors from lookAndFeel / UIManager
     @Deprecated
-    public final static Color bgColor = new Color(222, 227, 250);
-    @Deprecated
-    public final static Color SELECTION_BG_COLOR = new Color(0x37ABC8); //new Color(0xa0ace5);
+    public final static Color SELECTION_BG_COLOR = new Color(0xc3c9e6); //new Color(0xa0ace5); // <-- original MB style
+    // new Color(0xa8cde8); // RichWPS logo blue
+    // new Color(0x37ABC8); // <-- old RichWPS turquoise
     @Deprecated
     public final static Color SELECTION_FG_COLOR = Color.WHITE;
 
