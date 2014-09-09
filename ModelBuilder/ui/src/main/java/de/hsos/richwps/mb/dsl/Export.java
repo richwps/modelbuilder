@@ -107,9 +107,8 @@ public class Export {
 
         } else {
             URL aURL = new URL(pe.getServer());
-            String servershorthand = aURL.getHost();
-            de.hsos.richwps.mb.Logger.log("Hostname: " + servershorthand);
-            rolaidentifier = "remote/" + identifier;
+            int servershorthand = aURL.getHost().hashCode();
+            rolaidentifier = "remote"+servershorthand+"/" + identifier;
 
             bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
 
