@@ -47,7 +47,7 @@ public class InputBoundingBoxDataSpecifierTest {
         specifier.setAbstract("aabb's abstract");
         specifier.setMinOccur(0);
         specifier.setMaxOccur(1);
-        specifier.setDefaultvalue("aab");
+        specifier.setDefaultCRS("DefaultCRS");
         
         InputDescriptionType ogctype = specifier.toInputDescription();
         InputBoundingBoxDataSpecifier specifier2;
