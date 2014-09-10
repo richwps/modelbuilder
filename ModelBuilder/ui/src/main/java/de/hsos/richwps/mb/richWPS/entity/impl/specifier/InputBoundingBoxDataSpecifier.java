@@ -25,7 +25,7 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
     private int minOccur = 0;
     private int maxOccur = 0;
 
-    final private List<String> supportedCRS;
+    private List<String> supportedCRS;
 
     /**
      * Constructs an empty InputSpecifier.
@@ -55,12 +55,11 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
         }
 
         this.title = desc.getTitle().getStringValue();
-        SupportedCRSsType thetype = desc.getBoundingBoxData();
-
         this.minOccur = desc.getMinOccurs().intValue();
         this.maxOccur = desc.getMaxOccurs().intValue();
 
-        this.defaultCRS = thetype.getDefault().getCRS();
+        SupportedCRSsType bbdat = desc.getBoundingBoxData();
+        this.defaultCRS = bbdat.getDefault().getCRS();
         CRSsType supported = desc.getBoundingBoxData().getSupported();
         String[] crsArray = supported.getCRSArray();
 
@@ -81,14 +80,6 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
     @Override
     final public String getAbstract() {
         return theabstract;
-    }
-
-    /**
-     *
-     * @return
-     */
-    final public String getDefaultvalue() {
-        return defaultCRS;
     }
 
     @Override
@@ -141,22 +132,27 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
         this.theabstract = theabstract;
     }
 
-    /**
-     *
-     * @param defaultvalue
-     */
-    final public void setDefaultvalue(String defaultvalue) {
-        this.defaultCRS = defaultvalue;
-    }
-
     public String getDefaultCRS() {
         return defaultCRS;
     }
 
     public void setDefaultCRS(String defaultCRS) {
+        if(this.supportedCRS.isEmpty()) {
+            this.supportedCRS.add(defaultCRS);
+        }
+        
         this.defaultCRS = defaultCRS;
     }
 
+    public List<String> getSupportedCRS() {
+        return supportedCRS;
+    }
+
+    public void setSupportedCRS(List<String> supportedCRS) {
+        this.supportedCRS = supportedCRS;
+    }
+
+    
     /**
      * Returns an InputDescription with the added BoundingBox Object.
      *
