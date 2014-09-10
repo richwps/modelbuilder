@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.execView;
 
+import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.execView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.execView.dialog.InputParameterization;
 import de.hsos.richwps.mb.execView.dialog.OutputParameterization;
@@ -8,17 +10,15 @@ import de.hsos.richwps.mb.execView.dialog.ResultVisualisation;
 import de.hsos.richwps.mb.execView.dialog.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.ui.MbDialog;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 /**
  *
  * @author dalcacer
  */
-public class ExecViewDialog extends javax.swing.JDialog {
+public class ExecViewDialog extends MbDialog {
 
     private ADialogPanel currentPanel;
     private SeverSelection serverselectionpanel;
@@ -34,12 +34,8 @@ public class ExecViewDialog extends javax.swing.JDialog {
      * Creates new form execViewDialog
      */
     public ExecViewDialog(java.awt.Frame parent, boolean modal, List<String> wpsurls) {
-        super(parent, modal);
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            Logger.getLogger(ExecViewDialog.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        super(parent, "Execute");
+        
         this.provider = new RichWPSProvider();
         this.request = new ExecuteRequest();
         this.remotes = wpsurls;
@@ -83,7 +79,10 @@ public class ExecViewDialog extends javax.swing.JDialog {
         try {
             this.provider.connect(this.request.getEndpoint());
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Unable to connect to service..");
+            String msg = "Unable to connect to selected WebProcessingService.";
+            JOptionPane.showMessageDialog(this, msg);
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
             return;
         }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.request);
