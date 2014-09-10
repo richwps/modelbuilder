@@ -4,7 +4,10 @@
  */
 package de.hsos.richwps.mb.treeView;
 
+import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.ui.UiHelper;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
@@ -30,6 +33,8 @@ public class TreeView {
                         if (port.isGlobal()) {
                             return port.getDatatype().toString() + (port.isGlobalInput() ? " Input" : " Output");
                         }
+                    } else if(userObject instanceof ProcessEntity) {
+                        return UiHelper.limitString(((ProcessEntity) userObject).toString(), AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);
                     }
 
                 }

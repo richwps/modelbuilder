@@ -123,7 +123,7 @@ public class UiHelper {
             return string;
         }
 
-        String placeholder = " ... ";
+        String placeholder = "...";
         maxLength += placeholder.length();
 
         int tooMuch = (length - maxLength) / 2;

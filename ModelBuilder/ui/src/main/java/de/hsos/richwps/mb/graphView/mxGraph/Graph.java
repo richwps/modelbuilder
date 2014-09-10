@@ -20,6 +20,7 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,16 @@ public class Graph extends mxGraph {
 
     public Graph() {
         super(new GraphModel());
+    }
+
+    @Override
+    public String getLabel(Object cell) {
+        Object value = model.getValue(cell);
+        if (null != value && value instanceof ProcessEntity) {
+            return UiHelper.limitString(((ProcessEntity) value).toString(), AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);
+        }
+
+        return super.getLabel(cell);
     }
 
     @Override

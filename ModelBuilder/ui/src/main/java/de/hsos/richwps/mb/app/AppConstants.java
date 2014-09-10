@@ -54,7 +54,7 @@ public class AppConstants {
 
     public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
 
-    public final static String SEMANTICPROXY_DEFAULT_URL = "http://richwps.edvsz.hs-osnabrueck.de/semanticproxy/resources";
+    public final static String SEMANTICPROXY_DEFAULT_URL = "http://richwps.edvsz.hs-osnabrueck.de/semanticproxy";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. Please check the configuration.";
     public final static String SEMANTICPROXY_RECEIVE_ERROR = "An error occured while receiving from SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
@@ -117,6 +117,9 @@ public class AppConstants {
      * Title of deploy dialog.
      */
     public final static String DEPLOY_DIALOG_TITLE = "Deploy process";
+
+    @Deprecated
+    public static int PROCESS_TITLE_MAX_VIEW_LENGTH = 22;
 
     public enum PREFERENCES_TAB {
 
