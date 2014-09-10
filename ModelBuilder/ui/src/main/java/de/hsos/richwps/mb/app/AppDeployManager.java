@@ -30,6 +30,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -99,8 +100,6 @@ public class AppDeployManager {
     private String _generateRola(DeployConfig config) {
         String wpstendpoint = config.getValue(DeployConfigField.ENDPOINT);
 
-//        instance.deploy(dto);
-//        instance.disconnect(wpsurl, wpsturl);
         final String rola = this.generateDSL(wpstendpoint);
         if (null == rola) {
             return null;
@@ -115,15 +114,16 @@ public class AppDeployManager {
         String processversion = config.getValue(DeployConfigField.VERSION);
         String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
 
-        DeployRequest dto = new DeployRequest(wpstendpoint, identifier, title, processversion, rola);
-        dto.setAbstract(wpsAbstract);
+        DeployRequest request = new DeployRequest(wpstendpoint, identifier, title, processversion, rola);
+        request.setAbstract(wpsAbstract);
         try {
-            assembleDeployRequest(dto);
+            assembleDeployRequest(request);
         } catch (GraphToRequestTransformationException ex) {
             // TODO create msg dialog
             Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        de.hsos.richwps.mb.Logger.log("Debug:\n"+request.toProcessDescriptionType());
         // TODO create gui for wpsurl etc. !!
         String wpsurl = "http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService";
         String wpsturl = wpsurl;
@@ -196,7 +196,7 @@ public class AppDeployManager {
         return null;
     }
 
-    private void assembleDeployRequest(DeployRequest dto) throws GraphToRequestTransformationException {
+    private void assembleDeployRequest(DeployRequest request) throws GraphToRequestTransformationException {
         Graph graph = getGraphView().getGraph();
 
         // Transform global inputs
@@ -205,20 +205,20 @@ public class AppDeployManager {
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
-            dto.addInput(specifier);
+            request.addInput(specifier);
         }
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputSpecifier specifier = AppDeployManager.createOutputPortSpecifier(port);
+            OutputComplexDataSpecifier specifier = (OutputComplexDataSpecifier)AppDeployManager.createOutputPortSpecifier(port);
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
-            dto.addOutput(specifier);
+            request.addOutput(specifier);
         }
 
         // TODO set execution unit
-        dto.setExecutionUnit("Execunit.");
+        request.setExecutionUnit("Execunit.");
     }
 
     public static IInputSpecifier createInputPortSpecifier(ProcessPort port) {
@@ -249,19 +249,20 @@ public class AppDeployManager {
                 complexSpecifier.setMinOccur(0);
                 complexSpecifier.setMaxOccur(1);
 
-                List<List> listOfFormatLists = new LinkedList<>();
-                List<String> formatList = new LinkedList<>();
+                List<List> supportedTypes = new ArrayList<>();
+                List<String> supportedType = new ArrayList<>();
                 IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                
                 if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                     DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
                     ComplexDataTypeFormat format = description.getFormat();
-                    formatList.add(format.getMimeType());
-                    formatList.add(format.getSchema());
-                    formatList.add(format.getEncoding());
+                    supportedType.add(format.getMimeType());
+                    supportedType.add(format.getSchema());
+                    supportedType.add(format.getEncoding());
                 }
-                listOfFormatLists.add(formatList);
-                complexSpecifier.setTypes(listOfFormatLists);
-                complexSpecifier.setDefaulttype(formatList);
+                supportedTypes.add(supportedType);
+                complexSpecifier.setTypes(supportedTypes);
+                complexSpecifier.setDefaulttype(supportedType);
 
                 specifier = complexSpecifier;
                 break;
@@ -288,7 +289,7 @@ public class AppDeployManager {
         IOutputSpecifier specifier = null;
 
         switch (port.getDatatype()) {
-            case LITERAL:
+           case LITERAL:
                 OutputLiteralDataSpecifier literalSpecifier = new OutputLiteralDataSpecifier();
                 literalSpecifier.setIdentifier(port.getOwsIdentifier());
                 literalSpecifier.setAbstract(port.getOwsAbstract());
@@ -296,28 +297,33 @@ public class AppDeployManager {
                 literalSpecifier.setType(("xs:string"));
                 specifier = literalSpecifier;
                 break;
-
+        
             case COMPLEX:
                 OutputComplexDataSpecifier complexSpecifier = new OutputComplexDataSpecifier();
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
                 complexSpecifier.setTheabstract(port.getOwsAbstract());
                 complexSpecifier.setTitle(port.getOwsTitle());
 
-                List<List> listOfFormatLists = new LinkedList<>();
-                List<String> formatList = new LinkedList<>();
+                List<List> supportedTypes = new ArrayList<>();
+                List<String> supportedType = new ArrayList();
+                /*
+                FIXME resolve the workaround below.
                 IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
                 if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                     DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
                     ComplexDataTypeFormat format = description.getFormat();
-                    formatList.add(format.getMimeType());
-                    formatList.add(format.getSchema());
-                    formatList.add(format.getEncoding());
-                }
-                listOfFormatLists.add(formatList);
-                complexSpecifier.setTypes(listOfFormatLists);
-                complexSpecifier.setDefaulttype(formatList);
+                    supportedType.add(format.getMimeType());
+                    supportedType.add(format.getSchema());
+                    supportedType.add(format.getEncoding());
+                }*/
+                supportedType.add("application/xml");
+                supportedType.add("");
+                supportedType.add("");
+                supportedTypes.add(supportedType);
+                complexSpecifier.setTypes(supportedTypes);
+                complexSpecifier.setDefaulttype(supportedType);
 
-                specifier = complexSpecifier;
+            specifier = complexSpecifier;
                 break;
 
             case BOUNDING_BOX:
