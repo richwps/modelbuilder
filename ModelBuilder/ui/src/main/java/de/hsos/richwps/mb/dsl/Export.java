@@ -48,6 +48,11 @@ public class Export {
     protected Graph graph;
 
     /**
+     * A structure to trace allready established bindings.
+     */
+    private ArrayList<Binding> bindings;
+
+    /**
      * Initializes the variables and fills the vertex lists
      *
      * @param graph the exported graph
@@ -59,6 +64,7 @@ public class Export {
 
         this.graph = graph;
         this.variables = new HashMap<>();
+        this.bindings = new ArrayList<>();
     }
 
     /**
@@ -228,7 +234,12 @@ public class Export {
             e.setPath(aURL.getPath());
             bindingA.setEndpoint(e);
         }
-        ws.add(bindingA);
+
+        if (!this.bindings.contains(bindingA)) {
+            this.bindings.add(bindingA);
+            ws.add(bindingA);
+        }
+
         return rolaidentifier;
     }
 
@@ -265,7 +276,7 @@ public class Export {
     private void handleOutgoingProcessCellTransitions(Object[] outgoing, Execute execute) throws Exception {
         //Handle outgoing transitions. Map wps:process:outputs to variables or
         //outputs.
-        List<VarReference> vars = new ArrayList<>();
+        List<String> vars = new ArrayList<>();
         for (Object out : outgoing) {
             GraphEdge edge = (GraphEdge) out;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
@@ -277,10 +288,8 @@ public class Export {
                 execute.addOutput(source.getOwsIdentifier(), outref);
             } else {
                 VarReference variable = new VarReference(this.getUniqueIdentifier(source.getOwsIdentifier()));
-                if (vars.contains(variable)) {    //allready set, 
-                    //nop
-                } else {
-                    vars.add(variable);
+                if (!vars.contains(variable.getId())) {    //allready set?
+                    vars.add(variable.getId());
                     execute.addOutput(source.getOwsIdentifier(), variable);
                 }
             }
