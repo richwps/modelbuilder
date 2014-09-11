@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.dsl;
 
+import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.Assignment;
@@ -19,27 +20,30 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Exports a graph to dsl notation
+ * Exports a graph to DSL notation.
  *
  * @author jkovalev
  * @author dziegenh
  * @author dalcacer
+ * @version 0.0.2
  */
 public class Export {
 
     /**
-     * Variable reference map input variables are stored to the reference map at
-     * the beginning pe outputs are stored to variables in the reference map pe
-     * inputs get their values from the reference map output variables get their
-     * values from the reference map
+     * Variable reference map. Does <b>not contain</b> input and output
+     * variables.
      */
     protected Map<String, Reference> variables;
+    /**
+     * * Extended version of the (JGraphX) mxGraph.
+     */
     protected Graph graph;
 
     /**
@@ -53,133 +57,89 @@ public class Export {
         GraphHandler.validate(graph);
 
         this.graph = graph;
-        this.variables = new HashMap<String, Reference>();
+        this.variables = new HashMap<>();
+    }
+
+    /**
+     * Launches the exporting pe and writes results to specifed file
+     *
+     * @param path file to write to
+     * @param wpstendpoint for local/remote detection.
+     * @throws Exception
+     */
+    public void export(String path, String wpstendpoint) throws Exception {
+
+        Writer writer = new Writer();
+        Worksequence ws = new Worksequence();
+
+        createUniqueIdentifiers(graph.getAllFlowOutputPorts());
+
+        // Topological sort is used to resolve dependencies
+        TopologicalSorter sorter = new TopologicalSorter();
+        List<mxICell> sorted = sorter.sort(graph);
+
+        for (mxICell cell : sorted) {
+            //handle process.
+            if (this.graph.getGraphModel().isProcess(cell)) {
+                ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
+                //local/remote identification based on given hostname.
+                String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
+                String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
+                boolean isLocalBinding = baseuria.equals(baseurib);
+                this.handleProcessCell(cell, ws, isLocalBinding);
+
+            } //handle outputs.
+            else if (this.graph.getGraphModel().isFlowInput(cell)) {
+                this.handleOutputCell(cell, ws);
+            } //handle inptus.
+            else if (this.graph.getGraphModel().isFlowOutput(cell)) {
+                this.handleInputCell(cell, ws);
+            }
+        }
+        writer.create(path, ws);
     }
 
     /**
      * Defines one global input, assigns inputs to variables in the reference
      * map
-     *
+     * @param input 
      * @param ws Worksequence to write to
      * @throws Exception
      */
-    protected void defineInput(mxICell input, Worksequence ws) throws Exception {
-        ProcessPort source = (ProcessPort) input.getValue();
+    protected void handleInputCell(mxICell input, Worksequence ws) throws Exception {
+        
+        //when global input cell is connected to global output cell, generate assignment.
+        for (int i = 0; i < input.getEdgeCount(); i++) {
+            if (input.getEdgeAt(i) instanceof GraphEdge) {
+                GraphEdge transition = (GraphEdge) input.getEdgeAt(i);
+                mxICell target = transition.getTargetPortCell();
 
-        // unique identifier is necessaty to distinguish ports with the same owsIdentifier
-        String uniqueIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
-        // OWS Identifier is the original port identifier
-        String owsIdentifier = getOwsIdentifier(source.getOwsIdentifier());
-
-        VarReference variable = new VarReference(owsIdentifier);
-        InReference inputReference = new InReference(owsIdentifier);
-        Assignment assignment = new Assignment(variable, inputReference);
-        // Save variable to variable reference map
-        this.variables.put(source.getOwsIdentifier(), variable);
-        // Write assignment to Worksequence
-        Logger.log("Debug::Export#defineInput()\n Assignment: " + assignment.toNotation());
-        ws.add(assignment);
-    }
-
-    /**
-     * Adds one pe execute statement to worksequence, gets inputs from
-     * variables, stores outputs to variables
-     *
-     * @param processVertex
-     * @param ws Worksequence to write to.
-     * @param isLocalBinding information about binding type.
-     * @throws Exception e.
-     */
-    protected void defineExecute(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
-
-        // Get inputs from variable reference map
-        Object[] incoming = graph.getIncomingEdges(processVertex);
-        ProcessEntity pe = (ProcessEntity) processVertex.getValue();
-
-        // TODOO: identifier not ideal, not in $org/name$ syntax
-        String identifier = pe.getOwsIdentifier();
-
-        //Create a unique identifier based on the place of execution.
-        String rolaidentifier = "";
-        Binding bindingA;
-        if (isLocalBinding) {
-            rolaidentifier = "local/" + identifier;
-            bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
-        } else {
-            URL aURL = new URL(pe.getServer());
-            //a unique portion for each host.
-            int servershorthand = aURL.getHost().hashCode();
-            rolaidentifier = "remote" + servershorthand + "/" + identifier;
-
-            bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
-
-            Endpoint e = new Endpoint();
-            e.setProtocol(aURL.getProtocol());
-            e.setHost(aURL.getHost());
-            if (aURL.getPort() != -1) {
-                e.setPort(aURL.getPort());
-            } else {
-                e.setPort(80);
-            }
-            e.setPath(aURL.getPath());
-            bindingA.setEndpoint(e);
-        }
-
-        ws.add(bindingA);
-
-        //Handle ingoing transitions. Map variables to wps:process:inputs.
-        //All global inputs are variables.
-        Execute execute = new Execute(rolaidentifier);
-        for (Object in : incoming) {
-            GraphEdge edge = (GraphEdge) in;
-            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
-            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
-
-            if(source.isGlobal()){
-                InReference inref = new InReference(target.getOwsIdentifier());
-                Logger.log("Debug::Export#defineOutput()\n Handling a global input: " + inref.toNotation());
-                execute.addInput(inref, source.getOwsIdentifier());    
-            }else{
-                // Reading varibale from varibale reference map
-                Logger.log("Debug::Export#defineOutput()\n Handling a local input.");
-                //lookup variable
-                VarReference variable=null;
-                if(this.variables.containsKey(source.getOwsIdentifier())){
-                    //variable allready declared, lets use it.
-                    variable = (VarReference) this.variables.get(source.getOwsIdentifier());
-                }else{
-                    //variable does not exist, we need to create it.
-                    variable = new VarReference(source.getOwsIdentifier());
-                    this.variables.put(source.getOwsIdentifier(), variable);
+                if (this.graph.getGraphModel().isGlobalOutputPort(target)) {
+                    ProcessPort peout = (ProcessPort) target.getValue();
+                    ProcessPort pein = (ProcessPort) input.getValue();
+                    InReference in = new InReference(pein.getOwsIdentifier());
+                    OutReference out = new OutReference(peout.getOwsIdentifier());
+                    Assignment as = new Assignment(out,in);
+                    ws.add(as);
                 }
-                
-                Logger.log("Debug::Export#defineOutput()\n Handling a local input: " + variable.toNotation());
-                execute.addInput(variable, source.getOwsIdentifier());    
             }
         }
 
-        //Handle outgoing transitions. Map wps:process:outputs to variables or
-        //outputs.
-        Object[] outgoing = graph.getOutgoingEdges(processVertex);
-        for (Object out : outgoing) {
-            GraphEdge edge = (GraphEdge) out;
-            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
-            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
-            
-            // Writing varibale to varibale reference map
-            
-            if(target.isGlobal()){
-                OutReference outref = new OutReference(target.getOwsIdentifier());
-                Logger.log("Debug::Export#defineOutput()\n Handling a global output: " + outref.toNotation());
-                execute.addOutput(source.getOwsIdentifier(), outref);
-             }else{
-                VarReference variable = new VarReference(this.getUniqueIdentifier(source.getOwsIdentifier()));
-                Logger.log("Debug::Export#defineOutput()\n Handling a local output: " + variable.toNotation());
-                execute.addOutput(source.getOwsIdentifier(), variable);
-            }
-        }
-        Logger.log("Debug::Export#defineOutput()\n Execute: " + execute.toNotation());
-        ws.add(execute);
+
+        /*ProcessPort source = (ProcessPort) input.getValue();
+         String uniqueIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
+         // OWS Identifier is the original port identifier
+         String owsIdentifier = getOwsIdentifier(source.getOwsIdentifier());
+
+         VarReference variable = new VarReference(owsIdentifier);
+         InReference inputReference = new InReference(owsIdentifier);
+         Assignment assignment = new Assignment(variable, inputReference);
+         // Save variable to variable reference map
+         this.variables.put(source.getOwsIdentifier(), variable);
+         // Write assignment to Worksequence
+         Logger.log("Debug::Export#defineInput()\n Assignment: " + assignment.toNotation());
+         ws.add(assignment);
+         */
     }
 
     /**
@@ -188,7 +148,7 @@ public class Export {
      * @param ws
      * @throws Exception
      */
-    protected void defineOutput(mxICell output, Worksequence ws) throws Exception {
+    protected void handleOutputCell(mxICell output, Worksequence ws) throws Exception {
         // Check incoming edges and look up the values in variables from the reference map
         Object[] incoming = graph.getIncomingEdges(output);
         for (Object in : incoming) {
@@ -217,41 +177,105 @@ public class Export {
     }
 
     /**
-     * Launches the exporting pe and writes results to specifed file
+     * Adds one pe execute statement to worksequence, gets inputs from
+     * variables, stores outputs to variables
      *
-     * @param path file to write to
-     * @throws Exception
+     * @param processVertex
+     * @param ws Worksequence to write to.
+     * @param isLocalBinding information about binding type.
+     * @throws Exception e.
      */
-    public void export(String path, String wpstendpoint) throws Exception {
-        Writer writer = new Writer();
-        Worksequence ws = new Worksequence();
+    protected void handleProcessCell(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
 
-        createUniqueIdentifiers(graph.getAllFlowOutputPorts());
+        // Get inputs from variable reference map
+        Object[] incoming = graph.getIncomingEdges(processVertex);
+        Object[] outgoing = graph.getOutgoingEdges(processVertex);
+        ProcessEntity pe = (ProcessEntity) processVertex.getValue();
 
-        // Topological sort is used to resolve dependencies
-        TopologicalSorter sorter = new TopologicalSorter();
-        List<mxICell> sorted = sorter.sort(graph);
+        String rolaidentifier = handleBinding(pe, isLocalBinding, ws);
+        Execute execute = new Execute(rolaidentifier);
+        handleIngoingProcessCellTransitions(incoming, execute);
+        handleOutgoingProcessCellTransitions(outgoing, execute);
+        ws.add(execute);
+    }
 
-        for (mxICell cell : sorted) {
-            if (this.graph.getGraphModel().isProcess(cell)) {
+    private String handleBinding(ProcessEntity pe, boolean isLocalBinding, Worksequence ws) throws MalformedURLException {
+        String identifier = pe.getOwsIdentifier();
+        //Create a unique identifier based on the place of execution.
+        String rolaidentifier = "";
+        Binding bindingA;
+        if (isLocalBinding) {
+            rolaidentifier = "local/" + identifier;
+            bindingA = new Binding(rolaidentifier, identifier);
+        } else {
+            URL aURL = new URL(pe.getServer());
+            //a unique portion for each host.
+            int servershorthand = aURL.getHost().hashCode();
+            rolaidentifier = "remote" + servershorthand + "/" + identifier;
 
-                ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
+            bindingA = new Binding(rolaidentifier, identifier);
 
-                //local/remote identification based on given hostname.
-                String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
-                String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
-                boolean isLocalBinding = baseuria.equals(baseurib);
+            Endpoint e = new Endpoint();
+            e.setProtocol(aURL.getProtocol());
+            e.setHost(aURL.getHost());
+            if (aURL.getPort() != -1) {
+                e.setPort(aURL.getPort());
+            } else {
+                e.setPort(80);
+            }
+            e.setPath(aURL.getPath());
+            bindingA.setEndpoint(e);
+        }
+        ws.add(bindingA);
+        return rolaidentifier;
+    }
 
-                this.defineExecute(cell, ws, isLocalBinding);
+    private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
+        //Handle ingoing transitions. Map variables to wps:process:inputs.
+        //All global inputs are variables.
 
-            } else if (this.graph.getGraphModel().isFlowInput(cell)) {
-                this.defineOutput(cell, ws);
-            } else if (this.graph.getGraphModel().isFlowOutput(cell)) {
-                this.defineInput(cell, ws);
+        for (Object in : incoming) {
+            GraphEdge edge = (GraphEdge) in;
+            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
+            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
+
+            if (source.isGlobal()) {
+                InReference inref = new InReference(target.getOwsIdentifier());
+                execute.addInput(inref, source.getOwsIdentifier());
+            } else {
+                // Reading varibale from varibale reference map
+                // lookup variable
+                VarReference variable = null;
+                if (this.variables.containsKey(source.getOwsIdentifier())) {
+                    //variable allready declared, lets use it.
+                    variable = (VarReference) this.variables.get(source.getOwsIdentifier());
+                } else {
+                    //variable does not exist, we need to create it first.
+                    variable = new VarReference(source.getOwsIdentifier());
+                    this.variables.put(source.getOwsIdentifier(), variable);
+                }
+                execute.addInput(variable, source.getOwsIdentifier());
             }
         }
-        Logger.log("Debug::Execute#export()\n" + ws.toNotation());
-        writer.create(path, ws);
+    }
+
+    private void handleOutgoingProcessCellTransitions(Object[] outgoing, Execute execute) throws Exception {
+        //Handle outgoing transitions. Map wps:process:outputs to variables or
+        //outputs.
+        for (Object out : outgoing) {
+            GraphEdge edge = (GraphEdge) out;
+            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
+            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
+
+            // Writing varibale to varibale reference map
+            if (target.isGlobal()) {
+                OutReference outref = new OutReference(target.getOwsIdentifier());
+                execute.addOutput(source.getOwsIdentifier(), outref);
+            } else {
+                VarReference variable = new VarReference(this.getUniqueIdentifier(source.getOwsIdentifier()));
+                execute.addOutput(source.getOwsIdentifier(), variable);
+            }
+        }
     }
 
     protected void createUniqueIdentifiers(List<ProcessPort> ports) {
