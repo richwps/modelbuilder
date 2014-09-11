@@ -259,15 +259,18 @@ public class Exporter {
                 // Reading varibale from varibale reference map
                 // lookup variable
                 VarReference variable = null;
-                if (this.variables.containsKey(source.getOwsIdentifier())) {
+                String unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
+                //FIXME
+                String owsin = source.getOwsIdentifier().split(" ")[0];
+                if (this.variables.containsKey(unique_src)) {
                     //variable allready declared, lets use it.
-                    variable = (VarReference) this.variables.get(source.getOwsIdentifier());
+                    variable = (VarReference) this.variables.get(unique_src);
                 } else {
                     //variable does not exist, we need to create it first.
-                    variable = new VarReference(source.getOwsIdentifier());
-                    this.variables.put(source.getOwsIdentifier(), variable);
+                    variable = new VarReference(unique_src);
+                    this.variables.put(unique_src, variable);
                 }
-                execute.addInput(variable, source.getOwsIdentifier());
+                execute.addInput(variable, owsin);
             }
         }
     }
@@ -281,15 +284,16 @@ public class Exporter {
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
 
-            // Writing varibale to varibale reference map
             if (target.isGlobal()) {
-                OutReference outref = new OutReference(target.getOwsIdentifier());
+                OutReference outref = new OutReference(this.getUniqueIdentifier(target.getOwsIdentifier()));
                 execute.addOutput(source.getOwsIdentifier(), outref);
             } else {
-                VarReference variable = new VarReference(this.getUniqueIdentifier(source.getOwsIdentifier()));
-                if (!vars.contains(variable.getId())) {    //allready set?
-                    vars.add(variable.getId());
-                    execute.addOutput(source.getOwsIdentifier(), variable);
+                String unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
+                String owsout = source.getOwsIdentifier().split(" ")[0];
+                VarReference variable = new VarReference(unique_src);
+                if (!vars.contains(unique_src)) {    //allready set?
+                    vars.add(unique_src);
+                    execute.addOutput(owsout, variable);
                 }
             }
         }
