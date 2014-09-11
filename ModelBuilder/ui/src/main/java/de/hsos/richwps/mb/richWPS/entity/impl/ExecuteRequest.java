@@ -112,6 +112,7 @@ public class ExecuteRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getServerId() {
         if (this.serverid.length() == 0) {
             return this.endpoint;
@@ -240,6 +241,12 @@ public class ExecuteRequest implements IRequest {
         this.exception += message;
     }
 
+    @Override
+    public void flushException(){
+        this.wasException=false;
+        this.exception="";
+    }
+    
     /**
      * Adds an input specification to the list of available inputs.
      *
@@ -297,6 +304,11 @@ public class ExecuteRequest implements IRequest {
      */
     public void addResult(final String key, final Object value) {
         this.results.put(key, value);
+    }
+    
+    @Override
+    public void flushResults(){
+        this.results.clear();
     }
 
     /**

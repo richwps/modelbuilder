@@ -133,7 +133,7 @@ public class ExecViewDialog extends MbDialog {
         //refresh the request
         this.currentPanel.updateRequest();
         this.request = this.currentPanel.getRequest();
-
+        
         this.outputsspanel = new OutputParameterization(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -155,6 +155,9 @@ public class ExecViewDialog extends MbDialog {
         //refresh the request
         this.currentPanel.updateRequest();
         this.request = this.currentPanel.getRequest();
+        //in case the request was allready used.
+        this.request.flushException();
+        this.request.flushResults();
 
         this.resultpanel = new ResultVisualisation(this.provider, this.request);
         this.remove(this.currentPanel);

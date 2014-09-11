@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
@@ -53,6 +52,7 @@ public class UndeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getServerId() {
         if (this.serverid.length() == 0) {
             String uri = this.endpoint;
@@ -88,6 +88,17 @@ public class UndeployRequest implements IRequest {
         wasException = true;
         this.exception+=message;
     
+    }
+    
+    @Override
+    public void flushException(){
+        this.wasException=false;
+        this.exception="";
+    }
+    
+    @Override
+    public void flushResults(){
+        //TODO nothing to flush, yet.
     }
 
     @Override

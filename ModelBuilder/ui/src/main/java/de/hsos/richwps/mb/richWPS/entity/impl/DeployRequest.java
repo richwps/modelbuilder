@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
@@ -128,6 +127,7 @@ public class DeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getEndpoint() {
         return endpoint;
     }
@@ -144,6 +144,7 @@ public class DeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getServerId() {
         if (this.serverid.length() == 0) {
             String uri = this.endpoint;
@@ -157,6 +158,7 @@ public class DeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getIdentifier() {
         return identifier;
     }
@@ -287,6 +289,7 @@ public class DeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getAbstract() {
         return theabstract;
     }
@@ -319,6 +322,7 @@ public class DeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public boolean isException() {
         return wasException;
     }
@@ -327,6 +331,7 @@ public class DeployRequest implements IRequest {
      *
      * @return
      */
+    @Override
     public String getException() {
         return exception;
     }
@@ -335,9 +340,21 @@ public class DeployRequest implements IRequest {
      *
      * @param message
      */
+    @Override
     public void addException(final String message) {
         wasException = true;
         this.exception += message;
+    }
+
+    @Override
+    public void flushException() {
+        this.wasException = false;
+        this.exception = "";
+    }
+
+    @Override
+    public void flushResults() {
+        //TODO nothing to flush, yet.
     }
 
     /**

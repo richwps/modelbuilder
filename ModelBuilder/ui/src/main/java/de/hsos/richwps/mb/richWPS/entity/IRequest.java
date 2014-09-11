@@ -62,7 +62,14 @@ public interface IRequest {
      */
     public void addException(final String message);
    
+    /**
+     * 
+     */
+    public void flushException();
     
+    /**
+     * */
+    public void flushResults();
     /**
      * 
      */
