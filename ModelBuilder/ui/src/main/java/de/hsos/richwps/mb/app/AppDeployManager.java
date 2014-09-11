@@ -6,7 +6,7 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.dsl.Export;
+import de.hsos.richwps.mb.dsl.Exporter;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
@@ -150,8 +150,8 @@ public class AppDeployManager {
         try {
             String dslFile = "generated.rola";
             //FIXME mv to tmp System.getProperty("java.io.tmpdir")
-//            new Export(getGraphView().getGraph().clone()).export(dslFile);
-            new Export(getGraphView().getGraph()).export(dslFile, wpstendpoint);
+//            new Exporter(getGraphView().getGraph().clone()).export(dslFile);
+            new Exporter(getGraphView().getGraph()).export(dslFile, wpstendpoint);
 
             String content = null;
             File file = new File(dslFile); //for ex foo.txt

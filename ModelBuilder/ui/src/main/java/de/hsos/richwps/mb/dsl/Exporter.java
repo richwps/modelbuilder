@@ -35,7 +35,7 @@ import java.util.Map;
  * @author dalcacer
  * @version 0.0.2
  */
-public class Export {
+public class Exporter {
 
     /**
      * Variable reference map. Does <b>not contain</b> input and output
@@ -57,7 +57,7 @@ public class Export {
      *
      * @param graph the exported graph
      */
-    public Export(Graph graph) throws NoIdentifierException, IdentifierDuplicatedException {
+    public Exporter(Graph graph) throws NoIdentifierException, IdentifierDuplicatedException {
 
         // ensure the graph meets all requirements to be translated
         GraphHandler.validate(graph);
@@ -145,7 +145,7 @@ public class Export {
          // Save variable to variable reference map
          this.variables.put(source.getOwsIdentifier(), variable);
          // Write assignment to Worksequence
-         Logger.log("Debug::Export#defineInput()\n Assignment: " + assignment.toNotation());
+         Logger.log("Debug::Exporter#defineInput()\n Assignment: " + assignment.toNotation());
          ws.add(assignment);
          */
     }
