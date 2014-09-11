@@ -123,7 +123,7 @@ public class AppDeployManager {
             Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        de.hsos.richwps.mb.Logger.log("Debug:\n"+request.toProcessDescriptionType());
+        de.hsos.richwps.mb.Logger.log("Debug:\n" + request.toProcessDescriptionType());
         // TODO create gui for wpsurl etc. !!
         String wpsurl = "http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService";
         String wpsturl = wpsurl;
@@ -141,9 +141,10 @@ public class AppDeployManager {
     }
 
     /**
-     * 
-     * @param wpstendpoint WPST-endpoint for automatic detection of local bindings.
-     * @return 
+     *
+     * @param wpstendpoint WPST-endpoint for automatic detection of local
+     * bindings.
+     * @return
      */
     private String generateDSL(String wpstendpoint) {
         try {
@@ -210,7 +211,13 @@ public class AppDeployManager {
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            OutputComplexDataSpecifier specifier = (OutputComplexDataSpecifier)AppDeployManager.createOutputPortSpecifier(port);
+            IOutputSpecifier specifier = null;
+            if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputComplexDataSpecifier) {
+                specifier = (OutputComplexDataSpecifier) AppDeployManager.createOutputPortSpecifier(port);
+
+            } else if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputLiteralDataSpecifier) {
+                specifier = (OutputLiteralDataSpecifier) AppDeployManager.createOutputPortSpecifier(port);
+            }
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -252,7 +259,7 @@ public class AppDeployManager {
                 List<List> supportedTypes = new ArrayList<>();
                 List<String> supportedType = new ArrayList<>();
                 IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
-                
+
                 if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                     DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
                     ComplexDataTypeFormat format = description.getFormat();
@@ -289,7 +296,7 @@ public class AppDeployManager {
         IOutputSpecifier specifier = null;
 
         switch (port.getDatatype()) {
-           case LITERAL:
+            case LITERAL:
                 OutputLiteralDataSpecifier literalSpecifier = new OutputLiteralDataSpecifier();
                 literalSpecifier.setIdentifier(port.getOwsIdentifier());
                 literalSpecifier.setAbstract(port.getOwsAbstract());
@@ -297,7 +304,7 @@ public class AppDeployManager {
                 literalSpecifier.setType(("xs:string"));
                 specifier = literalSpecifier;
                 break;
-        
+
             case COMPLEX:
                 OutputComplexDataSpecifier complexSpecifier = new OutputComplexDataSpecifier();
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
@@ -307,15 +314,15 @@ public class AppDeployManager {
                 List<List> supportedTypes = new ArrayList<>();
                 List<String> supportedType = new ArrayList();
                 /*
-                FIXME resolve the workaround below.
-                IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
-                if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-                    DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                    ComplexDataTypeFormat format = description.getFormat();
-                    supportedType.add(format.getMimeType());
-                    supportedType.add(format.getSchema());
-                    supportedType.add(format.getEncoding());
-                }*/
+                 FIXME resolve the workaround below.
+                 IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                 if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
+                 DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
+                 ComplexDataTypeFormat format = description.getFormat();
+                 supportedType.add(format.getMimeType());
+                 supportedType.add(format.getSchema());
+                 supportedType.add(format.getEncoding());
+                 }*/
                 supportedType.add("application/xml");
                 supportedType.add("");
                 supportedType.add("");
@@ -323,7 +330,7 @@ public class AppDeployManager {
                 complexSpecifier.setTypes(supportedTypes);
                 complexSpecifier.setDefaulttype(supportedType);
 
-            specifier = complexSpecifier;
+                specifier = complexSpecifier;
                 break;
 
             case BOUNDING_BOX:
