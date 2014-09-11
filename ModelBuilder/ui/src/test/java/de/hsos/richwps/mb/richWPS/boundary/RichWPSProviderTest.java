@@ -25,7 +25,8 @@ import net.opengis.wps.x100.UndeployProcessDocument;
  */
 public class RichWPSProviderTest extends TestCase {
 
-    private String wpsurl = "http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService";
+    //private String wpsurl = "http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService";
+    private String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/wps/WebProcessingService";
 
     public RichWPSProviderTest(String testName) {
         super(testName);
@@ -204,8 +205,15 @@ public class RichWPSProviderTest extends TestCase {
         List<IInputSpecifier> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
-        InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
-        InputLiteralDataSpecifier literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        InputComplexDataSpecifier geomSpec;
+        InputLiteralDataSpecifier literalSpec;
+        if (inputs.get(0) instanceof InputComplexDataSpecifier) {
+            geomSpec = (InputComplexDataSpecifier) inputs.get(0);
+            literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        } else {
+            geomSpec = (InputComplexDataSpecifier) inputs.get(1);
+            literalSpec = (InputLiteralDataSpecifier) inputs.get(0);
+        }
 
         HashMap<String, IInputArgument> ins = new HashMap<>();
         InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "Hello World.");
@@ -231,6 +239,58 @@ public class RichWPSProviderTest extends TestCase {
         assertNotNull(request.getException());
     }
 
+    /*public void testSimpleBuffer() {
+     System.out.println("testSimpleBuffer");
+     String processid = "org.n52.wps.server.algorithm.SimpleBufferAlgorithm";
+
+     RichWPSProvider instance = new RichWPSProvider();
+     try {
+     instance.connect(wpsurl);
+     } catch (Exception ex) {
+     Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+     }
+
+     ExecuteRequest request = new ExecuteRequest();
+     request.setEndpoint(wpsurl);
+     request.setIdentifier(processid);
+
+     instance.describeProcess(request);
+     List<IInputSpecifier> inputs = request.getInputs();
+
+     assertEquals(2, inputs.size());
+     InputComplexDataSpecifier geomSpec;
+     InputLiteralDataSpecifier literalSpec;
+     if (inputs.get(0) instanceof InputComplexDataSpecifier) {
+     geomSpec = (InputComplexDataSpecifier) inputs.get(0);
+     literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+     } else {
+     geomSpec = (InputComplexDataSpecifier) inputs.get(1);
+     literalSpec = (InputLiteralDataSpecifier) inputs.get(0);
+     }
+
+     HashMap<String, IInputArgument> ins = new HashMap<>();
+     InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "10");
+     InputComplexDataArgument arg2 = new InputComplexDataArgument(geomSpec);
+     arg2.setAsReference(true);
+     arg2.setURL("http://map.ices.dk/geoserver/sf/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sf:roads&maxFeatures=50");
+     arg2.setMimeType("text/xml");
+     ins.put("width", arg1);
+     ins.put("data", arg2);
+     request.setInputArguments(ins);
+
+     HashMap<String, IOutputArgument> outs = new HashMap();
+     List<IOutputSpecifier> outputs = request.getOutputs();
+     OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
+     OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
+     outarg.setAsReference(true);
+     outarg.setMimetype("text/html");
+     outs.put("result", outarg);
+
+     instance.executeProcess(request);
+
+     HashMap<String, Object> theResults = request.getResults();
+     assertNotNull(theResults);
+     }*/
     private IInputSpecifier createComplexDataInput() {
         InputComplexDataSpecifier specifier;
         specifier = new InputComplexDataSpecifier();
