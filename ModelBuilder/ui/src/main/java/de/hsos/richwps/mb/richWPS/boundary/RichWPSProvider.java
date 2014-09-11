@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
@@ -58,9 +59,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service.");
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service " + wpsurl);
         }
     }
 
@@ -76,8 +77,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.wps = WPSClientSession.getInstance();
             this.wps.disconnect(wpsurl);
         } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service.");
+            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#disconnect\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to disconnect from service " + wpsurl);
         }
     }
 
@@ -93,17 +94,17 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service.");
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service " + wpsurl + ", " + wpsturl);
         }
 
         try {
             this.wpst = WPSTClientSession.getInstance();
             this.wpst.connect(wpsurl, wpsturl);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service.");
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
+            throw new Exception("Unable to connect to service " + wpsurl + ", " + wpsturl);
         }
     }
 
@@ -269,6 +270,30 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
 
         this.execAnalyseResponse(execute, description, responseObject, request);
+
+    }
+
+    /**
+     * Shows the generated message for a DeyployRequest.
+     *
+     * @param request DeployRequestDTO.
+     * @see DeployRequest
+     * @return <code>true</code> for deployment success.
+     */
+    public String showDeployRequest(DeployRequest request) {
+        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+
+        builder.setDeployExecutionUnit(request.getExecutionUnit());
+        builder.setDeployProcessDescription(request.toProcessDescriptionType());
+        builder.setDeploymentProfileName(request.getDeploymentprofile());
+        builder.setKeepExecutionUnit(request.isKeepExecUnit());
+        String doc = "";
+        try {
+            doc = builder.getDeploydocument().toString();
+        } catch (Exception e) {
+            Logger.log("Debug::RichWPSProvider#showDeployRequest()\n unable to create deploy request.");
+        }
+        return doc;
 
     }
 

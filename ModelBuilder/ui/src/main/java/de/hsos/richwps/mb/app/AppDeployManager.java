@@ -73,10 +73,10 @@ public class AppDeployManager {
         {
             DeployConfig mockConfig = new DeployConfig();
             mockConfig.setValue(DeployConfigField.ENDPOINT, "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T");
-            mockConfig.setValue(DeployConfigField.ABSTRACT, "ABSTRACT");
-            mockConfig.setValue(DeployConfigField.IDENTIFIER, "IDENTIFIER");
-            mockConfig.setValue(DeployConfigField.TITLE, "TITLE");
-            mockConfig.setValue(DeployConfigField.VERSION, "VERSION");
+            mockConfig.setValue(DeployConfigField.ABSTRACT, "No Abstract");
+            mockConfig.setValue(DeployConfigField.IDENTIFIER, "rola.SampleROLAScript");
+            mockConfig.setValue(DeployConfigField.TITLE, "SampleROLAScript");
+            mockConfig.setValue(DeployConfigField.VERSION, "1");
             configs.add(mockConfig);
         }
 
@@ -88,7 +88,9 @@ public class AppDeployManager {
                 DeployConfig wpstconfig = deployView.getConfig();
                 final String rola = _generateRola(wpstconfig);
                 if (null == rola) {
-                    de.hsos.richwps.mb.Logger.log(("No rola at all :("));
+                    String message = "Unable to generate ROLA script.";
+                    AppEventService service = AppEventService.getInstance();
+                    service.fireAppEvent(message, AppConstants.INFOTAB_ID_SERVER);
                 }
                 _performDeployment(wpstconfig, rola);
             }
@@ -114,7 +116,8 @@ public class AppDeployManager {
         String processversion = config.getValue(DeployConfigField.VERSION);
         String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
 
-        DeployRequest request = new DeployRequest(wpstendpoint, identifier, title, processversion, rola);
+        DeployRequest request = new DeployRequest(wpstendpoint, identifier, title, processversion, "ROLA");
+        request.setExecutionUnit(rola);
         request.setAbstract(wpsAbstract);
         try {
             assembleDeployRequest(request);
@@ -123,7 +126,6 @@ public class AppDeployManager {
             Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        de.hsos.richwps.mb.Logger.log("Debug:\n" + request.toProcessDescriptionType());
         // TODO create gui for wpsurl etc. !!
         String wpsurl = "http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService";
         String wpsturl = wpsurl;
@@ -131,9 +133,12 @@ public class AppDeployManager {
         RichWPSProvider instance = new RichWPSProvider();
         try {
             instance.connect(wpsurl, wpsturl);
+            String deploymentDocument = instance.showDeployRequest(request);
+            AppEventService service = AppEventService.getInstance();
+            service.fireAppEvent(deploymentDocument, AppConstants.INFOTAB_ID_SERVER);
+            
         } catch (Exception ex) {
             getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
-
             return false;
         }
 
@@ -150,7 +155,7 @@ public class AppDeployManager {
         try {
             String dslFile = "generated.rola";
             //FIXME mv to tmp System.getProperty("java.io.tmpdir")
-//            new Exporter(getGraphView().getGraph().clone()).export(dslFile);
+            
             new Exporter(getGraphView().getGraph()).export(dslFile, wpstendpoint);
 
             String content = null;
@@ -165,7 +170,7 @@ public class AppDeployManager {
             } finally {
                 reader.close();
             }
-            JOptionPane.showMessageDialog(getFrame(), content, "Generated ROLA", JOptionPane.PLAIN_MESSAGE);
+            //JOptionPane.showMessageDialog(getFrame(), content, "Generated ROLA", JOptionPane.PLAIN_MESSAGE);
             return content;
 
         } catch (Exception ex) {
@@ -223,9 +228,6 @@ public class AppDeployManager {
             }
             request.addOutput(specifier);
         }
-
-        // TODO set execution unit
-        request.setExecutionUnit("Execunit.");
     }
 
     public static IInputSpecifier createInputPortSpecifier(ProcessPort port) {
