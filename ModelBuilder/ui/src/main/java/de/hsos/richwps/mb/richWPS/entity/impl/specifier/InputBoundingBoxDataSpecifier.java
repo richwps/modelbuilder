@@ -167,6 +167,8 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
         desc.setAbstract(this.theabstract);
 
         if (supportedCRS.size() <= 0) {
+            //Sollte nie eintreten, da beim setzen von defaultCRS
+            //defaultCRS dem supportedCRS Array hinzugefügt wird.
             desc.addNewBoundingBoxData(defaultCRS);
 
         } else {
