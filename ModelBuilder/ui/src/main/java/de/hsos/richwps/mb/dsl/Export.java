@@ -22,6 +22,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,12 +103,13 @@ public class Export {
     /**
      * Defines one global input, assigns inputs to variables in the reference
      * map
-     * @param input 
+     *
+     * @param input
      * @param ws Worksequence to write to
      * @throws Exception
      */
     protected void handleInputCell(mxICell input, Worksequence ws) throws Exception {
-        
+
         //when global input cell is connected to global output cell, generate assignment.
         for (int i = 0; i < input.getEdgeCount(); i++) {
             if (input.getEdgeAt(i) instanceof GraphEdge) {
@@ -119,7 +121,7 @@ public class Export {
                     ProcessPort pein = (ProcessPort) input.getValue();
                     InReference in = new InReference(pein.getOwsIdentifier());
                     OutReference out = new OutReference(peout.getOwsIdentifier());
-                    Assignment as = new Assignment(out,in);
+                    Assignment as = new Assignment(out, in);
                     ws.add(as);
                 }
             }
@@ -234,6 +236,7 @@ public class Export {
         //Handle ingoing transitions. Map variables to wps:process:inputs.
         //All global inputs are variables.
 
+        //FIXME input to ows not correct.
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
@@ -262,6 +265,7 @@ public class Export {
     private void handleOutgoingProcessCellTransitions(Object[] outgoing, Execute execute) throws Exception {
         //Handle outgoing transitions. Map wps:process:outputs to variables or
         //outputs.
+        List<VarReference> vars = new ArrayList<>();
         for (Object out : outgoing) {
             GraphEdge edge = (GraphEdge) out;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
@@ -273,7 +277,12 @@ public class Export {
                 execute.addOutput(source.getOwsIdentifier(), outref);
             } else {
                 VarReference variable = new VarReference(this.getUniqueIdentifier(source.getOwsIdentifier()));
-                execute.addOutput(source.getOwsIdentifier(), variable);
+                if (vars.contains(variable)) {    //allready set, 
+                    //nop
+                } else {
+                    vars.add(variable);
+                    execute.addOutput(source.getOwsIdentifier(), variable);
+                }
             }
         }
     }
