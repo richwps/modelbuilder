@@ -151,8 +151,15 @@ public class RichWPSProviderTest extends TestCase {
         List<IInputSpecifier> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
-        InputComplexDataSpecifier geomSpec = (InputComplexDataSpecifier) inputs.get(0);
-        InputLiteralDataSpecifier literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        InputComplexDataSpecifier geomSpec;
+        InputLiteralDataSpecifier literalSpec;
+        if (inputs.get(0) instanceof InputComplexDataSpecifier) {
+            geomSpec = (InputComplexDataSpecifier) inputs.get(0);
+            literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        } else {
+            geomSpec = (InputComplexDataSpecifier) inputs.get(1);
+            literalSpec = (InputLiteralDataSpecifier) inputs.get(0);
+        }
 
         HashMap<String, IInputArgument> ins = new HashMap<>();
         InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "Hello World.");
@@ -389,9 +396,9 @@ public class RichWPSProviderTest extends TestCase {
         request.addInput(this.createComplexDataInput1());
         request.addInput(this.createLiteralDataInput1());
         request.addOutput(this.createComplexDataOutput1());
-        request.setExecutionUnit("var.identifier = in.identifier\n" +
-"bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
-"execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea ");
+        request.setExecutionUnit("var.identifier = in.identifier\n"
+                + "bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n"
+                + "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea ");
         instance.deployProcess(request);
     }
 

@@ -124,5 +124,4 @@ public class DeployRequestTest {
         ProcessDescriptionType description = request.toProcessDescriptionType();
         assertNotNull(description);
     }
-
 }
