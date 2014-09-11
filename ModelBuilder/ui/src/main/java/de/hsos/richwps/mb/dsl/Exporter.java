@@ -245,17 +245,16 @@ public class Exporter {
 
     private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
         //Handle ingoing transitions. Map variables to wps:process:inputs.
-        //All global inputs are variables.
 
-        //FIXME input to ows not correct.
         for (Object in : incoming) {
+            //For each transition.
             GraphEdge edge = (GraphEdge) in;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
 
             if (source.isGlobal()) {
-                InReference inref = new InReference(target.getOwsIdentifier());
-                execute.addInput(inref, source.getOwsIdentifier());
+                InReference inref = new InReference(source.getOwsIdentifier());
+                execute.addInput(inref, target.getOwsIdentifier());
             } else {
                 // Reading varibale from varibale reference map
                 // lookup variable
