@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Exports a graph to dsl notation
  *
- * @author Jewgeni Kovalev
+ * @author jkovalev
  * @author dziegenh
  * @author dalcacer
  */
@@ -64,7 +64,6 @@ public class Export {
      * @throws Exception
      */
     protected void defineInput(mxICell input, Worksequence ws) throws Exception {
-        Logger.log("Defining input variable.");
         ProcessPort source = (ProcessPort) input.getValue();
 
         // unique identifier is necessaty to distinguish ports with the same owsIdentifier
@@ -78,7 +77,7 @@ public class Export {
         // Save variable to variable reference map
         this.variables.put(source.getOwsIdentifier(), variable);
         // Write assignment to Worksequence
-        Logger.log("Assignment: " + assignment.toNotation());
+        Logger.log("Debug::Export#defineInput()\n Assignment: " + assignment.toNotation());
         ws.add(assignment);
     }
 
@@ -89,26 +88,28 @@ public class Export {
      * @param processVertex
      * @param ws Worksequence to write to.
      * @param isLocalBinding information about binding type.
-     * @throws Exception.
+     * @throws Exception e.
      */
     protected void defineExecute(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
 
         // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
         ProcessEntity pe = (ProcessEntity) processVertex.getValue();
-        // @TODO: identifier not ideal, not in $org/name$ syntax
+
+        // TODOO: identifier not ideal, not in $org/name$ syntax
         String identifier = pe.getOwsIdentifier();
-        
+
+        //Create a unique identifier based on the place of execution.
         String rolaidentifier = "";
         Binding bindingA;
         if (isLocalBinding) {
             rolaidentifier = "local/" + identifier;
             bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
-
         } else {
             URL aURL = new URL(pe.getServer());
+            //a unique portion for each host.
             int servershorthand = aURL.getHost().hashCode();
-            rolaidentifier = "remote"+servershorthand+"/" + identifier;
+            rolaidentifier = "remote" + servershorthand + "/" + identifier;
 
             bindingA = new Binding(rolaidentifier, pe.getOwsIdentifier());
 
@@ -126,32 +127,58 @@ public class Export {
 
         ws.add(bindingA);
 
+        //Handle ingoing transitions. Map variables to wps:process:inputs.
+        //All global inputs are variables.
         Execute execute = new Execute(rolaidentifier);
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
-            // Reading varibale from varibale reference map
-            Reference variable = this.variables.get(source.getOwsIdentifier());
-            execute.addInput(variable, getOwsIdentifier(target.getOwsIdentifier()));
+
+            if(source.isGlobal()){
+                InReference inref = new InReference(target.getOwsIdentifier());
+                Logger.log("Debug::Export#defineOutput()\n Handling a global input: " + inref.toNotation());
+                execute.addInput(inref, source.getOwsIdentifier());    
+            }else{
+                // Reading varibale from varibale reference map
+                Logger.log("Debug::Export#defineOutput()\n Handling a local input.");
+                //lookup variable
+                VarReference variable=null;
+                if(this.variables.containsKey(source.getOwsIdentifier())){
+                    //variable allready declared, lets use it.
+                    variable = (VarReference) this.variables.get(source.getOwsIdentifier());
+                }else{
+                    //variable does not exist, we need to create it.
+                    variable = new VarReference(source.getOwsIdentifier());
+                    this.variables.put(source.getOwsIdentifier(), variable);
+                }
+                
+                Logger.log("Debug::Export#defineOutput()\n Handling a local input: " + variable.toNotation());
+                execute.addInput(variable, source.getOwsIdentifier());    
+            }
         }
-        //Logger.log("EX ID: " +identifier);
-        // Store outputs to variable refenrece map
+
+        //Handle outgoing transitions. Map wps:process:outputs to variables or
+        //outputs.
         Object[] outgoing = graph.getOutgoingEdges(processVertex);
         for (Object out : outgoing) {
             GraphEdge edge = (GraphEdge) out;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
-            // @TODO: identifier is not ideal
-            String uniqueOutIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
-            String owsOutIdentifier = getOwsIdentifier(source.getOwsIdentifier());
-
+            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
+            
             // Writing varibale to varibale reference map
-            VarReference variable = new VarReference(getUniqueIdentifier(source.getOwsIdentifier()));
-            // @TODO: set correct variable value
-            Reference asd = this.variables.put(source.getOwsIdentifier(), variable);
-            execute.addOutput(owsOutIdentifier, variable);
+            
+            if(target.isGlobal()){
+                OutReference outref = new OutReference(target.getOwsIdentifier());
+                Logger.log("Debug::Export#defineOutput()\n Handling a global output: " + outref.toNotation());
+                execute.addOutput(source.getOwsIdentifier(), outref);
+             }else{
+                VarReference variable = new VarReference(this.getUniqueIdentifier(source.getOwsIdentifier()));
+                Logger.log("Debug::Export#defineOutput()\n Handling a local output: " + variable.toNotation());
+                execute.addOutput(source.getOwsIdentifier(), variable);
+            }
         }
-        Logger.log("Execute: " + execute.toNotation());
+        Logger.log("Debug::Export#defineOutput()\n Execute: " + execute.toNotation());
         ws.add(execute);
     }
 
@@ -162,7 +189,6 @@ public class Export {
      * @throws Exception
      */
     protected void defineOutput(mxICell output, Worksequence ws) throws Exception {
-        Logger.log("Defining output variable.");
         // Check incoming edges and look up the values in variables from the reference map
         Object[] incoming = graph.getIncomingEdges(output);
         for (Object in : incoming) {
@@ -186,7 +212,6 @@ public class Export {
             Reference variable = this.variables.get(source.getOwsIdentifier());
             Reference outputReference = new OutReference(owsOutIdentifier);
             Assignment assignment = new Assignment(outputReference, variable);
-            Logger.log("Assignment: " + assignment.toNotation());
             ws.add(assignment);
         }
     }
@@ -206,14 +231,13 @@ public class Export {
         // Topological sort is used to resolve dependencies
         TopologicalSorter sorter = new TopologicalSorter();
         List<mxICell> sorted = sorter.sort(graph);
-        Logger.log("Sorting graph");
-        
+
         for (mxICell cell : sorted) {
             if (this.graph.getGraphModel().isProcess(cell)) {
-              
+
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
-                
-                //local/remote identification based on hostname.
+
+                //local/remote identification based on given hostname.
                 String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
@@ -226,7 +250,7 @@ public class Export {
                 this.defineInput(cell, ws);
             }
         }
-        Logger.log(ws.toNotation());
+        Logger.log("Debug::Execute#export()\n" + ws.toNotation());
         writer.create(path, ws);
     }
 
