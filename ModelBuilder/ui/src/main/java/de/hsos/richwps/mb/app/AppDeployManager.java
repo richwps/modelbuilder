@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.appEvents.AppEventService;
@@ -46,6 +41,7 @@ import javax.swing.JOptionPane;
  */
 public class AppDeployManager {
 
+    
     private App app;
 
     public AppDeployManager(App app) {
@@ -74,8 +70,8 @@ public class AppDeployManager {
             DeployConfig mockConfig = new DeployConfig();
             mockConfig.setValue(DeployConfigField.ENDPOINT, "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T");
             mockConfig.setValue(DeployConfigField.ABSTRACT, "No Abstract");
-            mockConfig.setValue(DeployConfigField.IDENTIFIER, "rola.SampleROLAScript");
-            mockConfig.setValue(DeployConfigField.TITLE, "SampleROLAScript");
+            mockConfig.setValue(DeployConfigField.IDENTIFIER, "rola.SelectRepArea.Wrapper");
+            mockConfig.setValue(DeployConfigField.TITLE, "rola.SelectRepArea.Wrapper");
             mockConfig.setValue(DeployConfigField.VERSION, "1");
             configs.add(mockConfig);
         }
@@ -116,29 +112,35 @@ public class AppDeployManager {
         String processversion = config.getValue(DeployConfigField.VERSION);
         String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
 
-        DeployRequest request = new DeployRequest(wpstendpoint, identifier, title, processversion, "ROLA");
+        DeployRequest request = new DeployRequest(wpstendpoint, identifier, title, processversion, RichWPSProvider.deploymentProfile);
         request.setExecutionUnit(rola);
         request.setAbstract(wpsAbstract);
         try {
-            assembleDeployRequest(request);
+            this.assembleDeployRequest(request);
         } catch (GraphToRequestTransformationException ex) {
             // TODO create msg dialog
             Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        // TODO create gui for wpsurl etc. !!
-        String wpsurl = "http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService";
-        String wpsturl = wpsurl;
+        //FIXME
+        String wpsurl = wpstendpoint.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0]+RichWPSProvider.DEFAULT_WPS_ENDPOINT;
+        de.hsos.richwps.mb.Logger.log("Debug::AppDeploymanager::_performDeployment(): "+wpsurl);
 
         RichWPSProvider instance = new RichWPSProvider();
         try {
-            instance.connect(wpsurl, wpsturl);
-            String deploymentDocument = instance.showDeployRequest(request);
+            instance.connect(wpsurl, wpstendpoint);
+            instance.deployProcess(request);
+            if (request.isException()) {
+                AppEventService service = AppEventService.getInstance();
+                service.fireAppEvent("Error. unable to deploy process: " + request.getException(), AppConstants.INFOTAB_ID_SERVER);
+                return false;
+            }
             AppEventService service = AppEventService.getInstance();
-            service.fireAppEvent(deploymentDocument, AppConstants.INFOTAB_ID_SERVER);
-            
+            service.fireAppEvent("Process deployed.", AppConstants.INFOTAB_ID_SERVER);
+
         } catch (Exception ex) {
-            getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
+            AppEventService service = AppEventService.getInstance();
+            service.fireAppEvent("Error. unable to deploy process: " + ex.getLocalizedMessage(), AppConstants.INFOTAB_ID_SERVER);
             return false;
         }
 
@@ -155,7 +157,7 @@ public class AppDeployManager {
         try {
             String dslFile = "generated.rola";
             //FIXME mv to tmp System.getProperty("java.io.tmpdir")
-            
+
             new Exporter(getGraphView().getGraph()).export(dslFile, wpstendpoint);
 
             String content = null;
@@ -217,12 +219,14 @@ public class AppDeployManager {
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
             IOutputSpecifier specifier = null;
-            if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputComplexDataSpecifier) {
-                specifier = (OutputComplexDataSpecifier) AppDeployManager.createOutputPortSpecifier(port);
+            specifier = AppDeployManager.createOutputPortSpecifier(port);
 
-            } else if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputLiteralDataSpecifier) {
-                specifier = (OutputLiteralDataSpecifier) AppDeployManager.createOutputPortSpecifier(port);
-            }
+            /* if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputComplexDataSpecifier) {
+             specifier = AppDeployManager.createOutputPortSpecifier(port);
+
+             } else if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputLiteralDataSpecifier) {
+                
+             }*/
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -243,6 +247,9 @@ public class AppDeployManager {
                 literalSpecifier.setIdentifier(port.getOwsIdentifier());
                 literalSpecifier.setAbstract(port.getOwsAbstract());
                 literalSpecifier.setTitle(port.getOwsTitle());
+                if (literalSpecifier.getTitle().equals("")) {
+                    literalSpecifier.setTitle(literalSpecifier.getIdentifier());
+                }
                 literalSpecifier.setMinOccur(0);
                 literalSpecifier.setMaxOccur(1);
                 literalSpecifier.setType(("xs:string"));
@@ -255,8 +262,12 @@ public class AppDeployManager {
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
                 complexSpecifier.setAbstract(port.getOwsAbstract());
                 complexSpecifier.setTitle(port.getOwsTitle());
+                if (complexSpecifier.getTitle().equals("")) {
+                    complexSpecifier.setTitle(complexSpecifier.getIdentifier());
+                }
                 complexSpecifier.setMinOccur(0);
                 complexSpecifier.setMaxOccur(1);
+                complexSpecifier.setMaximumMegabytes(50);//FIXME
 
                 List<List> supportedTypes = new ArrayList<>();
                 List<String> supportedType = new ArrayList<>();
@@ -303,6 +314,9 @@ public class AppDeployManager {
                 literalSpecifier.setIdentifier(port.getOwsIdentifier());
                 literalSpecifier.setAbstract(port.getOwsAbstract());
                 literalSpecifier.setTitle(port.getOwsTitle());
+                if (literalSpecifier.getTitle().equals("")) {
+                    literalSpecifier.setTitle(literalSpecifier.getIdentifier());
+                }
                 literalSpecifier.setType(("xs:string"));
                 specifier = literalSpecifier;
                 break;
@@ -312,9 +326,30 @@ public class AppDeployManager {
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
                 complexSpecifier.setTheabstract(port.getOwsAbstract());
                 complexSpecifier.setTitle(port.getOwsTitle());
+                if (complexSpecifier.getTitle().equals("")) {
+                    complexSpecifier.setTitle(complexSpecifier.getIdentifier());
+                }
 
                 List<List> supportedTypes = new ArrayList<>();
                 List<String> supportedType = new ArrayList();
+
+                List<String> atype = new ArrayList<>();
+                atype.add("application/xml");   // mimetype
+                atype.add("");  // schema
+                atype.add("");  // encoding
+                List<String> anothertype = new ArrayList<>();
+                anothertype.add("text/xml");   // mimetype
+                anothertype.add("");  // schema
+                anothertype.add("");  // encoding
+
+                List<List> types = new ArrayList<>();
+                types.add(atype);
+                types.add(anothertype);
+
+                complexSpecifier.setTypes(types);
+                complexSpecifier.setDefaulttype(atype);
+
+
                 /*
                  FIXME resolve the workaround below.
                  IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
@@ -325,13 +360,6 @@ public class AppDeployManager {
                  supportedType.add(format.getSchema());
                  supportedType.add(format.getEncoding());
                  }*/
-                supportedType.add("application/xml");
-                supportedType.add("");
-                supportedType.add("");
-                supportedTypes.add(supportedType);
-                complexSpecifier.setTypes(supportedTypes);
-                complexSpecifier.setDefaulttype(supportedType);
-
                 specifier = complexSpecifier;
                 break;
 

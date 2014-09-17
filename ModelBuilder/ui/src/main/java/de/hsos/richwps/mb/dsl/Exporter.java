@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.dsl;
 
-import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.Assignment;
@@ -12,7 +11,6 @@ import de.hsos.richwps.dsl.api.elements.OutReference;
 import de.hsos.richwps.dsl.api.elements.Reference;
 import de.hsos.richwps.dsl.api.elements.VarReference;
 import de.hsos.richwps.dsl.api.elements.Worksequence;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessEntity;

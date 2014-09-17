@@ -13,7 +13,7 @@
     <packaging>jar</packaging>
 
     <name>RichWPS ModelBuilder UI</name>
-    <description>Swing base UI.</description>
+    <description>Swing based UI.</description>
     
     <url>http://maven.apache.org</url>
     

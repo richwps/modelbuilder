@@ -48,6 +48,8 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     private WPSTClientSession wpst;
 
+    public static String deploymentProfile = "rola";
+
     /**
      * Connects the provider to a WPS-server.
      *
@@ -302,7 +304,6 @@ public class RichWPSProvider implements IRichWPSProvider {
      *
      * @param request DeployRequestDTO.
      * @see DeployRequest
-     * @return <code>true</code> for deployment success.
      */
     @Override
     public void deployProcess(DeployRequest request) {
@@ -312,10 +313,21 @@ public class RichWPSProvider implements IRichWPSProvider {
         builder.setDeployProcessDescription(request.toProcessDescriptionType());
         builder.setDeploymentProfileName(request.getDeploymentprofile());
         builder.setKeepExecutionUnit(request.isKeepExecUnit());
+
         try {
             de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
-            Object o = this.wpst.deploy(request.getEndpoint(), builder.getDeploydocument());
-            de.hsos.richwps.mb.Logger.log("Debug:\n" + o);
+            Object response = this.wpst.deploy(request.getEndpoint(), builder.getDeploydocument());
+
+            if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
+                net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
+                request.addException(exception.getExceptionReport().toString());
+            } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
+                net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
+                de.hsos.richwps.mb.Logger.log("Debug:\n" + deplok.getStringValue());
+            } else {
+                de.hsos.richwps.mb.Logger.log("Debug:\n Unknown reponse" + response);
+                de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
+            }
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
         }

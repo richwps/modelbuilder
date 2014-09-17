@@ -379,11 +379,9 @@ public class RichWPSProviderTest extends TestCase {
         request.addInput(this.createLiteralDataInput());
         request.addOutput(this.createComplexDataOutput());
         request.addOutput(this.createLiteralDataOutput());
-        request.setExecutionUnit("var.reportingareas = in.reportingareas\n"
-                + "var.identifier = in.identifier\n"
-                + "bind process http richwps.edvsz.hs-osnabrueck.de 80 /wps/WebProcessingService lkn.macrophyte.selectReportingArea to remote/lkn.macrophyte.selectReportingArea\n"
-                + "execute remote/lkn.macrophyte.selectReportingArea with var.identifier as in.areaname var.reportingareas as in.reportingareas  store out.selectedarea as var.out.selectedarea ");
-
+        request.setExecutionUnit("var.identifier = in.identifier\n" +
+"bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
+"execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea");
         instance.deployProcess(request);
     }
 
@@ -441,7 +439,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    public void testDeploy1() {
+public void testDeploy1() {
         System.out.println("testDeploy1");
         String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
         String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T";
