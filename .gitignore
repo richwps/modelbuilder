@@ -13,4 +13,4 @@ nb-configuration*.xml
 .Rhistory
 
 *.class
-
+ModelBuilder/ui/generated.rola
