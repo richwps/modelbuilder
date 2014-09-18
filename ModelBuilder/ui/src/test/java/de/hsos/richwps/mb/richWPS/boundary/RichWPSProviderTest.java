@@ -439,8 +439,8 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-public void testDeploy1() {
-        System.out.println("testDeploy1");
+public void testDeployUndeploy() {
+        System.out.println("testDeployUndeploy");
         String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
         String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T";
         RichWPSProvider instance = new RichWPSProvider();
@@ -450,6 +450,8 @@ public void testDeploy1() {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        
+        System.out.println("performing deploy");
         DeployRequest request = new DeployRequest(wpsturl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
         request.addInput(this.createComplexDataInput1());
         request.addInput(this.createLiteralDataInput1());
@@ -458,20 +460,11 @@ public void testDeploy1() {
                 + "bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n"
                 + "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea ");
         instance.deployProcess(request);
-    }
+        assertEquals(request.isException(), false);
 
-    public void testUnDeploy() {
-        System.out.println("testUnDeploy");
-
-        RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl, wpsurl);
-        } catch (Exception ex) {
-            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        UndeployRequest request = new UndeployRequest("localhost", "test");
-
-        instance.undeployProcess(request);
+        System.out.println("performing undeploy");
+        UndeployRequest unrequest = new UndeployRequest(wpsturl, "Testprocess");
+        instance.undeployProcess(unrequest);
+        assertEquals(unrequest.isException(), false);
     }
 }
