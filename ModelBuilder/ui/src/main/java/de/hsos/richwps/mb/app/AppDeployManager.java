@@ -334,17 +334,13 @@ public class AppDeployManager {
                 List<String> supportedType = new ArrayList();
 
                 List<String> atype = new ArrayList<>();
-                atype.add("application/xml");   // mimetype
-                atype.add("");  // schema
+                atype.add("text/xml");   // mimetype
+                atype.add("http://schemas.opengis.net/gml/3.1.1/base/feature.xsd");  // schema
                 atype.add("");  // encoding
-                List<String> anothertype = new ArrayList<>();
-                anothertype.add("text/xml");   // mimetype
-                anothertype.add("");  // schema
-                anothertype.add("");  // encoding
 
                 List<List> types = new ArrayList<>();
                 types.add(atype);
-                types.add(anothertype);
+                types.add(atype);
 
                 complexSpecifier.setTypes(types);
                 complexSpecifier.setDefaulttype(atype);
