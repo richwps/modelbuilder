@@ -216,13 +216,17 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     @Override
     public OutputDescriptionType toOutputDescription() {
 
-         //create supported type list
+        //create supported type list
         ComplexDataCombinationsType supportedFormats = ComplexDataCombinationsType.Factory.newInstance();
         for (List atype : this.types) {
+
+    
             String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
             String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
-            String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);
-
+            schema=this.nullify(schema);
+            String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);//TRICKY wps-client-lib needs null.
+            encoding=this.nullify(encoding);
+            de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
             ComplexDataDescriptionType desctype = supportedFormats.addNewFormat();
             desctype.setEncoding(encoding);
             desctype.setMimeType(mimetype);
@@ -230,9 +234,14 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         }
 
         //create defaulttype
+        
         String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
         String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
+        schema=this.nullify(schema);
         String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
+        encoding=this.nullify(encoding);
+
+        de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
         ComplexDataCombinationType ogcdefaulttype = OutputDescriptionTypeBuilder.createComplexDataCombiType(mimetype, encoding, schema);
 
         OutputDescriptionTypeBuilder description = new OutputDescriptionTypeBuilder(ogcdefaulttype, supportedFormats, this.identifier, this.title);
@@ -279,13 +288,19 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         if (!Objects.equals(this.title, other.title)) {
             return false;
         }
-        if (!Objects.equals(this.types, other.types)) {
-            return false;
-        }
-        if (!Objects.equals(this.defaulttype, other.defaulttype)) {
-            return false;
-        }
+
         return true;
+    }
+
+    //TRICKY wps-client-lib needs null.
+    private String nullify(String astring) {
+        if (astring == null) {
+            return astring;
+        }
+        if (astring.isEmpty()) {
+            return null;
+        }
+        return astring;
     }
 
     /**
@@ -297,5 +312,4 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         return "OutputComplexDataSpecifier{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", types=" + types + ", defaulttype=" + defaulttype + '}';
     }
 
-    
 }

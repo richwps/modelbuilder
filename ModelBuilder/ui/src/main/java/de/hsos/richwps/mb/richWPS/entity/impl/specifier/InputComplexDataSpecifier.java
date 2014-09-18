@@ -256,8 +256,9 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     }
 
     /**
+     * Returns an ogc/wps-compliant input-description.
      *
-     * @return
+     * @return InputDescriptionType ogc/wps-compliant input-description.
      */
     @Override
     public InputDescriptionType toInputDescription() {
@@ -270,7 +271,10 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         for (List atype : this.types) {
             String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
             String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
+            schema = this.nullify(schema);
             String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);
+            encoding = this.nullify(encoding);
+
             ComplexDataDescriptionType ogctype = InputDescriptionTypeBuilder.createComplexDataDescriptionType(mimetype, encoding, schema);
             supportedFormatList.add(ogctype);
         }
@@ -278,7 +282,10 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         //create defaulttype
         String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
         String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
+        schema = this.nullify(schema);
         String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
+        encoding = this.nullify(encoding);
+
         ComplexDataDescriptionType ogcdefaulttype = InputDescriptionTypeBuilder.createComplexDataDescriptionType(mimetype, encoding, schema);
 
         desc.addNewComplexData(ogcdefaulttype, supportedFormatList, BigInteger.valueOf(this.maximumMegabytes));
@@ -345,9 +352,17 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         if (this.maximumMegabytes != other.maximumMegabytes) {
             return false;
         }
-        if (!Objects.equals(this.defaulttype, other.defaulttype)) {
-            return false;
+        return true;
+    }
+
+    //TRICKY wps-client-lib needs null.
+    private String nullify(String astring) {
+        if (astring == null) {
+            return astring;
         }
-        return Objects.equals(this.types, other.types);
+        if (astring.isEmpty()) {
+            return null;
+        }
+        return astring;
     }
 }
