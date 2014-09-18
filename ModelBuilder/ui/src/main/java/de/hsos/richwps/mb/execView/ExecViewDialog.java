@@ -35,7 +35,7 @@ public class ExecViewDialog extends MbDialog {
      */
     public ExecViewDialog(java.awt.Frame parent, boolean modal, List<String> wpsurls) {
         super(parent, "Execute");
-        
+
         this.provider = new RichWPSProvider();
         this.request = new ExecuteRequest();
         this.remotes = wpsurls;
@@ -133,7 +133,7 @@ public class ExecViewDialog extends MbDialog {
         //refresh the request
         this.currentPanel.updateRequest();
         this.request = this.currentPanel.getRequest();
-        
+
         this.outputsspanel = new OutputParameterization(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -236,6 +236,16 @@ public class ExecViewDialog extends MbDialog {
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
         this.showServerSelection(false);     //Reset
+        
+        //Make sure the client cache is emptied.
+        if (provider != null) {
+            try {
+                provider.disconnect();
+            } catch (Exception e) {
+                //NOP.
+            }
+        }
+
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed

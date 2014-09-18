@@ -25,6 +25,11 @@ public interface IRichWPSProvider {
     public void connect(final String wpsurl) throws Exception;
 
     /**
+     * Disconnects all connected services.
+     * @throws Exception 
+     */
+    public void disconnect() throws Exception;
+    /**
      * Disconnects the provider to a WPS-server.
      *
      * @param wpsurl endpoint of WebProcessingService.

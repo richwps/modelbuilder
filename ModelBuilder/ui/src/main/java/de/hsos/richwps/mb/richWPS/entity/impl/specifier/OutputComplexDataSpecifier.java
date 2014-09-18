@@ -226,7 +226,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
             schema=this.nullify(schema);
             String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);//TRICKY wps-client-lib needs null.
             encoding=this.nullify(encoding);
-            de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
+            //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
             ComplexDataDescriptionType desctype = supportedFormats.addNewFormat();
             desctype.setEncoding(encoding);
             desctype.setMimeType(mimetype);
@@ -241,7 +241,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
         encoding=this.nullify(encoding);
 
-        de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
+        //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
         ComplexDataCombinationType ogcdefaulttype = OutputDescriptionTypeBuilder.createComplexDataCombiType(mimetype, encoding, schema);
 
         OutputDescriptionTypeBuilder description = new OutputDescriptionTypeBuilder(ogcdefaulttype, supportedFormats, this.identifier, this.title);

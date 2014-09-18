@@ -67,6 +67,20 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
 
+     /**
+     * Disconnects all connected sevices.
+     *
+     * @throws java.lang.Exception
+     */
+    @Override
+    public void disconnect() throws Exception {
+        this.wps=WPSClientSession.getInstance();
+        List<String> endpoints = this.wps.getLoggedServices();
+        for(String endpoint:endpoints){
+            this.wps.disconnect(endpoint);
+        }
+        //TODO
+    }
     /**
      * Connects the provider to a WPS-server.
      *
