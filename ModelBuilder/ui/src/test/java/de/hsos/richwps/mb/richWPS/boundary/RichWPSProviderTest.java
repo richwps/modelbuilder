@@ -374,7 +374,7 @@ public class RichWPSProviderTest extends TestCase {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        DeployRequest request = new DeployRequest("localhost", "test", "test", "1.0", "ROLA");
+        DeployRequest request = new DeployRequest("localhost", "test", "test", "1.0", RichWPSProvider.deploymentProfile);
         request.addInput(this.createComplexDataInput());
         request.addInput(this.createLiteralDataInput());
         request.addOutput(this.createComplexDataOutput());
@@ -450,7 +450,7 @@ public void testDeploy1() {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        DeployRequest request = new DeployRequest(wpsturl, "rola.SelectRepArea.Wrapper", "A title", "2", "rola");
+        DeployRequest request = new DeployRequest(wpsturl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
         request.addInput(this.createComplexDataInput1());
         request.addInput(this.createLiteralDataInput1());
         request.addOutput(this.createComplexDataOutput1());
