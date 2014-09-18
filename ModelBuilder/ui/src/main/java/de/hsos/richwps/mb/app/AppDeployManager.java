@@ -335,11 +335,10 @@ public class AppDeployManager {
 
                 List<String> atype = new ArrayList<>();
                 atype.add("text/xml");   // mimetype
-                atype.add("http://schemas.opengis.net/gml/3.1.1/base/feature.xsd");  // schema
+                atype.add("http://schemas.opengis.net/gml/3.2.1/base/feature.xsd");  // schema
                 atype.add("");  // encoding
 
                 List<List> types = new ArrayList<>();
-                types.add(atype);
                 types.add(atype);
 
                 complexSpecifier.setTypes(types);
