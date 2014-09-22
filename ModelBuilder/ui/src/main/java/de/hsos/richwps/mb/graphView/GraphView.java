@@ -374,6 +374,8 @@ public class GraphView extends JPanel {
         Document doc = mxXmlUtils.parseXml(mxUtils.readFile(filename));
         GraphModel graphModel = (GraphModel) codec.decode(doc.getFirstChild());
         graph.setModel(graphModel);
+        graphComponent.zoomTo(1., true);
+//        graphComponent.zoomAndCenter();
         graphComponent.refresh();
     }
 

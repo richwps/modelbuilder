@@ -36,6 +36,9 @@ public class TreeView {
                     } else if(userObject instanceof ProcessEntity) {
                         return UiHelper.limitString(((ProcessEntity) userObject).toString(), AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);
                     }
+//                    else if(userObject instanceof String) {
+//                        return UiHelper.limitString((String) userObject, AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);
+//                    }
 
                 }
 
