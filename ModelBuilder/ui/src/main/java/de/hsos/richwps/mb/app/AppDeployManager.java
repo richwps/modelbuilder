@@ -148,6 +148,7 @@ public class AppDeployManager {
 
     /**
      * Generates a ROLA-script based on the current model.
+     *
      * @param wpstendpoint WPST-endpoint for automatic detection of local
      * bindings.
      * @return Emptystring in case of exception, else rola-script.
@@ -161,9 +162,10 @@ public class AppDeployManager {
                 f = File.createTempFile(System.currentTimeMillis() + "", ".dsl");
                 f.deleteOnExit();
             } catch (Exception e) {
-                String msg = "Unable to create temproary files.";
-                AppEventService.getInstance().fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-                de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateDSL()\n " + msg + " " + e.getLocalizedMessage());
+                this.deploymentFailed(AppConstants.TMP_FILE_FAILED);
+
+                de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateROLA()\n "
+                        + AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
             }
 
@@ -184,6 +186,7 @@ public class AppDeployManager {
             return content;
 
         } catch (Exception ex) {
+
             StringBuilder sb = new StringBuilder(200);
             sb.append(AppConstants.DEPLOYMENT_FAILED);
             sb.append('\n');
@@ -229,12 +232,6 @@ public class AppDeployManager {
             IOutputSpecifier specifier = null;
             specifier = AppDeployManager.createOutputPortSpecifier(port);
 
-            /* if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputComplexDataSpecifier) {
-             specifier = AppDeployManager.createOutputPortSpecifier(port);
-
-             } else if (AppDeployManager.createOutputPortSpecifier(port) instanceof OutputLiteralDataSpecifier) {
-                
-             }*/
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -332,7 +329,7 @@ public class AppDeployManager {
             case COMPLEX:
                 OutputComplexDataSpecifier complexSpecifier = new OutputComplexDataSpecifier();
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
-                complexSpecifier.setTheabstract(port.getOwsAbstract());
+                complexSpecifier.setTheAbstract(port.getOwsAbstract());
                 complexSpecifier.setTitle(port.getOwsTitle());
                 if (complexSpecifier.getTitle().equals("")) {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
@@ -341,28 +338,19 @@ public class AppDeployManager {
                 List<List> supportedTypes = new ArrayList<>();
                 List<String> supportedType = new ArrayList();
 
-                List<String> atype = new ArrayList<>();
-                atype.add("text/xml");   // mimetype
-                atype.add("http://schemas.opengis.net/gml/3.2.1/base/feature.xsd");  // schema
-                atype.add("");  // encoding
+                IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
 
-                List<List> types = new ArrayList<>();
-                types.add(atype);
+                if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
+                    DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
+                    ComplexDataTypeFormat format = description.getFormat();
+                    supportedType.add(format.getMimeType());
+                    supportedType.add(format.getSchema());
+                    supportedType.add(format.getEncoding());
+                }
+                supportedTypes.add(supportedType);
+                complexSpecifier.setTypes(supportedTypes);
+                complexSpecifier.setDefaulttype(supportedType);
 
-                complexSpecifier.setTypes(types);
-                complexSpecifier.setDefaulttype(atype);
-
-
-                /*
-                 FIXME resolve the workaround below.
-                 IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
-                 if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-                 DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                 ComplexDataTypeFormat format = description.getFormat();
-                 supportedType.add(format.getMimeType());
-                 supportedType.add(format.getSchema());
-                 supportedType.add(format.getEncoding());
-                 }*/
                 specifier = complexSpecifier;
                 break;
 
@@ -379,4 +367,22 @@ public class AppDeployManager {
 //        }
         return specifier;
     }
+
+    /**
+     * Shows an optionpane, that deployment failed. Logs reason to info-tab.
+     *
+     * @param reason The reason for failing.
+     */
+    private void deploymentFailed(final String reason) {
+        StringBuilder sb = new StringBuilder(200);
+        sb.append(AppConstants.DEPLOYMENT_FAILED);
+        sb.append('\n');
+        sb.append(AppConstants.SEE_LOGGING_TABS);
+
+        AppEventService.getInstance().fireAppEvent(reason,
+                AppConstants.INFOTAB_ID_SERVER);
+
+        JOptionPane.showMessageDialog(getFrame(), sb.toString());
+    }
+
 }

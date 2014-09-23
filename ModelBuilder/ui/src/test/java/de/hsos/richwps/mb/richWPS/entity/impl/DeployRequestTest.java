@@ -83,7 +83,7 @@ public class DeployRequestTest {
         OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
-        specifier.setTheabstract("aabb's abstract");
+        specifier.setTheAbstract("aabb's abstract");
         List<String> atype = new ArrayList<>();
         atype.add("application/xml");   // mimetype
         atype.add("");  // schema

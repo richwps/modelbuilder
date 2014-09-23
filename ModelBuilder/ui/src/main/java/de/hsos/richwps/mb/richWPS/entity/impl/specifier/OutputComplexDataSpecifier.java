@@ -145,7 +145,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
      *
      * @param theabstract
      */
-    public void setTheabstract(String theabstract) {
+    public void setTheAbstract(String theabstract) {
         this.theabstract = theabstract;
     }
 

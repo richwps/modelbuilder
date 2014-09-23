@@ -335,7 +335,7 @@ public class RichWPSProviderTest extends TestCase {
         OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
-        specifier.setTheabstract("aabb's abstract");
+        specifier.setTheAbstract("aabb's abstract");
 
         List<String> atype = new ArrayList<>();
         atype.add("application/xml");   // mimetype
@@ -424,7 +424,7 @@ public class RichWPSProviderTest extends TestCase {
         OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
         specifier.setIdentifier("selectedarea");
         specifier.setTitle("");
-        specifier.setTheabstract("");
+        specifier.setTheAbstract("");
 
         List<String> atype = new ArrayList<>();
         atype.add("application/xml");   // mimetype

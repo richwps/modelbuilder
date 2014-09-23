@@ -48,9 +48,9 @@ public class Exporter {
     private ArrayList<Binding> executes;
 
     /**
-     * Initializes the variables and fills the vertex lists
+     * Constructs a new Exporter.
      *
-     * @param graph the exported graph
+     * @param graph the exported graph.
      */
     public Exporter(Graph graph) throws NoIdentifierException, IdentifierDuplicatedException {
 
@@ -66,7 +66,7 @@ public class Exporter {
     /**
      * Launches the exporting pe and writes results to specifed file
      *
-     * @param path file to write to
+     * @param path file to write to.
      * @param wpstendpoint for local/remote detection.
      * @throws Exception
      */
@@ -180,7 +180,7 @@ public class Exporter {
     }
 
     /**
-     * Adds one pe execute statement to worksequence, gets inputs from
+     * Adds an execute statement to workflow, gets inputs from
      * variables, stores outputs to variables
      *
      * @param processVertex
@@ -202,6 +202,14 @@ public class Exporter {
         ws.add(execute);
     }
 
+    /**
+     * 
+     * @param pe
+     * @param isLocalBinding
+     * @param ws
+     * @return
+     * @throws MalformedURLException 
+     */
     private String handleBinding(ProcessEntity pe, boolean isLocalBinding, Worksequence ws) throws MalformedURLException {
         String identifier = pe.getOwsIdentifier();
         //Create a unique identifier based on the place of execution.
