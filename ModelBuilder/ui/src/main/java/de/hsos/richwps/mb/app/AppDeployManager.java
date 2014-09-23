@@ -41,7 +41,6 @@ import javax.swing.JOptionPane;
  */
 public class AppDeployManager {
 
-    
     private App app;
 
     public AppDeployManager(App app) {
@@ -98,7 +97,7 @@ public class AppDeployManager {
     private String _generateRola(DeployConfig config) {
         String wpstendpoint = config.getValue(DeployConfigField.ENDPOINT);
 
-        final String rola = this.generateDSL(wpstendpoint);
+        final String rola = this.generateROLA(wpstendpoint);
         if (null == rola) {
             return null;
         }
@@ -123,8 +122,8 @@ public class AppDeployManager {
         }
 
         //FIXME
-        String wpsurl = wpstendpoint.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0]+RichWPSProvider.DEFAULT_WPS_ENDPOINT;
-        de.hsos.richwps.mb.Logger.log("Debug::AppDeploymanager::_performDeployment(): "+wpsurl);
+        String wpsurl = wpstendpoint.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + RichWPSProvider.DEFAULT_WPS_ENDPOINT;
+        de.hsos.richwps.mb.Logger.log("Debug::AppDeploymanager::_performDeployment(): " + wpsurl);
 
         RichWPSProvider instance = new RichWPSProvider();
         try {
@@ -148,23 +147,32 @@ public class AppDeployManager {
     }
 
     /**
-     *
+     * Generates a ROLA-script based on the current model.
      * @param wpstendpoint WPST-endpoint for automatic detection of local
      * bindings.
-     * @return
+     * @return Emptystring in case of exception, else rola-script.
      */
-    private String generateDSL(String wpstendpoint) {
+    private String generateROLA(String wpstendpoint) {
         try {
-            String dslFile = "generated.rola";
-            //FIXME mv to tmp System.getProperty("java.io.tmpdir")
 
-            new Exporter(getGraphView().getGraph()).export(dslFile, wpstendpoint);
+            File f = null;
+            try {
+                // creates temporary file
+                f = File.createTempFile(System.currentTimeMillis() + "", ".dsl");
+                f.deleteOnExit();
+            } catch (Exception e) {
+                String msg = "Unable to create temproary files.";
+                AppEventService.getInstance().fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+                de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateDSL()\n " + msg + " " + e.getLocalizedMessage());
+                return "";
+            }
+
+            new Exporter(getGraphView().getGraph()).export(f.getAbsolutePath(), wpstendpoint);
 
             String content = null;
-            File file = new File(dslFile); //for ex foo.txt
-            FileReader reader = new FileReader(file);
+            FileReader reader = new FileReader(f);
             try {
-                char[] chars = new char[(int) file.length()];
+                char[] chars = new char[(int) f.length()];
                 reader.read(chars);
                 content = new String(chars);
             } catch (IOException e) {

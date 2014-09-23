@@ -2,15 +2,7 @@ package de.hsos.richwps.mb.dsl;
 
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
-import de.hsos.richwps.dsl.api.elements.Assignment;
-import de.hsos.richwps.dsl.api.elements.Binding;
-import de.hsos.richwps.dsl.api.elements.Endpoint;
-import de.hsos.richwps.dsl.api.elements.Execute;
-import de.hsos.richwps.dsl.api.elements.InReference;
-import de.hsos.richwps.dsl.api.elements.OutReference;
-import de.hsos.richwps.dsl.api.elements.Reference;
-import de.hsos.richwps.dsl.api.elements.VarReference;
-import de.hsos.richwps.dsl.api.elements.Worksequence;
+import de.hsos.richwps.dsl.api.elements.*;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -51,6 +43,11 @@ public class Exporter {
     private ArrayList<Binding> bindings;
 
     /**
+     * A structure to trace allready established exectes.
+     */
+    private ArrayList<Binding> executes;
+
+    /**
      * Initializes the variables and fills the vertex lists
      *
      * @param graph the exported graph
@@ -63,6 +60,7 @@ public class Exporter {
         this.graph = graph;
         this.variables = new HashMap<>();
         this.bindings = new ArrayList<>();
+        this.executes = new ArrayList<>();
     }
 
     /**
@@ -75,7 +73,7 @@ public class Exporter {
     public void export(String path, String wpstendpoint) throws Exception {
 
         Writer writer = new Writer();
-        Worksequence ws = new Worksequence();
+        Worksequence workflow = new Worksequence();
 
         createUniqueIdentifiers(graph.getAllFlowOutputPorts());
 
@@ -91,17 +89,17 @@ public class Exporter {
                 String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
-                this.handleProcessCell(cell, ws, isLocalBinding);
+                this.handleProcessCell(cell, workflow, isLocalBinding);
 
             } //handle outputs.
             else if (this.graph.getGraphModel().isFlowInput(cell)) {
-                this.handleOutputCell(cell, ws);
+                this.handleOutputCell(cell, workflow);
             } //handle inptus.
             else if (this.graph.getGraphModel().isFlowOutput(cell)) {
-                this.handleInputCell(cell, ws);
+                this.handleInputCell(cell, workflow);
             }
         }
-        writer.create(path, ws);
+        writer.create(path, workflow);
     }
 
     /**
@@ -151,34 +149,33 @@ public class Exporter {
     /**
      * Defines global output, gets its value from the reference map
      *
-     * @param ws
+     * @param workflow
      * @throws Exception
      */
-    protected void handleOutputCell(mxICell output, Worksequence ws) throws Exception {
+    protected void handleOutputCell(mxICell output, Worksequence workflow) throws Exception {
         // Check incoming edges and look up the values in variables from the reference map
         Object[] incoming = graph.getIncomingEdges(output);
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
             ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
-            // @TODO: identifier is not ideal
 
             // unique identifier is necessary to distinguish ports with the same owsIdentifier
             String uniqueInIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
             // OWS Identifier is the original port identifier
-//            String owsInIdentifier = uniqueInIdentifier.split(" ")[0];
+            //String owsInIdentifier = uniqueInIdentifier.split(" ")[0];
 
             // ... same for out identifiers
             String uniqueOutIdentifier = getUniqueIdentifier(target.getOwsIdentifier());
             String owsOutIdentifier = getOwsIdentifier(target.getOwsIdentifier());
 
-//            String inIdentifier = source.getOwsIdentifier();
-//            String outIdentifier = target.getOwsIdentifier();
+            //String inIdentifier = source.getOwsIdentifier();
+            //String outIdentifier = target.getOwsIdentifier();
             // Reading varibale from varibale reference map
             Reference variable = this.variables.get(source.getOwsIdentifier());
             Reference outputReference = new OutReference(owsOutIdentifier);
             Assignment assignment = new Assignment(outputReference, variable);
-            ws.add(assignment);
+            workflow.add(assignment);
         }
     }
 
