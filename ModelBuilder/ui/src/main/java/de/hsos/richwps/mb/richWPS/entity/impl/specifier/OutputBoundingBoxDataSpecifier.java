@@ -16,12 +16,38 @@ import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
  */
 public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
+    /**
+     * The specified Outputdescription.
+     */
     private OutputDescriptionType description;
+
+    /**
+     * Unambiguous identifier or name of a process, input, or
+     * output, unique for this server.
+     */
     private String identifier;
+
+    /**
+     * Title of a process, input, or output, normally available for
+     * display to a human.
+     */
     private String title;
+
+    /**
+     * Text of the abstract.abstractText Brief narrative
+     * description of a process, input, or output, normally available for
+     * display to a human.
+     */
     private String theabstract;
+
+    /**
+     * Default Reference to one coordinate reference system.
+     */
     private String defaultCRS;
 
+    /**
+     * Reference to supported coordinate references.
+     */
     private ArrayList<String> supportedCRS;
 
     /**
@@ -76,28 +102,16 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
         this.supportedCRS.addAll(Arrays.asList(supported.getCRSArray()));
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getIdentifier() {
         return this.identifier;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getAbstract() {
         return this.theabstract;
     }
 
-    /**
-     *
-     * @return
-     */
     @Override
     public String getTitle() {
         return this.title;
@@ -105,7 +119,8 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @param identifier
+     * @param identifier Unambiguous identifier or name of a process, input, or
+     * output, unique for this server.
      */
     final public void setIdentifier(String identifier) {
         this.identifier = identifier;
@@ -113,7 +128,8 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @param title
+     * @param title Title of a process, input, or output, normally available for
+     * display to a human.
      */
     final public void setTitle(String title) {
         this.title = title;
@@ -121,7 +137,9 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @param theabstract
+     * @param theabstract Text of the abstract.abstractText Brief narrative
+     * description of a process, input, or output, normally available for
+     * display to a human.
      */
     final public void setAbstract(String theabstract) {
         this.theabstract = theabstract;
@@ -129,7 +147,7 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @return
+     * @return The specified OutputDescription.
      */
     final public OutputDescriptionType getDescription() {
         return description;
@@ -137,7 +155,7 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @param description
+     * @param description The specified OutputDescription.
      */
     final public void setDescription(OutputDescriptionType description) {
         this.description = description;
@@ -145,7 +163,7 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @return
+     * @return Default Reference to one coordinate reference system.
      */
     final public String getDefaultCRS() {
         return defaultCRS;
@@ -153,19 +171,19 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @param defaultCRS
+     * @param defaultCRS Default Reference to one coordinate reference system.
      */
     final public void setDefaultCRS(String defaultCRS) {
         if(this.supportedCRS.isEmpty()) {
             this.supportedCRS.add(defaultCRS);
         }
-        
+
         this.defaultCRS = defaultCRS;
     }
 
     /**
      *
-     * @return
+     * @return Reference to supported coordinate references.
      */
     public ArrayList<String> getSupportedCRS() {
         return supportedCRS;
@@ -173,18 +191,18 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
 
     /**
      *
-     * @param supportedCRS
+     * @param supportedCRS Reference to supported coordinate references.
      */
     public void setSupportedCRS(ArrayList<String> supportedCRS) {
         this.supportedCRS = supportedCRS;
     }
-    
+
     /**
      * Returns an OutputDescription with the added BoundingBox Object.
      * @return Initialized BoundingBox-OutputDescription.
      */
     @Override
-    public OutputDescriptionType toOutputDescription() {
+    final public OutputDescriptionType toOutputDescription() {
         OutputDescriptionTypeBuilder ogctype;
         ogctype = new OutputDescriptionTypeBuilder(identifier, title);
         ogctype.setAbstract(this.theabstract);
@@ -195,14 +213,13 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
         } else {
             ogctype.addNewBoundingBoxOutput(defaultCRS, supportedCRS);
         }
-        
-        
-        
+
+
+
         return ogctype.getOdt();
     }
 
-    @Override
-    public int hashCode() {
+    final public int hashCode() {
         int hash = 7;
         hash = 31 * hash + Objects.hashCode(this.description);
         hash = 31 * hash + Objects.hashCode(this.identifier);
@@ -214,14 +231,15 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    final public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final OutputBoundingBoxDataSpecifier other = (OutputBoundingBoxDataSpecifier) obj;
+        final OutputBoundingBoxDataSpecifier other;
+        other = (OutputBoundingBoxDataSpecifier) obj;
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }
@@ -238,8 +256,11 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
     }
 
     @Override
-    public String toString() {
-        return "OutputBoundingBoxDataSpecifier{" + "description=" + description + ", identifier=" + identifier + ", title=" + title + ", theabstract=" + theabstract + ", defaultCRS=" + defaultCRS + ", supportedCRS=" + supportedCRS + '}';
+    final public String toString() {
+        return "OutputBoundingBoxDataSpecifier{" + "description=" + description
+                + ", identifier=" + identifier + ", title=" + title
+                + ", theabstract=" + theabstract + ", defaultCRS="
+                + defaultCRS + ", supportedCRS=" + supportedCRS + '}';
     }
 
 }

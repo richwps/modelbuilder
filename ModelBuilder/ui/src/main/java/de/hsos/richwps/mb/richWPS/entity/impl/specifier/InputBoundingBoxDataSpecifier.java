@@ -17,14 +17,45 @@ import org.n52.wps.client.transactional.InputDescriptionTypeBuilder;
  * @author caduevel
  */
 public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
-
+    /**
+     * Unambiguous identifier or name of a process, input, or
+     * output, unique for this server.
+     */
     private String identifier;
+
+    /**
+     * Title of a process, input, or output, normally available for
+     * display to a human.
+     */
     private String title;
+
+    /**
+     * Text of the abstract.abstractText Brief narrative
+     * description of a process, input, or output, normally available for
+     * display to a human.
+     */
     private String theabstract;
+
+    /**
+     * Default Reference to one coordinate reference system.
+     */
     private String defaultCRS;
+
+     /**
+     * Minimum number of times that values for this parameter
+     * are required.
+     */
     private int minOccur = 0;
+
+    /**
+     * maxOccurs Maximum number of times that this parameter may be
+     * present.
+     */
     private int maxOccur = 0;
 
+    /**
+     * Reference to supported coordinate references.
+     */
     private List<String> supportedCRS;
 
     /**
@@ -94,7 +125,8 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
 
     /**
      *
-     * @param minOccur
+     * @param minOccur Minimum number of times that values for this parameter
+     * are required.
      */
     final public void setMinOccur(int minOccur) {
         this.minOccur = minOccur;
@@ -102,7 +134,8 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
 
     /**
      *
-     * @param maxOccur
+     * @param maxOccur Maximum number of times that this parameter may be
+     * present.
      */
     final public void setMaxOccur(int maxOccur) {
         this.maxOccur = maxOccur;
@@ -110,7 +143,8 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
 
     /**
      *
-     * @param identifier
+     * @param identifier Unambiguous identifier or name of a process, input, or
+     * output, unique for this server.
      */
     final public void setIdentifier(String identifier) {
         this.identifier = identifier;
@@ -118,7 +152,8 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
 
     /**
      *
-     * @param title
+     * @param title Title of a process, input, or output, normally available for
+     * display to a human.
      */
     final public void setTitle(String title) {
         this.title = title;
@@ -126,33 +161,51 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
 
     /**
      *
-     * @param theabstract
+     * @param theabstract Text of the abstract.abstractText Brief narrative
+     * description of a process, input, or output, normally available for
+     * display to a human.
      */
     final public void setAbstract(String theabstract) {
         this.theabstract = theabstract;
     }
 
+    /**
+     *
+     * @return Default Reference to one coordinate reference system.
+     */
     public String getDefaultCRS() {
         return defaultCRS;
     }
 
+    /**
+     *
+     * @param defaultCRS Default Reference to one coordinate reference system.
+     */
     public void setDefaultCRS(String defaultCRS) {
         if(this.supportedCRS.isEmpty()) {
             this.supportedCRS.add(defaultCRS);
         }
-        
+
         this.defaultCRS = defaultCRS;
     }
 
+    /**
+     *
+     * @return Reference to supported coordinate references.
+     */
     public List<String> getSupportedCRS() {
         return supportedCRS;
     }
 
+    /**
+     *
+     * @param supportedCRS Reference to supported coordinate references.
+     */
     public void setSupportedCRS(List<String> supportedCRS) {
         this.supportedCRS = supportedCRS;
     }
 
-    
+
     /**
      * Returns an InputDescription with the added BoundingBox Object.
      *
@@ -179,13 +232,13 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
 
     @Override
     public String toString() {
-        return "InputBoundingBoxDataSpecifier{" + "identifier=" + identifier 
-                + ", title=" + title + ", theabstract=" + theabstract 
-                + ", defaultCRS=" + defaultCRS + ", minOccur=" + minOccur 
-                + ", maxOccur=" + maxOccur + ", supportedCRS=" 
+        return "InputBoundingBoxDataSpecifier{" + "identifier=" + identifier
+                + ", title=" + title + ", theabstract=" + theabstract
+                + ", defaultCRS=" + defaultCRS + ", minOccur=" + minOccur
+                + ", maxOccur=" + maxOccur + ", supportedCRS="
                 + supportedCRS + '}';
     }
-    
+
     @Override
     final public int hashCode() {
         int hash = 7;
