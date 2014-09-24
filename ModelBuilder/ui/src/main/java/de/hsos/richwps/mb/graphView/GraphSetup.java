@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.graphView;
 import com.mxgraph.canvas.mxGraphics2DCanvas;
 import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
+import com.mxgraph.swing.handler.mxRubberband;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxStylesheet;
@@ -15,6 +16,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.Hashtable;
@@ -38,6 +40,7 @@ public class GraphSetup {
     static String STYLENAME_GLOBAL_OUTPUT = "PROCESS_OUTPUT";
     static String STYLENAME_PROCESS = "PROCESS";
     static String STYLENAME_LOCAL_PORT = "PORT";
+    public static String STYLENAME_SELECTION_PROXY = "SELECTION";
 
     // (auto-) Layout
     static final int LAYOUT_COMPONENT_GAP = 50;
@@ -50,6 +53,12 @@ public class GraphSetup {
     public final static Color GRAPH_EDGE_SHIFTED_COLOR = new Color(240, 240, 250);
     public final static Color GRAPH_EDGE_COLOR = Color.BLACK; //(new Color(0xa0ace5)).darker().darker();
     private final static double GRAPH_EDGE_ROUNDED_SIZE = 5.;
+    public static int GLOBAL_PORT_WIDTH = 40;
+    public static int PROCESS_PORT_HEIGHT = 30;
+    public static int GLOBAL_PORT_HEIGHT = 40;
+    public static int PROCESS_HEIGHT = 90;
+    // TODO move values to config/constants
+    public static int PROCESS_WIDTH = 240;
 
     /**
      * Initialises graph-independent codecs, constants etc.
@@ -97,6 +106,8 @@ public class GraphSetup {
         graph.setAllowLoops(AppConstants.GRAPH_ALLOW_FEEDBACK_LOOPS);
         graph.setMultigraph(false);
         graph.setAutoLayout(AppConstants.GRAPH_AUTOLAYOUT);
+        graph.setAutoOrigin(true);
+        // for some reason, setCellsMovable must be one of the last graph setters to be called!
         graph.setCellsMovable(!graph.isAutoLayout());
 
         graph.setGridSize(10);
@@ -113,9 +124,6 @@ public class GraphSetup {
         edgeStyle.put(mxConstants.STYLE_NOLABEL, "1");
         edgeStyle.put(mxConstants.STYLE_STROKECOLOR, "000000");
         Object styleEdge = mxConstants.EDGESTYLE_TOPTOBOTTOM;
-//        if (graph.isAutoLayout()) {
-//            edgeStyle = mxConstants.NONE;
-//        }
         edgeStyle.put(mxConstants.STYLE_EDGE, styleEdge);
         edgeStyle.put(mxConstants.STYLE_SHAPE, STYLE_SHAPE);
         edgeStyle.put(mxConstants.STYLE_ROUNDED, "1");
@@ -131,7 +139,6 @@ public class GraphSetup {
         processStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
         processStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
         processStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f6f6f6");
-//            processStyle.put(mxConstants.STYLE_MOVABLE, "0");
         processStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
         stylesheet.putCellStyle("PROCESS", processStyle);
 
@@ -149,17 +156,15 @@ public class GraphSetup {
         processOutputStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
         processOutputStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
         processOutputStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#000000");
-//            processStyle.put(mxConstants.STYLE_MOVABLE, "0");
         processOutputStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
         stylesheet.putCellStyle("PROCESS_OUTPUT", processOutputStyle);
 
-        // PROCESS (SUB-) PORT STYLE
+        // PROCESS (LOCAL-/SUB-) PORT STYLE
         Hashtable<String, Object> portStyle = new Hashtable<String, Object>();
         portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
         portStyle.put(mxConstants.STYLE_OPACITY, 100);
         portStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
         portStyle.put(mxConstants.STYLE_FILLCOLOR, "none");
-//            portStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f9f9f9"); // changed font size
         portStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
         portStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
         portStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
@@ -167,13 +172,28 @@ public class GraphSetup {
         portStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
         stylesheet.putCellStyle("PORT", portStyle);
 
+        // SELECTION PROXY STYLE
+        Hashtable<String, Object> selectionProxyStyle = new Hashtable<String, Object>();
+        selectionProxyStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
+        selectionProxyStyle.put(mxConstants.STYLE_OPACITY, 50);
+        selectionProxyStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
+        selectionProxyStyle.put(mxConstants.STYLE_FILLCOLOR, "#" + UiHelper.colorToHex(AppConstants.SELECTION_BG_COLOR));
+        selectionProxyStyle.put(mxConstants.STYLE_STROKECOLOR, "#" + UiHelper.colorToHex(AppConstants.SELECTION_BG_COLOR.darker()));
+        selectionProxyStyle.put(mxConstants.STYLE_DASHED, "1");
+        selectionProxyStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
+        selectionProxyStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
+        selectionProxyStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#" + UiHelper.colorToHex(AppConstants.SELECTION_BG_COLOR.brighter()));
+        selectionProxyStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
+        stylesheet.putCellStyle(STYLENAME_SELECTION_PROXY, selectionProxyStyle);
+
         return graph;
     }
 
     static void setupGraphComponent(GraphComponent component) {
-            component.setToolTips(true);
-            component.setBorder(new EmptyBorder(0, 0, 0, 0));
-            component.getViewport().setBackground(GRAPH_BG_COLOR);
+        component.setToolTips(true);
+        component.setBorder(new EmptyBorder(0, 0, 0, 0));
+        component.getViewport().setBackground(GRAPH_BG_COLOR);
+        new mxRubberband(component);
     }
 
 }

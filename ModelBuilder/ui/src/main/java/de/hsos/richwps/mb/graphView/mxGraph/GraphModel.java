@@ -84,24 +84,28 @@ public class GraphModel extends mxGraphModel {
 
     /**
      * Returns true if the given Object is a global input cell.
+     *
      * @param o
      * @return
      */
     public boolean isGlobalInputPort(Object o) {
-        if(!isGlobalPort(o))
+        if (!isGlobalPort(o)) {
             return false;
+        }
 
         return ((ProcessPort) getValue(o)).isGlobalInput();
     }
 
     /**
      * Returns true if the given Object is a global output cell.
+     *
      * @param o
-     * @return 
+     * @return
      */
     public boolean isGlobalOutputPort(Object o) {
-        if(!isGlobalPort(o))
+        if (!isGlobalPort(o)) {
             return false;
+        }
 
         return ((ProcessPort) getValue(o)).isGlobalOutput();
     }
@@ -114,13 +118,12 @@ public class GraphModel extends mxGraphModel {
         Object parent;
 
         GraphModel model = (GraphModel) ((null == graph) ? this : graph.getModel());
-        
+
         if (model.isGlobalPort(o)) {
             parent = o;
         } else {
             parent = model.getParent(o);
         }
-
 
         Object[] sourceOutgoingEdges = mxGraphModel.getOutgoingEdges(model, parent);
         for (Object out : sourceOutgoingEdges) {
@@ -137,7 +140,7 @@ public class GraphModel extends mxGraphModel {
 
     boolean isInputPortUsed(Object o, Graph graph) {
         Object parent;
-        
+
         GraphModel model = (GraphModel) ((null == graph) ? this : graph.getModel());
 
         if (model.isGlobalPort(o)) {

@@ -19,9 +19,9 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,15 +42,14 @@ public class GraphView extends JPanel {
     private mxGraphComponent graphComponent;
     private LinkedList<ListSelectionListener> selectionListener;
     private LinkedList<ModelElementsChangedListener> modelElementsChangeListener;
-    private IProcessProvider processProvider;
 
-    // there exist no mxGraph-Constants for the property keys :(
+    // there exist no mxGraph-Constants for the following keys :(
     public static final String PROPERTY_KEY_EDIT = "edit";
     public static final String PROPERTY_KEY_CELLS = "cells";
+    public static final String EVENT_NAME_UNDO = "undo";
 
-    public GraphView(IProcessProvider processProvider) {
+    public GraphView() {
         super();
-        this.processProvider = processProvider;
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
         selectionListener = new LinkedList<ListSelectionListener>();
 
@@ -69,7 +68,7 @@ public class GraphView extends JPanel {
 
             graphComponent = new GraphComponent(graph);
             GraphSetup.setupGraphComponent((GraphComponent) graphComponent);
-       }
+        }
 
         return graphComponent;
     }
@@ -153,24 +152,35 @@ public class GraphView extends JPanel {
         getGraph().getModel().addListener(mxEvent.UNDO, listener);
     }
 
+    /**
+     * Retuns a valid location for adding new cells.
+     *
+     * @param start
+     * @return
+     */
     public Point getEmptyCellLocation(Point start) {
-        while (null != getGraphComponent().getCellAt(start.x, start.y)) {
-            start.y += GraphSetup.CELLS_VERTICAL_OFFSET;
+        Rectangle rect = new Rectangle(start.x, start.y, GraphSetup.PROCESS_WIDTH, GraphSetup.PROCESS_HEIGHT);
+
+        while (getGraphComponent().getCells(rect).length > 0) {
+            rect.y += GraphSetup.CELLS_VERTICAL_OFFSET;
         }
 
-        return start;
+        return new Point(rect.x, rect.y);
     }
 
+    /**
+     * Finds the cell which contains the given value and selects it on success.
+     *
+     * @param value
+     */
     public void selectCellByValue(Object value) {
-        if(value instanceof GraphModel) {
+        if (value instanceof GraphModel) {
             getGraph().clearSelection();
-        }
-
-        else {
+        } else {
             Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
-            for(Object cell : cells) {
+            for (Object cell : cells) {
                 Object cellValue = getGraph().getGraphModel().getValue(cell);
-                if(value.equals(cellValue)) {
+                if (value.equals(cellValue)) {
                     getGraph().setSelectionCell(cell);
                 }
             }
@@ -233,6 +243,10 @@ public class GraphView extends JPanel {
     }
 
     void fireModelElementsChanged(Object element, ELEMENT_TYPE type, ELEMENT_CHANGE_TYPE changeType) {
+        if (null == element) {
+            return;
+        }
+
         for (ModelElementsChangedListener listener : getModelElementsChangedListeners()) {
             listener.modelElementsChanged(element, type, changeType);
         }
@@ -375,7 +389,6 @@ public class GraphView extends JPanel {
         GraphModel graphModel = (GraphModel) codec.decode(doc.getFirstChild());
         graph.setModel(graphModel);
         graphComponent.zoomTo(1., true);
-//        graphComponent.zoomAndCenter();
         graphComponent.refresh();
     }
 

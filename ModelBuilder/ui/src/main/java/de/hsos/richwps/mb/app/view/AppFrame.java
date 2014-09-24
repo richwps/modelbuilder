@@ -274,25 +274,19 @@ public class AppFrame extends JFrame {
      */
     public void setGraphViewTitle(String title) {
         setTitle(frameTitle + " - " + title);
-
-//    );
-//        getGraphViewGui().setTitle(title);
-//        getGraphViewGui().setTitleBold();
     }
 
     /**
      * Resets style and title of the GraphView to indicate an unnamed model.
      */
     public void resetGraphViewTitle() {
-//        getGraphViewGui().setTitle(AppConstants.EDITOR_DEFAULT_TITLE);
-//        graphViewGui.setTitleItalic();
         setTitle(frameTitle);
     }
 
     private TitledComponent getGraphViewGui() {
         if (null == graphViewGui) {
             graphViewGui = new TitledComponent(AppConstants.EDITOR_DEFAULT_TITLE, app.getGraphViewGui());
-//            graphViewGui.setTitleItalic();
+
             // Add proxy layer with minimum z index (=on top).
             graphViewGui.add(app.getGraphDndProxy(), "0 1");
             app.getGraphDndProxy().setLocation(0, 0);

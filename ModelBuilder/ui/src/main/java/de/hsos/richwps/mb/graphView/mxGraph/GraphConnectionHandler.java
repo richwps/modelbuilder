@@ -26,7 +26,6 @@ public class GraphConnectionHandler extends mxConnectionHandler {
     private Popup tipWindow;
 
     private Object target;
-//    private Object targetParent;
 
     private void hideToolTip() {
         if (null != tipWindow) {
@@ -39,9 +38,6 @@ public class GraphConnectionHandler extends mxConnectionHandler {
         super(gc);
 
         marker = new CellMarker(graphComponent) {
-            /**
-             *
-             */
             private static final long serialVersionUID = 103433247310526381L;
 
             // Overrides to return cell at location only if valid (so that
@@ -53,14 +49,6 @@ public class GraphConnectionHandler extends mxConnectionHandler {
                 if (isConnecting()) {
                     if (source != null) {
                         error = validateConnection(source.getCell(), target);
-                        if (null != target) {
-//                            if (getGraphModel().isProcess(target)) {
-//                                targetParent = getGraphModel().getParent(target);
-//                            } else {
-//                                targetParent = target;
-//                            }
-
-                        }
 
                         if (error != null && error.length() == 0) {
                             target = null;

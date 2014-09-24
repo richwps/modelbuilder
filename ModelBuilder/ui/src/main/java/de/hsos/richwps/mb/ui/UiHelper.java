@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.ui;
 
 import java.awt.Color;
@@ -11,9 +6,11 @@ import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Window;
 
 /**
+ * Helper functions for misc purposes.
  *
  * @author dziegenh
  */
@@ -157,7 +154,7 @@ public class UiHelper {
     public static int getExponent(int baseTwoInt) {
         int exp = 0;
 
-        while ((1<<exp) < (Integer.MAX_VALUE ) && (1<<exp) > 0) {
+        while ((1 << exp) < (Integer.MAX_VALUE) && (1 << exp) > 0) {
             if (((baseTwoInt >> exp) & 1) == 1) {
                 return exp;
             }
@@ -167,6 +164,35 @@ public class UiHelper {
         return 0;
     }
 
+    /**
+     * True if OS is 32 bit.
+     */
     public static boolean is32BitVM = System.getProperty("os.arch").contains("x86");
+
+    /**
+     * Transforms negative width and/or height to positive values and adjusts
+     * the rectangle location if necessary.
+     *
+     * @param rectangle
+     * @return
+     */
+    public static Rectangle handleNegativeSizes(Rectangle rectangle) {
+        Rectangle rect = (Rectangle) rectangle.clone();
+
+        if (rect.height < 0) {
+            rect.height *= -1;
+            rect.y -= rect.height + 1;
+        }
+        if (rect.width < 0) {
+            rect.width *= -1;
+            rect.x -= rect.width + 1;
+        }
+
+        return rect;
+    }
+
+    public static String colorToHex(Color col) {
+        return Integer.toHexString((col.getRGB() & 0xffffff) | 0x1000000).substring(1);
+    }
 
 }

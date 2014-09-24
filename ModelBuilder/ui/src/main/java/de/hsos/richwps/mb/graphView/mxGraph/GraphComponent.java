@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.swing.handler.mxCellHandler;
@@ -22,7 +17,7 @@ import java.util.Hashtable;
 import javax.swing.JToolTip;
 
 /**
- * Only accepts our custom graph.
+ * The GUI component for RichWPS graphs.
  *
  * @author dziegenh
  */
@@ -33,7 +28,7 @@ public class GraphComponent extends mxGraphComponent {
 
     @Override
     public Hashtable<Object, Component[]> updateComponents(Object cell) {
-        Hashtable<Object, Component[]> updateComponents = super.updateComponents(cell); //To change body of generated methods, choose Tools | Templates.
+        Hashtable<Object, Component[]> updateComponents = super.updateComponents(cell);
         // TODO use this to find edge intersections???
         return updateComponents;
     }
@@ -104,15 +99,15 @@ public class GraphComponent extends mxGraphComponent {
 
         // no tooltip if there is no content
         boolean noError = (null == error || error.length() < 1);
-        boolean toolttipEmpty = targetTooltip.length() < 1;
-        if (toolttipEmpty && noError) {
+        boolean tooltipIsEmpty = targetTooltip.length() < 1;
+        if (tooltipIsEmpty && noError) {
             return null;
         }
 
         // TODO update init capacity when the length of a typical tooltip is known
         StringBuilder sb = new StringBuilder(255);
 
-        if (!toolttipEmpty) {
+        if (!tooltipIsEmpty) {
             // remove closing html tag.
             sb.append(targetTooltip.replace("</html>", ""));
 

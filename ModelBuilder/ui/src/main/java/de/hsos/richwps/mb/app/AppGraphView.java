@@ -25,7 +25,7 @@ public class AppGraphView extends GraphView {
     private boolean init = false;
 
     public AppGraphView(App app) {
-        super(app.getProcessProvider());
+        super();
         this.app = app;
     }
 
@@ -105,6 +105,7 @@ public class AppGraphView extends GraphView {
         });
 
         // register graph components for the event service.
+        AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_EDITOR, AppConstants.INFOTAB_ID_EDITOR);
         AppEventService.getInstance().addSourceCommand(this, AppConstants.INFOTAB_ID_EDITOR);
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
@@ -121,6 +122,8 @@ public class AppGraphView extends GraphView {
                 Object editProperty = eo.getProperty(PROPERTY_KEY_EDIT);
                 if (eo.getProperty("edit") instanceof mxUndoableEdit) {
                     mxUndoableEdit edit = (mxUndoableEdit) editProperty;
+                    
+                    // add graph edit to undo manager
                     getApp().getUndoManager().addEdit(new AppUndoableEdit(this, edit, "Graph edit"));
                     getApp().setChangesSaved(false);
                 }

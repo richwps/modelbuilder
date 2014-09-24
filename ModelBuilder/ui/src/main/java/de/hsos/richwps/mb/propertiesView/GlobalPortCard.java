@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.app.AppConstants;
@@ -21,14 +16,13 @@ import javax.swing.JTextField;
 import layout.TableLayout;
 
 /**
- *
+ * Properties card for global ports.
  * @author dziegenh
  */
 public class GlobalPortCard extends AbstractPortCard {
 
     private TitledComponent portPanel;
 
-//    Map<String, Component> propertyFields;
     private ProcessPort port;
 
     protected JTextField titleField;
