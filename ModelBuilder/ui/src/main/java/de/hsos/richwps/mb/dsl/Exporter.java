@@ -23,7 +23,7 @@ import java.util.Map;
  * @author jkovalev
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class Exporter {
 
@@ -47,6 +47,9 @@ public class Exporter {
      */
     private ArrayList<Binding> executes;
 
+    /**The workflow.*/
+    private Worksequence workflow;
+
     /**
      * Constructs a new Exporter.
      *
@@ -61,6 +64,7 @@ public class Exporter {
         this.variables = new HashMap<>();
         this.bindings = new ArrayList<>();
         this.executes = new ArrayList<>();
+        this.workflow = new Worksequence();
     }
 
     /**
@@ -73,7 +77,6 @@ public class Exporter {
     public void export(String path, String wpstendpoint) throws Exception {
 
         Writer writer = new Writer();
-        Worksequence workflow = new Worksequence();
 
         createUniqueIdentifiers(graph.getAllFlowOutputPorts());
 
@@ -89,17 +92,17 @@ public class Exporter {
                 String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
-                this.handleProcessCell(cell, workflow, isLocalBinding);
+                this.handleProcessCell(cell, isLocalBinding);
 
             } //handle outputs.
             else if (this.graph.getGraphModel().isFlowInput(cell)) {
-                this.handleOutputCell(cell, workflow);
+                this.handleOutputCell(cell);
             } //handle inptus.
             else if (this.graph.getGraphModel().isFlowOutput(cell)) {
-                this.handleInputCell(cell, workflow);
+                this.handleInputCell(cell);
             }
         }
-        writer.create(path, workflow);
+        writer.create(path, this.workflow);
     }
 
     /**
@@ -110,7 +113,7 @@ public class Exporter {
      * @param ws Worksequence to write to
      * @throws Exception
      */
-    protected void handleInputCell(mxICell input, Worksequence ws) throws Exception {
+    protected void handleInputCell(mxICell input) throws Exception {
 
         //when global input cell is connected to global output cell, generate assignment.
         for (int i = 0; i < input.getEdgeCount(); i++) {
@@ -124,7 +127,7 @@ public class Exporter {
                     InReference in = new InReference(pein.getOwsIdentifier());
                     OutReference out = new OutReference(peout.getOwsIdentifier());
                     Assignment as = new Assignment(out, in);
-                    ws.add(as);
+                    this.workflow.add(as);
                 }
             }
         }
@@ -149,10 +152,9 @@ public class Exporter {
     /**
      * Defines global output, gets its value from the reference map
      *
-     * @param workflow
      * @throws Exception
      */
-    protected void handleOutputCell(mxICell output, Worksequence workflow) throws Exception {
+    protected void handleOutputCell(mxICell output) throws Exception {
         // Check incoming edges and look up the values in variables from the reference map
         Object[] incoming = graph.getIncomingEdges(output);
         for (Object in : incoming) {
@@ -175,43 +177,43 @@ public class Exporter {
             Reference variable = this.variables.get(source.getOwsIdentifier());
             Reference outputReference = new OutReference(owsOutIdentifier);
             Assignment assignment = new Assignment(outputReference, variable);
-            workflow.add(assignment);
+            this.workflow.add(assignment);
         }
     }
 
     /**
-     * Adds an execute statement to workflow, gets inputs from
-     * variables, stores outputs to variables
+     * Adds an execute statement to workflow, gets inputs from variables, stores
+     * outputs to variables
      *
      * @param processVertex
-     * @param ws Worksequence to write to.
      * @param isLocalBinding information about binding type.
      * @throws Exception e.
      */
-    protected void handleProcessCell(mxICell processVertex, Worksequence ws, boolean isLocalBinding) throws Exception {
+    protected void handleProcessCell(mxICell processVertex, boolean isLocalBinding) throws Exception {
 
         // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
         Object[] outgoing = graph.getOutgoingEdges(processVertex);
         ProcessEntity pe = (ProcessEntity) processVertex.getValue();
 
-        String rolaidentifier = handleBinding(pe, isLocalBinding, ws);
+        String rolaidentifier = handleBinding(pe, isLocalBinding);
         Execute execute = new Execute(rolaidentifier);
         handleIngoingProcessCellTransitions(incoming, execute);
         handleOutgoingProcessCellTransitions(outgoing, execute);
-        ws.add(execute);
+        this.workflow.add(execute);
     }
 
     /**
-     * 
-     * @param pe
-     * @param isLocalBinding
-     * @param ws
-     * @return
-     * @throws MalformedURLException 
+     * Deal with bindings for an according execute statement/process.
+     *
+     * @param The according process entity.
+     * @param isLocalBinding information whether to create a remote or local
+     * binding.
+     * @return a unique identifier, which can be used for an execute statement.
+     * @throws MalformedURLException
      */
-    private String handleBinding(ProcessEntity pe, boolean isLocalBinding, Worksequence ws) throws MalformedURLException {
-        String identifier = pe.getOwsIdentifier();
+    private String handleBinding(ProcessEntity entity, boolean isLocalBinding) throws MalformedURLException {
+        String identifier = entity.getOwsIdentifier();
         //Create a unique identifier based on the place of execution.
         String rolaidentifier = "";
         Binding bindingA;
@@ -219,7 +221,7 @@ public class Exporter {
             rolaidentifier = "local/" + identifier;
             bindingA = new Binding(rolaidentifier, identifier);
         } else {
-            URL aURL = new URL(pe.getServer());
+            URL aURL = new URL(entity.getServer());
             //a unique portion for each host.
             int servershorthand = aURL.getHost().hashCode();
             rolaidentifier = "remote" + servershorthand + "/" + identifier;
@@ -240,12 +242,20 @@ public class Exporter {
 
         if (!this.bindings.contains(bindingA)) {
             this.bindings.add(bindingA);
-            ws.add(bindingA);
+            this.workflow.add(bindingA);
         }
 
         return rolaidentifier;
     }
 
+    /**
+     * Handle ingoing process transitions and map given variables to
+     * wps:process:inputs.
+     *
+     * @param outgoing List of ingoing transitions.
+     * @param execute According execute statement/process.
+     * @throws Exception ROLA-exception in case the input is malformed.
+     */
     private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
         //Handle ingoing transitions. Map variables to wps:process:inputs.
 
@@ -278,9 +288,15 @@ public class Exporter {
         }
     }
 
+    /**
+     * Handle outgoing process transitions and map wps:process:outputs to given
+     * variables or globally available outputs.
+     *
+     * @param outgoing List of outgoing transitions.
+     * @param execute According execute statement/process.
+     * @throws Exception ROLA-exception in case the output is malformed.
+     */
     private void handleOutgoingProcessCellTransitions(Object[] outgoing, Execute execute) throws Exception {
-        //Handle outgoing transitions. Map wps:process:outputs to variables or
-        //outputs.
         List<String> vars = new ArrayList<>();
         for (Object out : outgoing) {
             GraphEdge edge = (GraphEdge) out;
@@ -313,5 +329,4 @@ public class Exporter {
     protected String getUniqueIdentifier(String rawIdentifier) {
         return GraphHandler.getUniqueIdentifier(rawIdentifier);
     }
-
 }

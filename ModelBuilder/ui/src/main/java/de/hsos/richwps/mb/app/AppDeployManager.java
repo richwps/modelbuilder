@@ -35,16 +35,23 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
+ * Manages script creation, processdescription creation and the deployment.
  *
  * @author dziegenh
  * @author dalcacer
+ * @version 0.0.2
  */
 public class AppDeployManager {
 
     private App app;
+    /**
+     * Indicates deployment error.
+     */
+    private boolean deploymentError = false;
 
     public AppDeployManager(App app) {
         this.app = app;
+        this.deploymentError = false;
     }
 
     private GraphView getGraphView() {
@@ -60,7 +67,6 @@ public class AppDeployManager {
      */
     boolean deploy() {
         //Start a Dialog.
-
         final DeployView deployView = new DeployView(getFrame(), AppConstants.DEPLOY_DIALOG_TITLE);
 
         // TODO persist model's configs and get persisted configs
@@ -83,15 +89,23 @@ public class AppDeployManager {
                 DeployConfig wpstconfig = deployView.getConfig();
                 final String rola = _generateRola(wpstconfig);
                 if (null == rola) {
-                    String message = "Unable to generate ROLA script.";
-                    AppEventService service = AppEventService.getInstance();
-                    service.fireAppEvent(message, AppConstants.INFOTAB_ID_SERVER);
+                    deploymentError = true;
+                    AppDeployManager.deploymentFailed("An error occured while creating the ROLA script.");
                 }
                 _performDeployment(wpstconfig, rola);
+                
+                if (deploymentError) {
+                    StringBuilder sb = new StringBuilder(200);
+                    sb.append(AppConstants.DEPLOYMENT_FAILED);
+                    sb.append('\n');
+                    sb.append(AppConstants.SEE_LOGGING_TABS);
+                    JOptionPane.showMessageDialog(null, sb.toString());
+                }
             }
         });
         deployView.setVisible(true);
-        return true;
+
+        return !this.deploymentError;
     }
 
     private String _generateRola(DeployConfig config) {
@@ -99,6 +113,7 @@ public class AppDeployManager {
 
         final String rola = this.generateROLA(wpstendpoint);
         if (null == rola) {
+            this.deploymentError = true;
             return null;
         }
         return rola;
@@ -117,30 +132,31 @@ public class AppDeployManager {
         try {
             this.assembleDeployRequest(request);
         } catch (GraphToRequestTransformationException ex) {
-            // TODO create msg dialog
-            Logger.getLogger(AppDeployManager.class.getName()).log(Level.SEVERE, null, ex);
+            this.deploymentError = true;
+            AppDeployManager.deploymentFailed("An error occured whilst assembling "
+                    + "information for deploy request.");
         }
 
         //FIXME
         String wpsurl = wpstendpoint.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + RichWPSProvider.DEFAULT_WPS_ENDPOINT;
-        de.hsos.richwps.mb.Logger.log("Debug::AppDeploymanager::_performDeployment(): " + wpsurl);
 
         RichWPSProvider instance = new RichWPSProvider();
         try {
             instance.connect(wpsurl, wpstendpoint);
             instance.deployProcess(request);
             if (request.isException()) {
-                AppEventService service = AppEventService.getInstance();
-                service.fireAppEvent("Error. unable to deploy process: " + request.getException(), AppConstants.INFOTAB_ID_SERVER);
-                return false;
+                this.deploymentError = true;
+                AppDeployManager.deploymentFailed("An error occured whilst deployment.");
+                return !this.deploymentError;
             }
+
             AppEventService service = AppEventService.getInstance();
             service.fireAppEvent("Process deployed.", AppConstants.INFOTAB_ID_SERVER);
 
         } catch (Exception ex) {
-            AppEventService service = AppEventService.getInstance();
-            service.fireAppEvent("Error. unable to deploy process: " + ex.getLocalizedMessage(), AppConstants.INFOTAB_ID_SERVER);
-            return false;
+            this.deploymentError = true;
+            AppDeployManager.deploymentFailed("An error occured whilst deployment.");
+            return !this.deploymentError;
         }
 
         return true;
@@ -162,8 +178,8 @@ public class AppDeployManager {
                 f = File.createTempFile(System.currentTimeMillis() + "", ".dsl");
                 f.deleteOnExit();
             } catch (Exception e) {
-                this.deploymentFailed(AppConstants.TMP_FILE_FAILED);
-
+                this.deploymentError = true;
+                AppDeployManager.processingFailed(AppConstants.TMP_FILE_FAILED);
                 de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateROLA()\n "
                         + AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
@@ -186,8 +202,10 @@ public class AppDeployManager {
             return content;
 
         } catch (Exception ex) {
-
-            StringBuilder sb = new StringBuilder(200);
+            this.deploymentError = true;
+            AppDeployManager.deploymentFailed("An error occured whilst generating "
+                    + "ROLA-script for deploy request.");
+            /*StringBuilder sb = new StringBuilder(200);
             sb.append(AppConstants.DEPLOYMENT_FAILED);
             sb.append('\n');
             sb.append(AppConstants.SEE_LOGGING_TABS);
@@ -209,9 +227,8 @@ public class AppDeployManager {
             AppEventService.getInstance().fireAppEvent(sb.toString(), AppConstants.INFOTAB_ID_SERVER);
             Logger
                     .getLogger(App.class
-                            .getName()).log(Level.SEVERE, null, ex);
+                            .getName()).log(Level.SEVERE, null, ex);*/
         }
-
         return null;
     }
 
@@ -285,6 +302,14 @@ public class AppDeployManager {
                     supportedType.add(format.getSchema());
                     supportedType.add(format.getEncoding());
                 }
+                if (supportedTypes.isEmpty()) {
+                    AppDeployManager.processingFailed("Supported types for input "
+                            + complexSpecifier.getIdentifier() + " can not be empty.");
+                }
+                if (supportedType.isEmpty()) {
+                    AppDeployManager.processingFailed("Default type for input "
+                            + complexSpecifier.getIdentifier() + " can not be empty.");
+                }
                 supportedTypes.add(supportedType);
                 complexSpecifier.setTypes(supportedTypes);
                 complexSpecifier.setDefaulttype(supportedType);
@@ -347,6 +372,14 @@ public class AppDeployManager {
                     supportedType.add(format.getSchema());
                     supportedType.add(format.getEncoding());
                 }
+                if (supportedTypes.isEmpty()) {
+                    AppDeployManager.processingFailed("Supported types for output "
+                            + complexSpecifier.getIdentifier() + " can not be empty.");
+                }
+                if (supportedType.isEmpty()) {
+                    AppDeployManager.processingFailed("Default type for output "
+                            + complexSpecifier.getIdentifier() + " can not be empty.");
+                }
                 supportedTypes.add(supportedType);
                 complexSpecifier.setTypes(supportedTypes);
                 complexSpecifier.setDefaulttype(supportedType);
@@ -369,20 +402,23 @@ public class AppDeployManager {
     }
 
     /**
-     * Shows an optionpane, that deployment failed. Logs reason to info-tab.
+     * Logs information that deployment failed.
      *
      * @param reason The reason for failing.
      */
-    private void deploymentFailed(final String reason) {
-        StringBuilder sb = new StringBuilder(200);
-        sb.append(AppConstants.DEPLOYMENT_FAILED);
-        sb.append('\n');
-        sb.append(AppConstants.SEE_LOGGING_TABS);
-
+    public static void deploymentFailed(final String reason) {
         AppEventService.getInstance().fireAppEvent(reason,
                 AppConstants.INFOTAB_ID_SERVER);
+    }
 
-        JOptionPane.showMessageDialog(getFrame(), sb.toString());
+    /**
+     * Logs information that processing of model failed.
+     *
+     * @param reason The reason for failing.
+     */
+    public static void processingFailed(final String reason) {
+        AppEventService.getInstance().fireAppEvent(reason,
+                AppConstants.INFOTAB_ID_EDITOR);
     }
 
 }
