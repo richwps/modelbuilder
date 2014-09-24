@@ -95,6 +95,7 @@ public class GraphView extends JPanel {
             // selection listener adapter
             graph.getSelectionModel().addListener(mxEvent.CHANGE, new mxEventSource.mxIEventListener() {
                 public void invoke(Object o, mxEventObject eo) {
+                    removePortSelection();
                     ListSelectionEvent event = new ListSelectionEvent(graph, 0, graph.getSelectionCount(), true);
                     for (ListSelectionListener listener : selectionListener) {
                         listener.valueChanged(event);
@@ -104,6 +105,14 @@ public class GraphView extends JPanel {
         }
 
         return graph;
+    }
+
+    protected void removePortSelection() {
+        for(Object cell : graph.getSelectionCells()) {
+            if(graph.getGraphModel().isLocalPort(cell)) {
+                graph.removeSelectionCell(cell);
+            }
+        }
     }
 
     protected void moveSelectedCells(int dx, int dy) {

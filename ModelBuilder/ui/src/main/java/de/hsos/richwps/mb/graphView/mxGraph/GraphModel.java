@@ -62,6 +62,12 @@ public class GraphModel extends mxGraphModel {
         return isVertex(o) && !isFlowInput(o) && !isFlowOutput(o);
     }
 
+    public boolean isLocalPort(Object o) {
+        boolean isLocalInput = isFlowInput(o) && !isGlobalOutputPort(o);
+        boolean isLocalOutput = isFlowOutput(o) && !isGlobalInputPort(o);
+        return isVertex(o) && (isLocalInput || isLocalOutput);
+    }
+
     public String getName() {
         return name;
     }
