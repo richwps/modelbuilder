@@ -276,7 +276,7 @@ public class Exporter {
                 VarReference variable = null;
                 String unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
                 //FIXME
-                String owsin = source.getOwsIdentifier().split(" ")[0];
+                String owsin = this.getOwsIdentifier(source.getOwsIdentifier());
                 if (this.variables.containsKey(unique_src)) {
                     //variable allready declared, lets use it.
                     variable = (VarReference) this.variables.get(unique_src);
@@ -310,7 +310,7 @@ public class Exporter {
                 execute.addOutput(source.getOwsIdentifier(), outref);
             } else {
                 String unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
-                String owsout = source.getOwsIdentifier().split(" ")[0];
+                String owsout = this.getOwsIdentifier(source.getOwsIdentifier());
                 VarReference variable = new VarReference(unique_src);
                 if (!vars.contains(unique_src)) {    //allready set?
                     vars.add(unique_src);
