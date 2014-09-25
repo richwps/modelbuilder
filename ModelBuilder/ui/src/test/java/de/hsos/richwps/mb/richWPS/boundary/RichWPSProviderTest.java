@@ -364,7 +364,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    public void testDeploy() {
+    /*public void testDeploy() {
         System.out.println("testDeploy");
 
         RichWPSProvider instance = new RichWPSProvider();
@@ -383,7 +383,7 @@ public class RichWPSProviderTest extends TestCase {
 "bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
 "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea");
         instance.deployProcess(request);
-    }
+    }*/
 
     private IInputSpecifier createComplexDataInput1() {
         InputComplexDataSpecifier specifier;
@@ -448,6 +448,7 @@ public void testDeployUndeploy() {
             instance.connect(wpsurl, wpsturl);
         } catch (Exception ex) {
             Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
         }
 
         

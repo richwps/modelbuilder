@@ -47,7 +47,9 @@ public class Exporter {
      */
     private ArrayList<Binding> executes;
 
-    /**The workflow.*/
+    /**
+     * The workflow.
+     */
     private Worksequence workflow;
 
     /**
@@ -106,8 +108,8 @@ public class Exporter {
     }
 
     /**
-     * Defines one global input, assigns inputs to variables in the reference
-     * map
+     * Defines one global input, assigns inputs to variables in the
+     * reference map.
      *
      * @param input
      * @param ws Worksequence to write to

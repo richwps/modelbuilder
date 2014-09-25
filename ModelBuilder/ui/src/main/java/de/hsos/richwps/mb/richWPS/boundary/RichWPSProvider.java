@@ -330,7 +330,10 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         try {
             //de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
-            Object response = this.wpst.deploy(request.getEndpoint(), builder.getDeploydocument());
+            //FIXME
+            String endp = request.getEndpoint().split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0]+DEFAULT_52N_WPS_ENDPOINT;
+            System.err.println(endp);
+            Object response = this.wpst.deploy(endp, builder.getDeploydocument());
 
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
@@ -371,7 +374,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 de.hsos.richwps.mb.Logger.log("Debug:\n" + deplok.getStringValue());
             } else {
                 de.hsos.richwps.mb.Logger.log("Debug:\n Unknown reponse" + response);
-                de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
+                //de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
             }
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
