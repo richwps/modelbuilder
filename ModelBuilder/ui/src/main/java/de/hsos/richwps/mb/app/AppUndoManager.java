@@ -18,28 +18,30 @@ public class AppUndoManager extends MbUndoManager {
 
     private final App app;
 
-    public AppUndoManager(App app) {
-        this.app = app;
+    public AppUndoManager(App theApp) {
+        this.app = theApp;
 
         addChangeListener(new MbUndoManager.UndoManagerChangeListener() {
             @Override
             public void changed() {
 
                 String undoName = AppConstants.UNDOMANAGER_CANT_UNDO;
-                if(canUndo()) {
+                if (canUndo()) {
                     undoName = "Undo " + getUndoPresentationName();
                 }
                 AppAbstractAction undoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO);
                 undoAction.setName(undoName);
                 undoAction.setEnabled(canUndo());
-                
+
                 String redoName = "Can't redo";
-                if(canRedo()) {
+                if (canRedo()) {
                     redoName = "Redo " + getRedoPresentationName();
                 }
                 AppAbstractAction redoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REDO);
                 redoAction.setName(redoName);
                 redoAction.setEnabled(canRedo());
+
+                app.setChangesSaved(false);
             }
         });
     }
@@ -48,7 +50,6 @@ public class AppUndoManager extends MbUndoManager {
     public synchronized boolean addEdit(UndoableEdit edit) {
         return super.addEdit((AppUndoableEdit) edit);
     }
-
 
     private AppActionProvider getActionProvider() {
         return app.getActionProvider();
@@ -63,7 +64,5 @@ public class AppUndoManager extends MbUndoManager {
     public String getRedoPresentationName() {
         return ((AppUndoableEdit) editToBeRedone()).getPresentationName();
     }
-
-
 
 }

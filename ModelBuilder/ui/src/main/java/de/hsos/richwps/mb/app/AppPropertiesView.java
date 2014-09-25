@@ -55,8 +55,9 @@ public class AppPropertiesView extends PropertiesView {
                 final Object oldValue = setPropertyValue(event);
 
                 boolean bothNull = (null == event.getNewValue()) && (null == oldValue);
-                boolean valuesEqual = (null != event.getNewValue() && event.getNewValue().equals(oldValue))
-                        || (null != oldValue && oldValue.equals(event.getNewValue()));
+                boolean valuesEqual = null != event.getNewValue() && event.getNewValue().equals(oldValue);
+                valuesEqual |= null != oldValue && oldValue.equals(event.getNewValue());
+                
                 if (!bothNull && !valuesEqual) {
 
                     // get the component which represents the property in order to update it on undo/redo

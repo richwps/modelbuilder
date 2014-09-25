@@ -143,14 +143,13 @@ public class AppSetup {
         splash.showMessageAndProgress("Initialising user interactions", 45);
 
         app.initDragAndDrop();
-
         app.getPreferencesDialog().init();
         app.getGraphView().init();
+        
         splash.showMessageAndProgress("Requesting processes", 60);
 
         // connect to SP and fill tree with services etc. received from SP
         app.fillMainTree();
-        // TODO mocked server class for app events -> replace when server client exists!!
         AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_SERVER, AppConstants.INFOTAB_ID_SERVER);
 
         splash.showMessageAndProgress("ModelBuilder is ready!", 100);

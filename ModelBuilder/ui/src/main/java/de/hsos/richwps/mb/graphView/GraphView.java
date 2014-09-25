@@ -107,6 +107,9 @@ public class GraphView extends JPanel {
         return graph;
     }
 
+    /**
+     * Removes local process ports from the current selection.
+     */
     protected void removePortSelection() {
         for(Object cell : graph.getSelectionCells()) {
             if(graph.getGraphModel().isLocalPort(cell)) {

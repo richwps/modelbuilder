@@ -20,6 +20,7 @@ import de.hsos.richwps.mb.ui.DndProxyLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Component;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,6 @@ public class App {
 
     private MbUndoManager undoManager;
 
-    // TODO move to model (which has to be created...)
     private String currentModelFilename = null;
 
     private MainTreeViewController mainTreeView;
@@ -75,14 +75,30 @@ public class App {
         AppSetup.setup(this, debugMode);
     }
 
-
     public boolean areChangesSaved() {
         return changesSaved;
     }
 
+    /**
+     * Checks if the current model file (still) exists.
+     * @return
+     */
+    boolean currentModelFileExists() {
+        File file;
+        try {
+            file = new File(getCurrentModelFilename());
+        } catch (Exception ex) {
+            return false;
+        }
+
+        return null != file && file.exists();
+    }
+
     public void setChangesSaved(boolean changesSaved) {
-        this.changesSaved = changesSaved;
-        getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(!changesSaved);
+        if (currentModelFileExists()) {
+            this.changesSaved = changesSaved;
+            getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(!changesSaved);
+        }
     }
 
     /**
@@ -321,7 +337,7 @@ public class App {
 
     void deploy() {
 //        if (null == deployManager) {
-           AppDeployManager deployManager = new AppDeployManager(this);
+        AppDeployManager deployManager = new AppDeployManager(this);
 //        }
 
         deployManager.deploy();
@@ -338,7 +354,7 @@ public class App {
             remotes.add("http://this.is.no.valid.remote");
             execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
         }
-        
+
         execViewDialog.setVisible(true);
     }
 
