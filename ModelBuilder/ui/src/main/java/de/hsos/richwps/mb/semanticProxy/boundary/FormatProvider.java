@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.semanticProxy.boundary;
 
+import de.hsos.richwps.mb.semanticProxy.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import java.io.BufferedReader;

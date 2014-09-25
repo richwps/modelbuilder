@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.hsos.richwps.mb.semanticProxy.boundary;
+package de.hsos.richwps.mb.semanticProxy.exception;
 
 /**
  *
