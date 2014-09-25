@@ -28,9 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -39,7 +36,9 @@ import javax.swing.JOptionPane;
  *
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
+ * TODO Enhance error handling.
+ * TODO Refactor source.
  */
 public class AppDeployManager {
 
@@ -47,11 +46,11 @@ public class AppDeployManager {
     /**
      * Indicates deployment error.
      */
-    private boolean deploymentError = false;
+    private static boolean deploymentError = false;
 
     public AppDeployManager(App app) {
         this.app = app;
-        this.deploymentError = false;
+        AppDeployManager.deploymentError = false;
     }
 
     private GraphView getGraphView() {
@@ -89,12 +88,12 @@ public class AppDeployManager {
                 DeployConfig wpstconfig = deployView.getConfig();
                 final String rola = _generateRola(wpstconfig);
                 if (null == rola) {
-                    deploymentError = true;
+                    AppDeployManager.deploymentError = true;
                     AppDeployManager.deploymentFailed("An error occured while creating the ROLA script.");
                 }
                 _performDeployment(wpstconfig, rola);
-                
-                if (deploymentError) {
+
+                if (AppDeployManager.deploymentError) {
                     StringBuilder sb = new StringBuilder(200);
                     sb.append(AppConstants.DEPLOYMENT_FAILED);
                     sb.append('\n');
@@ -105,7 +104,7 @@ public class AppDeployManager {
         });
         deployView.setVisible(true);
 
-        return !this.deploymentError;
+        return !AppDeployManager.deploymentError;
     }
 
     private String _generateRola(DeployConfig config) {
@@ -113,7 +112,7 @@ public class AppDeployManager {
 
         final String rola = this.generateROLA(wpstendpoint);
         if (null == rola) {
-            this.deploymentError = true;
+            AppDeployManager.deploymentError = true;
             return null;
         }
         return rola;
@@ -132,7 +131,7 @@ public class AppDeployManager {
         try {
             this.assembleDeployRequest(request);
         } catch (GraphToRequestTransformationException ex) {
-            this.deploymentError = true;
+            AppDeployManager.deploymentError = true;
             AppDeployManager.deploymentFailed("An error occured whilst assembling "
                     + "information for deploy request.");
         }
@@ -144,19 +143,23 @@ public class AppDeployManager {
         try {
             instance.connect(wpsurl, wpstendpoint);
             instance.deployProcess(request);
+
+            if (AppDeployManager.deploymentError) {
+                return !AppDeployManager.deploymentError;
+            }
             if (request.isException()) {
-                this.deploymentError = true;
+                AppDeployManager.deploymentError = true;
                 AppDeployManager.deploymentFailed("An error occured whilst deployment.");
-                return !this.deploymentError;
+                return !AppDeployManager.deploymentError;
             }
 
             AppEventService service = AppEventService.getInstance();
             service.fireAppEvent("Process deployed.", AppConstants.INFOTAB_ID_SERVER);
 
         } catch (Exception ex) {
-            this.deploymentError = true;
+            AppDeployManager.deploymentError = true;
             AppDeployManager.deploymentFailed("An error occured whilst deployment.");
-            return !this.deploymentError;
+            return !AppDeployManager.deploymentError;
         }
 
         return true;
@@ -178,7 +181,7 @@ public class AppDeployManager {
                 f = File.createTempFile(System.currentTimeMillis() + "", ".dsl");
                 f.deleteOnExit();
             } catch (Exception e) {
-                this.deploymentError = true;
+                AppDeployManager.deploymentError = true;
                 AppDeployManager.processingFailed(AppConstants.TMP_FILE_FAILED);
                 de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateROLA()\n "
                         + AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
@@ -202,32 +205,32 @@ public class AppDeployManager {
             return content;
 
         } catch (Exception ex) {
-            this.deploymentError = true;
+            AppDeployManager.deploymentError = true;
             AppDeployManager.deploymentFailed("An error occured whilst generating "
                     + "ROLA-script for deploy request.");
             /*StringBuilder sb = new StringBuilder(200);
-            sb.append(AppConstants.DEPLOYMENT_FAILED);
-            sb.append('\n');
-            sb.append(AppConstants.SEE_LOGGING_TABS);
+             sb.append(AppConstants.DEPLOYMENT_FAILED);
+             sb.append('\n');
+             sb.append(AppConstants.SEE_LOGGING_TABS);
 
-            JOptionPane.showMessageDialog(getFrame(), sb.toString());
+             JOptionPane.showMessageDialog(getFrame(), sb.toString());
 
-            String exMsg;
-            if (ex.getMessage() == null || ex.getMessage().isEmpty()) {
-                exMsg = ex.getClass().getSimpleName();
-            } else {
-                exMsg = ex.getMessage();
-            }
+             String exMsg;
+             if (ex.getMessage() == null || ex.getMessage().isEmpty()) {
+             exMsg = ex.getClass().getSimpleName();
+             } else {
+             exMsg = ex.getMessage();
+             }
 
-            sb = new StringBuilder(200);
-            sb.append(AppConstants.DEPLOYMENT_FAILED);
-            sb.append('\n');
-            sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, exMsg));
+             sb = new StringBuilder(200);
+             sb.append(AppConstants.DEPLOYMENT_FAILED);
+             sb.append('\n');
+             sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, exMsg));
 
-            AppEventService.getInstance().fireAppEvent(sb.toString(), AppConstants.INFOTAB_ID_SERVER);
-            Logger
-                    .getLogger(App.class
-                            .getName()).log(Level.SEVERE, null, ex);*/
+             AppEventService.getInstance().fireAppEvent(sb.toString(), AppConstants.INFOTAB_ID_SERVER);
+             Logger
+             .getLogger(App.class
+             .getName()).log(Level.SEVERE, null, ex);*/
         }
         return null;
     }
@@ -290,29 +293,39 @@ public class AppDeployManager {
                 complexSpecifier.setMinOccur(0);
                 complexSpecifier.setMaxOccur(1);
                 complexSpecifier.setMaximumMegabytes(50);//FIXME
+                try {
+                    List<List> supportedTypes = new ArrayList<>();
+                    List<String> supportedType = new ArrayList<>();
+                    IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
 
-                List<List> supportedTypes = new ArrayList<>();
-                List<String> supportedType = new ArrayList<>();
-                IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                    if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
+                        DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
+                        ComplexDataTypeFormat format = description.getFormat();
+                        supportedType.add(format.getMimeType());
+                        supportedType.add(format.getSchema());
+                        supportedType.add(format.getEncoding());
+                    }
 
-                if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-                    DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                    ComplexDataTypeFormat format = description.getFormat();
-                    supportedType.add(format.getMimeType());
-                    supportedType.add(format.getSchema());
-                    supportedType.add(format.getEncoding());
+                    supportedTypes.add(supportedType);
+
+                    if (supportedTypes.isEmpty()) {
+                        AppDeployManager.deploymentError = true;
+                        AppDeployManager.processingFailed("Supported types for input "
+                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                    }
+                    if (supportedType.isEmpty()) {
+                        AppDeployManager.deploymentError = true;
+                        AppDeployManager.processingFailed("Default type for input "
+                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                    }
+
+                    complexSpecifier.setTypes(supportedTypes);
+                    complexSpecifier.setDefaulttype(supportedType);
+                } catch (Exception e) {
+                    AppDeployManager.deploymentError = true;
+                    AppDeployManager.processingFailed("Definition of supported typesy/default type for input "
+                            + complexSpecifier.getIdentifier() + " is invalid.");
                 }
-                if (supportedTypes.isEmpty()) {
-                    AppDeployManager.processingFailed("Supported types for input "
-                            + complexSpecifier.getIdentifier() + " can not be empty.");
-                }
-                if (supportedType.isEmpty()) {
-                    AppDeployManager.processingFailed("Default type for input "
-                            + complexSpecifier.getIdentifier() + " can not be empty.");
-                }
-                supportedTypes.add(supportedType);
-                complexSpecifier.setTypes(supportedTypes);
-                complexSpecifier.setDefaulttype(supportedType);
 
                 specifier = complexSpecifier;
                 break;
@@ -360,31 +373,43 @@ public class AppDeployManager {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
 
-                List<List> supportedTypes = new ArrayList<>();
-                List<String> supportedType = new ArrayList();
+                try {
+                    List<List> supportedTypes = new ArrayList<>();
+                    List<String> supportedType = new ArrayList();
 
-                IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                    IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
 
-                if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-                    DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                    ComplexDataTypeFormat format = description.getFormat();
-                    supportedType.add(format.getMimeType());
-                    supportedType.add(format.getSchema());
-                    supportedType.add(format.getEncoding());
+                    if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
+                        DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
+                        ComplexDataTypeFormat format = description.getFormat();
+                        supportedType.add(format.getMimeType());
+                        supportedType.add(format.getSchema());
+                        supportedType.add(format.getEncoding());
+                    }
+
+                    supportedTypes.add(supportedType);
+
+                    if (supportedTypes.isEmpty()) {
+                        AppDeployManager.deploymentError = true;
+                        AppDeployManager.processingFailed("Supported types for output "
+                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                    }
+                    if (supportedType.isEmpty()) {
+                        AppDeployManager.deploymentError = true;
+                        AppDeployManager.processingFailed("Default type for output "
+                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                    }
+
+                    complexSpecifier.setTypes(supportedTypes);
+                    complexSpecifier.setDefaulttype(supportedType);
+                } catch (Exception e) {
+                    AppDeployManager.deploymentError = true;
+                    AppDeployManager.processingFailed("Definition of supported typesy/default type for output "
+                            + complexSpecifier.getIdentifier() + " is invalid.");
                 }
-                if (supportedTypes.isEmpty()) {
-                    AppDeployManager.processingFailed("Supported types for output "
-                            + complexSpecifier.getIdentifier() + " can not be empty.");
-                }
-                if (supportedType.isEmpty()) {
-                    AppDeployManager.processingFailed("Default type for output "
-                            + complexSpecifier.getIdentifier() + " can not be empty.");
-                }
-                supportedTypes.add(supportedType);
-                complexSpecifier.setTypes(supportedTypes);
-                complexSpecifier.setDefaulttype(supportedType);
 
                 specifier = complexSpecifier;
+
                 break;
 
             case BOUNDING_BOX:
@@ -420,5 +445,4 @@ public class AppDeployManager {
         AppEventService.getInstance().fireAppEvent(reason,
                 AppConstants.INFOTAB_ID_EDITOR);
     }
-
 }
