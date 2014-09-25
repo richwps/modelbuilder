@@ -9,7 +9,7 @@ import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
 import de.hsos.richwps.mb.semanticProxy.boundary.FormatProvider;
-import de.hsos.richwps.mb.semanticProxy.boundary.LoadDataTypesException;
+import de.hsos.richwps.mb.semanticProxy.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import java.awt.Component;
 import java.util.LinkedList;
