@@ -11,8 +11,6 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
-import java.util.LinkedList;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -65,19 +63,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
                     event.setMessage(sb.toString());
                     AppEventService.getInstance().fireAppEvent(event);
                 }
-            }
-
-            // add MOCK servers for Development -> to be removed!
-            LinkedList<String> mockServers = new LinkedList<String>();
-            mockServers.add(((ProcessProvider) processProvider).mockServer1);
-            mockServers.add(((ProcessProvider) processProvider).mockServer2);
-            for (String server : mockServers) {
-                DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
-
-                for (ProcessEntity process : processProvider.getServerProcesses(server)) {
-                    serverNode.add(new DefaultMutableTreeNode(process));
-                }
-                processesNode.add(serverNode);
             }
         }
 
