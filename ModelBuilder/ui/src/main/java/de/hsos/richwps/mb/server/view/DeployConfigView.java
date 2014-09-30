@@ -89,7 +89,6 @@ public class DeployConfigView extends JPanel {
         }
     }
     
-    
     void update() {
         for(Component c : getComponents()) {
             if(c instanceof TextField) {

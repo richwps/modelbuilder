@@ -32,6 +32,7 @@ public class ProcessProvider implements IProcessProvider {
     private SPClient spClient;
     private Network net;
     private WPS[] wpss;
+    private String url;
 
     /**
      * Constructor, creates the SP client.
@@ -40,6 +41,13 @@ public class ProcessProvider implements IProcessProvider {
         spClient = SPClient.getInstance();
         this.wpss = new WPS[]{};
     }
+
+    @Override
+    public String getUrl() {
+        return url;
+    }
+
+
 
     /**
      * Connects to the SemanticProxy using the url field.
@@ -50,7 +58,9 @@ public class ProcessProvider implements IProcessProvider {
      */
     @Override
     public boolean connect(String url) throws Exception {
-        // init SP Client
+        this.url = url;
+
+// init SP Client
         Vocabulary.init(new URL(url + "/resources/vocab"));
         spClient.setRootURL(url + "/resources");
         spClient.setSearchURL(url + "/search");
@@ -68,6 +78,8 @@ public class ProcessProvider implements IProcessProvider {
 
         return true;
     }
+
+
 
     /**
      * Returns true if an connection to the SP has been established previously.

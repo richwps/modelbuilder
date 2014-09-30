@@ -25,4 +25,6 @@ public interface IProcessProvider {
 
     public boolean connect(String url) throws Exception;
 
+    public String getUrl();
+
 }

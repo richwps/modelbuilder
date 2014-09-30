@@ -6,6 +6,7 @@
 
 package de.hsos.richwps.mb.app.view.preferences;
 
+import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,13 +33,28 @@ abstract class AbstractPreferencesTab extends JPanel {
 
     protected JTextField createAndAddTextField(String text, String caption, int layoutY) {
         JTextField field = new JTextField(text);
+        createAndAddComponent(field, caption, layoutY);
+
+        return field;
+    }
+
+    /**
+     * Creates a label for the caption and adds it to the tab together with the component.
+     * Returns the created label.
+     * 
+     * @param component the component for which the label is
+     * @param caption text for the caption label
+     * @param layoutY start row (default: 0)
+     * @return
+     */
+    protected JLabel createAndAddComponent(Component component, String caption, int layoutY) {
         JLabel fieldLabel = new JLabel(caption);
 
         add(fieldLabel, "0 "+layoutY);
         layoutY++;
-        add(field, "0 "+layoutY);
+        add(component, "0 "+layoutY);
 
-        return field;
+        return fieldLabel;
     }
 
 }

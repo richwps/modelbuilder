@@ -36,7 +36,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
         if (processProvider != null) {
             try {
                 String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
-                if (processProvider.isConnected() || processProvider.connect(url)) {
+
+                boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(url);
+
+                if (connected || processProvider.connect(url)) {
                     for (String server : processProvider.getAllServer()) {
                         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
 

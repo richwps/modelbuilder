@@ -40,6 +40,7 @@ public class AppConfig {
         PREFERENCES_I_POSITIONY,
 
         SEMANTICPROXY_S_URL,
+        SEMANTICPROXY_I_URL_COUNT,
 
         HTTPPROXY_S_HOST,
         HTTPPROXY_S_PORT
