@@ -122,7 +122,7 @@ public class AppGraphView extends GraphView {
                 Object editProperty = eo.getProperty(PROPERTY_KEY_EDIT);
                 if (eo.getProperty("edit") instanceof mxUndoableEdit) {
                     mxUndoableEdit edit = (mxUndoableEdit) editProperty;
-                    
+
                     // add graph edit to undo manager
                     getApp().getUndoManager().addEdit(new AppUndoableEdit(this, edit, "Graph edit"));
                     getApp().setChangesSaved(false);

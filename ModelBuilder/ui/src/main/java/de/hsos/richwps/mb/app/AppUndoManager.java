@@ -5,6 +5,9 @@
  */
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.model.mxGraphModel.mxChildChange;
+import com.mxgraph.model.mxIGraphModel;
+import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
@@ -23,7 +26,7 @@ public class AppUndoManager extends MbUndoManager {
 
         addChangeListener(new MbUndoManager.UndoManagerChangeListener() {
             @Override
-            public void changed() {
+            public void changed(UNDO_MANAGER_CHANGE change, UndoableEdit edit) {
 
                 String undoName = AppConstants.UNDOMANAGER_CANT_UNDO;
                 if (canUndo()) {
@@ -40,6 +43,32 @@ public class AppUndoManager extends MbUndoManager {
                 AppAbstractAction redoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REDO);
                 redoAction.setName(redoName);
                 redoAction.setEnabled(canRedo());
+
+                // update other app components depending on the undone or redone edit
+                AppUndoableEdit appEdit = null;
+                mxUndoableEdit editAction = null;
+                mxIGraphModel model = null;
+                Object editCell = null;
+                Object editCellParent = null;
+                switch (change) {
+                    case EDIT_UNDONE:
+                    case EDIT_REDONE:
+                        appEdit = (AppUndoableEdit) edit;
+                        editAction = (mxUndoableEdit) appEdit.getAction();
+
+                        model = app.getGraphView().getGraph().getModel();
+
+                        editCell = ((mxChildChange) editAction.getChanges().get(0)).getChild();
+                        editCellParent = model.getParent(editCell);
+
+                        if (null == editCellParent) {
+                            app.getSubTreeView().removeNode(model.getValue(editCell));
+                        } else {
+                            app.getSubTreeView().addNode(model.getValue(editCell));
+                        }
+
+                        break;
+                }
 
                 app.setChangesSaved(false);
             }

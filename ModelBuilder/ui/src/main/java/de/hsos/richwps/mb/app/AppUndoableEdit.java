@@ -66,6 +66,11 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
 
     }
 
+    public Object getAction() {
+        return action;
+    }
+
+
     @Override
     public void die() {
         source = null;

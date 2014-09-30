@@ -47,8 +47,6 @@ public class ProcessProvider implements IProcessProvider {
         return url;
     }
 
-
-
     /**
      * Connects to the SemanticProxy using the url field.
      *
@@ -60,7 +58,7 @@ public class ProcessProvider implements IProcessProvider {
     public boolean connect(String url) throws Exception {
         this.url = url;
 
-// init SP Client
+        // init SP Client
         Vocabulary.init(new URL(url + "/resources/vocab"));
         spClient.setRootURL(url + "/resources");
         spClient.setSearchURL(url + "/search");
@@ -79,11 +77,10 @@ public class ProcessProvider implements IProcessProvider {
         return true;
     }
 
-
-
     /**
      * Returns true if an connection to the SP has been established previously.
      * Caution: this method doesn't check if the connection is still alive!!
+     *
      * @return
      */
     @Override
@@ -92,8 +89,8 @@ public class ProcessProvider implements IProcessProvider {
     }
 
     /**
-     * Receives all data belonging to a specific process.
-     * The process is identified by its (server) endpoint and its identifier.
+     * Receives all data belonging to a specific process. The process is
+     * identified by its (server) endpoint and its identifier.
      */
     @Override
     public ProcessEntity getProcessEntity(String server, String identifier) {
@@ -163,6 +160,7 @@ public class ProcessProvider implements IProcessProvider {
 
     /**
      * Receives all processes for the given endpoint from the SP.
+     *
      * @param server
      * @return
      */
@@ -198,6 +196,7 @@ public class ProcessProvider implements IProcessProvider {
 
     /**
      * Receives a list of available endpoints from the semantic proxy.
+     *
      * @return
      */
     @Override
@@ -232,7 +231,7 @@ public class ProcessProvider implements IProcessProvider {
         }
 
         // TODO replace String with formatable AppConstant
-        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers.", this);
+        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
 
         return servers;
     }
