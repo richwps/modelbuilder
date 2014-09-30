@@ -61,7 +61,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
             for (String type : specifier.getSupportedCRS()) {
                 this.selectType.addItem(type);
 
-                if (specifier.isDefaultType(type)){
+                if (specifier.equals(specifier.getDefaultCRS())){
                     this.selectType.addItem(type);
                     this.selectType.setSelectedItem(type);
                 } else if(type!=null&&!type.equals("")){
