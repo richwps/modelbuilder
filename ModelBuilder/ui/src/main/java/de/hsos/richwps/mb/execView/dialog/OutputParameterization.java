@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog;
 
+import de.hsos.richwps.mb.execView.dialog.components.OutputBoundingBoxData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputComplexData;
 import de.hsos.richwps.mb.execView.dialog.components.OutputLiteralData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -7,8 +8,10 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifi
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,8 +71,11 @@ public class OutputParameterization extends ADialogPanel {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof OutputComplexDataSpecifier) {
                 this.outputs.add(new OutputComplexData((OutputComplexDataSpecifier) specifier));
+            } 
+            //TODO test BoundingBox
+            else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
+                this.outputs.add(new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier));
             }
-            //FIXME BoundingBox
         }
 
         JPanel outputsPanel = new JPanel();
@@ -163,6 +169,11 @@ public class OutputParameterization extends ADialogPanel {
 
             } else if (panel instanceof OutputLiteralData) {
                 OutputLiteralData pan = (OutputLiteralData) panel;
+                if (pan.isSelected()) {
+                    someThingSelected = true;
+                }
+            } else if (panel instanceof OutputBoundingBoxData) {
+                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel;
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
