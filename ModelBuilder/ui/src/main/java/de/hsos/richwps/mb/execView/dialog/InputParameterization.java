@@ -1,13 +1,16 @@
 package de.hsos.richwps.mb.execView.dialog;
 
+import de.hsos.richwps.mb.execView.dialog.components.InputBoundingBoxData;
 import de.hsos.richwps.mb.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.execView.dialog.components.InputComplexData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import java.util.ArrayList;
@@ -55,17 +58,25 @@ public class InputParameterization extends ADialogPanel {
 
     private void showInputs() {
         if (this.request.getInputs().isEmpty()) {
-            JOptionPane optionPane = new JOptionPane("Unable to load inputs.", JOptionPane.WARNING_MESSAGE);
+            JOptionPane optionPane = new JOptionPane("Unable to load inputs.",
+                    JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
         for (IInputSpecifier specifier : this.request.getInputs()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
-                this.inputs.add(new InputLiteralData((InputLiteralDataSpecifier) specifier));
+                this.inputs.add(new InputLiteralData(
+                        (InputLiteralDataSpecifier) specifier)
+                );
             } else if (specifier instanceof InputComplexDataSpecifier) {
-                this.inputs.add(new InputComplexData((InputComplexDataSpecifier) specifier));
+                this.inputs.add(new InputComplexData(
+                                (InputComplexDataSpecifier) specifier)
+                );
+            } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
+                this.inputs.add(new InputBoundingBoxData(
+                        (InputBoundingBoxDataSpecifier) specifier)
+                );
             }
-            //FIXME BoundingBox
         }
 
         this.jScrollPane1.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
@@ -138,8 +149,14 @@ public class InputParameterization extends ADialogPanel {
                 InputLiteralDataSpecifier specifier = pan.getSpecifier();
                 InputLiteralDataArgument param = new InputLiteralDataArgument(specifier, pan.getText());
                 theinputs.put(param.getIdentifier(), param);
+            } else if (panel instanceof InputBoundingBoxData) {
+                //TODO test: BoundingBox
+                InputBoundingBoxData pan = (InputBoundingBoxData) panel;
+                InputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
+                InputBoundingBoxDataArgument param;
+                param = new InputBoundingBoxDataArgument(specifier, pan.getText());
+                theinputs.put(param.getIdentifier(), param);
             }
-            //FIXME BoundingBox
         }
         this.request.setInputArguments(theinputs);
     }
