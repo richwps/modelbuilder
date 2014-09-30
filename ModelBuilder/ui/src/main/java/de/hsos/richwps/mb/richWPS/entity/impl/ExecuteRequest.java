@@ -1,10 +1,21 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
+import net.opengis.wps.x100.InputDescriptionType;
+import net.opengis.wps.x100.OutputDescriptionType;
 
 /**
  * Represents a ExecuteRequest. The RichWPSProvider is able to perform a
@@ -70,6 +81,76 @@ public class ExecuteRequest extends ProcessDescription implements IRequest {
      */
     public void setOutputArguments(HashMap<String, IOutputArgument> arguments) {
         this.actualoutputs = arguments;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public boolean isException() {
+        return wasException;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String getException() {
+        return exception;
+    }
+
+    /**
+     *
+     * @param message
+     */
+    @Override
+    public void addException(final String message) {
+        wasException = true;
+        this.exception += message;
+    }
+
+    @Override
+    public void flushException(){
+        this.wasException=false;
+        this.exception="";
+    }
+    
+    /**
+     * Adds an input specification to the list of available inputs.
+     *
+     * @param description
+     */
+    public void addInput(final InputDescriptionType description) {
+        if (description.getComplexData() != null) {
+            IInputSpecifier aninput = new InputComplexDataSpecifier(description);
+            this.availableinputs.add(aninput);
+        } else if (description.getLiteralData() != null) {
+            IInputSpecifier aninput = new InputLiteralDataSpecifier(description);
+            this.availableinputs.add(aninput);
+        } else if (description.getBoundingBoxData() != null) {
+            IInputSpecifier aninput = new InputBoundingBoxDataSpecifier(description);
+            this.availableinputs.add(aninput);
+        }
+    }
+
+    /**
+     * Adds an output specification to the list of available outputs.
+     *
+     * @param description
+     */
+    public void addOutput(final OutputDescriptionType description) {
+        if (description.getComplexOutput() != null) {
+            IOutputSpecifier anoutput = new OutputComplexDataSpecifier(description);
+            this.availableoutputs.add(anoutput);
+        } else if (description.getLiteralOutput() != null) {
+            IOutputSpecifier anoutput = new OutputLiteralDataSpecifier(description);
+            this.availableoutputs.add(anoutput);
+        } else if (description.getBoundingBoxOutput() != null) {
+            IOutputSpecifier anoutput = new OutputBoundingBoxDataSpecifier(description);
+            this.availableoutputs.add(anoutput);
+        }
     }
 
     /**
