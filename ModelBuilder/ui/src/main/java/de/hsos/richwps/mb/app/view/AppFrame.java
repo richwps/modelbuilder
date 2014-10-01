@@ -17,7 +17,6 @@ import java.awt.Frame;
 import java.awt.Point;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import layout.TableLayout;
 
@@ -261,7 +260,7 @@ public class AppFrame extends JFrame {
 
     private Component getMainTreeViewGui() {
         if (null == treeViewGui) {
-            treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, new JScrollPane(app.getMainTreeViewGui()));
+            treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, app.getMainTreeViewGui());
         }
 
         return treeViewGui;

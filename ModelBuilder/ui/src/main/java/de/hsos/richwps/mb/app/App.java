@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import layout.TableLayout;
@@ -210,7 +211,9 @@ public class App {
             treeViewToolbar = new AppTreeToolbar(getActionProvider());
             treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
             mainTreeViewPanel.add(treeViewToolbar, "0 0");
-            mainTreeViewPanel.add(tree, "0 1");
+            JScrollPane treeScrollPane = new JScrollPane(tree);
+            treeScrollPane.setBorder(null);
+            mainTreeViewPanel.add(treeScrollPane, "0 1");
 
         }
         return mainTreeViewPanel;

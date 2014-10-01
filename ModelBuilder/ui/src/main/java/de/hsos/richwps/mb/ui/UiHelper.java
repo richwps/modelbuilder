@@ -195,4 +195,13 @@ public class UiHelper {
         return Integer.toHexString((col.getRGB() & 0xffffff) | 0x1000000).substring(1);
     }
 
+//    public static int getIndexInSet(Set<? extends Object> set, Object value) {
+//        for (int i = 0; i < set.size(); i++) {
+//            if (set.iterator().next().equals(value)) {
+//                return i;
+//            }
+//        }
+//        return -1;
+//    }
+
 }

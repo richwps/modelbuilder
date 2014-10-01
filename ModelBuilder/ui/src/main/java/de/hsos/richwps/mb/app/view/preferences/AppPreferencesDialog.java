@@ -66,17 +66,38 @@ public class AppPreferencesDialog extends MbDialog {
         super.handleDialogButton(buttonId); //To change body of generated methods, choose Tools | Templates.
     }
 
-
+    /**
+     * Creates a tabbed pane and adds specific tabs for all
+     * AppConstants.PREFERENCES_TAB values.
+     *
+     * @return
+     */
     JTabbedPane createTabPanel() {
         tabsPanel = new JTabbedPane();
 
-        addTab(new PreferencesSemanticProxy(), AppConstants.PREFERENCES_TAB.SEMANTICPROXY);
-        addTab(new PreferencesHttpProxy(), AppConstants.PREFERENCES_TAB.HTTPPROXY);
+        AbstractPreferencesTab tab = null;
+        for (AppConstants.PREFERENCES_TAB prefTab : AppConstants.PREFERENCES_TAB.values()) {
+            tab = null;
+
+            switch (prefTab) {
+                case SEMANTICPROXY:
+                    tab = new PreferencesSemanticProxy();
+                    break;
+                case HTTPPROXY:
+                    tab = new PreferencesHttpProxy();
+                    break;
+            }
+
+            // only add existing tabs (=no empty tabs)
+            if (null != tab) {
+                addTab(tab, prefTab);
+            }
+        }
 
         return tabsPanel;
     }
 
-    private String getTabTitle(AppConstants.PREFERENCES_TAB tab) {
+    protected String getTabTitle(AppConstants.PREFERENCES_TAB tab) {
         for (String[] tabData : AppConstants.PREFERENCES_TAB_TITLE) {
             if (tabData[0].equals(tab.name())) {
                 return tabData[1];
@@ -132,4 +153,19 @@ public class AppPreferencesDialog extends MbDialog {
         }
         super.setVisible(b);
     }
+
+    /**
+     * Sets the dialog visible and shows the given tab. If tab is null, the
+     * currently shown tab is not changed.
+     *
+     * @param tab
+     */
+    public void showTab(AppConstants.PREFERENCES_TAB tab) {
+        if (null != tab) {
+            tabsPanel.setSelectedComponent(prefTabs.get(tab));
+        }
+
+        setVisible(true);
+    }
+
 }

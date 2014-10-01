@@ -66,7 +66,7 @@ public class AppConstants {
     public static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
 
     // Preferences Dialog
-    public final static String PREFERENCES_DIALOG_TITLE = "Preferences";
+    public final static String PREFERENCES_DIALOG_TITLE = "Configuration";
     public final static Dimension PREFERENCES_DIALOG_SIZE = new Dimension(1024, 576);
     public final static Point PREFERENCES_DIALOG_LOCATION = new Point(200, 150);
     public final static String PREFERENCES_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
@@ -142,7 +142,7 @@ public class AppConstants {
     public static final Dimension FRAME_DEFAULT_SIZE = new Dimension(1422, 800);
     public static final Point FRAME_DEFAULT_LOCATION = new Point(100, 100);
     public static final boolean FRAME_DEFAULT_MAXIMIZED = false;
-    public static final Dimension LEFT_PANEL_MIN_SIZE = new Dimension(200, 200);
+    public static final Dimension LEFT_PANEL_MIN_SIZE = new Dimension(250, 200);
     public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(250, 200);
 
     // InfoTabs View
@@ -213,7 +213,6 @@ public class AppConstants {
     public final static String UNDOMANAGER_CANT_REDO = "Can't redo";
 
     public final static String TREE_VIEW_TITLE = null;//"Modelling Elements";
-    public final static String OVERVIEW_TITLE = null;
     public final static String EDITOR_DEFAULT_TITLE = "Model Editor"; //(untitled)";
 
     // TODO move & get colors from lookAndFeel / UIManager

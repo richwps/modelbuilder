@@ -14,6 +14,7 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS;
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
+import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import java.awt.event.ActionEvent;
@@ -58,7 +59,7 @@ public class AppActionHandler implements IAppActionHandler {
                 doOpenLastFile();
                 break;
             case SHOW_PREFERENCES:
-                doPreferencesDialog();
+                doPreferencesDialog(e.getActionCommand());
                 break;
             case EXIT_APP:
                 doExit();
@@ -163,7 +164,7 @@ public class AppActionHandler implements IAppActionHandler {
             app.getFrame().setGraphViewTitle(filename);
             app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
             app.getUndoManager().discardAllEdits();
-            // A new model has been loaded => add change listener e
+            // A new model has been loaded => add change listener
             app.modelLoaded();
 
             rememberLastDir(new File(filename));
@@ -189,8 +190,19 @@ public class AppActionHandler implements IAppActionHandler {
         return true;
     }
 
-    private void doPreferencesDialog() {
-        app.getPreferencesDialog().setVisible(true);
+    private void doPreferencesDialog(String tabName) {
+        AppPreferencesDialog dialog = app.getPreferencesDialog();
+        AppConstants.PREFERENCES_TAB tabToShow = null;
+
+        if (null != tabName) {
+            for (AppConstants.PREFERENCES_TAB tab : AppConstants.PREFERENCES_TAB.values()) {
+                if (tab.name().equals(tabName)) {
+                    tabToShow = tab;
+                }
+            }
+        }
+
+        dialog.showTab(tabToShow);
     }
 
     private void doExit() {
