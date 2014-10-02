@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app.view.preferences;
 
 import de.hsos.richwps.mb.app.AppConfig;
@@ -110,6 +105,5 @@ public class PreferencesSemanticProxy extends AbstractPreferencesTab {
         // Select the currently used URL
         urlField.getModel().setSelectedItem(currentUrl);
     }
-
 
 }

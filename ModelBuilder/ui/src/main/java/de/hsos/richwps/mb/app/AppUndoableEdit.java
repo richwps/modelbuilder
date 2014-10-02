@@ -6,6 +6,7 @@ import javax.swing.undo.AbstractUndoableEdit;
 import javax.swing.undo.CannotUndoException;
 
 /**
+ * Edits which can be undone/redone via the AppUndoManager.
  *
  * @author dziegenh
  */
@@ -40,11 +41,11 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
     public void undo() throws CannotUndoException {
         super.undo();
 
-        if(action instanceof mxUndoableEdit) {
+        if (action instanceof mxUndoableEdit) {
             mxUndoableEdit edit = (mxUndoableEdit) action;
             edit.undo();
 
-        } else if(action instanceof UndoablePropertyChangeAction) {
+        } else if (action instanceof UndoablePropertyChangeAction) {
             UndoablePropertyChangeAction propertyAction = (UndoablePropertyChangeAction) action;
             propertyAction.undo();
         }
@@ -55,11 +56,11 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
     public void redo() throws CannotUndoException {
         super.redo();
 
-        if(action instanceof mxUndoableEdit) {
+        if (action instanceof mxUndoableEdit) {
             mxUndoableEdit edit = (mxUndoableEdit) action;
             edit.redo();
 
-        } else if(action instanceof UndoablePropertyChangeAction) {
+        } else if (action instanceof UndoablePropertyChangeAction) {
             UndoablePropertyChangeAction propertyAction = (UndoablePropertyChangeAction) action;
             propertyAction.redo();
         }
@@ -70,13 +71,11 @@ public class AppUndoableEdit extends AbstractUndoableEdit {
         return action;
     }
 
-
     @Override
     public void die() {
         source = null;
         action = null;
         super.die();
     }
-
 
 }

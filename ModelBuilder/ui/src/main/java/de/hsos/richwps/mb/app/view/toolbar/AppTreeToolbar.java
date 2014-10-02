@@ -1,14 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app.view.toolbar;
 
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import javax.swing.JToolBar;
 
 /**
+ * Toolbar for the main tree view, providing interactions with the
+ * SemanticProxy.
  *
  * @author dziegenh
  */

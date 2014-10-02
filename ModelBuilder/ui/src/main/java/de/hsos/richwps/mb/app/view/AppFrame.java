@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app.view;
 
 import de.hsos.richwps.mb.app.App;
@@ -21,6 +17,7 @@ import javax.swing.JSplitPane;
 import layout.TableLayout;
 
 /**
+ * The ModelBuilder's main frame.
  *
  * @author dziegenh
  */
@@ -52,7 +49,6 @@ public class AppFrame extends JFrame {
     }
 
     public void init(App app) {
-        // TODO Inversion of Control: AppFrame should not know class App!
         this.app = app;
 
         this.actionProvider = app.getActionProvider();

@@ -37,8 +37,8 @@ import javax.swing.JOptionPane;
  * @author dziegenh
  * @author dalcacer
  * @version 0.0.3
- * TODO Enhance error handling.
- * TODO Refactor source.
+ * @TODO Enhance error handling.
+ * @TODO Refactor source.
  */
 public class AppDeployManager {
 

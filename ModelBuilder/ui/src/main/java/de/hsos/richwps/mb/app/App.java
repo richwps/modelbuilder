@@ -215,12 +215,12 @@ public class App {
 
             mainTreeViewPanel = new JPanel();
             mainTreeViewPanel.setLayout(new TableLayout(new double[][]{{f}, {p, f}}));
-            
+
             // add tree toolbar
             treeViewToolbar = new AppTreeToolbar(getActionProvider());
             treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
             mainTreeViewPanel.add(treeViewToolbar, "0 0");
-            
+
             // add tree
             JScrollPane treeScrollPane = new JScrollPane(tree);
             treeScrollPane.setBorder(null);

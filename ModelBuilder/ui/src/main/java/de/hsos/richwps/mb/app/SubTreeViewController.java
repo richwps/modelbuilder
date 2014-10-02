@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import com.mxgraph.model.mxCell;
@@ -11,6 +6,7 @@ import java.util.HashMap;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
+ * Controller for the "used elements" tree.
  *
  * @author dziegenh
  */
@@ -114,7 +110,7 @@ public class SubTreeViewController extends AbstractTreeViewController {
         for (int i = 0; i < root.getChildCount(); i++) {
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
 //            if (child.getUserObject().equals(userObject)) {
-            if(userObjectsEqual(child.getUserObject(), userObject)) {
+            if (userObjectsEqual(child.getUserObject(), userObject)) {
                 node = child;
                 // cancel loop
                 i = root.getChildCount();
@@ -125,11 +121,11 @@ public class SubTreeViewController extends AbstractTreeViewController {
     }
 
     private boolean userObjectsEqual(Object o1, Object o2) {
-        if(null == o1 || null == o2) {
+        if (null == o1 || null == o2) {
             return o1 == o2;
         }
 
-        if(o1 instanceof ProcessEntity && o2 instanceof ProcessEntity) {
+        if (o1 instanceof ProcessEntity && o2 instanceof ProcessEntity) {
             ProcessEntity pe1 = (ProcessEntity) o1;
             return pe1.owsEquals(o2);
         }

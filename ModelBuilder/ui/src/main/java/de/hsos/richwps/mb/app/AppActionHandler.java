@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
@@ -24,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
+ * Handles all app actions (e.g. user interactions with the GUI).
  *
  * @author dziegenh
  */
@@ -35,6 +31,7 @@ public class AppActionHandler implements IAppActionHandler {
         this.app = app;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
 
         if (!app.isAppAction(e.getSource())) {

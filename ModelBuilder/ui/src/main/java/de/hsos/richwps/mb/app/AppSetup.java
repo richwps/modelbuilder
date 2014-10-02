@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppAbstractAction;
@@ -24,6 +19,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
 /**
+ * Creates the app components and establishes connections between them.
  *
  * @author dziegenh
  */
@@ -145,7 +141,7 @@ public class AppSetup {
         app.initDragAndDrop();
         app.getPreferencesDialog().init();
         app.getGraphView().init();
-        
+
         splash.showMessageAndProgress("Requesting processes", 60);
 
         // connect to SP and fill tree with services etc. received from SP

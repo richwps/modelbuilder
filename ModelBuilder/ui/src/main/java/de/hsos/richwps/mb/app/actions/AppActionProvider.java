@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app.actions;
 
 import java.lang.reflect.Constructor;
@@ -11,21 +6,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Creates and provides all app actions (e.g. for menu or toolbar items).
  *
  * @author dziegenh
  */
 public class AppActionProvider {
 
     public static enum APP_ACTIONS {
+
         // FILE
-        NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP, 
+        NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP,
         // EDIT
         UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
         // TOOLS
         EXECUTE,
         // HELP
         ABOUT,
-        
         // (others)
         DEPLOY,
         RELOAD_PROCESSES,
@@ -44,6 +40,7 @@ public class AppActionProvider {
     /**
      * Returns the corresponding action instance for the given APP_ACTION.
      * Creates the instance using reflection if necessary.
+     *
      * @param item
      * @return
      */

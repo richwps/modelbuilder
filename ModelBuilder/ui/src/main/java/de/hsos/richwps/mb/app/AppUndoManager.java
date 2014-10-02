@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import com.mxgraph.model.mxGraphModel.mxChildChange;
@@ -14,6 +9,8 @@ import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import javax.swing.undo.UndoableEdit;
 
 /**
+ * Controlls the UndoManager integration and handles the ModelBuilder's undoable
+ * edits.
  *
  * @author dziegenh
  */

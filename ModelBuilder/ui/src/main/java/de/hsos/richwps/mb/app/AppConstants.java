@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.io.File;
 
 /**
+ * Collection of app-wide constant values.
  *
  * @author dziegenh
  * @author dalcacer
@@ -299,5 +300,4 @@ public class AppConstants {
 
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 
-   
 }

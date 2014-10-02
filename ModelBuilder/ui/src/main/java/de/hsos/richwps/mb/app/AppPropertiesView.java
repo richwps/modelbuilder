@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
@@ -20,6 +15,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 /**
+ * Controlls the properties view and it's interaction with other app components.
  *
  * @author dziegenh
  */
@@ -57,7 +53,7 @@ public class AppPropertiesView extends PropertiesView {
                 boolean bothNull = (null == event.getNewValue()) && (null == oldValue);
                 boolean valuesEqual = null != event.getNewValue() && event.getNewValue().equals(oldValue);
                 valuesEqual |= null != oldValue && oldValue.equals(event.getNewValue());
-                
+
                 if (!bothNull && !valuesEqual) {
 
                     // get the component which represents the property in order to update it on undo/redo

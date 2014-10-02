@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app.actions;
 
 import de.hsos.richwps.mb.app.AppConstants;
@@ -12,6 +7,8 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 
 /**
+ * Action for showing the preferences dialog.
+ * A specific tab is selected depending on the event source's parent.
  *
  * @author dziegenh
  */
@@ -23,19 +20,11 @@ public class ShowPreferencesAction extends AppAbstractAction {
         super(actionHandler, AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES, AppConstants.ICON_PREFERENCES_KEY);
     }
 
-    public AppConstants.PREFERENCES_TAB getTabToShow() {
-        return tabToShow;
-    }
-
-    public void setTabToShow(AppConstants.PREFERENCES_TAB tabToShow) {
-        this.tabToShow = tabToShow;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         
-        // set specific preferences tab to be opened, depending on the action's parent.
+        // set specific preferences tab to be opened, depending on the event source's parent.
         if (null != source && source instanceof Component) {
             Container parent = ((Component) source).getParent();
             if (parent instanceof AppTreeToolbar) {

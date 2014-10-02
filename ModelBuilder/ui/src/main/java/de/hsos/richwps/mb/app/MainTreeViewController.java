@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.appEvents.AppEvent;
@@ -16,6 +11,8 @@ import java.awt.event.WindowEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
+ * Controlls the main tree view component and it's interaction with the
+ * ModelBuilder.
  *
  * @author dziegenh
  */
@@ -44,6 +41,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     /**
      * Loads and return the configured SP url or the default url.
+     *
      * @return
      */
     protected String getSpUrlFromConfig() {
