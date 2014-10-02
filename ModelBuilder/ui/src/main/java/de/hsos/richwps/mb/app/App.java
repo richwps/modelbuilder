@@ -19,6 +19,7 @@ import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.DndProxyLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
@@ -65,6 +66,8 @@ public class App {
     private ExecViewDialog execViewDialog;
 
     private boolean changesSaved = false;
+    private CardLayout mainTreeViewCardLayout;
+    private JPanel card1Panel;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -82,6 +85,7 @@ public class App {
 
     /**
      * Checks if the current model file (still) exists.
+     *
      * @return
      */
     boolean currentModelFileExists() {
@@ -198,24 +202,31 @@ public class App {
     }
 
     /**
-     * The MainTree panel containg the MainTree swing component.
+     * The MainTree panel containg the MainTree + toolbar swing components.
      *
      * @return
      */
     public JPanel getMainTreeViewGui() {
         if (null == mainTreeViewPanel) {
+
+            double f = TableLayout.FILL;
+            double p = TableLayout.PREFERRED;
             JTree tree = getMainTreeView().getTreeView().getGui();
 
             mainTreeViewPanel = new JPanel();
-            mainTreeViewPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+            mainTreeViewPanel.setLayout(new TableLayout(new double[][]{{f}, {p, f}}));
+            
+            // add tree toolbar
             treeViewToolbar = new AppTreeToolbar(getActionProvider());
             treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
             mainTreeViewPanel.add(treeViewToolbar, "0 0");
+            
+            // add tree
             JScrollPane treeScrollPane = new JScrollPane(tree);
             treeScrollPane.setBorder(null);
             mainTreeViewPanel.add(treeScrollPane, "0 1");
-
         }
+
         return mainTreeViewPanel;
     }
 

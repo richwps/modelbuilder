@@ -80,7 +80,7 @@ public class PropertiesView extends TitledComponent {
         contentPanel.add(getMultiProcessesCard(), CARD.PROCESS_MULTI_SELECTION.name());
         contentPanel.add(getGlobalPortCard(), CARD.GLOBAL_PORT.name());
 
-        propertyChangeListeners = new LinkedList<PropertyChangeListener>();
+        propertyChangeListeners = new LinkedList<>();
     }
 
     public boolean addPropertyChangeListener(PropertyChangeListener listener) {

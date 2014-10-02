@@ -8,9 +8,12 @@ package de.hsos.richwps.mb.app.view.preferences;
 import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.MbDialog;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import javax.swing.JTabbedPane;
 import layout.TableLayout;
@@ -45,6 +48,13 @@ public class AppPreferencesDialog extends MbDialog {
             prefTabs = new HashMap<>();
             add(createTabPanel(), "0 0");
 
+            addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    parent.setCursor(Cursor.getDefaultCursor());
+                }
+            });
+
             init = true;
         }
     }
@@ -57,13 +67,14 @@ public class AppPreferencesDialog extends MbDialog {
                 break;
 
             case BTN_ID_OK:
+                parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 saveDialogAppearance();
                 savePreferences();
                 break;
 
         }
 
-        super.handleDialogButton(buttonId); //To change body of generated methods, choose Tools | Templates.
+        super.handleDialogButton(buttonId);
     }
 
     /**

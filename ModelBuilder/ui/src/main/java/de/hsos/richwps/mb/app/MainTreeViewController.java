@@ -11,6 +11,8 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -19,12 +21,40 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class MainTreeViewController extends AbstractTreeViewController {
 
-    public MainTreeViewController(App app) {
+    public MainTreeViewController(final App app) {
         super(app);
+
+        // handle changes of the SP url config
+        app.getPreferencesDialog().addWindowListener(new WindowAdapter() {
+
+            private boolean urlHasChanged() {
+                IProcessProvider processProvider = getProcessProvider();
+                String spUrl = getSpUrlFromConfig();
+                return !processProvider.getUrl().equals(spUrl);
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (urlHasChanged()) {
+                    fillTree();
+                }
+            }
+        });
+    }
+
+    /**
+     * Loads and return the configured SP url or the default url.
+     * @return
+     */
+    protected String getSpUrlFromConfig() {
+        String key = AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name();
+        String defaultValue = AppConstants.SEMANTICPROXY_DEFAULT_URL;
+        return AppConfig.getConfig().get(key, defaultValue);
     }
 
     @Override
     void fillTree() {
+
         IProcessProvider processProvider = getProcessProvider();
 
         // Remove existing child-nodes from root
@@ -35,7 +65,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
         if (processProvider != null) {
             try {
-                String url = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name(), AppConstants.SEMANTICPROXY_DEFAULT_URL);
+                String url = getSpUrlFromConfig();
 
                 boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(url);
 
@@ -71,7 +101,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         // Create and fill download services node
         DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
-
         downloadServices.add(new DefaultMutableTreeNode(""));
 
         // TODO MOCK!! Create and fill local elements node
