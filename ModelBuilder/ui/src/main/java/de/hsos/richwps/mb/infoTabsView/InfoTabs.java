@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.infoTabsView;
 
 import de.hsos.richwps.mb.app.AppConstants;
@@ -16,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
+ * Swing GUI component and boundary class for the info tabs component.
  *
  * @author dziegenh
  */
@@ -113,7 +109,6 @@ public class InfoTabs extends JTabbedPane {
     protected int getIndex(String tabId) {
         return tabIds.indexOf(tabId);
     }
-
 
     protected void setTabStatus(int index, boolean defaultStatus) {
         // TODO let icon or icon key be set by app

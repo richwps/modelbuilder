@@ -5,10 +5,20 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+//class AppTreeNode extends DefaultMutableTreeNode {
+//
+//    public AppTreeNode(Object userObject) {
+//        super(userObject);
+//    }
+//
+//
+//
+//}
 
 /**
  * Controlls the main tree view component and it's interaction with the
@@ -25,7 +35,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         app.getPreferencesDialog().addWindowListener(new WindowAdapter() {
 
             private boolean urlHasChanged() {
-                IProcessProvider processProvider = getProcessProvider();
+                ProcessProvider processProvider = getProcessProvider();
                 String spUrl = getSpUrlFromConfig();
                 return !processProvider.getUrl().equals(spUrl);
             }
@@ -53,7 +63,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
     @Override
     void fillTree() {
 
-        IProcessProvider processProvider = getProcessProvider();
+        ProcessProvider processProvider = getProcessProvider();
 
         // Remove existing child-nodes from root
         DefaultMutableTreeNode root = getRoot();

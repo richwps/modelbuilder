@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph.layout;
 
 import com.mxgraph.model.mxCell;
@@ -18,8 +13,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
- * Stores temporary information about a cell's logical position inside the
- * graph.
+ * Stores temporary information about a cell's logical position inside the graph
+ * for layouting.
  *
  * @author dziegenh
  */

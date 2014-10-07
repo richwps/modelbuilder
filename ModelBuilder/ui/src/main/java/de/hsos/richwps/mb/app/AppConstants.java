@@ -61,10 +61,10 @@ public class AppConstants {
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
 
     // Dialoges
-    public static String DIALOG_BTN_CLOSE = "Close";
-    public static String DIALOG_BTN_CANCEL = "Cancel";
-    public static String DIALOG_BTN_OK = "Ok";
-    public static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
+    public final static String DIALOG_BTN_CLOSE = "Close";
+    public final static String DIALOG_BTN_CANCEL = "Cancel";
+    public final static String DIALOG_BTN_OK = "Ok";
+    public final static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
 
     // Preferences Dialog
     public final static String PREFERENCES_DIALOG_TITLE = "Configuration";
@@ -121,6 +121,32 @@ public class AppConstants {
 
     @Deprecated
     public static int PROCESS_TITLE_MAX_VIEW_LENGTH = 22;
+
+    final static String INPUT_PORT_COLOR_STRING = "bbe8c6";
+    final static String OUTPUT_PORT_COLOR_STRING = "cfe1fc";
+
+    /**
+     * Common CSS for input and output ports.
+     */
+    private final static String TOOLTIP_CSS_FOR_PORTS = "border:1px solid #cccccc;padding:2px;margin: 2px 0 1px 0;";
+
+    /**
+     * The CSS which is used for input port html containers in ToolTipTexts.
+     */
+    static String TOOLTIP_CSS_FOR_INPUTS = "background:#" +INPUT_PORT_COLOR_STRING+ ";" + TOOLTIP_CSS_FOR_PORTS;
+
+    /**
+     * The CSS which is used for input port html containers in ToolTipTexts.
+     */
+    static String TOOLTIP_CSS_FOR_OUTPUTS = "background:#" +OUTPUT_PORT_COLOR_STRING+ ";" + TOOLTIP_CSS_FOR_PORTS;
+
+    final static String TOOLTIP_BG_COLOR_HEX_STRING = "FAFAFA";
+    final static Color TOOLTIP_BG_COLOR = new Color(Integer.parseInt(TOOLTIP_BG_COLOR_HEX_STRING, 16));
+
+    /**
+     * The CSS which is used for the main html container in ToolTipTexts.
+     */
+    static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "background:#" +TOOLTIP_BG_COLOR_HEX_STRING+ ";border:0;margin:0;";
 
     public enum PREFERENCES_TAB {
 

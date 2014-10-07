@@ -2,11 +2,10 @@ package de.hsos.richwps.mb.dsl;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
-import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
-import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Sorts cells from global inputs to global outputs.
+ *
+ * @author jkovalev
+ */
 public class TopologicalSorter {
 
     /**
@@ -74,7 +78,6 @@ public class TopologicalSorter {
             mxICell vertex = this.verticesWithoutDependencies.iterator().next();
             this.verticesWithoutDependencies.remove(vertex);
 
-            Logger.log(getCellName(vertex) + " was resolved and added to sorted List.");
             // Resolve dependencies on child vertices
             Object[] outgoing = graph.getOutgoingEdges(vertex);
             //No edges? Nothing to do!
@@ -85,11 +88,9 @@ public class TopologicalSorter {
                     mxICell child = ((GraphEdge) edge).getTarget();
                     List<mxICell> dependencies = this.unresolvedDependencies.get(child);
                     dependencies.remove(vertex);
-                    Logger.log("Outgoing connection to " + getCellName(child) + " resolved.");
                     // Queue child vertix if it has no further dependencies
                     if (dependencies.isEmpty()) {
                         this.verticesWithoutDependencies.add(child);
-                        Logger.log(getCellName(child) + "has no further dependencies.");
                     }
                 }
             }

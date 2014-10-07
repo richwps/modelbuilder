@@ -1,14 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * Describes a specific complex datatype format.
  *
  * @author dziegenh
  */
@@ -97,7 +93,7 @@ public class ComplexDataTypeFormat implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        
+
         String mime = ComplexDataTypeFormat.getValueForViews(this.mimeType);
         String schem = ComplexDataTypeFormat.getValueForViews(this.schema);
         String enc = ComplexDataTypeFormat.getValueForViews(this.encoding);
@@ -105,7 +101,7 @@ public class ComplexDataTypeFormat implements Serializable {
         hash = 31 * hash + Objects.hashCode(mime);
         hash = 17 * hash + Objects.hashCode(schem);
         hash = 43 * hash + Objects.hashCode(enc);
-        
+
         return hash;
     }
 

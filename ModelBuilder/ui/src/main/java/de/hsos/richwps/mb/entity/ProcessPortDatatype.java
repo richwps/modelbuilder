@@ -1,12 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.ui.UiHelper;
 
+/**
+ * The datatypes a port can have.
+ *
+ * @author dziegenh
+ */
 public enum ProcessPortDatatype {
 
     LITERAL,
@@ -20,6 +20,7 @@ public enum ProcessPortDatatype {
 
     /**
      * Finds an enum value by its name.
+     *
      * @param name
      * @return enum value on success or else null.
      */

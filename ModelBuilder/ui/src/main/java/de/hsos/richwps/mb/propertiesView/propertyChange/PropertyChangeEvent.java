@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.hsos.richwps.mb.propertiesView.propertyChange;
 
 import de.hsos.richwps.mb.propertiesView.PropertiesView.CARD;
 
 /**
+ * Event which is fired when a property value changes.
  *
  * @author dziegenh
  */
@@ -37,7 +32,6 @@ public class PropertyChangeEvent {
         return sourceCard;
     }
 
-
     public PropertyChangeEvent(CARD sourceCard, String property, Object sourceObject, Object newValue) {
         this.sourceCard = sourceCard;
         this.property = property;
@@ -47,7 +41,7 @@ public class PropertyChangeEvent {
 
     @Override
     public String toString() {
-        StringBuilder sb =new StringBuilder(200);
+        StringBuilder sb = new StringBuilder(200);
         sb.append("SourceCard: ");
         sb.append(sourceCard.name());
         sb.append(", property: ");

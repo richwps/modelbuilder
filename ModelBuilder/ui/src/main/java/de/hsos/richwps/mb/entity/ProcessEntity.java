@@ -1,20 +1,15 @@
 package de.hsos.richwps.mb.entity;
 
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * There is a high propability that this model will be replaced after the
- * ModelBuilder "mock version" is done :) .
+ * A specific WPS process with input and output ports.
  *
  * @author dziegenh
  */
-public class ProcessEntity implements IOwsObject, Transferable, Serializable {
+public class ProcessEntity implements IOwsObject, Serializable {
 
     private String owsTitle;
     private String owsAbstract;
@@ -25,6 +20,10 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
     private LinkedList<ProcessPort> outputPorts;
     private String toolTipText;
     private boolean isLocal;
+    
+    public static String toolTipCssForMainContainer;
+
+    private boolean isFullyLoaded = false;
 
     public ProcessEntity() {
         this("", "");
@@ -33,10 +32,18 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
     public ProcessEntity(String server, String owsIdentifier) {
         this.server = server;
         this.owsIdentifier = owsIdentifier;
-        this.isLocal=false;
+        this.isLocal = false;
 
         this.inputPorts = new LinkedList<>();
         this.outputPorts = new LinkedList<>();
+    }
+
+    public void setIsFullyLoaded(boolean isFullyLoaded) {
+        this.isFullyLoaded = isFullyLoaded;
+    }
+
+    public boolean isIsFullyLoaded() {
+        return isFullyLoaded;
     }
 
     public void setInputPorts(LinkedList<ProcessPort> ports) {
@@ -49,6 +56,7 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
 
     /**
      * Sets the title and resets the toolTipText.
+     *
      * @param owsTitle
      */
     @Override
@@ -59,6 +67,7 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
 
     /**
      * Sets the identifier and resets the toolTipText.
+     *
      * @param owsIdentifier
      */
     @Override
@@ -69,7 +78,8 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
 
     /**
      * Sets the abstract and resets the toolTipText.
-     * @param owsAbstract 
+     *
+     * @param owsAbstract
      */
     @Override
     public void setOwsAbstract(String owsAbstract) {
@@ -81,7 +91,7 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
         this.server = server;
     }
 
-    public String getServer() { 
+    public String getServer() {
         return server;
     }
 
@@ -89,7 +99,7 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
     public String getOwsIdentifier() {
         return owsIdentifier;
     }
-    
+
     public int getNumInputs() {
         return inputPorts.size();
     }
@@ -106,7 +116,6 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
         this.isLocal = isLocal;
     }
 
-    
     @Override
     public String toString() {
         return getOwsTitle();
@@ -130,18 +139,6 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
         return outputPorts;
     }
 
-    public DataFlavor[] getTransferDataFlavors() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public boolean isDataFlavorSupported(DataFlavor flavor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public String getOwsTitle() {
         return owsTitle;
@@ -153,11 +150,55 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
     }
 
     public String getToolTipText() {
-        if(null == toolTipText) {
-            // length of vars + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
-            int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 13 + 7 + 4 + 8;
+        if (null == toolTipText) {
+
+            // prepare input port TTTs
+            List<String> inPortTexts = new LinkedList<>();
+            int portTextsLength = 0;
+            for (ProcessPort port : getInputPorts()) {
+                String portTtt = port.getToolTipText();
+
+                // remove html tags
+                portTtt = portTtt.replaceAll("<html>", "").replaceAll("</html>", "");
+                inPortTexts.add(portTtt);
+
+                // ttt length + "<br>"
+                portTextsLength += portTtt.length() + 4;
+            }
+
+            // prepare output port TTTs
+            List<String> outPortTexts = new LinkedList<>();
+            for (ProcessPort port : getOutputPorts()) {
+                String portTtt = port.getToolTipText();
+
+                // remove html tags
+                portTtt = portTtt.replaceAll("<html>", "").replaceAll("</html>", "");
+                outPortTexts.add(portTtt);
+
+                portTextsLength += portTtt.length() + 4;
+            }
+
+// @TODO calculate new capacity after the refactoring!
+            // length of vars + length of port texts + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
+            int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + portTextsLength + 13 + 7 + 4 + 8;
+
+
             StringBuilder sb = new StringBuilder(sbCapacity);
-            sb.append("<html><b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><hr>").append(getOwsAbstract()).append("</html>");
+            sb.append("<html><body style='").append(ProcessEntity.toolTipCssForMainContainer).append("'><b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><i>").append(getOwsAbstract()).append("</i>");
+
+            // add port TTTs if available
+            if (!inPortTexts.isEmpty() && !outPortTexts.isEmpty()) {
+
+                for (String text : inPortTexts) {
+                    sb.append(text);
+                }
+
+                for (String text : outPortTexts) {
+                    sb.append(text);
+                }
+            }
+
+            sb.append("</body></html>");
             toolTipText = sb.toString();
         }
 
@@ -166,12 +207,13 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
 
     /**
      * ProcessEntities are equal if their server and identifier match.
+     *
      * @param obj
      * @return
      */
     @Override
     public boolean equals(Object obj) {
-        if(null == obj || !(obj instanceof ProcessEntity)) {
+        if (null == obj || !(obj instanceof ProcessEntity)) {
             return false;
         }
 
@@ -185,35 +227,15 @@ public class ProcessEntity implements IOwsObject, Transferable, Serializable {
         clone.owsTitle = owsTitle;
         clone.toolTipText = null; // indicate lazy initialisation
 
-        for(ProcessPort inPort : inputPorts) {
+        for (ProcessPort inPort : inputPorts) {
             clone.addInputPort(inPort.clone());
         }
 
-        for(ProcessPort outPort : outputPorts) {
+        for (ProcessPort outPort : outputPorts) {
             clone.addOutputPort(outPort.clone());
         }
 
         return clone;
-    }
-
-    /**
-     * OWS Processes are equal if server and identifier are equal.
-     * @param process
-     * @return
-     */
-    public boolean owsEquals(Object process) {
-        if(null == process)
-            return false;
-
-        if(!(process instanceof ProcessEntity))
-            return false;
-
-        ProcessEntity other = (ProcessEntity) process;
-
-        boolean serverEqual = getServer().equals(other.getServer());
-        boolean identifierEqual = getOwsIdentifier().equals(other.getOwsIdentifier());
-        
-        return serverEqual && identifierEqual;
     }
 
 }

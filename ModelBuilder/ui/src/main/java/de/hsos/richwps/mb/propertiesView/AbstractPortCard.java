@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
@@ -19,11 +14,11 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Window;
 import java.util.List;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import layout.TableLayout;
 
 /**
+ * Basic card GUI with methods for creating/adding port properties.
  *
  * @author dziegenh
  */
@@ -180,12 +175,6 @@ public class AbstractPortCard extends AbstractPropertiesCard {
 
             return labelComponent;
         }
-    }
-
-    protected Component createPortBorder() {
-        JLabel border = new JLabel("");
-        border.setBorder(new ColorBorder(PropertyCardsConfig.portBorderColor, 0, 0, (int) PropertyCardsConfig.propertyBorderThickness, 0));
-        return border;
     }
 
 }

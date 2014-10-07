@@ -1,13 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.entity;
 
 import java.io.Serializable;
 
 /**
+ * Datatype description for complex datatypes.
+ *
+ * @TODO add mutliple formats and set default format.
  *
  * @author dziegenh
  */

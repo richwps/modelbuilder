@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.app;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -54,13 +55,13 @@ class TreeViewMouseAdapter extends MouseAdapter {
  */
 class AppTreeFactory {
 
-    static TreeView createTree(GraphView graphView) {
+    static TreeView createTree(GraphView graphView, final ProcessProvider processProvider) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
 
         // Java 1.7 Bugfix: add dummy node - otherwise the tree doesn't work?!
         root.add(new DefaultMutableTreeNode(""));
 
-        TreeView treeView = new TreeView(root);
+        TreeView treeView = new TreeView(root, processProvider);
         treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView));
         treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
         DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();

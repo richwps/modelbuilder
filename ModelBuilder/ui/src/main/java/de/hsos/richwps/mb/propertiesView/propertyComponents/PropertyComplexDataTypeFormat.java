@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
@@ -16,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Property GUI component representing a complex datatype format.
  *
  * @author dziegenh
  */
@@ -26,7 +22,7 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent {
 
     public PropertyComplexDataTypeFormat() throws LoadDataTypesException {
         super(AbstractPortCard.PORT_DATATYPE_FORMAT);
-        
+
         // add empty entry as first list element
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
         formats.add(null);

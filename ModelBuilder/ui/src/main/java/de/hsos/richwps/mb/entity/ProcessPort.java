@@ -1,18 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import java.io.Serializable;
 
 /**
+ * A port entitiy can either be global (model-wide) or local (part of a
+ * process).
  *
  * @author dziegenh
  */
 public class ProcessPort implements IOwsObject, Serializable {
+
+    public static String TOOLTIP_STYLE_INPUT = "";
+    public static String TOOLTIP_STYLE_OUTPUT = "";
 
     private String owsIdentifier = "";
     private String owsTitle = "";
@@ -72,9 +72,6 @@ public class ProcessPort implements IOwsObject, Serializable {
     public ProcessPortDatatype getDatatype() {
         return datatype;
     }
-//    public String getDatatype() {
-//        return datatype;
-//    }
 
     public void setFlowInput(boolean isInput) {
         flowInput = isInput;
@@ -135,7 +132,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      * Sets global to true; flowInput depending on the parameter. Note: a global
      * process input is a local flow output.
      *
-     * @param isOutput
+     * @param isInput
      */
     public void setGlobalInput(boolean isInput) {
         this.global = true;
@@ -233,10 +230,27 @@ public class ProcessPort implements IOwsObject, Serializable {
                 return "";
             }
 
-            // length of vars + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
-            int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 13 + 7 + 4 + 8;
+// TODO update capacity after refactoring!
+            // length of vars + 4 characters for datatype + size of "<html></html>" tags + size of "<b></b>" tags + size of "<i></i>" tags + size of "<br>" tags
+            int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 1 + 13 + 7 + 7 + 8; // TODO add size of port texts!
             StringBuilder sb = new StringBuilder(sbCapacity);
-            sb.append("<html><b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><hr>").append(getOwsAbstract()).append("</html>");
+            sb.append("<html><div style='");
+
+            // set CSS for local ports
+            if (!isGlobal()) {
+                if (isFlowInput()) {
+                    sb.append(ProcessPort.TOOLTIP_STYLE_INPUT);
+                } else {
+                    sb.append(ProcessPort.TOOLTIP_STYLE_OUTPUT);
+                }
+            }
+            sb.append("'");
+            
+            if (null != getDatatype()) {
+                sb.append("[").append(getDatatype().toString().charAt(0)).append("] ");
+            }
+
+            sb.append("<b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><i>").append(getOwsAbstract()).append("</i></div></html>");
             toolTipText = sb.toString();
         }
 

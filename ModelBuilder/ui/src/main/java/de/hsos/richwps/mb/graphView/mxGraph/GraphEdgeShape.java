@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Custom shape for edges. Uses our custom canvas if available.
  *
  * @author dziegenh
  */
@@ -30,10 +31,10 @@ public class GraphEdgeShape extends mxConnectorShape {
         // use custom canvas if available
         if (canvas instanceof GraphCanvas) {
             GraphCanvas gCanvas = (GraphCanvas) canvas;
-            
+
             boolean rounded = isRounded(style)
                     && canvas.getScale() > mxConstants.MIN_SCALE_FOR_ROUNDED_LINES;
-            
+
             gCanvas.paintPolyline(points.toArray(new mxPoint[points.size()]),
                     rounded,
                     true);

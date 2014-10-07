@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph.layout;
 
 import com.mxgraph.analysis.StructuralException;
@@ -19,7 +14,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import java.util.Arrays;
 
 /**
- * Only Graph instances are accepted.
+ * Only our custom Graph instances can be layouted as workflows.
  *
  * @author dziegenh
  */
@@ -150,7 +145,7 @@ public class GraphWorkflowLayout extends mxGraphLayout {
         layoutGlobaInputPorts(model, layoutComponent);
         layoutGlobaOutputPorts(model, layoutComponent);
     }
-    
+
     void layoutGlobaInputPorts(GraphModel model, GraphLayoutComponent layoutComponent) {
 
         mxCell xReferenceCell = null;
@@ -223,7 +218,6 @@ public class GraphWorkflowLayout extends mxGraphLayout {
 
         }
     }
-
 
     /**
      *

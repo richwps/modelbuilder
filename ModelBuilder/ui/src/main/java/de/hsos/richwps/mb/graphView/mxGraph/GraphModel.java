@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.model.mxCell;
@@ -11,6 +6,7 @@ import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.entity.ProcessPort;
 
 /**
+ * The model for the RIchWPS graph. Extends the underlying mxGraphModel.
  *
  * @author dziegenh
  */

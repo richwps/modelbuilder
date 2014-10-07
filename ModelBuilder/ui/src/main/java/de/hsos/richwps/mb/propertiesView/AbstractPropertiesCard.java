@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
@@ -31,6 +26,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
 /**
+ * Basic property card GUI with methods for creating/adding property components.
  *
  * @author dziegenh
  */
@@ -75,7 +71,7 @@ abstract class AbstractPropertiesCard extends JScrollPane {
     protected void adjustContentPanelSize() {
         if (getHorizontalScrollBar().isVisible()) {
             Dimension prefSize = contentPanel.getPreferredSize();
-            prefSize.width -= 2*getVerticalScrollBar().getWidth();
+            prefSize.width -= 2 * getVerticalScrollBar().getWidth();
             contentPanel.setPreferredSize(prefSize);
         }
         contentPanel.revalidate();

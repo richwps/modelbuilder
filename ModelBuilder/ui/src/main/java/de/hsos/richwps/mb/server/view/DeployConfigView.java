@@ -12,7 +12,8 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 
 /**
- * A Component for editing a deploy config.
+ * A Component for editing a deployment config.
+ *
  * @author dziegenh
  */
 public class DeployConfigView extends JPanel {
@@ -33,16 +34,16 @@ public class DeployConfigView extends JPanel {
         int numComponents = 2 * DeployConfigField.values().length + 1;
 
         double[][] layoutSize = new double[2][];
-        layoutSize[0] = new double[] {TableLayout.FILL};
+        layoutSize[0] = new double[]{TableLayout.FILL};
         layoutSize[1] = new double[numComponents];
         Arrays.fill(layoutSize[1], TableLayout.PREFERRED);
-        layoutSize[1][numComponents-1] = TableLayout.FILL; // fills up empty space
+        layoutSize[1][numComponents - 1] = TableLayout.FILL; // fills up empty space
         setLayout(new TableLayout(layoutSize));
 
         ActionListener textFieldActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(e.getSource() instanceof TextField) {
+                if (e.getSource() instanceof TextField) {
                     TextField<DeployConfigField> textField = (TextField) e.getSource();
                     setConfigValue(textField.getUserObject(), textField.getText());
                 }
@@ -50,11 +51,11 @@ public class DeployConfigView extends JPanel {
         };
 
         int componentNum = 0;
-        for(DeployConfigField field : DeployConfigField.values()) {
+        for (DeployConfigField field : DeployConfigField.values()) {
             TextField<DeployConfigField> textField = new TextField(config.getValue(field));
             textField.setUserObject(field);
             textField.addActionListener(textFieldActionListener);
-            add(new JLabel(field.toString()+":"), "0 " + componentNum++);
+            add(new JLabel(field.toString() + ":"), "0 " + componentNum++);
             add(textField, "0 " + componentNum++);
         }
     }
@@ -68,8 +69,8 @@ public class DeployConfigView extends JPanel {
     }
 
     public void saveTextFieldValuesToConfig() {
-        for(Component c : getComponents()) {
-            if(c instanceof TextField) {
+        for (Component c : getComponents()) {
+            if (c instanceof TextField) {
                 TextField<DeployConfigField> textField = (TextField) c;
                 config.setValue(textField.getUserObject(), textField.getText().trim());
             }
@@ -77,8 +78,8 @@ public class DeployConfigView extends JPanel {
     }
 
     void setConfigValues(DeployConfig config) {
-        for(Component c : getComponents()) {
-            if(c instanceof TextField) {
+        for (Component c : getComponents()) {
+            if (c instanceof TextField) {
                 TextField<DeployConfigField> textField = (TextField) c;
                 final DeployConfigField field = textField.getUserObject();
                 String value = config.getValue(field);
@@ -88,10 +89,10 @@ public class DeployConfigView extends JPanel {
             }
         }
     }
-    
+
     void update() {
-        for(Component c : getComponents()) {
-            if(c instanceof TextField) {
+        for (Component c : getComponents()) {
+            if (c instanceof TextField) {
                 TextField<DeployConfigField> textField = (TextField) c;
                 final DeployConfigField field = textField.getUserObject();
                 textField.setText(config.getValue(field));

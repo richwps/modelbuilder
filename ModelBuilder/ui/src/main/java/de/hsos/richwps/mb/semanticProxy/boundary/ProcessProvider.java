@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.semanticProxy.boundary;
 
 import de.hsos.richwps.mb.app.AppConstants;
@@ -24,10 +19,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 /**
+ * Connects to the semantic proxy and receives/provides a list of available
+ * processes.
  *
  * @author dziegenh
  */
-public class ProcessProvider implements IProcessProvider {
+public class ProcessProvider {
 
     private SPClient spClient;
     private Network net;
@@ -42,7 +39,6 @@ public class ProcessProvider implements IProcessProvider {
         this.wpss = new WPS[]{};
     }
 
-    @Override
     public String getUrl() {
         return url;
     }
@@ -54,7 +50,6 @@ public class ProcessProvider implements IProcessProvider {
      * @return
      * @throws java.lang.Exception
      */
-    @Override
     public boolean connect(String url) throws Exception {
         this.url = url;
 
@@ -83,7 +78,6 @@ public class ProcessProvider implements IProcessProvider {
      *
      * @return
      */
-    @Override
     public boolean isConnected() {
         return null != net;
     }
@@ -92,7 +86,6 @@ public class ProcessProvider implements IProcessProvider {
      * Receives all data belonging to a specific process. The process is
      * identified by its (server) endpoint and its identifier.
      */
-    @Override
     public ProcessEntity getProcessEntity(String server, String identifier) {
         return getProcessWithPorts(server, identifier);
     }
@@ -164,7 +157,6 @@ public class ProcessProvider implements IProcessProvider {
      * @param server
      * @return
      */
-    @Override
     public Collection<ProcessEntity> getServerProcesses(String server) {
 
         // find desired endpoint (server)
@@ -199,7 +191,6 @@ public class ProcessProvider implements IProcessProvider {
      *
      * @return
      */
-    @Override
     public Collection<String> getAllServer() {
         LinkedList<String> servers = new LinkedList<>();
 

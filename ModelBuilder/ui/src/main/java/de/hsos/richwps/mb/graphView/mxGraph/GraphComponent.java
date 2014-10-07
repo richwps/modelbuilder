@@ -17,7 +17,7 @@ import java.util.Hashtable;
 import javax.swing.JToolTip;
 
 /**
- * The GUI component for RichWPS graphs.
+ * The (Swing) GUI component for RichWPS graphs.
  *
  * @author dziegenh
  */

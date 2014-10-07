@@ -13,7 +13,6 @@ import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdgeShape;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -39,7 +38,10 @@ public class GraphSetup {
     static String STYLENAME_GLOBAL_INPUT = "PROCESS_INPUT";
     static String STYLENAME_GLOBAL_OUTPUT = "PROCESS_OUTPUT";
     static String STYLENAME_PROCESS = "PROCESS";
-    static String STYLENAME_LOCAL_PORT = "PORT";
+
+    static String STYLENAME_LOCAL_INPUT = "LOCAL_INPUT";
+    static String STYLENAME_LOCAL_OUTPUT = "LOCAL_OUTPUT";
+
     public static String STYLENAME_SELECTION_PROXY = "SELECTION";
 
     // (auto-) Layout
@@ -60,6 +62,9 @@ public class GraphSetup {
     // TODO move values to config/constants
     public static int PROCESS_WIDTH = 240;
 
+    public static String localInputBgColor = "none";
+    public static String localOutputBgColor = "none";
+
     /**
      * Initialises graph-independent codecs, constants etc.
      */
@@ -69,7 +74,7 @@ public class GraphSetup {
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ComplexDataTypeFormat()));
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionComplex()));
         mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
-        mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
 
@@ -140,14 +145,14 @@ public class GraphSetup {
         processStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
         processStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f6f6f6");
         processStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
-        stylesheet.putCellStyle("PROCESS", processStyle);
+        stylesheet.putCellStyle(STYLENAME_PROCESS, processStyle);
 
         // GLOBAL INPUT PORT STYLE
         Hashtable<String, Object> processInputStyle = (Hashtable<String, Object>) processStyle.clone();
-        stylesheet.putCellStyle("PROCESS_INPUT", processInputStyle);
+        stylesheet.putCellStyle(STYLENAME_GLOBAL_INPUT, processInputStyle);
 
         // GLOBAL OUTPUT PORT STYLE
-        Hashtable<String, Object> processOutputStyle = new Hashtable<String, Object>();
+        Hashtable<String, Object> processOutputStyle = new Hashtable<>();
         processOutputStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
         processOutputStyle.put(mxConstants.STYLE_OPACITY, 80);
         processOutputStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
@@ -157,23 +162,28 @@ public class GraphSetup {
         processOutputStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
         processOutputStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#000000");
         processOutputStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
-        stylesheet.putCellStyle("PROCESS_OUTPUT", processOutputStyle);
+        stylesheet.putCellStyle(STYLENAME_GLOBAL_OUTPUT, processOutputStyle);
 
         // PROCESS (LOCAL-/SUB-) PORT STYLE
-        Hashtable<String, Object> portStyle = new Hashtable<String, Object>();
+        Hashtable<String, Object> portStyle = new Hashtable<>();
         portStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-        portStyle.put(mxConstants.STYLE_OPACITY, 100);
+//        portStyle.put(mxConstants.STYLE_OPACITY, 100);
         portStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
-        portStyle.put(mxConstants.STYLE_FILLCOLOR, "none");
+//        portStyle.put(mxConstants.STYLE_FILLCOLOR, "none");
+        portStyle.put(mxConstants.STYLE_FILLCOLOR, "#"+localInputBgColor);
         portStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
         portStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
         portStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
         portStyle.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_MIDDLE);
         portStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
-        stylesheet.putCellStyle("PORT", portStyle);
+        stylesheet.putCellStyle(STYLENAME_LOCAL_INPUT, portStyle);
+
+        portStyle = (Hashtable<String, Object>) portStyle.clone();
+        portStyle.put(mxConstants.STYLE_FILLCOLOR, "#"+localOutputBgColor);
+        stylesheet.putCellStyle(STYLENAME_LOCAL_OUTPUT, portStyle);
 
         // SELECTION PROXY STYLE
-        Hashtable<String, Object> selectionProxyStyle = new Hashtable<String, Object>();
+        Hashtable<String, Object> selectionProxyStyle = new Hashtable<>();
         selectionProxyStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
         selectionProxyStyle.put(mxConstants.STYLE_OPACITY, 50);
         selectionProxyStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");

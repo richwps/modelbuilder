@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.ui;
 
 import java.awt.Color;
@@ -11,8 +6,9 @@ import java.awt.Graphics;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Colored border with custom thickness for each side.
- * Setters allow different colors for each side (default is one color for all sides).
+ * Colored border with custom thickness for each side. Setters allow different
+ * colors for each side (default is one color for all sides).
+ *
  * @author dziegenh
  */
 public class ColorBorder extends EmptyBorder {
@@ -61,7 +57,5 @@ public class ColorBorder extends EmptyBorder {
     public void setRightColor(Color rightColor) {
         this.rightColor = rightColor;
     }
-
-    
 
 }

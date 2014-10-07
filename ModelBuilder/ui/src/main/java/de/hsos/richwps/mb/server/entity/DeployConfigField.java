@@ -4,6 +4,7 @@ import de.hsos.richwps.mb.ui.UiHelper;
 
 /**
  * Field keys for deployment configurations.
+ *
  * @author dziegenh
  */
 public enum DeployConfigField {

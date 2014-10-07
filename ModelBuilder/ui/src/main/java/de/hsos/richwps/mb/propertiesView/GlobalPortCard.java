@@ -17,6 +17,7 @@ import layout.TableLayout;
 
 /**
  * Properties card for global ports.
+ *
  * @author dziegenh
  */
 public class GlobalPortCard extends AbstractPortCard {
@@ -85,7 +86,7 @@ public class GlobalPortCard extends AbstractPortCard {
         identifierField.setText(port.getOwsIdentifier());
         typeField.setText(port.getDatatype().toString());
 
-        boolean hasDescription = (null != port.getDatatype()) 
+        boolean hasDescription = (null != port.getDatatype())
                 && (port.getDatatype().equals(ProcessPortDatatype.COMPLEX))
                 && port.isGlobal();
         datatypeDescription.setEditable(hasDescription);

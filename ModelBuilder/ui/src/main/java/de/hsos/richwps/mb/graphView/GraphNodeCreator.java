@@ -94,7 +94,9 @@ public class GraphNodeCreator {
         geo.setRelative(true);
         geo.setOffset(new mxPoint(x, y));
 
-        mxCell portCell = new mxCell(port, geo, GraphSetup.STYLENAME_LOCAL_PORT);
+        String stylename = (port.isFlowInput()) ? GraphSetup.STYLENAME_LOCAL_INPUT : GraphSetup.STYLENAME_LOCAL_OUTPUT;
+
+        mxCell portCell = new mxCell(port, geo, stylename);
         portCell.setVertex(true);
 
         return portCell;

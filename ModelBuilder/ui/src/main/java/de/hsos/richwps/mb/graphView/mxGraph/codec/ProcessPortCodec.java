@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
@@ -17,13 +12,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
+ * Encodes additional port attributes (mainly the datatype description) and
+ * manages the assignment of unique port entities using their identifiers.
  *
  * @author dziegenh
  */
 public class ProcessPortCodec extends mxObjectCodec {
 
     /**
-     * 
+     * Name of the (xml) attribute holding the port id.
      */
     private final String ATTR_PORT_ID = "port_id";
 
@@ -33,10 +30,11 @@ public class ProcessPortCodec extends mxObjectCodec {
     private static List<ProcessPort> encodedPorts = new LinkedList<>();
 
     /**
-     * Maps port IDs to decoded ports to re-assign port the right instances to the model elements.
+     * Maps port IDs to decoded ports to re-assign port the right instances to
+     * the model elements.
      */
     private static HashMap<String, ProcessPort> decodedPorts;
-    
+
     public ProcessPortCodec(Object template) {
         super(template);
     }
@@ -84,11 +82,11 @@ public class ProcessPortCodec extends mxObjectCodec {
             if (obj instanceof ProcessPort) {
                 ProcessPort port = decodedPorts.get(id);
 
-                // a) port already decoded
+                // a) port already decoded: return existing instance
                 if (port != null) {
                     return port;
 
-                    // b) first time port is decoded
+                // b) first time port is decoded: save instance
                 } else {
                     decodedPorts.put(id, (ProcessPort) obj);
                 }
@@ -102,18 +100,17 @@ public class ProcessPortCodec extends mxObjectCodec {
     public Object beforeEncode(mxCodec enc, Object obj, Node node) {
 
         // add port id to node
-        if (obj instanceof ProcessPort) {// && !((ProcessPort) obj).isGlobal()) {
+        if (obj instanceof ProcessPort) {
 
-            // a) existing ID (port already encoded)
-            if (encodedPorts.contains(obj)) {
+            // a) existing ID (=port already encoded)
+            if (encodedPorts.contains((ProcessPort) obj)) {
                 int id = encodedPorts.indexOf(obj);
                 Element nodeEl = (Element) node;
                 nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
                 return obj;
 
-                // b) create new ID (port to be encoded)
+            // b) create new ID (=port is to be encoded)
             } else {
-//                encodedPorts.add((ProcessPort) obj);
                 int id = encodedPorts.size(); // current node will be the next list entry
                 Element nodeEl = (Element) node;
                 nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
@@ -128,8 +125,7 @@ public class ProcessPortCodec extends mxObjectCodec {
         if (obj instanceof ProcessPort) {
             ProcessPort port = (ProcessPort) obj;
 
-//            if (!port.isGlobal() &&
-            if(!encodedPorts.contains(obj)) {
+            if (!encodedPorts.contains(port)) {
                 encodedPorts.add(port);
             }
         }

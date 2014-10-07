@@ -2,7 +2,7 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
 import java.awt.dnd.DnDConstants;
@@ -14,6 +14,7 @@ import java.awt.dnd.DragSourceDropEvent;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -37,7 +38,7 @@ public abstract class AbstractTreeViewController {
      */
     abstract void fillTree();
 
-    protected IProcessProvider getProcessProvider() {
+    protected ProcessProvider getProcessProvider() {
         return app.getProcessProvider();
     }
 
@@ -55,7 +56,8 @@ public abstract class AbstractTreeViewController {
 
     TreeView getTreeView() {
         if (null == treeView) {
-            this.treeView = AppTreeFactory.createTree(app.getGraphView());
+            this.treeView = AppTreeFactory.createTree(app.getGraphView(), app.getProcessProvider());
+            ToolTipManager.sharedInstance().registerComponent(this.treeView.getGui());
         }
 
         return this.treeView;
@@ -68,6 +70,7 @@ public abstract class AbstractTreeViewController {
         JTree tree = getTreeView().getGui();
 
         DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(tree, DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
+            @Override
             public void dragGestureRecognized(DragGestureEvent dge) {
                 try {
                     if (null != dropTargetAdapter) {

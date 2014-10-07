@@ -4,7 +4,7 @@ import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TransferableProcessEntity;
 import de.hsos.richwps.mb.treeView.TransferableProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableTreeNodes;
@@ -20,17 +20,18 @@ import java.util.List;
 
 /**
  * Adapter for performing drop actions depending on the transferred object(s).
+ *
  * @author dziegenh
  */
 public class GraphDropTargetAdapter extends DropTargetAdapter {
 
     private GraphView graphView;
     private DropTarget dropTarget;
-    private IProcessProvider processProvider;
+    private ProcessProvider processProvider;
 
     private List<mxCell> createdNodes;
 
-    public GraphDropTargetAdapter(IProcessProvider processProvider, GraphView graphView, Component c) {
+    public GraphDropTargetAdapter(ProcessProvider processProvider, GraphView graphView, Component c) {
         this.graphView = graphView;
         this.processProvider = processProvider;
         dropTarget = new DropTarget(c, DnDConstants.ACTION_COPY, this, true, null);
@@ -41,8 +42,9 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
     }
 
     /**
-     * Performs an action depending on the transfered Object.
-     * Uses DataFlavors to get the transfer object.
+     * Performs an action depending on the transfered Object. Uses DataFlavors
+     * to get the transfer object.
+     *
      * @param dtde
      */
     public void drop(DropTargetDropEvent dtde) {
@@ -78,8 +80,9 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
     }
 
     /**
-     * Creates a graph node (cell) depending on the given transfer object.
-     * Useds recursively if the object is an array.
+     * Creates a graph node (cell) depending on the given transfer object. Useds
+     * recursively if the object is an array.
+     *
      * @param o
      * @param location
      * @return

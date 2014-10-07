@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.app.AppConstants;
@@ -17,6 +12,7 @@ import javax.swing.JTextField;
 import layout.TableLayout;
 
 /**
+ * Property card showing model properties.
  *
  * @author dziegenh
  */
@@ -24,7 +20,6 @@ class ModelCard extends AbstractPropertiesCard {
 
     private TitledComponent modeldataPanel;
 
-//    private MultilineLabel nameLabel;
     private JTextField nameLabel;
 
     private GraphModel model;
@@ -77,7 +72,6 @@ class ModelCard extends AbstractPropertiesCard {
         String name = (null != model) ? model.getName() : "";
         nameLabel = createEditablePropertyField("name", name);
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
-//        nameLabel.setEditable(true);
 
         int y = 0;
         modeldataPanel.add(createHeadLabel(AppConstants.PROPERTIES_MODELDATA_NAME), "0 " + y);

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.swing.handler.mxCellMarker;
@@ -11,6 +6,7 @@ import com.mxgraph.view.mxCellState;
 import java.awt.event.MouseEvent;
 
 /**
+ * Custom cell markers enable the use of different hot spots for cells.
  *
  * @author dziegenh
  */
@@ -45,7 +41,5 @@ public class CellMarker extends mxCellMarker {
 
         return intersects;
     }
-
-
 
 }

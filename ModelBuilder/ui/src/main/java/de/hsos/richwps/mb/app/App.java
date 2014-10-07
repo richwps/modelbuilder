@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.AppInfoTabs;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
@@ -12,14 +11,14 @@ import de.hsos.richwps.mb.execView.ExecViewDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
-import de.hsos.richwps.mb.semanticProxy.boundary.IProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
-import de.hsos.richwps.mb.ui.DndProxyLabel;
+import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public class App {
     private AppActionProvider actionProvider;
 
     AppFrame frame;
-    private IProcessProvider processProvider;
+    private ProcessProvider processProvider;
 
     private TreenodeTransferHandler processTransferHandler;
 
@@ -130,7 +129,7 @@ public class App {
         this.currentModelFilename = name;
     }
 
-    IProcessProvider getProcessProvider() {
+    ProcessProvider getProcessProvider() {
         if (null == processProvider) {
             processProvider = new ProcessProvider();
             AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
@@ -158,7 +157,7 @@ public class App {
      */
     public Component getGraphDndProxy() {
         if (null == graphDndProxy) {
-            graphDndProxy = new DndProxyLabel();
+            graphDndProxy = new JLabelWithBackground(new Color(0f, 1f, 0f, .1f));
             graphDndProxy.setVisible(false);
         }
         return graphDndProxy;

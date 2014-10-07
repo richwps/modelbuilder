@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -12,6 +7,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 /**
+ * Transfer oject for drag-and-drop operations of processes.
  *
  * @author dziegenh
  */

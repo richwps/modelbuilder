@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
@@ -29,6 +24,7 @@ import java.util.List;
 import javax.swing.JPanel;
 
 /**
+ * Component for dynamically showing properties of modelling elements.
  *
  * @author dziegenh
  */
@@ -54,7 +50,7 @@ public class PropertiesView extends TitledComponent {
 
         @Override
         public String toString() {
-            if(namesForViews.containsKey(this)) {
+            if (namesForViews.containsKey(this)) {
                 return namesForViews.get(this);
             }
 

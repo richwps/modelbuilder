@@ -7,6 +7,9 @@ import de.hsos.richwps.mb.app.view.AppSplashScreen;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -107,6 +110,10 @@ public class AppSetup {
             });
         }
 
+        // Configure MB components before initialisation
+        GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
+        GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
+
         // Load last used filename
         String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
         File lastFile = new File(lastFilename);
@@ -135,6 +142,12 @@ public class AppSetup {
         // Setup ToolTip.
         ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
         ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
+        UIManager.put("ToolTip.background", AppConstants.TOOLTIP_BG_COLOR);
+
+        ProcessPort.TOOLTIP_STYLE_INPUT = AppConstants.TOOLTIP_CSS_FOR_INPUTS;
+        ProcessPort.TOOLTIP_STYLE_OUTPUT = AppConstants.TOOLTIP_CSS_FOR_OUTPUTS;
+
+        ProcessEntity.toolTipCssForMainContainer = AppConstants.TOOLTIP_CSS_FOR_MAIN_CONTAINER;
 
         splash.showMessageAndProgress("Initialising user interactions", 45);
 

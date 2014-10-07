@@ -1,13 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.semanticProxy.boundary;
 
-import de.hsos.richwps.mb.semanticProxy.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.semanticProxy.exception.LoadDataTypesException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,11 +12,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Provides a list of available complex data formats. Currently, the list's
+ * items are received from a CSV file.
  *
  * @author dziegenh
  */
 public class FormatProvider {
-    
+
     private static FormatProvider instance;
 
     private String csvFile = "formats.csv";
@@ -34,10 +31,10 @@ public class FormatProvider {
     }
 
     public static FormatProvider getInstance() {
-        if(null == instance) {
+        if (null == instance) {
             instance = new FormatProvider();
         }
-        
+
         return instance;
     }
 

@@ -127,7 +127,7 @@ public class SubTreeViewController extends AbstractTreeViewController {
 
         if (o1 instanceof ProcessEntity && o2 instanceof ProcessEntity) {
             ProcessEntity pe1 = (ProcessEntity) o1;
-            return pe1.owsEquals(o2);
+            return pe1.equals(o2);
         }
 
         return o1.equals(o2);

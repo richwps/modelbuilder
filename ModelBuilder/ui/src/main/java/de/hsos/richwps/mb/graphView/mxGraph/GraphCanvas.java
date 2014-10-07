@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.swing.view.mxInteractiveCanvas;
@@ -14,19 +9,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Provides a special painting method for graph edges (aka "beautiful edges").
  *
  * @author dziegenh
  */
 public class GraphCanvas extends mxInteractiveCanvas {
 
     private static int BEAUTIFY_WIDTH = 2;
-    
+
     private static Color GRAPH_BG = GraphSetup.GRAPH_BG_COLOR;
-//new Color(
-//            GraphSetup.GRAPH_BG_COLOR.getRed(),
-//            GraphSetup.GRAPH_BG_COLOR.getGreen(),
-//            GraphSetup.GRAPH_BG_COLOR.getBlue(),
-//            0);
 
     public void paintPolyline(mxPoint[] points, boolean rounded, boolean beautifyIntersections) {
 
@@ -79,10 +70,8 @@ public class GraphCanvas extends mxInteractiveCanvas {
             for (mxPoint[] pArray : pArrays) {
                 paintPolyline(pArray, rounded);
                 if (1 == a % 2) {
-                    ratio = ((float) (a+1))/pArrays.size();
+                    ratio = ((float) (a + 1)) / pArrays.size();
                     ratio = (float) Math.sqrt(ratio);
-//                    ratio *= ratio;
-//                    ratio *= ratio;
                     g.setColor(UiHelper.mixColors(GraphSetup.GRAPH_EDGE_SHIFTED_COLOR, GRAPH_BG, ratio));
                 }
                 a++;

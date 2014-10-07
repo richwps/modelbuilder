@@ -1,9 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package de.hsos.richwps.mb.ui;
 
 import java.awt.Component;
@@ -18,6 +12,8 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 
 /**
+ * Delegates mouse events to listeners if a click event occured inside the icon
+ * of a JLabel.
  *
  * @author dziegenh
  */
@@ -26,9 +22,8 @@ public class LabelIconClickAdapter implements Icon {
     private JLabel label;
     private Icon icon;
 
-    protected List<MouseListener> mouseListener = new LinkedList<MouseListener>();
+    protected List<MouseListener> mouseListener = new LinkedList<>();
     private Point iconPos;
-
 
     public LabelIconClickAdapter(JLabel label, final Icon icon) {
         super();
@@ -42,11 +37,10 @@ public class LabelIconClickAdapter implements Icon {
                     return;
                 }
 
-                if (    e.getX() >= iconPos.x
+                if (e.getX() >= iconPos.x
                         && e.getY() >= iconPos.y
                         && e.getX() <= iconPos.x + icon.getIconWidth()
-                        && e.getY() <= iconPos.y + icon.getIconHeight()
-                        ) {
+                        && e.getY() <= iconPos.y + icon.getIconHeight()) {
                     fireMouseEvent(e);
                 }
             }
@@ -59,7 +53,7 @@ public class LabelIconClickAdapter implements Icon {
         label.invalidate();
         label.repaint();
     }
-    
+
     protected void fireMouseEvent(MouseEvent e) {
         for (MouseListener listener : mouseListener) {
             listener.mouseClicked(e);
@@ -74,6 +68,7 @@ public class LabelIconClickAdapter implements Icon {
         return mouseListener.remove(listener);
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         getIconPos().setLocation(x, y);
         icon.paintIcon(c, g, x, y);
@@ -87,10 +82,12 @@ public class LabelIconClickAdapter implements Icon {
         return iconPos;
     }
 
+    @Override
     public int getIconWidth() {
         return icon.getIconWidth();
     }
 
+    @Override
     public int getIconHeight() {
         return icon.getIconHeight();
     }

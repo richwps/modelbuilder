@@ -1,4 +1,3 @@
-
 package de.hsos.richwps.mb.dsl;
 
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
@@ -8,6 +7,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.util.List;
 
 /**
+ * Provides methods to prepare the graph structure for DSL export.
  *
  * @author dziegenh
  */
@@ -112,26 +112,4 @@ public class GraphHandler {
         return count;
     }
 
-    /**
-     * Counts the occurences of the specified identifier in all processes,
-     * process ports and global ports.
-     *
-     * @param identifier
-     * @return
-     */
-//    private int countIdentifierOccurences(String identifier) {
-//        int count = 0;
-//
-//        for (ProcessEntity process : graph.getUsedProcesses()) {
-//            if (process.getIdentifier().equals(identifier)) {
-//                count++;
-//            }
-//            count += countPortIdentifierOccurences(process.getInputPorts(), identifier);
-//            count += countPortIdentifierOccurences(process.getOutputPorts(), identifier);
-//        }
-//
-//        count += countPortIdentifierOccurences(graph.getUsedGlobalPorts(), identifier);
-//
-//        return count;
-//    }
 }

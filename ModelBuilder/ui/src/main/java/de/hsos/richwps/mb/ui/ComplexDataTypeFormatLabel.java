@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.ui;
 
 import de.hsos.richwps.mb.app.AppConstants;
@@ -28,8 +23,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.PopupMenuEvent;
 import layout.TableLayout;
 import org.apache.commons.lang3.SystemUtils;
-
-
 
 /**
  * Frame containing a combobox for format selection.
@@ -155,7 +148,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                     public void formatSelected(ComplexDataTypeFormat format) {
                         setComplexDataTypeFormat(format);
                         selectFormatFrame.dispose();
-                        for(IFormatSelectionListener listener : getSelectionListeners()) {
+                        for (IFormatSelectionListener listener : getSelectionListeners()) {
                             listener.formatSelected(format);
                         }
                     }
@@ -210,7 +203,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
             editButton.setPreferredSize(new Dimension(0, 0));
         }
     }
-    
+
     public void setComplexDataTypeFormat(ComplexDataTypeFormat format) {
         this.format = format;
 

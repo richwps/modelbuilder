@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package de.hsos.richwps.mb;
+package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEvent;
@@ -16,6 +11,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
+ * App integration of the infotab component.
  *
  * @author dziegenh
  */
@@ -23,9 +19,8 @@ public class AppInfoTabs extends InfoTabs {
 
     private boolean prependTime = true;
     private Calendar calendar = Calendar.getInstance(Locale.getDefault());
-//    private DateFormat dateFormat = DateFormat.getDateInstance(DateFormat., Locale.getDefault());
     private DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.getDefault());
-    
+
     public AppInfoTabs() {
         setTextColor(AppConstants.INFOTABS_TEXTCOLOR);
         setMinimumSize(AppConstants.INFOTABS_MIN_SIZE);
@@ -44,7 +39,7 @@ public class AppInfoTabs extends InfoTabs {
                 for (String[] infoTab : AppConstants.INFOTABS) {
                     String tabId = infoTab[0];
                     if (tabId.equals(command)) {
-                        if(prependTime) {
+                        if (prependTime) {
                             calendar.setTime(new Date());
                             StringBuilder sb = new StringBuilder(message.length() + 10);
                             sb.append("(");

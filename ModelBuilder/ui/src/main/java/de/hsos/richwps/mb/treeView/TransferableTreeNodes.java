@@ -7,6 +7,7 @@ import java.io.IOException;
 
 /**
  * Transferable array of Objects.
+ *
  * @author dziegenh
  */
 public class TransferableTreeNodes implements Transferable {
@@ -19,14 +20,17 @@ public class TransferableTreeNodes implements Transferable {
         this.payload = nodes;
     }
 
+    @Override
     public DataFlavor[] getTransferDataFlavors() {
         return new DataFlavor[]{objectArrayFlavor};
     }
 
+    @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return flavor.equals(objectArrayFlavor);
     }
 
+    @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         if (!flavor.equals(objectArrayFlavor)) {
             throw new UnsupportedFlavorException(flavor);

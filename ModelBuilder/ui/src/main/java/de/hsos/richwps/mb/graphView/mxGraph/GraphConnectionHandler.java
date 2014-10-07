@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph;
 
 import com.mxgraph.swing.handler.mxConnectionHandler;
@@ -17,6 +12,7 @@ import javax.swing.Popup;
 import javax.swing.PopupFactory;
 
 /**
+ * Enables custom cell markers ("dynamic colored borders") and custom tool tips.
  *
  * @author dziegenh
  */
