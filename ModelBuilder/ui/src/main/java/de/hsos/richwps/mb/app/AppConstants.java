@@ -198,8 +198,12 @@ public class AppConstants {
         {"REDO", "Redo"},
         {"DO_LAYOUT", "Layout"},
         {"DEPLOY", "Deploy"},
+        {"UNDEPLOY", "Undeploy"},
         {"RELOAD_PROCESSES", "Reload processes"},
-        {"EXECUTE", "Execute ..."},
+        {"EXECUTE", "Execute this process"},
+        {"EXECUTE_ANY", "Execute a process"},
+        {"PROFILE", "Profile this process"},
+        {"TEST", "Test this process"},
         {"ABOUT", "About"},};
 
     /**
@@ -289,12 +293,17 @@ public class AppConstants {
     public final static String ICON_UNDO_KEY = "rwps_icon_undo";
     public final static String ICON_REDO_KEY = "rwps_icon_redo";
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
-    public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
     public final static String ICON_INFO_KEY = "richwps_icon_info";
     public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
+    public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
+    public final static String ICON_UNDEPLOY_KEY = "rwps_icon_undeploy";
+    public final static String ICON_EXECUTE_ANY_KEY = "richwps_icon_executeany";
     public final static String ICON_EXECUTE_KEY = "richwps_icon_execute";
+    public final static String ICON_PROFILE_KEY = "richwps_icon_profile";
+    public final static String ICON_TEST_KEY = "richwps_icon_debug";
+    
     public final static String ICON_ABOUT_KEY = "richwps_icon_about";
     public final static String ICON_LOADING_STATUS_KEY = "richwps_icon_loading";
     public final static String ICON_EDIT_KEY = "richwps_icon_edit";

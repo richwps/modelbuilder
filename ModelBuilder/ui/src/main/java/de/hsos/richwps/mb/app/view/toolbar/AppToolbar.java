@@ -30,9 +30,13 @@ public class AppToolbar extends JToolBar {
         }
 
         addSeparator();
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DEPLOY));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.EXECUTE_ANY));
         addSeparator();
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DEPLOY));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDEPLOY));
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.EXECUTE));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.TEST));
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.PROFILE));
 
     }
 

@@ -114,7 +114,7 @@ public class AppMenuBar extends JMenuBar {
     private JMenu getToolsMenu() {
         JMenu mTools = new JMenu(getMenuItemCaption(MENUS.TOOLS));
 
-        createAndAddMenuItem(mTools, AppActionProvider.APP_ACTIONS.EXECUTE);
+        createAndAddMenuItem(mTools, AppActionProvider.APP_ACTIONS.EXECUTE_ANY);
 
         return mTools;
     }

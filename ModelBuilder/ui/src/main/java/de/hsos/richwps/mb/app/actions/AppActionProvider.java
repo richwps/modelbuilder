@@ -15,15 +15,20 @@ public class AppActionProvider {
     public static enum APP_ACTIONS {
 
         // FILE
+// FILE
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP,
         // EDIT
         UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
         // TOOLS
         EXECUTE,
+        EXECUTE_ANY,
+        PROFILE,
+        TEST,
         // HELP
         ABOUT,
         // (others)
         DEPLOY,
+        UNDEPLOY,
         RELOAD_PROCESSES,
         SHOW_ERROR_MSG,
     }

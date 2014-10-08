@@ -82,6 +82,13 @@ public class AppActionHandler implements IAppActionHandler {
             case EXECUTE:
                 doExecute();
                 break;
+            case EXECUTE_ANY:
+                doExecute();
+                break;
+            case PROFILE:
+                break;
+            case TEST:
+                break;
             case ABOUT:
                 doAbout();
                 break;

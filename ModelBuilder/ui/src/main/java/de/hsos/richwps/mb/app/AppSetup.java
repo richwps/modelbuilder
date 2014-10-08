@@ -198,13 +198,19 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
 
         // Tools Menu Icons
-        UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));
+
 
         // Help Menu Icons
         UIManager.put(AppConstants.ICON_ABOUT_KEY, new ImageIcon(iconDir + "help-about-3.png", "about icon"));
 
         // (unsorted Icons)
-        UIManager.put(AppConstants.ICON_DEPLOY_KEY, new ImageIcon(iconDir + "server-go.png", "deploy icon"));
+        UIManager.put(AppConstants.ICON_DEPLOY_KEY, new ImageIcon(iconDir + "server-add.png", "deploy icon"));
+        UIManager.put(AppConstants.ICON_UNDEPLOY_KEY, new ImageIcon(iconDir + "server-delete.png", "undeploy icon"));
+        UIManager.put(AppConstants.ICON_EXECUTE_ANY_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));
+        UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "server-go.png", "execute icon"));
+        UIManager.put(AppConstants.ICON_PROFILE_KEY, new ImageIcon(iconDir + "server-chart.png", "profile icon"));
+        UIManager.put(AppConstants.ICON_TEST_KEY, new ImageIcon(iconDir + "report-magnify.png", "debug icon"));
+        
         UIManager.put(AppConstants.ICON_INFO_KEY, new ImageIcon(iconDir + "dialog-information-4.png", "info icon"));
         UIManager.put(AppConstants.ICON_RELOAD_KEY, new ImageIcon(iconDir + "database-refresh.png", "reload icon"));
         UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
