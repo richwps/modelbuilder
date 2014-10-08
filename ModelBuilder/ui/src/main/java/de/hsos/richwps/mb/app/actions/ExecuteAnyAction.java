@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 /**
  * Action for opening the execute-dialog.
  *
- * @author dziegenh
+ * @author dalcacer
  */
 public class ExecuteAnyAction extends AppAbstractAction {
 

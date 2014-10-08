@@ -35,6 +35,7 @@ import layout.TableLayout;
  * ModelBuilder entry point. Creates and connects all components.
  *
  * @author dziegenh
+ * @author dalcacer
  */
 public class App {
 
@@ -279,8 +280,14 @@ public class App {
      */
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
-        getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.DO_LAYOUT).setEnabled(!graphIsEmpty);
+
+        getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
+
     }
 
     protected PropertiesView getPropertiesView() {
@@ -358,13 +365,8 @@ public class App {
 
     void showExecute() {
         if (null == execViewDialog) {
-            List<String> remotes = new ArrayList<>();
-            remotes.add("http://richwps.edvsz.hs-osnabrueck.de/wps/WebProcessingService");
-            remotes.add("http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService");
-            remotes.add("http://richwps.edvsz.hs-osnabrueck.de/baw/WebProcessingService");
-            remotes.add("http://geoprocessing.demo.52north.org:8080/wps/WebProcessingService");
-            remotes.add("http://192.168.56.101:8080/wps/WebProcessingService");
-            remotes.add("http://this.is.no.valid.remote");
+            System.out.println();
+            List<String> remotes = (List) processProvider.getAllServer();
             execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
         }
 

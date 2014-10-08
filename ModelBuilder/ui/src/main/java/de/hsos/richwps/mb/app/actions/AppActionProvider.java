@@ -9,13 +9,13 @@ import java.util.logging.Logger;
  * Creates and provides all app actions (e.g. for menu or toolbar items).
  *
  * @author dziegenh
+ * @author dalcacer
  */
 public class AppActionProvider {
 
     public static enum APP_ACTIONS {
 
         // FILE
-// FILE
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP,
         // EDIT
         UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
@@ -107,5 +107,4 @@ public class AppActionProvider {
     public void fire(APP_ACTIONS action, String command) {
         getAction(action).fireActionPerformed(command);
     }
-
 }

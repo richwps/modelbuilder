@@ -112,15 +112,18 @@ public class SeverSelection extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(serverSelectionLabel, gridBagConstraints);
 
+        serverSelectionBox.setEditable(true);
         serverSelectionBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         serverSelectionBox.setPreferredSize(new java.awt.Dimension(400, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(serverSelectionBox, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents

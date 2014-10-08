@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 /**
  * Action for starting the undeployment.
  *
- * @author dziegenh
+ * @author dalcacer
  */
 public class UndeployAction extends AppAbstractAction {
 
