@@ -100,7 +100,7 @@ public class AppConstants {
             + "<span style=\"color:#37ABC8;\">&#149;</span>&nbsp;<b>Bundesanstalt für Wasserbau, Dienststelle Hamburg</b><br />"
             + "&nbsp;&nbsp;&nbsp;Wedeler Landstr. 157, 22559 Hamburg<br />"
             + "<span style=\"color:#37ABC8;\">&#149;</span>&nbsp;<b>Landesbetrieb Küstenschutz, Nationalpark und  Meeresschutz Schleswig-Holstein</b><br />"
-            + "&nbsp;&nbsp;&nbsp;Schloßgarten 1, 25829 Tönning<br />"
+            + "&nbsp;&nbsp;&nbsp;Schloßgarten 1, 25829 T&ouml;nning<br />"
             + "<br />"
             + "RichWPS is funded by Germany's <b>Federal Ministry of Education and Research</b>."
             + "</html>";
@@ -155,7 +155,7 @@ public class AppConstants {
     }
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
         {PREFERENCES_TAB.SEMANTICPROXY.name(), "SemanticProxy"},
-        {PREFERENCES_TAB.HTTPPROXY.name(), "Http Proxy"},};
+        {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},};
     // SP preferences
     public final static String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
     // Http proxy preferences
@@ -200,6 +200,7 @@ public class AppConstants {
         {"DEPLOY", "Deploy"},
         {"UNDEPLOY", "Undeploy"},
         {"RELOAD_PROCESSES", "Reload processes"},
+        {"ADD_REMOTE", "Add a new remote"},
         {"EXECUTE", "Execute this process"},
         {"EXECUTE_ANY", "Execute a process"},
         {"PROFILE", "Profile this process"},
@@ -295,6 +296,7 @@ public class AppConstants {
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
     public final static String ICON_INFO_KEY = "richwps_icon_info";
     public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
+    public final static String ICON_ADD_REMOTE = "richwps_icon_addremote";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";

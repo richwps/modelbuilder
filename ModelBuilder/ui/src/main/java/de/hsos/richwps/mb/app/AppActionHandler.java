@@ -22,6 +22,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * Handles all app actions (e.g. user interactions with the GUI).
  *
  * @author dziegenh
+ * @author dalcacer
+
  */
 public class AppActionHandler implements IAppActionHandler {
 
@@ -76,18 +78,24 @@ public class AppActionHandler implements IAppActionHandler {
             case RELOAD_PROCESSES:
                 doReloadProcesses();
                 break;
+            case ADD_REMOTE:
+                //TODO
+                break;
             case SHOW_ERROR_MSG:
                 JOptionPane.showMessageDialog(app.getFrame(), e.getActionCommand());
                 break;
             case EXECUTE:
+                //TODO
                 doExecute();
                 break;
             case EXECUTE_ANY:
                 doExecute();
                 break;
             case PROFILE:
+                //TODO
                 break;
             case TEST:
+                //TODO
                 break;
             case ABOUT:
                 doAbout();

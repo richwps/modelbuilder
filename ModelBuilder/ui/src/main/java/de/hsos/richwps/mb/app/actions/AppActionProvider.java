@@ -30,7 +30,8 @@ public class AppActionProvider {
         DEPLOY,
         UNDEPLOY,
         RELOAD_PROCESSES,
-        SHOW_ERROR_MSG,
+        ADD_REMOTE,
+        SHOW_ERROR_MSG
     }
 
     private IAppActionHandler actionHandler;
