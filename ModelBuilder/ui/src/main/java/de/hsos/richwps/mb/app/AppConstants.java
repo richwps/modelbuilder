@@ -201,6 +201,7 @@ public class AppConstants {
         {"UNDEPLOY", "Undeploy"},
         {"RELOAD_PROCESSES", "Reload processes"},
         {"ADD_REMOTE", "Add a new remote"},
+        {"PUBLISH", "Publish model at SemanticProxy"},
         {"EXECUTE", "Execute this process"},
         {"EXECUTE_ANY", "Execute a process"},
         {"PROFILE", "Profile this process"},
@@ -297,6 +298,7 @@ public class AppConstants {
     public final static String ICON_INFO_KEY = "richwps_icon_info";
     public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
     public final static String ICON_ADD_REMOTE = "richwps_icon_addremote";
+    public final static String ICON_PUBLISH = "richwps_icon_propagate";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";

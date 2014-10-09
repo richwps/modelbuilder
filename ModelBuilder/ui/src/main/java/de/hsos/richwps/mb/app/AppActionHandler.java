@@ -81,6 +81,9 @@ public class AppActionHandler implements IAppActionHandler {
             case ADD_REMOTE:
                 //TODO
                 break;
+            case PUBLISH:
+                //TODO
+                break;
             case SHOW_ERROR_MSG:
                 JOptionPane.showMessageDialog(app.getFrame(), e.getActionCommand());
                 break;

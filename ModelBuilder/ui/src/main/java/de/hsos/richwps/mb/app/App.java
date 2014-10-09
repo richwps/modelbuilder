@@ -287,7 +287,7 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
-
+        getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(!graphIsEmpty);
     }
 
     protected PropertiesView getPropertiesView() {
