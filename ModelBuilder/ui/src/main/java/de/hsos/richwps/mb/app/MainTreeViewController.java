@@ -6,19 +6,10 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.semanticProxy.entity.WpsServer;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-//class AppTreeNode extends DefaultMutableTreeNode {
-//
-//    public AppTreeNode(Object userObject) {
-//        super(userObject);
-//    }
-//
-//
-//
-//}
 
 /**
  * Controlls the main tree view component and it's interaction with the
@@ -78,10 +69,11 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(url);
 
                 if (connected || processProvider.connect(url)) {
-                    for (String server : processProvider.getAllServer()) {
-                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
+                    for (WpsServer server : processProvider.getAllServerWithProcesses()) {
+                        // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
+                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server.getEndpoint());
 
-                        for (ProcessEntity process : processProvider.getServerProcesses(server)) {
+                        for (ProcessEntity process : server.getProcesses()) {
                             serverNode.add(new DefaultMutableTreeNode(process));
                         }
                         processesNode.add(serverNode);

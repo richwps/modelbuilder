@@ -36,6 +36,7 @@ public class PreferencesSemanticProxy extends AbstractPreferencesTab {
         deleteButton = fieldPanel.getDeleteButton();
         deleteButton.setText(null);
         deleteButton.setIcon(UIManager.getIcon(AppConstants.ICON_DELETE_KEY));
+        deleteButton.setToolTipText("Delete selected URL");
 
         urlField = fieldPanel.getComboBox();
         urlField.setEditable(true);

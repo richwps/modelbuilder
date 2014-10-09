@@ -24,10 +24,8 @@ public class TreeView {
 
     private JTree tree;
 
-    private final ProcessProvider processProvider;
 
     public TreeView(TreeNode root, final ProcessProvider processProvider) {
-        this.processProvider = processProvider;
 
         tree = new JTree(root) {
 

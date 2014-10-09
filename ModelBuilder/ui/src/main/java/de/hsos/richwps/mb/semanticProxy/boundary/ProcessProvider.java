@@ -5,6 +5,7 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.semanticProxy.entity.WpsServer;
 import de.hsos.richwps.mb.semanticProxy.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
@@ -13,6 +14,7 @@ import de.hsos.richwps.sp.client.wps.gettypes.InAndOutputForm;
 import de.hsos.richwps.sp.client.wps.gettypes.Input;
 import de.hsos.richwps.sp.client.wps.gettypes.Network;
 import de.hsos.richwps.sp.client.wps.gettypes.Output;
+import de.hsos.richwps.sp.client.wps.gettypes.Process;
 import de.hsos.richwps.sp.client.wps.gettypes.WPS;
 import java.net.URL;
 import java.util.Collection;
@@ -84,7 +86,7 @@ public class ProcessProvider {
 
     /**
      * Receives all data belonging to a specific process. The process is
-     * identified by its (server) endpoint and its identifier.
+     * identified by its (server-) endpoint and its identifier.
      */
     public ProcessEntity getProcessEntity(String server, String identifier) {
         return getProcessWithPorts(server, identifier);
@@ -151,39 +153,51 @@ public class ProcessProvider {
         return null;
     }
 
-    /**
-     * Receives all processes for the given endpoint from the SP.
-     *
-     * @param server
-     * @return
-     */
-    public Collection<ProcessEntity> getServerProcesses(String server) {
+    public Collection<WpsServer> getAllServerWithProcesses() {
+        LinkedList<WpsServer> servers = new LinkedList<>();
 
-        // find desired endpoint (server)
-        LinkedList<ProcessEntity> serverProcesses = new LinkedList<>();
-        for (WPS wps : wpss) {
+        // indicate error occurences but don't abort loading servers.
+        // (errors are handled after the loading is done)
+        boolean rdfError = false;
+
+        if (null != net) {
             try {
-                if (server.equals(wps.getEndpoint())) {
-                    ProcessEntity process = null;
-
-                    for (de.hsos.richwps.sp.client.wps.gettypes.Process spProcess : wps.getProcesses()) {
-
-                        // Map process properties
-                        process = new ProcessEntity(server, spProcess.getIdentifier());
-                        process.setOwsAbstract(spProcess.getAbstract());
-                        process.setOwsTitle(spProcess.getTitle());
-
-                        // add process to current server's list
-                        serverProcesses.add(process);
-                    }
-
-                }
+                wpss = net.getWPSs();
             } catch (Exception ex) {
-                fireSpReceiveExceptionAsAppEvent(ex);
+                rdfError = true;
+            }
+
+            if (!rdfError) {
+                for (WPS wps : wpss) {
+                    try {
+                        WpsServer server = new WpsServer(wps.getEndpoint());
+                        for (Process process : wps.getProcesses()) {
+                            ProcessEntity processEntity = new ProcessEntity(wps.getEndpoint(), process.getIdentifier());
+                            processEntity.setOwsAbstract(process.getAbstract());
+                            processEntity.setOwsTitle(process.getTitle());
+                            processEntity.setIsLocal(true);
+
+                            server.addProcess(processEntity);
+                        }
+
+                        servers.add(server);
+
+                    } catch (Exception ex) {
+                        rdfError = true;
+                    }
+                }
             }
         }
 
-        return serverProcesses;
+        // handle occured errors
+        if (rdfError) {
+            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, this);
+        }
+
+        // TODO replace String with formatable AppConstant
+        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
+
+        return servers;
     }
 
     /**

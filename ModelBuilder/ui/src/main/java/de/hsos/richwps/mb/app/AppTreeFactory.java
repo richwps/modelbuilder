@@ -22,10 +22,16 @@ class TreeViewMouseAdapter extends MouseAdapter {
 
     private GraphView graphView;
     private TreeView treeView;
+    private ProcessProvider processProvider;
 
-    TreeViewMouseAdapter(GraphView graphView, TreeView treeView) {
+    TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider) {
         this.graphView = graphView;
         this.treeView = treeView;
+        this.processProvider = processProvider;
+    }
+
+    private ProcessProvider getProcessProvider() {
+        return processProvider;
     }
 
     @Override
@@ -38,7 +44,16 @@ class TreeViewMouseAdapter extends MouseAdapter {
                 Point location = graphView.getEmptyCellLocation(new Point(0, 0));
 
                 if (nodeObject instanceof ProcessEntity) {
-                    graphView.createNodeFromProcess((ProcessEntity) nodeObject, location);
+
+                    // load missing process data if necessary
+                    ProcessEntity process = ((ProcessEntity) nodeObject);
+                    if (!process.isIsFullyLoaded()) {
+                        process = getProcessProvider().getProcessEntity(process.getServer(), process.getOwsIdentifier());
+                        node.setUserObject(process);
+                    }
+
+                    // create graph cell (node) for this process
+                    graphView.createNodeFromProcess(process, location);
 
                 } else if (nodeObject instanceof ProcessPort) {
                     graphView.createNodeFromPort((ProcessPort) nodeObject, location);
@@ -62,7 +77,7 @@ class AppTreeFactory {
         root.add(new DefaultMutableTreeNode(""));
 
         TreeView treeView = new TreeView(root, processProvider);
-        treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView));
+        treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider));
         treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
         DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
         cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
