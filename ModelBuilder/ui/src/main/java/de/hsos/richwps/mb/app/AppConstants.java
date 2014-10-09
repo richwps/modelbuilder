@@ -72,6 +72,12 @@ public class AppConstants {
     public final static Point PREFERENCES_DIALOG_LOCATION = new Point(200, 150);
     public final static String PREFERENCES_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
     public final static String PREFERENCES_DIALOG_BTN_OK = DIALOG_BTN_OK;
+    
+    //Select Remote Dialog
+    public final static String SELECTREMOTE_DIALOG_TITLE = "Sever selection";
+    public final static String SELECTREMOTE_DIALOG_MSG = "Please select a RichWPS server to work with.";
+    public final static String SELECTREMOTE_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
+    public final static String SELECTREMOTE_DIALOG_BTN_OK = DIALOG_BTN_OK;
 
     // About Dialog
     /**
@@ -269,7 +275,7 @@ public class AppConstants {
     public final static String CONFIRM_EXIT_TITLE = "Exit";
     public final static String CONFIRM_OVERWRITE_FILE_TITLE = "File already exists";
     public final static String CONFIRM_OVERWRITE_FILE = "Overwrite the selected file?";
-
+    
     public final static String LOAD_MODEL_FAILED = "An error occured while loading the model.";
     public final static String SAVE_MODEL_FAILED = "An error occured while saving the model.";
     public final static String TMP_FILE_FAILED = "An error occured while create temproary files.";

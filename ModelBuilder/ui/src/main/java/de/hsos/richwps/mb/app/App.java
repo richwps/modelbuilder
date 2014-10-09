@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -363,9 +364,21 @@ public class App {
         deployManager.deploy();
     }
 
+    String askRemote() {
+        List<String> remotes = (List) processProvider.getAllServer();
+        Object[] remotes_arr = remotes.toArray();
+        String selectedRemote = (String) JOptionPane.showInputDialog(getFrame(),
+                AppConstants.SELECTREMOTE_DIALOG_MSG,
+                AppConstants.SELECTREMOTE_DIALOG_TITLE,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                remotes_arr,
+                remotes_arr[0]);
+        return selectedRemote;
+    }
+
     void showExecute() {
         if (null == execViewDialog) {
-            System.out.println();
             List<String> remotes = (List) processProvider.getAllServer();
             execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
         }

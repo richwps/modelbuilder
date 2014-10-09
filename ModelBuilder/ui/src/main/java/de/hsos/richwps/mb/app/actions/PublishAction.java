@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 /**
  * Action for layouting the graph.
  *
- * @author dziegenh
+ * @author dalcacer
  */
 public class PublishAction extends AppAbstractAction {
 

@@ -14,6 +14,7 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -117,6 +118,8 @@ public class AppActionHandler implements IAppActionHandler {
         }
 
         if (doNew) {
+            //TODO show remote selection dialog.
+            String remote = app.askRemote();
             getGraphView().newGraph();
             app.getFrame().resetGraphViewTitle();
             app.getUndoManager().discardAllEdits();
