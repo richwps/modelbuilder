@@ -363,6 +363,9 @@ public class App {
 
         deployManager.deploy();
     }
+    
+    void undeploy() {}
+    
 
     String askRemote() {
         List<String> remotes = (List) processProvider.getAllServer();

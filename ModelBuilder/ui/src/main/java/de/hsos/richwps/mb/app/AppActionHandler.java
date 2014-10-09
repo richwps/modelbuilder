@@ -24,7 +24,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  *
  * @author dziegenh
  * @author dalcacer
-
+ *
  */
 public class AppActionHandler implements IAppActionHandler {
 
@@ -69,6 +69,9 @@ public class AppActionHandler implements IAppActionHandler {
                 break;
             case DEPLOY:
                 doDeploy();
+                break;
+            case UNDEPLOY:
+                doUnDeploy();
                 break;
             case UNDO:
                 doUndo();
@@ -319,6 +322,11 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doDeploy() {
         app.deploy();
+    }
+
+    private void doUnDeploy() {
+        app.undeploy();
+
     }
 
     private void doUndo() {

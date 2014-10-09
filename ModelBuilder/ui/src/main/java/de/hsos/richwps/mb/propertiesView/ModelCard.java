@@ -30,7 +30,7 @@ class ModelCard extends AbstractPropertiesCard {
         contentPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.MINIMUM}}));
 
         Component panelContent = createModeldataPanel(null);
-        String processTitle = AppConstants.PROPERTIES_MODELDATA_TITLE;
+        String processTitle = AppConstants.PROPERTIES_MODELDATA;
         modeldataPanel = createTitledComponent(processTitle, panelContent);
         contentPanel.add(modeldataPanel, "0 0");
     }
@@ -74,7 +74,7 @@ class ModelCard extends AbstractPropertiesCard {
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 
         int y = 0;
-        modeldataPanel.add(createHeadLabel(AppConstants.PROPERTIES_MODELDATA_NAME), "0 " + y);
+        modeldataPanel.add(createHeadLabel(AppConstants.PROPERTIES_MODELDATA_OWS_IDENTIFIER), "0 " + y);
         modeldataPanel.add(nameLabel, "1 " + y);
         y++;
 

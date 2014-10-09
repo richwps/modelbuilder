@@ -14,12 +14,12 @@
             </p>
             <p>
                 As the connect-Methods imply, a RichWPS server is <b>uniquely</b> 
-                identified by a wps-endpoint. A RichWPS server wit transactional
+                identified by a wps-endpoint. A RichWPS server with transactional
                 capabilities is instantiated with both, the wps- and
                 wpst-endpoint.
             </p>
 
-            <p><b>ExecuteRequestDTO</b>
+            <p><b>ExecuteRequest</b>
                 Object that can be used to perfom an
                 wps:describeProcess()- and wps:execute()-Request.
                 Object that starts out with an endpoint and a processidentifier.
@@ -29,8 +29,11 @@
                 can be set. Once set, the RichWPSProvider is able to 
                 perform an wps:execute()-Request and to obtain the resulting data.
             </p>
-            <p><b>DeployRequestDTO</b>
+            <p><b>DeployRequest</b>
                 Object that can be used to perform an wpst:deploy()-Request.
+            </p>
+            <p><b>UndeployRequest</b>
+                Object that can be used to perform an wpst:undeploy()-Request.
             </p>
         </div>
 
