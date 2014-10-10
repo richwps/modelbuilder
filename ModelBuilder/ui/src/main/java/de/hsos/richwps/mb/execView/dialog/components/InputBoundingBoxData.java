@@ -13,7 +13,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
      * id For input-identification in InputParameterization.
      */
     private String id;
-    
+
     /**
      * specifier For usage in InputParameterization.
      */
@@ -30,13 +30,13 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
         String defaultvalue = this.specifier.getDefaultCRS();
-        
+
         this.id = theidentifier;
 
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
 
-        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " 
+        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: "
                 + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
             this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
@@ -46,33 +46,25 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         this.occurs.setText(occurstxt);
 
         this.selectType.removeAllItems();
-        
-        
-        //**** FIXME ****
+
         List<String> suppCRS = specifier.getSupportedCRS();
         String defaultCRS = specifier.getDefaultCRS();
-        
-        if(suppCRS.size()==1 && !(defaultCRS.equals(suppCRS.get(0)))) {
-            this.selectType.addItem(defaultCRS);
-            this.selectType.addItem(suppCRS.get(0));
-            this.selectType.setSelectedItem(defaultCRS);
-        } else {
-        //**** /FIXME ****
-            for (String type : specifier.getSupportedCRS()) {
-                this.selectType.addItem(type);
 
-                if (specifier.equals(specifier.getDefaultCRS())){
-                    this.selectType.addItem(type);
+        //Fill combobox, select defaultCRS
+        boolean defaultInSupported = false;
+        for (String type : suppCRS) {
+            if (type != null && !type.equals("")) {
+                this.selectType.addItem(type);
+                if (type.equals(defaultCRS)) {
+                    defaultInSupported = true;
                     this.selectType.setSelectedItem(type);
-                } else if(type!=null&&!type.equals("")){
-                    this.selectType.addItem(type);
                 }
             }
         }
-        
-
-        
-        this.value.setText(defaultvalue);
+        if (!defaultInSupported) {
+            this.selectType.addItem(defaultCRS);
+            this.selectType.setSelectedItem(defaultCRS);
+        }
     }
 
     /**
