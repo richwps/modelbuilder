@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.execView.dialog.components.InputBoundingBoxData;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
@@ -13,7 +14,11 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgumen
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import net.opengis.wps.x100.ExecuteDocument;
@@ -564,8 +569,19 @@ public class RichWPSProvider implements IRichWPSProvider {
                 String encoding = param.getEncoding();
                 String schema = param.getSchema();
                 executeBuilder.addComplexDataReference(key, url, schema, encoding, mimetype);
+            } else if (o instanceof InputBoundingBoxData) {
+                InputBoundingBoxDataArgument param;
+                param = (InputBoundingBoxDataArgument) o;
+                final String crs = param.getCrsType();
+                String[] split = param.getValue().split(",");
+                BigInteger dimension = BigInteger.valueOf(split.length);
+                List<String> values = Arrays.asList(split);
+                
+                //FIXME Correct values                
+                executeBuilder.addBoundingBoxData(
+                        key, crs, dimension, values, values
+                );
             }
-            //FIXME add BoundingBox
         }
     }
 
@@ -599,8 +615,10 @@ public class RichWPSProvider implements IRichWPSProvider {
                 executeBuilder.setMimeTypeForOutput(mimetype, key);
                 executeBuilder.setEncodingForOutput(encoding, key);
                 executeBuilder.setSchemaForOutput(schema, key);
+            } else if (o instanceof OutputBoundingBoxDataArgument) {
+                //FIXME BoundingBox
+                executeBuilder.addOutput(key);
             }
-            //FIXME add BoundingBox
         }
     }
 
