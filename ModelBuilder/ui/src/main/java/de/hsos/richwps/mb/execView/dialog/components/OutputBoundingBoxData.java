@@ -30,26 +30,24 @@ public class OutputBoundingBoxData extends javax.swing.JPanel {
 
         this.selectType.removeAllItems();
 
-        //**** FIXME ****
         List<String> suppCRS = specifier.getSupportedCRS();
         String defaultCRS = specifier.getDefaultCRS();
 
-        if (suppCRS.size() == 1 && !(defaultCRS.equals(suppCRS.get(0)))) {
-            this.selectType.addItem(defaultCRS);
-            this.selectType.addItem(suppCRS.get(0));
-            this.selectType.setSelectedItem(defaultCRS);
-        } else {
-        //**** /FIXME ****
-            for (String type : specifier.getSupportedCRS()) {
-                this.selectType.addItem(type);
 
-                if (specifier.getDefaultCRS().equals(type)){
-                    this.selectType.addItem(type);
+        //Fill combobox, select defaultCRS
+        boolean defaultInSupported = false;
+        for (String type : suppCRS) {
+            if (type != null && !type.equals("")) {
+                this.selectType.addItem(type);
+                if (type.equals(defaultCRS)) {
+                    defaultInSupported = true;
                     this.selectType.setSelectedItem(type);
-                } else if(type!=null&&!type.equals("")){
-                    this.selectType.addItem(type);
                 }
             }
+        }
+        if (!defaultInSupported) {
+            this.selectType.addItem(defaultCRS);
+            this.selectType.setSelectedItem(defaultCRS);
         }
         
         //FIXME
