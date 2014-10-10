@@ -121,16 +121,16 @@ public class RichWPSProviderTest extends TestCase {
         request.setIdentifier(processid);
         instance.describeProcess(request);
         List<IInputSpecifier> inputs = request.getInputs();
-        assertEquals(2, inputs.size()); //3 with BBOX suport
+        assertEquals(3, inputs.size()); //3 with BBOX support
         assertEquals("ComplexInputData", ((IInputSpecifier) inputs.get(0)).getIdentifier());
         assertEquals("LiteralInputData", ((IInputSpecifier) inputs.get(1)).getIdentifier());
-        //assertEquals("BBOxInputData", ((IInputSpecifier) inputs.get(2)).getIdentifier());
+        assertEquals("BBOXInputData", ((IInputSpecifier) inputs.get(2)).getIdentifier());
 
         List<IOutputSpecifier> outputs = request.getOutputs();
-        assertEquals(2, outputs.size()); //3 with BBOX suport
+        assertEquals(3, outputs.size()); //3 with BBOX support
         assertEquals("ComplexOutputData", ((IOutputSpecifier) outputs.get(0)).getIdentifier());
         assertEquals("LiteralOutputData", ((IOutputSpecifier) outputs.get(1)).getIdentifier());
-        //assertEquals("BBOXOutputData", ((IOutputSpecifier)outputs.get(2)).getIdentifier());   
+        assertEquals("BBOXOutputData", ((IOutputSpecifier)outputs.get(2)).getIdentifier());   
     }
 
     public void testEchoProcess() {
