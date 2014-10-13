@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.propertiesView.propertyComponents;
+package de.hsos.richwps.mb.properties;
 
 import java.awt.Component;
 

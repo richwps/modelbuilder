@@ -11,12 +11,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import layout.TableLayout;
 
+@Deprecated
 /**
  * Property card showing model properties.
  *
  * @author dziegenh
  */
-class ModelCard extends AbstractPropertiesCard {
+class ModelCard extends PropertiesCard {
 
     private TitledComponent modeldataPanel;
 

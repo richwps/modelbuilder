@@ -3,23 +3,49 @@ package de.hsos.richwps.mb.graphView.mxGraph;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyDropdown;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The model for the RIchWPS graph. Extends the underlying mxGraphModel.
  *
  * @author dziegenh
  */
-public class GraphModel extends mxGraphModel {
+public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
     private String name;
 
+    private List<PropertyGroup> propertyGroups;
+
     public GraphModel() {
         super();
+
+        propertyGroups = new LinkedList<>();
+
+        PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_IDENTIFIER, "id"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_ABSTRACT, "abstract"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_TITLE, "title"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_VERSION, "version"));
+
+        // TODO add servers from the actual list.
+        PropertyGroup group2 = new PropertyGroup("Deployment");
+        group2.addComponent(new PropertyDropdown("Server", new String[]{"Server a", "Server b"}));
+
+        propertyGroups.add(group1);
+        propertyGroups.add(group2);
     }
 
     public GraphModel(mxGraphModel modelToClone) throws CloneNotSupportedException {
-        super();
+        this();
 
         mergeChildren((mxICell) modelToClone.getRoot(), (mxCell) getRoot(), true);
     }
@@ -170,6 +196,27 @@ public class GraphModel extends mxGraphModel {
         clone.setName(this.name);
 
         return clone;
+    }
+
+    @Override
+    public String getPropertiesObjectName() {
+        return "graph_model";
+    }
+
+    @Override
+    public Collection<PropertyGroup> getPropertyGroups() {
+        return propertyGroups;
+    }
+
+    @Override
+    public Object getValueOf(String propertyName) {
+        for(PropertyGroup aGroup : getPropertyGroups()) {
+            AbstractPropertyComponent value = aGroup.getPropertyComponent(propertyName);
+            if(null != value)
+                return value;
+        }
+
+        return null;
     }
 
 }

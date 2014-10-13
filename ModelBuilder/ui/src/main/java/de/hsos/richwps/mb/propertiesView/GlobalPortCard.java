@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
@@ -42,7 +42,7 @@ public class GlobalPortCard extends AbstractPortCard {
         String processTitle = AppConstants.PROPERTIES_GLOBALPORTDATA_TITLE;
         portPanel = createTitledComponent(processTitle, panelContent);
 
-        for (AbstractPropertyComponent field : propertyFields) {
+        for (AbstractPropertyComponent field : getPropertyFields()) {
             switch (field.getPropertyName()) {
                 case PORT_TITLE:
                     titleField = (JTextField) field.getComponent();

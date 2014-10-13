@@ -58,5 +58,5 @@ public class PropertyCardsConfig {
     /**
      * Font size of property fields.
      */
-    public final static float propertyFieldFontSize = 10.0F;
+    public final static float propertyFieldFontSize = 11.0F;
 }

@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.propertiesView.propertyChange;
 
-import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import java.util.LinkedList;
 import java.util.List;
 

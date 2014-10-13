@@ -5,8 +5,8 @@ import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyComplexDataTypeFormat;
-import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyMultilineLabel;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyComplexDataTypeFormat;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
 import de.hsos.richwps.mb.semanticProxy.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
@@ -22,7 +22,7 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
-public class AbstractPortCard extends AbstractPropertiesCard {
+public class AbstractPortCard extends PropertiesCard {
 
     public AbstractPortCard(Window parentWindow, JPanel contentPanel) {
         super(parentWindow, contentPanel);
@@ -83,7 +83,7 @@ public class AbstractPortCard extends AbstractPropertiesCard {
      *
      * @param port
      * @param parent
-     * @param rowOffset
+     * @param editable 
      * @return
      */
     protected JPanel createPortPanel(ProcessPort port, JPanel parent, boolean editable) {
@@ -134,7 +134,8 @@ public class AbstractPortCard extends AbstractPropertiesCard {
 
             // Row 9
             parent.add(createHeadLabel("Format"), "0 " + rowOffset);
-            // TODO move to create method
+            
+            // TODO move to "create" method
             ComplexDataTypeFormat cdtvalue = null;
             IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
             if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
@@ -145,7 +146,7 @@ public class AbstractPortCard extends AbstractPropertiesCard {
                 PropertyComplexDataTypeFormat formatProperty = new PropertyComplexDataTypeFormat();
                 formatProperty.setEditable(editable);
                 formatProperty.setValue(cdtvalue);
-                propertyFields.add(formatProperty);
+                getPropertyFields().add(formatProperty);
                 parent.add(formatProperty.getComponent(), "1 " + rowOffset++);
             } catch (LoadDataTypesException ex) {
                 // TODO handle or throw exception

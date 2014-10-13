@@ -1,5 +1,6 @@
-package de.hsos.richwps.mb.propertiesView.propertyComponents;
+package de.hsos.richwps.mb.properties.propertyComponents;
 
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.Component;
 

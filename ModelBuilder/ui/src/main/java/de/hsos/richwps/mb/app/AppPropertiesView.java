@@ -9,7 +9,7 @@ import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
-import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.UiHelper;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
