@@ -453,7 +453,7 @@ public void testDeployUndeploy() {
 
         
         System.out.println("performing deploy");
-        DeployRequest request = new DeployRequest(wpsturl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
+        DeployRequest request = new DeployRequest(wpsurl, wpsturl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
         request.addInput(this.createComplexDataInput1());
         request.addInput(this.createLiteralDataInput1());
         request.addOutput(this.createComplexDataOutput1());
@@ -464,7 +464,7 @@ public void testDeployUndeploy() {
         assertEquals(request.isException(), false);
 
         System.out.println("performing undeploy");
-        UndeployRequest unrequest = new UndeployRequest(wpsturl, "Testprocess");
+        UndeployRequest unrequest = new UndeployRequest(wpsurl, wpsturl, "Testprocess");
         instance.undeployProcess(unrequest);
         assertEquals(unrequest.isException(), false);
     }

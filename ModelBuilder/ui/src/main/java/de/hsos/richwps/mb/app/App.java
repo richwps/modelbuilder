@@ -363,11 +363,17 @@ public class App {
 
         deployManager.deploy();
     }
-    
-    void undeploy() {}
-    
 
+    void undeploy() {
+    }
+
+    /**
+     * Shotws stored WPS-uris, so one can be selected.
+     *
+     * @return selected WPS server.
+     */
     String askRemote() {
+        //TODO receive list from sp+cache.
         List<String> remotes = (List) processProvider.getAllServer();
         Object[] remotes_arr = remotes.toArray();
         String selectedRemote = (String) JOptionPane.showInputDialog(getFrame(),
@@ -378,6 +384,20 @@ public class App {
                 remotes_arr,
                 remotes_arr[0]);
         return selectedRemote;
+    }
+
+    /**
+     * Shows a dialog to enter a new uri.
+     *
+     * @return entered wps-server.
+     */
+    void addRemote() {
+        String selectedRemote = (String) JOptionPane.showInputDialog(getFrame(),
+                AppConstants.ADDREMOTE_DIALOG_MSG,
+                AppConstants.ADDREMOTE_DIALOG_TITLE,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        mainTreeView.addNode(selectedRemote);
     }
 
     void showExecute() {

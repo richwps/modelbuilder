@@ -83,7 +83,7 @@ public class AppActionHandler implements IAppActionHandler {
                 doReloadProcesses();
                 break;
             case ADD_REMOTE:
-                //TODO
+                addRemote();
                 break;
             case PUBLISH:
                 //TODO
@@ -107,7 +107,6 @@ public class AppActionHandler implements IAppActionHandler {
             case ABOUT:
                 doAbout();
                 break;
-
             default:
             // do nothing
         }
@@ -326,9 +325,12 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doUnDeploy() {
         app.undeploy();
-
     }
 
+    private void addRemote(){
+        app.addRemote();
+    }
+    
     private void doUndo() {
         app.getUndoManager().undo();
         app.updateGraphDependentActions();

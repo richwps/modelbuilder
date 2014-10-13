@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
@@ -125,7 +126,10 @@ public class AppDeployManager {
         String processversion = config.getValue(DeployConfigField.VERSION);
         String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
 
-        DeployRequest request = new DeployRequest(wpstendpoint, identifier, title, processversion, RichWPSProvider.deploymentProfile);
+        //TODO assumption :(
+        String wpsuri = wpstendpoint;
+        wpsuri = wpsuri.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+        DeployRequest request = new DeployRequest(wpsuri, wpstendpoint, identifier, title, processversion, RichWPSProvider.deploymentProfile);
         request.setExecutionUnit(rola);
         request.setAbstract(wpsAbstract);
         try {

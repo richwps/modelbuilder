@@ -16,6 +16,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * ModelBuilder.
  *
  * @author dziegenh
+ * @author dalcacer
  */
 public class MainTreeViewController extends AbstractTreeViewController {
 
@@ -126,6 +127,13 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.add(local);
 
         updateUI();
+    }
+
+    /**
+     * Adds a node.
+     * @param from uri (WPS-endpoint).
+     */
+    public void addNode(String uri) {
     }
 
 }

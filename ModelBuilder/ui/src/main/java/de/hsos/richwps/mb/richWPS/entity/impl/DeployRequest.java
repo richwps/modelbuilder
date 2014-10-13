@@ -20,7 +20,7 @@ import org.n52.wps.client.transactional.ProcessDescriptionTypeBuilder;
 public class DeployRequest implements IRequest {
 
     /**
-     * The endpoint to call or discover.
+     * The wps-t endpoint to call.
      */
     private String endpoint;
 
@@ -79,12 +79,12 @@ public class DeployRequest implements IRequest {
     private String exception = "";
 
     /**
-     * The corresponding serverid.
+     * The corresponding serverid (wps-endpoint).
      */
     private String serverid = "";
 
     /**
-     * Constructs a new DeployRequest.
+     * Constructs a new DeployRequest
      */
     public DeployRequest() {
         this.endpoint = "";
@@ -107,6 +107,32 @@ public class DeployRequest implements IRequest {
      * @param title
      * @param processversion
      * @param deploymentprofile
+     */
+    public DeployRequest(final String serverid, final String endpoint, final String identifier,
+            final String title, final String processversion, final String deploymentprofile) {
+        this.serverid = serverid;
+        this.endpoint = endpoint;
+        this.identifier = identifier;
+        this.title = title;
+        this.processversion = processversion;
+        this.deploymentprofile = deploymentprofile;
+
+        this.executionUnit = "";
+        this.inputs = new ArrayList<>();
+        this.outputs = new ArrayList<>();
+        this.theabstract = "";
+        this.keepExecUnit = false;
+    }
+
+    /**
+     * Constructs a new DeployRequest.
+     *
+     * @param endpoint
+     * @param identifier
+     * @param title
+     * @param processversion
+     * @param deploymentprofile
+     * @deprecated 
      */
     public DeployRequest(final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {
@@ -146,6 +172,7 @@ public class DeployRequest implements IRequest {
      */
     @Override
     public String getServerId() {
+        //TODO assumption :(
         if (this.serverid.length() == 0) {
             String uri = this.endpoint;
             uri = uri.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);

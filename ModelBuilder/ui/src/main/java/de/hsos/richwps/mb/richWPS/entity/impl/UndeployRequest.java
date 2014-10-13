@@ -6,7 +6,6 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.util.List;
 
-
 /**
  * Represents a UndeployRequest. The RichWPSProvider is able to perform a
  * wpst:undeploy()-Request with this object.
@@ -15,7 +14,13 @@ import java.util.List;
  */
 public class UndeployRequest implements IRequest {
 
+    /**
+     * The wps-t endpoint to call.
+     */
     private String endpoint = "";
+    /**
+     * The id of the process which shall be undeployed.
+     */
     private String identifier = "";
     /**
      * Exception instead of result.
@@ -25,16 +30,22 @@ public class UndeployRequest implements IRequest {
      * Exception text.
      */
     private String exception = "";
-    
-       /**
-     * The corresponding serverid.
+
+    /**
+     * The corresponding serverid (wps-endpoint).
      */
     private String serverid = "";
 
-    public UndeployRequest(String endpoint, String identifier) {
+    /**
+     * Constructs a new Undeploy-Request..
+     * @param endpoint
+     * @param identifier 
+     */
+    public UndeployRequest(String serverid, String endpoint, String identifier) {
+        this.serverid=serverid;
         this.endpoint = endpoint;
         this.identifier = identifier;
-        this.exception="";
+        this.exception = "";
     }
 
     @Override
@@ -47,7 +58,6 @@ public class UndeployRequest implements IRequest {
         return this.identifier;
     }
 
-     
     /**
      *
      * @return
@@ -61,6 +71,7 @@ public class UndeployRequest implements IRequest {
         }
         return serverid;
     }
+
     /**
      *
      * @return
@@ -86,18 +97,18 @@ public class UndeployRequest implements IRequest {
     @Override
     public void addException(final String message) {
         wasException = true;
-        this.exception+=message;
-    
+        this.exception += message;
+
     }
-    
+
     @Override
-    public void flushException(){
-        this.wasException=false;
-        this.exception="";
+    public void flushException() {
+        this.wasException = false;
+        this.exception = "";
     }
-    
+
     @Override
-    public void flushResults(){
+    public void flushResults() {
         //TODO nothing to flush, yet.
     }
 
