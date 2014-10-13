@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.richWPS.boundary;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
  * Interface to RichWPS-enabled servers.
  *
  * @author dalcacer
+ * @version 0.0.2
  */
 public interface IRichWPSProvider {
     public static final String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";
@@ -86,6 +88,15 @@ public interface IRichWPSProvider {
      */
     public List<String> getAvailableProcesses(final String wpsurl);
 
+     /**
+     * Describes a process, via wps:describeProcess()-Request.
+     * Produces ProcessDescription.
+     *
+     * @param request ProcessDescription with endpoint and processid.
+     *
+     */
+    public void describeProcess(ProcessDescription request);
+    
     /**
      * Describes a process, via wps:describeProcess()-Request.
      *

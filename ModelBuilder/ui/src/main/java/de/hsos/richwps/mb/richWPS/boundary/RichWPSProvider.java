@@ -67,20 +67,21 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
 
-     /**
+    /**
      * Disconnects all connected sevices.
      *
      * @throws java.lang.Exception
      */
     @Override
     public void disconnect() throws Exception {
-        this.wps=WPSClientSession.getInstance();
+        this.wps = WPSClientSession.getInstance();
         List<String> endpoints = this.wps.getLoggedServices();
-        for(String endpoint:endpoints){
+        for (String endpoint : endpoints) {
             this.wps.disconnect(endpoint);
         }
         //TODO
     }
+
     /**
      * Connects the provider to a WPS-server.
      *
@@ -213,13 +214,14 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Describes process and its' in and outputs.
+     * Describes a process, via wps:describeProcess()-Request. Produces
+     * ProcessDescription.
      *
-     * @param request ExecuteRequestDTO with endpoint and processid.
+     * @param request ProcessDescription with endpoint and processid.
      *
      */
     @Override
-    public void describeProcess(ExecuteRequest request) {
+    public void describeProcess(de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription request) {
         try {
             String wpsurl = request.getEndpoint();
             String[] processes = new String[1];
@@ -248,6 +250,17 @@ public class RichWPSProvider implements IRichWPSProvider {
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n " + ex.getLocalizedMessage());
         }
+    }
+
+    /**
+     * Describes process and its' in and outputs.
+     *
+     * @param request ExecuteRequestDTO with endpoint and processid.
+     *
+     */
+    @Override
+    public void describeProcess(ExecuteRequest request) {
+        this.describeProcess((de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription) request);
     }
 
     /**
@@ -331,7 +344,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             //de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
             //FIXME
-            String endp = request.getEndpoint().split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0]+DEFAULT_52N_WPS_ENDPOINT;
+            String endp = request.getEndpoint().split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
             System.err.println(endp);
             Object response = this.wpst.deploy(endp, builder.getDeploydocument());
 
@@ -503,7 +516,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(ExecuteRequest request, ProcessDescriptionType process) {
+    private void execAddInputs(de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
         InputDescriptionType[] _inputs = inputs.getInputArray();
         for (InputDescriptionType description : _inputs) {
@@ -518,7 +531,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private void execAddOutputs(ExecuteRequest request, ProcessDescriptionType process) {
+    private void execAddOutputs(de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription request, ProcessDescriptionType process) {
 
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
         OutputDescriptionType[] _outputs = outputs.getOutputArray();
