@@ -5,6 +5,7 @@ import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyDropdown;
@@ -30,10 +31,10 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         propertyGroups = new LinkedList<>();
 
         PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_IDENTIFIER, "id"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_ABSTRACT, "abstract"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_TITLE, "title"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_VERSION, "version"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version"));
 
         // TODO add servers from the actual list.
         PropertyGroup group2 = new PropertyGroup("Deployment");
@@ -205,6 +206,16 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     @Override
     public Collection<? extends IObjectWithProperties> getProperties() {
         return this.propertyGroups;
+    }
+
+    public Object getValueOf(String propertyName) {
+        for (PropertyGroup aGroup : propertyGroups) {
+            AbstractPropertyComponent value = aGroup.getPropertyComponent(propertyName);
+            if (null != value) {
+                return value;
+            }
+        }
+        return null;
     }
 
 }

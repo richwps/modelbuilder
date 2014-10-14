@@ -253,10 +253,10 @@ public class AppConstants {
     public final static String PROPERTIES_MODELDATA_TITLE = "Model";
     public final static String PROPERTIES_MODELDATA_IDENTIFIER = "Name";
     public final static String PROPERTIES_MODELDATA = "OWS information";
-    public final static String PROPERTIES_MODELDATA_OWS_IDENTIFIER = "Identifier";
-    public final static String PROPERTIES_MODELDATA_OWS_TITLE = "Title";
-    public final static String PROPERTIES_MODELDATA_OWS_ABSTRACT = "Abstract";
-    public final static String PROPERTIES_MODELDATA_OWS_VERSION = "Version";
+    public final static String PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER = "Identifier";
+    public final static String PROPERTIES_KEY_MODELDATA_OWS_TITLE = "Title";
+    public final static String PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT = "Abstract";
+    public final static String PROPERTIES_KEY_MODELDATA_OWS_VERSION = "Version";
     public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
     // Undo-/Redo-Manager
     public final static String UNDOMANAGER_CANT_UNDO = "Can't undo";

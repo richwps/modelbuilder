@@ -75,7 +75,7 @@ class ModelCard extends PropertiesCard {
         nameLabel.setFont(nameLabel.getFont().deriveFont(Font.BOLD));
 
         int y = 0;
-        modeldataPanel.add(createHeadLabel(AppConstants.PROPERTIES_MODELDATA_OWS_IDENTIFIER), "0 " + y);
+        modeldataPanel.add(createHeadLabel(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER), "0 " + y);
         modeldataPanel.add(nameLabel, "1 " + y);
         y++;
 
