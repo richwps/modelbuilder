@@ -5,7 +5,6 @@ import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyDropdown;
@@ -204,19 +203,8 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     }
 
     @Override
-    public Collection<PropertyGroup> getPropertyGroups() {
-        return propertyGroups;
-    }
-
-    @Override
-    public Object getValueOf(String propertyName) {
-        for(PropertyGroup aGroup : getPropertyGroups()) {
-            AbstractPropertyComponent value = aGroup.getPropertyComponent(propertyName);
-            if(null != value)
-                return value;
-        }
-
-        return null;
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        return this.propertyGroups;
     }
 
 }

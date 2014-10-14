@@ -25,13 +25,6 @@ public interface IObjectWithProperties {
      *
      * @return
      */
-    public Collection<PropertyGroup> getPropertyGroups();
+    public Collection<? extends IObjectWithProperties> getProperties();
 
-    /**
-     * Returns a specific property value.
-     *
-     * @param propertyName
-     * @return
-     */
-    public Object getValueOf(String propertyName);
 }

@@ -1,14 +1,15 @@
 package de.hsos.richwps.mb.properties;
 
 import java.awt.Component;
+import java.util.Collection;
 
 /**
- * Basic class for GUI components which represent a property value. Properties
- * are identified by their name.
+ * Basic class for GUI components which represent a property. Properties are
+ * identified by their name.
  *
  * @author dziegenh
  */
-public abstract class AbstractPropertyComponent {
+public abstract class AbstractPropertyComponent implements IObjectWithProperties {
 
     private String name;
 
@@ -27,7 +28,8 @@ public abstract class AbstractPropertyComponent {
      *
      * @return
      */
-    public String getPropertyName() {
+    @Override
+    public String getPropertiesObjectName() {
         return this.name;
     }
 
@@ -59,5 +61,15 @@ public abstract class AbstractPropertyComponent {
      * @param editable
      */
     public abstract void setEditable(boolean editable);
+
+    /**
+     * A component doesn't have nested properties.
+     *
+     * @return
+     */
+    @Override
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        return null;
+    }
 
 }
