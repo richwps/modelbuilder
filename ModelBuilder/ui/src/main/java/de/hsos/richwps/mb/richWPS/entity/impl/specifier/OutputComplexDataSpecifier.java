@@ -59,7 +59,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     public OutputComplexDataSpecifier(OutputDescriptionType description) {
         this.description = description;
 
-        types = new ArrayList<List>();
+        types = new ArrayList<>();
         type = description.getComplexOutput();
         this.identifier = description.getIdentifier().getStringValue();
 
@@ -70,17 +70,18 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         }
         this.title = description.getTitle().getStringValue();
         ComplexDataCombinationsType subtypes = type.getSupported();
+        
+        if (subtypes != null) {
+            ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
-        ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
-
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            List<String> atype = new ArrayList<>();
-            atype.add(thetype.getMimeType());
-            atype.add(thetype.getSchema());
-            atype.add(thetype.getEncoding());
-            this.types.add(atype);
+            for (ComplexDataDescriptionType thetype : subtypes_) {
+                List<String> atype = new ArrayList<>();
+                atype.add(thetype.getMimeType());
+                atype.add(thetype.getSchema());
+                atype.add(thetype.getEncoding());
+                this.types.add(atype);
+            }
         }
-
         net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = this.type.getDefault();
         ComplexDataDescriptionType thetype = thedefaulttype.getFormat();
         this.defaulttype = new ArrayList();
@@ -220,12 +221,11 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         ComplexDataCombinationsType supportedFormats = ComplexDataCombinationsType.Factory.newInstance();
         for (List atype : this.types) {
 
-    
             String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
             String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
-            schema=this.nullify(schema);
+            schema = this.nullify(schema);
             String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);//TRICKY wps-client-lib needs null.
-            encoding=this.nullify(encoding);
+            encoding = this.nullify(encoding);
             //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
             ComplexDataDescriptionType desctype = supportedFormats.addNewFormat();
             desctype.setEncoding(encoding);
@@ -234,12 +234,11 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         }
 
         //create defaulttype
-        
         String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
         String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
-        schema=this.nullify(schema);
+        schema = this.nullify(schema);
         String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
-        encoding=this.nullify(encoding);
+        encoding = this.nullify(encoding);
 
         //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
         ComplexDataCombinationType ogcdefaulttype = OutputDescriptionTypeBuilder.createComplexDataCombiType(mimetype, encoding, schema);

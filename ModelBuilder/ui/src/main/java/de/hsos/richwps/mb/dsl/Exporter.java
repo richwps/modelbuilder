@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.dsl;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.*;
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -23,7 +24,7 @@ import java.util.Map;
  * @author jkovalev
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.3
+ * @version 0.0.4
  */
 public class Exporter {
 
@@ -70,14 +71,19 @@ public class Exporter {
     }
 
     /**
-     * Launches the exporting pe and writes results to specifed file
+     * Launches the export and writes results to specifed file.
      *
      * @param path file to write to.
      * @param wpstendpoint for local/remote detection.
      * @throws Exception
      */
-    public void export(String path, String wpstendpoint) throws Exception {
-
+    public void export(String path) throws Exception {
+        
+        String identifier = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        String title = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        String version = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        String wpstuurl = (String)  this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        
         Writer writer = new Writer();
 
         createUniqueIdentifiers(graph.getAllFlowOutputPorts());
@@ -91,7 +97,7 @@ public class Exporter {
             if (this.graph.getGraphModel().isProcess(cell)) {
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
                 //local/remote identification based on given hostname.
-                String baseuria = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
+                String baseuria = wpstuurl.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
                 this.handleProcessCell(cell, isLocalBinding);
@@ -115,7 +121,7 @@ public class Exporter {
      * @param ws Worksequence to write to
      * @throws Exception
      */
-    protected void handleInputCell(mxICell input) throws Exception {
+    private void handleInputCell(mxICell input) throws Exception {
 
         //when global input cell is connected to global output cell, generate assignment.
         for (int i = 0; i < input.getEdgeCount(); i++) {
@@ -156,7 +162,7 @@ public class Exporter {
      *
      * @throws Exception
      */
-    protected void handleOutputCell(mxICell output) throws Exception {
+    private void handleOutputCell(mxICell output) throws Exception {
         // Check incoming edges and look up the values in variables from the reference map
         Object[] incoming = graph.getIncomingEdges(output);
         for (Object in : incoming) {
@@ -191,7 +197,7 @@ public class Exporter {
      * @param isLocalBinding information about binding type.
      * @throws Exception e.
      */
-    protected void handleProcessCell(mxICell processVertex, boolean isLocalBinding) throws Exception {
+    private void handleProcessCell(mxICell processVertex, boolean isLocalBinding) throws Exception {
 
         // Get inputs from variable reference map
         Object[] incoming = graph.getIncomingEdges(processVertex);
@@ -320,15 +326,15 @@ public class Exporter {
         }
     }
 
-    protected void createUniqueIdentifiers(List<ProcessPort> ports) {
+    private void createUniqueIdentifiers(List<ProcessPort> ports) {
         GraphHandler.createRawIdentifiers(ports);
     }
 
-    protected String getOwsIdentifier(String rawIdentifier) {
+    private String getOwsIdentifier(String rawIdentifier) {
         return GraphHandler.getOwsIdentifier(rawIdentifier);
     }
 
-    protected String getUniqueIdentifier(String rawIdentifier) {
+    private String getUniqueIdentifier(String rawIdentifier) {
         return GraphHandler.getUniqueIdentifier(rawIdentifier);
     }
 }

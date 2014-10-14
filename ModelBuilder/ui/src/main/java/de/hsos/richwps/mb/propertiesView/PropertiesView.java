@@ -7,7 +7,6 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyComplexDataTypeFormat;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
@@ -188,37 +187,45 @@ public class PropertiesView extends TitledComponent {
         return modelCard;
     }
 
-    private void setupPropertyFields(final CARD card, final IObjectWithProperties objectWithProperties) {
-        for (PropertyGroup aGroup : objectWithProperties.getPropertyGroups()) {
-            for (final AbstractPropertyComponent property : aGroup.getPropertyComponents().values()) {
+    private void setupPropertyFields(final CARD card, final IObjectWithProperties property) {
+//        for (IObjectWithProperties property : objectWithProperties.getProperties()) {
+//            for (final AbstractPropertyComponent property : properties.getPropertyComponents().values()) {
 
-                if (property instanceof PropertyTextField) {
-                    // listen to changes
-                    property.getComponent().addFocusListener(new FocusAdapter() {
-                        @Override
-                        public void focusLost(FocusEvent e) {
-                            firePropertyChangeEvent(card, property.getPropertyName(), objectWithProperties, property.getValue());
-                        }
-                    });
-                    // setup GUI
-                    JTextField label = (JTextField) property.getComponent();
-                    CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
-                    label.setBorder(border);
-                    label.setFont(label.getFont().deriveFont(PropertyCardsConfig.propertyFieldFontSize));
-                    label.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseEntered(MouseEvent e) {
-                            parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-                        }
+        if (property instanceof PropertyTextField) {
+            final AbstractPropertyComponent propertyComponent = (AbstractPropertyComponent) property;
 
-                        @Override
-                        public void mouseExited(MouseEvent e) {
-                            parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                        }
-                    });
+            // listen to changes
+            propertyComponent.getComponent().addFocusListener(new FocusAdapter() {
+                @Override
+                public void focusLost(FocusEvent e) {
+                    firePropertyChangeEvent(card, property.getPropertiesObjectName(), property, propertyComponent.getValue());
+                }
+            });
+            // setup GUI
+            JTextField label = (JTextField) ((AbstractPropertyComponent) property).getComponent();
+            CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
+            label.setBorder(border);
+            label.setFont(label.getFont().deriveFont(PropertyCardsConfig.propertyFieldFontSize));
+            label.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
                 }
 
-                // TODO setup additional components
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
+            });
+        }
+
+        if (null != property.getProperties()) {
+            for (IObjectWithProperties aProperty : property.getProperties()) {
+                setupPropertyFields(card, aProperty);
+            }
+        }
+
+        // TODO setup additional components
 //                    else if (property instanceof PropertyComplexDataTypeFormat) {
 //                    ComplexDataTypeFormatLabel component = (ComplexDataTypeFormatLabel) property.getComponent();
 //                    component.addSelectionListener(new IFormatSelectionListener() {
@@ -228,9 +235,9 @@ public class PropertiesView extends TitledComponent {
 //                        }
 //                    });
 //                }
-            }
-        }
     }
+//        }
+//}
 
     private SingleProcessCard getSingleProcessCard() {
         if (null == singleProcessCard) {
@@ -261,7 +268,7 @@ public class PropertiesView extends TitledComponent {
         }
 
         for (AbstractPropertyComponent component : properties) {
-            if (component.getPropertyName().equals(property)) {
+            if (component.getPropertiesObjectName().equals(property)) {
                 return component;
             }
         }
@@ -279,7 +286,7 @@ public class PropertiesView extends TitledComponent {
                     property.getComponent().addFocusListener(new FocusAdapter() {
                         @Override
                         public void focusLost(FocusEvent e) {
-                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertyName(), getGlobalPortCard().getPort(), property.getValue());
+                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertiesObjectName(), getGlobalPortCard().getPort(), property.getValue());
                         }
                     });
 
@@ -288,7 +295,7 @@ public class PropertiesView extends TitledComponent {
                     component.addSelectionListener(new IFormatSelectionListener() {
                         @Override
                         public void formatSelected(ComplexDataTypeFormat format) {
-                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertyName(), getGlobalPortCard().getPort(), format);
+                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertiesObjectName(), getGlobalPortCard().getPort(), format);
                         }
                     });
                 }

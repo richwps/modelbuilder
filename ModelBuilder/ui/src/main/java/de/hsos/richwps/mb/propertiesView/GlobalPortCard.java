@@ -43,7 +43,7 @@ public class GlobalPortCard extends AbstractPortCard {
         portPanel = createTitledComponent(processTitle, panelContent);
 
         for (AbstractPropertyComponent field : getPropertyFields()) {
-            switch (field.getPropertyName()) {
+            switch (field.getPropertiesObjectName()) {
                 case PORT_TITLE:
                     titleField = (JTextField) field.getComponent();
                     break;

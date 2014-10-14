@@ -31,14 +31,14 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         propertyGroups = new LinkedList<>();
 
         PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_IDENTIFIER, "id"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_ABSTRACT, "abstract"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_TITLE, "title"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_MODELDATA_OWS_VERSION, "version"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title"));
+        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version"));
 
         // TODO add servers from the actual list.
         PropertyGroup group2 = new PropertyGroup("Deployment");
-        group2.addComponent(new PropertyDropdown("Server", new String[]{"Server a", "Server b"}));
+        group2.addComponent(new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT, new String[]{"Server a", "Server b"}));
 
         propertyGroups.add(group1);
         propertyGroups.add(group2);
@@ -204,18 +204,17 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     }
 
     @Override
-    public Collection<PropertyGroup> getPropertyGroups() {
-        return propertyGroups;
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        return this.propertyGroups;
     }
 
-    @Override
-    public Object getValueOf(String propertyName) {
-        for(PropertyGroup aGroup : getPropertyGroups()) {
-            AbstractPropertyComponent value = aGroup.getPropertyComponent(propertyName);
-            if(null != value)
-                return value;
+    public Object getPropertyValue(String propertyName) {
+        for (PropertyGroup aGroup : propertyGroups) {
+            AbstractPropertyComponent component = aGroup.getPropertyComponent(propertyName);
+            if (null != component) {
+                return component.getValue();
+            }
         }
-
         return null;
     }
 

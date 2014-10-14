@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.properties;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
@@ -9,7 +10,7 @@ import java.util.LinkedHashMap;
  * @author dziegenh
  * @see AbstractPropertyComponent
  */
-public class PropertyGroup {
+public class PropertyGroup implements IObjectWithProperties {
 
     private HashMap<String, AbstractPropertyComponent> propertyComponents;
     private String name;
@@ -17,10 +18,6 @@ public class PropertyGroup {
     public PropertyGroup(String name) {
         this.name = name;
         propertyComponents = new LinkedHashMap<>();
-    }
-
-    public String getName() {
-        return name;
     }
 
     public HashMap<String, AbstractPropertyComponent> getPropertyComponents() {
@@ -36,12 +33,22 @@ public class PropertyGroup {
             throw new IllegalArgumentException("Property component cannot be null.");
         }
 
-        String propertyName = component.getPropertyName();
+        String propertyName = component.getPropertiesObjectName();
         if (null == propertyName || propertyName.isEmpty()) {
             throw new IllegalArgumentException("Property component has no valid property name.");
         }
 
         propertyComponents.put(propertyName, component);
+    }
+
+    @Override
+    public String getPropertiesObjectName() {
+        return name;
+    }
+
+    @Override
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        return getPropertyComponents().values();
     }
 
 }

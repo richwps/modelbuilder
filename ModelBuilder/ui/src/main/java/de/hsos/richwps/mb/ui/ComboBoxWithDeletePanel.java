@@ -20,7 +20,7 @@ import layout.TableLayout;
 public class ComboBoxWithDeletePanel<E> extends JPanel {
 
     private JComboBox<E> comboBox;
-    private JButton deleteButton;
+    protected JButton deleteButton;
     private JTextField textField = null;
 
     public ComboBoxWithDeletePanel() {

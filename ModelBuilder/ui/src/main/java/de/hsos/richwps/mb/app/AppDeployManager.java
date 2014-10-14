@@ -1,12 +1,12 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.dsl.Exporter;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -17,33 +17,26 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import de.hsos.richwps.mb.server.boundary.DeployView;
-import de.hsos.richwps.mb.server.entity.DeployConfig;
-import de.hsos.richwps.mb.server.entity.DeployConfigField;
 import de.hsos.richwps.mb.server.exception.GraphToRequestTransformationException;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * Manages script creation, processdescription creation and the deployment.
  *
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.3
- * @TODO Enhance error handling.
+ * @version 0.0.4
  * @TODO Refactor source.
  */
 public class AppDeployManager {
 
     private App app;
+    private Graph graph;
+
     /**
      * Indicates deployment error.
      */
@@ -51,110 +44,54 @@ public class AppDeployManager {
 
     public AppDeployManager(App app) {
         this.app = app;
+
         AppDeployManager.deploymentError = false;
-    }
-
-    private GraphView getGraphView() {
-        return app.getGraphView();
-    }
-
-    private JFrame getFrame() {
-        return app.getFrame();
+        this.graph = app.getGraphView().getGraph();
     }
 
     /**
      * Starts the Deploy-Dialog.
      */
-    boolean deploy() {
-        //Start a Dialog.
-        final DeployView deployView = new DeployView(getFrame(), AppConstants.DEPLOY_DIALOG_TITLE);
+    void deploy() {
 
-        // TODO persist model's configs and get persisted configs
-        LinkedList<DeployConfig> configs = new LinkedList<>();
-        {
-            DeployConfig mockConfig = new DeployConfig();
-            mockConfig.setValue(DeployConfigField.ENDPOINT, "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T");
-            mockConfig.setValue(DeployConfigField.ABSTRACT, "No Abstract");
-            mockConfig.setValue(DeployConfigField.IDENTIFIER, "rola.SelectRepArea.Wrapper");
-            mockConfig.setValue(DeployConfigField.TITLE, "rola.SelectRepArea.Wrapper");
-            mockConfig.setValue(DeployConfigField.VERSION, "1");
-            configs.add(mockConfig);
-        }
-
-        deployView.init(configs);
-
-        deployView.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                DeployConfig wpstconfig = deployView.getConfig();
-                final String rola = _generateRola(wpstconfig);
-                if (null == rola) {
-                    AppDeployManager.deploymentError = true;
-                    AppDeployManager.deploymentFailed("An error occured while creating the ROLA script.");
-                }
-                _performDeployment(wpstconfig, rola);
-
-                if (AppDeployManager.deploymentError) {
-                    StringBuilder sb = new StringBuilder(200);
-                    sb.append(AppConstants.DEPLOYMENT_FAILED);
-                    sb.append('\n');
-                    sb.append(AppConstants.SEE_LOGGING_TABS);
-                    JOptionPane.showMessageDialog(null, sb.toString());
-                }
-            }
-        });
-        deployView.setVisible(true);
-
-        return !AppDeployManager.deploymentError;
-    }
-
-    private String _generateRola(DeployConfig config) {
-        String wpstendpoint = config.getValue(DeployConfigField.ENDPOINT);
-
-        final String rola = this.generateROLA(wpstendpoint);
+        //generate rola
+        String wpsturi = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String rola = this.generateROLA();
         if (null == rola) {
             AppDeployManager.deploymentError = true;
-            return null;
         }
-        return rola;
-    }
 
-    private boolean _performDeployment(DeployConfig config, String rola) {
-        String wpstendpoint = config.getValue(DeployConfigField.ENDPOINT);
-        String identifier = config.getValue(DeployConfigField.IDENTIFIER);
-        String title = config.getValue(DeployConfigField.TITLE);
-        String processversion = config.getValue(DeployConfigField.VERSION);
-        String wpsAbstract = config.getValue(DeployConfigField.ABSTRACT);
+        //generate processdescription
+        String identifier = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        String title = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        String version = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        String theabstract = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
 
-        //TODO assumption :(
-        String wpsuri = wpstendpoint;
+        //TODO remove endpoint assumption :(
+        String wpsuri = wpsturi;
         wpsuri = wpsuri.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
-        DeployRequest request = new DeployRequest(wpsuri, wpstendpoint, identifier, title, processversion, RichWPSProvider.deploymentProfile);
+        DeployRequest request = new DeployRequest(wpsuri, wpsturi, identifier, title, version, RichWPSProvider.deploymentProfile);
+        request.setAbstract(theabstract);
         request.setExecutionUnit(rola);
-        request.setAbstract(wpsAbstract);
+
         try {
-            this.assembleDeployRequest(request);
+            this.defineInOut(request);
         } catch (GraphToRequestTransformationException ex) {
             AppDeployManager.deploymentError = true;
-            AppDeployManager.deploymentFailed("An error occured whilst assembling "
+            AppDeployManager.deploymentFailed("An error occured while assembling "
                     + "information for deploy request.");
         }
 
-        //FIXME
-        String wpsurl = wpstendpoint.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + RichWPSProvider.DEFAULT_WPS_ENDPOINT;
 
         RichWPSProvider instance = new RichWPSProvider();
         try {
-            instance.connect(wpsurl, wpstendpoint);
+            instance.connect(wpsuri, wpsturi);
             instance.deployProcess(request);
 
-            if (AppDeployManager.deploymentError) {
-                return !AppDeployManager.deploymentError;
-            }
             if (request.isException()) {
                 AppDeployManager.deploymentError = true;
-                AppDeployManager.deploymentFailed("An error occured whilst deployment.");
-                return !AppDeployManager.deploymentError;
+                AppDeployManager.deploymentFailed("An error occured while deployment.");
+
             }
 
             AppEventService service = AppEventService.getInstance();
@@ -162,11 +99,9 @@ public class AppDeployManager {
 
         } catch (Exception ex) {
             AppDeployManager.deploymentError = true;
-            AppDeployManager.deploymentFailed("An error occured whilst deployment.");
-            return !AppDeployManager.deploymentError;
+            AppDeployManager.deploymentFailed("An error occured while deployment.");
         }
 
-        return true;
     }
 
     /**
@@ -176,7 +111,7 @@ public class AppDeployManager {
      * bindings.
      * @return Emptystring in case of exception, else rola-script.
      */
-    private String generateROLA(String wpstendpoint) {
+    private String generateROLA() {
         try {
 
             File f = null;
@@ -192,7 +127,8 @@ public class AppDeployManager {
                 return "";
             }
 
-            new Exporter(getGraphView().getGraph()).export(f.getAbsolutePath(), wpstendpoint);
+            Exporter exporter = new Exporter((this.graph));
+            exporter.export(f.getAbsolutePath());
 
             String content = null;
             FileReader reader = new FileReader(f);
@@ -201,17 +137,18 @@ public class AppDeployManager {
                 reader.read(chars);
                 content = new String(chars);
             } catch (IOException e) {
+                AppDeployManager.deploymentError = true;
                 e.printStackTrace();
             } finally {
                 reader.close();
             }
-            //JOptionPane.showMessageDialog(getFrame(), content, "Generated ROLA", JOptionPane.PLAIN_MESSAGE);
             return content;
 
         } catch (Exception ex) {
             AppDeployManager.deploymentError = true;
             AppDeployManager.deploymentFailed("An error occured whilst generating "
                     + "ROLA-script for deploy request.");
+            Logger.log("Debug:\n" + ex.getLocalizedMessage());
             /*StringBuilder sb = new StringBuilder(200);
              sb.append(AppConstants.DEPLOYMENT_FAILED);
              sb.append('\n');
@@ -239,8 +176,7 @@ public class AppDeployManager {
         return null;
     }
 
-    private void assembleDeployRequest(DeployRequest request) throws GraphToRequestTransformationException {
-        Graph graph = getGraphView().getGraph();
+    private void defineInOut(DeployRequest request) throws GraphToRequestTransformationException {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {

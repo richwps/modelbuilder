@@ -22,9 +22,9 @@ import net.opengis.wps.x100.OutputDescriptionType;
  * wps:execute()-Request with this object.
  *
  * @author dalcacer
- * @see ProcessDescription
+ * @see DescribeRequest
  */
-public class ExecuteRequest extends ProcessDescription implements IRequest {
+public class ExecuteRequest extends DescribeRequest implements IRequest {
 
     
     /**

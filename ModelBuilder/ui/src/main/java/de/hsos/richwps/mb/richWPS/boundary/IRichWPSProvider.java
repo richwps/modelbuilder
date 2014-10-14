@@ -3,7 +3,7 @@ package de.hsos.richwps.mb.richWPS.boundary;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import java.util.List;
 
@@ -90,12 +90,12 @@ public interface IRichWPSProvider {
 
      /**
      * Describes a process, via wps:describeProcess()-Request.
-     * Produces ProcessDescription.
+     * Produces DescribeRequest.
      *
-     * @param request ProcessDescription with endpoint and processid.
+     * @param request DescribeRequest with endpoint and processid.
      *
      */
-    public void describeProcess(ProcessDescription request);
+    public void describeProcess(DescribeRequest request);
     
     /**
      * Describes a process, via wps:describeProcess()-Request.

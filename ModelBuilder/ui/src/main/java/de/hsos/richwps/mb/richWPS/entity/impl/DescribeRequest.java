@@ -14,22 +14,27 @@ import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 
 /**
- * Represents a ProcessDescription. The RichWPSProvider is able to perform a
+ * Represents a DescribeRequest. The RichWPSProvider is able to perform a
  * wps:describeProcess()-Request with this object. This class can be used to
  * prepare a wps:execute()-Request with the according ExecuteRequest-object.
  *
  * @author dalcacer
  */
-public class ProcessDescription implements IRequest {
+public class DescribeRequest implements IRequest {
 
     /**
      * The endpoint to call or discover.
      */
     protected String endpoint = "";
     /**
-     * The id of the process which shall be executed.
+     * The id of the process which shall be described.
      */
     protected String identifier = "";
+    
+        /**
+     * The title of the process.
+     */
+    protected String title = "";
     /**
      * The version of this process.
      */
@@ -64,7 +69,7 @@ public class ProcessDescription implements IRequest {
     /**
      * Constructs a new ExecuteRequest.
      */
-    public ProcessDescription() {
+    public DescribeRequest() {
         this.endpoint = new String();
         this.identifier = new String();
         this.processversion = new String();
@@ -163,6 +168,14 @@ public class ProcessDescription implements IRequest {
         this.processversion = version;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     /**
      *
      * @return
@@ -240,6 +253,7 @@ public class ProcessDescription implements IRequest {
         int hash = 3;
         hash = 11 * hash + Objects.hashCode(this.endpoint);
         hash = 11 * hash + Objects.hashCode(this.identifier);
+        hash = 11 * hash + Objects.hashCode(this.title);
         hash = 11 * hash + Objects.hashCode(this.processversion);
         hash = 11 * hash + Objects.hashCode(this.availableinputs);
         hash = 11 * hash + Objects.hashCode(this.availableoutputs);
@@ -261,11 +275,14 @@ public class ProcessDescription implements IRequest {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ProcessDescription other = (ProcessDescription) obj;
+        final DescribeRequest other = (DescribeRequest) obj;
         if (!Objects.equals(this.endpoint, other.endpoint)) {
             return false;
         }
         if (!Objects.equals(this.identifier, other.identifier)) {
+            return false;
+        }
+        if (!Objects.equals(this.title, other.title)) {
             return false;
         }
         if (!Objects.equals(this.processversion, other.processversion)) {
@@ -292,7 +309,7 @@ public class ProcessDescription implements IRequest {
      */
     @Override
     public String toString() {
-        return "ProcessDescription{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", processversion=" + processversion + ", theabstract=" + theabstract + ", availableinputs=" + availableinputs + ", availableoutputs=" + availableoutputs + ", wasException=" + wasException + ", exception=" + exception + ", serverid=" + serverid + '}';
+        return "ProcessDescription{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", title=" + title + ", processversion=" + processversion + ", theabstract=" + theabstract + ", availableinputs=" + availableinputs + ", availableoutputs=" + availableoutputs + ", wasException=" + wasException + ", exception=" + exception + ", serverid=" + serverid + '}';
     }
 
     @Override

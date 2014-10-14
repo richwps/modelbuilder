@@ -106,58 +106,95 @@ class PropertiesCard extends JScrollPane {
 
     private void createContentPanel() {
         contentPanel.removeAll();
+        createPropertyPanel(objectWithProperties, contentPanel);
+                //        Collection<? extends IObjectWithProperties> propertyGroups = objectWithProperties.getProperties();
+        //        int numGroups = propertyGroups.size();
+        //
+        //        // setup layout
+        //        double[][] layoutSize = new double[2][];
+        //        layoutSize[0] = new double[]{TableLayout.FILL};     // columns
+        //        layoutSize[1] = new double[numGroups];              // rows
+        //        Arrays.fill(layoutSize[1], TableLayout.PREFERRED);  // set rows to preferred size
+        //
+        //        contentPanel.setLayout(new TableLayout(layoutSize));
+        //
+        //        int row = 0;
+        //        for (PropertyGroup aGroup : propertyGroups) {
+        //            Component aGroupPanel = createPropertyGroupPanel(aGroup);
+        //            contentPanel.add(aGroupPanel, "0 " + row++);
+        //        }
+    }
 
-        Collection<PropertyGroup> propertyGroups = objectWithProperties.getPropertyGroups();
-        int numGroups = propertyGroups.size();
+    private Component createPropertyPanel(IObjectWithProperties objectWithProperties, JPanel propertyPanel) {
+        if (null == propertyPanel) {
+            propertyPanel = new JPanel();
+        }
+
+        Collection<? extends IObjectWithProperties> properties = objectWithProperties.getProperties();
+        int numProperties = properties.size();
 
         // setup layout
         double[][] layoutSize = new double[2][];
         layoutSize[0] = new double[]{TableLayout.FILL};     // columns
-        layoutSize[1] = new double[numGroups];              // rows
-        Arrays.fill(layoutSize[1], TableLayout.PREFERRED);  // set rows to preferred size
+        layoutSize[1] = new double[numProperties];          // rows
+        Arrays.fill(layoutSize[1], TableLayout.PREFERRED);  // set all rows to preferred size
 
-        contentPanel.setLayout(new TableLayout(layoutSize));
+        propertyPanel.setLayout(new TableLayout(layoutSize));
 
         int row = 0;
-        for (PropertyGroup aGroup : propertyGroups) {
-            Component aGroupPanel = createPropertyGroupPanel(aGroup);
-            contentPanel.add(aGroupPanel, "0 " + row++);
+        for (IObjectWithProperties aProperty : properties) {
+            Component aPropertyRow;
+
+            // Component
+            if (aProperty instanceof AbstractPropertyComponent) {
+                aPropertyRow = createPropertyComponentPanel((AbstractPropertyComponent) aProperty);
+
+            // Property Group
+            } else if(aProperty instanceof PropertyGroup) {
+                aPropertyRow = createPropertyGroupPanel((PropertyGroup) aProperty);
+
+            // other: recursive handling
+            } else {
+                aPropertyRow = createPropertyPanel(aProperty, null);
+            }
+
+            propertyPanel.add(aPropertyRow, "0 "+ row++);
         }
+
+        return propertyPanel;
     }
 
     private TitledComponent createPropertyGroupPanel(PropertyGroup propertyGroup) {
-        Collection<AbstractPropertyComponent> components = propertyGroup.getPropertyComponents().values();
-
         JPanel propertiesPanel = new JPanel();
+        propertiesPanel.setLayout(new TableLayout(new double[][] {{TableLayout.FILL}, {TableLayout.FILL}}));
 
-        // double the numbers because each component gets a bottom border
-        int layoutRows = 2 * components.size();
+        // create and add properties
+        createPropertyPanel(propertyGroup, propertiesPanel);
 
-        double[][] layoutSize = new double[2][];
-        layoutSize[0] = new double[]{PropertyCardsConfig.COLUMN_1_WIDTH, TableLayout.FILL};
-        layoutSize[1] = new double[layoutRows];
-        // setup layout rows
-        for (int i = 0; i < layoutRows; i += 2) {
-            layoutSize[1][i] = TableLayout.PREFERRED;
-            layoutSize[1][i + 1] = PropertyCardsConfig.propertyBorderThickness;
-        }
-
-        propertiesPanel.setLayout(new TableLayout(layoutSize));
-
-        int row = 0;
-        for (AbstractPropertyComponent aComponent : components) {
-            // label + component
-            propertiesPanel.add(createHeadLabel(aComponent.getPropertyName()), "0 " + row);
-            propertiesPanel.add(aComponent.getComponent(), "1 " + row++);
-            // bottom border(s)
-            propertiesPanel.add(createColumn1Border(), "0 " + row);
-            propertiesPanel.add(createColumn2Border(), "1 " + row++);
-        }
-
-        TitledComponent groupPanel = createTitledComponent(propertyGroup.getName(), propertiesPanel);
+        TitledComponent groupPanel = createTitledComponent(propertyGroup.getPropertiesObjectName(), propertiesPanel);
         groupPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
 
         return groupPanel;
+    }
+
+    private JPanel createPropertyComponentPanel(AbstractPropertyComponent component) {
+        JPanel componentPanel = new JPanel();
+
+        double[][] layoutSize = new double[][]{
+            {PropertyCardsConfig.COLUMN_1_WIDTH, TableLayout.FILL},
+            {TableLayout.PREFERRED, PropertyCardsConfig.propertyBorderThickness}
+        };
+
+        componentPanel.setLayout(new TableLayout(layoutSize));
+
+        // label + component
+        componentPanel.add(createHeadLabel(component.getPropertiesObjectName()), "0 0");
+        componentPanel.add(component.getComponent(), "1 0");
+        // bottom border(s)
+        componentPanel.add(createColumn1Border(), "0 1");
+        componentPanel.add(createColumn2Border(), "1 1");
+
+        return componentPanel;
     }
 
     @Deprecated

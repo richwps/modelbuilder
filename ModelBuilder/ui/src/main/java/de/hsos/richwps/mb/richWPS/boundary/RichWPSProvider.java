@@ -220,13 +220,13 @@ public class RichWPSProvider implements IRichWPSProvider {
 
     /**
      * Describes a process, via wps:describeProcess()-Request. Produces
-     * ProcessDescription.
+     * DescribeRequest.
      *
-     * @param request ProcessDescription with endpoint and processid.
+     * @param request DescribeRequest with endpoint and processid.
      *
      */
     @Override
-    public void describeProcess(de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription request) {
+    public void describeProcess(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request) {
         try {
             String wpsurl = request.getEndpoint();
             String[] processes = new String[1];
@@ -234,10 +234,15 @@ public class RichWPSProvider implements IRichWPSProvider {
             ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
-
+            
             ProcessDescriptionType processdescriptions = descs[0];
+            
             if (processdescriptions.getProcessVersion() != null) {
                 request.setProcessVersion(processdescriptions.getProcessVersion());
+            }
+            
+            if (processdescriptions.getTitle()!= null) {
+                request.setTitle(processdescriptions.getTitle().toString());
             }
 
             if (processdescriptions.getAbstract() != null) {
@@ -265,7 +270,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public void describeProcess(ExecuteRequest request) {
-        this.describeProcess((de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription) request);
+        this.describeProcess((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) request);
     }
 
     /**
@@ -405,6 +410,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param request IRequest.
      * @see IRequest
      * @see ExecuteRequest
+     * @see ProcessDescription
      * @see DeployRequest
      * @see UndeployRequest
      * @return <code>true</code> for deployment success.
@@ -417,6 +423,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.deployProcess((DeployRequest) request);
         } else if (request instanceof UndeployRequest) {
             this.undeployProcess((UndeployRequest) request);
+        } else if (request instanceof de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) {
+            this.describeProcess((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) request);
         }
     }
 
@@ -521,7 +529,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription request, ProcessDescriptionType process) {
+    private void execAddInputs(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
         InputDescriptionType[] _inputs = inputs.getInputArray();
         for (InputDescriptionType description : _inputs) {
@@ -536,7 +544,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private void execAddOutputs(de.hsos.richwps.mb.richWPS.entity.impl.ProcessDescription request, ProcessDescriptionType process) {
+    private void execAddOutputs(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request, ProcessDescriptionType process) {
 
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
         OutputDescriptionType[] _outputs = outputs.getOutputArray();
