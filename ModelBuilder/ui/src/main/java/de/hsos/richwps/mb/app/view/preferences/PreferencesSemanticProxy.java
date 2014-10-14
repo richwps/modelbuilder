@@ -29,8 +29,8 @@ public class PreferencesSemanticProxy extends AbstractPreferencesTab {
 
         // create combobox panel
 //        ComboBoxWithDeletePanel<String> fieldPanel = new ComboBoxWithDeletePanel();
-        String defaultUrl = AppConstants.SEMANTICPROXY_DEFAULT_URL;
-        fieldPanel = new PerstistableComboBox(AppConfig.getConfig(), urlKey, defaultUrl);
+        fieldPanel = new PerstistableComboBox(AppConfig.getConfig(), urlKey);
+        fieldPanel.setDefaultValue(AppConstants.SEMANTICPROXY_DEFAULT_URL);
 
         // Setup delete Button
         deleteButton = fieldPanel.getDeleteButton();

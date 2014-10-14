@@ -4,6 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+/**
+ * Combines a ComboBox and a button for deleting the selected item. Provides
+ * load and save methods for persisting the items as Java Preferences.
+ *
+ * @author dziegenh
+ */
 public class PerstistableComboBox extends ComboBoxWithDeletePanel<String> {
 
     private Preferences preferences;
@@ -11,16 +17,38 @@ public class PerstistableComboBox extends ComboBoxWithDeletePanel<String> {
     private String persistKeyBase;
     private String persistKeyCount;
     private String persistKeyFormat;
+
+    /**
+     * Optional default value which is used if no persisted item is available.
+     */
     private String defaultValue;
 
-    public PerstistableComboBox(Preferences preferences, String persistKeyBase, String defaultValue) {
+    /**
+     *
+     * @param preferences The preferences which persist the ComboBox items.
+     * @param preferencesKey The preferences key for the selected item. Also
+     * used as a base for generating additional keys.
+     */
+    public PerstistableComboBox(Preferences preferences, String preferencesKey) {
         this.preferences = preferences;
-        this.persistKeyBase = persistKeyBase;
-        this.persistKeyCount = persistKeyBase + "_COUNT";
-        this.persistKeyFormat = persistKeyBase + "_%d";
+        this.persistKeyBase = preferencesKey;
+        this.persistKeyCount = preferencesKey + "_COUNT";
+        this.persistKeyFormat = preferencesKey + "_%d";
+    }
+
+    /**
+     * Sets the optional default value which is used if no persisted item is
+     * vailable.
+     *
+     * @param defaultValue
+     */
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
+    /**
+     * Saves all ComboBox items as preferences.
+     */
     public void saveItemsToPreferences() {
         Object selectedItem = getComboBox().getSelectedItem();
         if (null == selectedItem) {
@@ -42,6 +70,9 @@ public class PerstistableComboBox extends ComboBoxWithDeletePanel<String> {
         preferences.putInt(this.persistKeyCount, numItems);
     }
 
+    /**
+     * Loads previously saved items from the preferences into the ComboBox.
+     */
     public void loadItemsFromPreferences() {
         String currentItem = preferences.get(this.persistKeyBase, defaultValue);
         int count = preferences.getInt(this.persistKeyCount, 0);
