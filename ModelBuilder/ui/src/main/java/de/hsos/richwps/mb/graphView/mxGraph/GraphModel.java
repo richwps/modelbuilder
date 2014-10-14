@@ -210,9 +210,9 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
     public Object getPropertyValue(String propertyName) {
         for (PropertyGroup aGroup : propertyGroups) {
-            AbstractPropertyComponent value = aGroup.getPropertyComponent(propertyName);
-            if (null != value) {
-                return value;
+            AbstractPropertyComponent component = aGroup.getPropertyComponent(propertyName);
+            if (null != component) {
+                return component.getValue();
             }
         }
         return null;
