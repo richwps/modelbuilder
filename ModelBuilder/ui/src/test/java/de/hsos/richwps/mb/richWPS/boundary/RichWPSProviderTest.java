@@ -174,7 +174,13 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
-        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(1);
+        OutputComplexDataSpecifier outspec;
+        if(outputs.get(0) instanceof OutputComplexDataSpecifier){
+            outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        }else{
+            outspec = (OutputComplexDataSpecifier) outputs.get(1);
+        }
+        
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
@@ -227,7 +233,13 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
-        OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(1);
+        OutputComplexDataSpecifier outspec;
+        if(outputs.get(0) instanceof OutputComplexDataSpecifier){
+            outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        }else{
+            outspec = (OutputComplexDataSpecifier) outputs.get(1);
+        }
+        
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
@@ -365,26 +377,25 @@ public class RichWPSProviderTest extends TestCase {
     }
 
     /*public void testDeploy() {
-        System.out.println("testDeploy");
+     System.out.println("testDeploy");
 
-        RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl, wpsurl);
-        } catch (Exception ex) {
-            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+     RichWPSProvider instance = new RichWPSProvider();
+     try {
+     instance.connect(wpsurl, wpsurl);
+     } catch (Exception ex) {
+     Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+     }
 
-        DeployRequest request = new DeployRequest("localhost", "test", "test", "1.0", RichWPSProvider.deploymentProfile);
-        request.addInput(this.createComplexDataInput());
-        request.addInput(this.createLiteralDataInput());
-        request.addOutput(this.createComplexDataOutput());
-        request.addOutput(this.createLiteralDataOutput());
-        request.setExecutionUnit("var.identifier = in.identifier\n" +
-"bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
-"execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea");
-        instance.deployProcess(request);
-    }*/
-
+     DeployRequest request = new DeployRequest("localhost", "test", "test", "1.0", RichWPSProvider.deploymentProfile);
+     request.addInput(this.createComplexDataInput());
+     request.addInput(this.createLiteralDataInput());
+     request.addOutput(this.createComplexDataOutput());
+     request.addOutput(this.createLiteralDataOutput());
+     request.setExecutionUnit("var.identifier = in.identifier\n" +
+     "bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
+     "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea");
+     instance.deployProcess(request);
+     }*/
     private IInputSpecifier createComplexDataInput1() {
         InputComplexDataSpecifier specifier;
         specifier = new InputComplexDataSpecifier();
@@ -439,7 +450,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-public void testDeployUndeploy() {
+    public void testDeployUndeploy() {
         System.out.println("testDeployUndeploy");
         String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
         String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T";
@@ -451,7 +462,6 @@ public void testDeployUndeploy() {
             fail();
         }
 
-        
         System.out.println("performing deploy");
         DeployRequest request = new DeployRequest(wpsurl, wpsturl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
         request.addInput(this.createComplexDataInput1());
