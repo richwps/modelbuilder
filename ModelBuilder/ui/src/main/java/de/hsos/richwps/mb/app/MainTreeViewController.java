@@ -1,14 +1,31 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
+import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
 import de.hsos.richwps.mb.semanticProxy.entity.WpsServer;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -131,9 +148,96 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     /**
      * Adds a node.
+     *
      * @param from uri (WPS-endpoint).
      */
     public void addNode(String uri) {
+        IRichWPSProvider provider = new RichWPSProvider();
+        List<ProcessEntity> pes = new ArrayList<>();
+        try {
+            provider.connect(uri);
+            List<String> processes = provider.getAvailableProcesses(uri);
+            for (String processid : processes) {
+
+                DescribeRequest pd = new DescribeRequest();
+                pd.setEndpoint(uri);
+                pd.setIdentifier(processid);
+                provider.describeProcess(pd);
+
+                ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
+                pe.setOwsAbstract(pd.getAbstract());
+                pe.setOwsTitle(pd.getTitle());
+                //FIXME pe.setOwsVersion
+
+                this.transformInputs(pd, pe);
+                this.transformOutputs(pd, pe);
+                Logger.log("Debug\n:"+pd);
+            }
+
+        } catch (Exception e) {
+        }
+    }
+
+    private void transformInputs(DescribeRequest pd, ProcessEntity pe) {
+
+        for (IInputSpecifier specifier : pd.getInputs()) {
+            if (specifier instanceof InputComplexDataSpecifier) {
+                InputComplexDataSpecifier complex = (InputComplexDataSpecifier) specifier;
+                ProcessPort pp = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                pp.setOwsIdentifier(complex.getIdentifier());
+                pp.setOwsTitle(complex.getTitle());
+                pp.setOwsAbstract(complex.getAbstract());
+                //FIXME pp.setVersion 
+                List<String> defaulttype = complex.getDefaultType();
+                String encoding = defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
+                String mimetype = defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
+                String schema = defaulttype.get(InputComplexDataSpecifier.schema_IDX);
+                ComplexDataTypeFormat format = new ComplexDataTypeFormat(mimetype, schema, encoding);
+                IDataTypeDescription typedesc = new DataTypeDescriptionComplex(format);
+                pp.setDataTypeDescription(typedesc);
+                pe.addInputPort(pp);
+            } else if (specifier instanceof InputLiteralDataSpecifier) {
+                InputLiteralDataSpecifier literal = (InputLiteralDataSpecifier) specifier;
+                ProcessPort pp = new ProcessPort(ProcessPortDatatype.LITERAL);
+                pp.setOwsIdentifier(literal.getIdentifier());
+                pp.setOwsTitle(literal.getTitle());
+                pp.setOwsAbstract(literal.getAbstract());
+                pe.addInputPort(pp);
+            } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
+                //TODO
+            }
+        }
+    }
+
+    private void transformOutputs(DescribeRequest pd, ProcessEntity pe) {
+
+        for (IOutputSpecifier specifier : pd.getOutputs()) {
+            if (specifier instanceof OutputComplexDataSpecifier) {
+                OutputComplexDataSpecifier complex = (OutputComplexDataSpecifier) specifier;
+                ProcessPort pp = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                pp.setOwsIdentifier(complex.getIdentifier());
+                pp.setOwsTitle(complex.getTitle());
+                pp.setOwsAbstract(complex.getAbstract());
+                //FIXME pp.setVersion 
+                List<String> defaulttype = complex.getDefaultType();
+                String encoding = defaulttype.get(OutputComplexDataSpecifier.encoding_IDX);
+                String mimetype = defaulttype.get(OutputComplexDataSpecifier.mimetype_IDX);
+                String schema = defaulttype.get(OutputComplexDataSpecifier.schema_IDX);
+                ComplexDataTypeFormat format = new ComplexDataTypeFormat(mimetype, schema, encoding);
+                IDataTypeDescription typedesc = new DataTypeDescriptionComplex(format);
+                pp.setDataTypeDescription(typedesc);
+                pe.addOutputPort(pp);
+            } else if (specifier instanceof OutputLiteralDataSpecifier) {
+                OutputLiteralDataSpecifier literal = (OutputLiteralDataSpecifier) specifier;
+                ProcessPort pp = new ProcessPort(ProcessPortDatatype.LITERAL);
+                pp.setOwsIdentifier(literal.getIdentifier());
+                pp.setOwsTitle(literal.getTitle());
+                pp.setOwsAbstract(literal.getAbstract());
+                pe.addInputPort(pp);
+            } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
+                //TODO
+            }
+        }
     }
 
 }
