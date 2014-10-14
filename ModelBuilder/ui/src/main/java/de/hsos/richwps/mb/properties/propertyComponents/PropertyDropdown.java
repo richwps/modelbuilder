@@ -37,7 +37,7 @@ public class PropertyDropdown extends AbstractPropertyComponent {
 
     @Override
     public void setEditable(boolean editable) {
-        // TODO
+        component.setEditable(editable);
     }
 
 }
