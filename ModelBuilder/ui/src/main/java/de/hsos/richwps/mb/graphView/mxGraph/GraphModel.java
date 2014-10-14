@@ -38,7 +38,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
         // TODO add servers from the actual list.
         PropertyGroup group2 = new PropertyGroup("Deployment");
-        group2.addComponent(new PropertyDropdown("Server", new String[]{"Server a", "Server b"}));
+        group2.addComponent(new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELADATA_ENDPOINT, new String[]{"Server a", "Server b"}));
 
         propertyGroups.add(group1);
         propertyGroups.add(group2);
@@ -208,7 +208,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         return this.propertyGroups;
     }
 
-    public Object getValueOf(String propertyName) {
+    public Object getPropertyValue(String propertyName) {
         for (PropertyGroup aGroup : propertyGroups) {
             AbstractPropertyComponent value = aGroup.getPropertyComponent(propertyName);
             if (null != value) {
