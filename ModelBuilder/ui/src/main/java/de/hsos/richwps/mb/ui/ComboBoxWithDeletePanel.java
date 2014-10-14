@@ -19,9 +19,9 @@ import layout.TableLayout;
  */
 public class ComboBoxWithDeletePanel<E> extends JPanel {
 
-    private JComboBox<E> comboBox;
+    protected JComboBox<E> comboBox;
     protected JButton deleteButton;
-    private JTextField textField = null;
+    protected JTextField textField = null;
 
     public ComboBoxWithDeletePanel() {
         createComboBox();

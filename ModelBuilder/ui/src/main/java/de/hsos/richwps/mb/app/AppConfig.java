@@ -30,7 +30,8 @@ public class AppConfig {
         SEMANTICPROXY_S_URL,
         SEMANTICPROXY_I_URL_COUNT,
         HTTPPROXY_S_HOST,
-        HTTPPROXY_S_PORT
+        HTTPPROXY_S_PORT,
+        REMOTES_S_URL
     }
 
     private static final String APP_CONFIG = "richwps/modelbuilder";

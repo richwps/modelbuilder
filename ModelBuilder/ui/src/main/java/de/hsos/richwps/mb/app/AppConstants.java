@@ -80,10 +80,8 @@ public class AppConstants {
     public final static String SELECTREMOTE_DIALOG_BTN_OK = DIALOG_BTN_OK;
     
     //Add Remote Dialog
-    public final static String ADDREMOTE_DIALOG_TITLE = "Sever addition";
-    public final static String ADDREMOTE_DIALOG_MSG = "Please enter a WPS server to work with.";
-    public final static String ADDREMOTE_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
-    public final static String ADDREMOTE_DIALOG_BTN_OK = DIALOG_BTN_OK;
+    public final static String MANAGEREMOTES_DIALOG_TITLE = "Sever addition";
+    public final static String MANAGEREMOTES_DIALOG_MSG = "Please enter a WPS server to work with.";
 
     // About Dialog
     /**

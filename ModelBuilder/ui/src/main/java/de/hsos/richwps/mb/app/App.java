@@ -4,6 +4,7 @@ import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
 import de.hsos.richwps.mb.app.view.AppFrame;
+import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
@@ -20,8 +21,9 @@ import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JLabel;
@@ -392,12 +394,18 @@ public class App {
      * @return entered wps-server.
      */
     void addRemote() {
-        String selectedRemote = (String) JOptionPane.showInputDialog(getFrame(),
-                AppConstants.ADDREMOTE_DIALOG_MSG,
-                AppConstants.ADDREMOTE_DIALOG_TITLE,
-                JOptionPane.QUESTION_MESSAGE
-        );
-        mainTreeView.addNode(selectedRemote);
+        final ManageRemotesDialog dialog = new ManageRemotesDialog(frame);
+        dialog.addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // TODO add remote nodes to main tree view
+//                getMainTreeView().setRemotes(dialog.getRemotes());
+            }
+
+        });
+
+        dialog.setVisible(true);
     }
 
     void showExecute() {

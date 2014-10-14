@@ -30,10 +30,14 @@ public class PerstistableComboBox extends ComboBoxWithDeletePanel<String> {
      * used as a base for generating additional keys.
      */
     public PerstistableComboBox(Preferences preferences, String preferencesKey) {
+        super();
+
         this.preferences = preferences;
         this.persistKeyBase = preferencesKey;
         this.persistKeyCount = preferencesKey + "_COUNT";
         this.persistKeyFormat = preferencesKey + "_%d";
+        
+        this.comboBox.setEditable(true);
     }
 
     /**
