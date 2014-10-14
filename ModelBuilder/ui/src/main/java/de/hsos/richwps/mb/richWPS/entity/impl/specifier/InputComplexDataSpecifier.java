@@ -83,15 +83,17 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
 
         }
         ComplexDataCombinationsType subtypes = this.ogctype.getSupported();
-        ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
+        if (subtypes != null) {
+            ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
-        this.types = new ArrayList<>();
-        for (ComplexDataDescriptionType thetype : subtypes_) {
-            List<String> atype = new ArrayList();
-            atype.add(thetype.getMimeType());
-            atype.add(thetype.getSchema());
-            atype.add(thetype.getEncoding());
-            this.types.add(atype);
+            this.types = new ArrayList<>();
+            for (ComplexDataDescriptionType thetype : subtypes_) {
+                List<String> atype = new ArrayList();
+                atype.add(thetype.getMimeType());
+                atype.add(thetype.getSchema());
+                atype.add(thetype.getEncoding());
+                this.types.add(atype);
+            }
         }
         net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = this.ogctype.getDefault();
         ComplexDataDescriptionType thetype = thedefaulttype.getFormat();
