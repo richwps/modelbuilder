@@ -25,6 +25,8 @@ import de.hsos.richwps.mb.semanticProxy.entity.WpsServer;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -36,7 +38,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author dalcacer
  */
 public class MainTreeViewController extends AbstractTreeViewController {
-    
+
+    private DefaultMutableTreeNode processesNode;
+
+    private HashMap<String, DefaultMutableTreeNode> remoteNodes = new HashMap<>();
+
     public MainTreeViewController(final App app) {
         super(app);
 
@@ -79,7 +85,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.removeAllChildren();
 
         // Create and fill Process node
-        DefaultMutableTreeNode processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
+        processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
         if (processProvider != null) {
             try {
                 String url = getSpUrlFromConfig();
@@ -154,8 +160,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
     public void addNode(String uri) {
         IRichWPSProvider provider = new RichWPSProvider();
         List<ProcessEntity> pes = new ArrayList<>();
-        DefaultMutableTreeNode root = getRoot();
-        DefaultMutableTreeNode processesNode = (DefaultMutableTreeNode) root.getFirstChild();
         // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
         try {
@@ -264,5 +268,27 @@ public class MainTreeViewController extends AbstractTreeViewController {
             }
         }
     }
-    
+
+    void setRemotes(String[] remotes) {
+
+        // clone currently used remote nodes to identify removed nodes
+        LinkedList<String> unusedNodes = new LinkedList<>(remoteNodes.keySet());
+        unusedNodes = (LinkedList<String>) unusedNodes.clone();
+
+        for (String remote : remotes) {
+            if (!remoteNodes.containsKey(remote)) {
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(remote);
+                processesNode.add(node);
+                remoteNodes.put(remote, node);
+            } else {
+                unusedNodes.remove(remote);
+            }
+        }
+
+        for (String unusedNode : unusedNodes) {
+            processesNode.remove(remoteNodes.get(unusedNode));
+            remoteNodes.remove(unusedNode);
+        }
+    }
+
 }
