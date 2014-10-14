@@ -86,7 +86,7 @@ public class PerstistableComboBox extends ComboBoxWithDeletePanel<String> {
 
         getComboBox().removeAllItems();
 
-        // load and add url history
+        // load and add persisted items
         List<String> loadedItems = new LinkedList<>();
         for (int c = 0; c < count; c++) {
             String key = String.format(this.persistKeyFormat, c);
@@ -99,19 +99,19 @@ public class PerstistableComboBox extends ComboBoxWithDeletePanel<String> {
                     loadedItems.add(value);
                 }
 
-                // remember if the currently used url has been added
+                // remember if the currently used item has been added
                 if (value.equals(currentItem)) {
                     currentItemAdded = true;
                 }
             }
         }
 
-        // assure the list contains the current URL after loading
+        // assure the list contains the current item after loading
         if (!currentItemAdded) {
             getComboBox().addItem(currentItem);
         }
 
-        // Select the currently used URL
+        // Select the currently used item
         getComboBox().getModel().setSelectedItem(currentItem);
     }
 

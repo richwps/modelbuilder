@@ -28,7 +28,6 @@ public class PreferencesSemanticProxy extends AbstractPreferencesTab {
         setLayout(new TableLayout(new double[][]{{f}, {p, p, f}}));
 
         // create combobox panel
-//        ComboBoxWithDeletePanel<String> fieldPanel = new ComboBoxWithDeletePanel();
         fieldPanel = new PerstistableComboBox(AppConfig.getConfig(), urlKey);
         fieldPanel.setDefaultValue(AppConstants.SEMANTICPROXY_DEFAULT_URL);
 
