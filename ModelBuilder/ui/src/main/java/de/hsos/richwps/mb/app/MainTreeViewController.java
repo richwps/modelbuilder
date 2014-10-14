@@ -149,7 +149,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
     /**
      * Adds a node.
      *
-     * @param from uri (WPS-endpoint).
+     * @param uri (WPS-endpoint).
      */
     public void addNode(String uri) {
         IRichWPSProvider provider = new RichWPSProvider();
@@ -171,13 +171,18 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
                 this.transformInputs(pd, pe);
                 this.transformOutputs(pd, pe);
-                Logger.log("Debug\n:"+pd);
+                Logger.log("Debug\n:" + pd);
             }
-
         } catch (Exception e) {
         }
     }
 
+    /**
+     * Transforms DescribeRequest Inputs to ProcessEntity ProcessPorts.
+     *
+     * @param pd ProcessDescription with IInputSpecifier.
+     * @param pe ProcessEntity with ProcessPorts.
+     */
     private void transformInputs(DescribeRequest pd, ProcessEntity pe) {
 
         for (IInputSpecifier specifier : pd.getInputs()) {
@@ -209,6 +214,12 @@ public class MainTreeViewController extends AbstractTreeViewController {
         }
     }
 
+    /**
+     * Transforms DescribeRequest Outputs to ProcessEntity ProcessPorts.
+     *
+     * @param pd DescribeRequest with IOutputSpecifier.
+     * @param pe ProcessEntity with ProcessPorts.
+     */
     private void transformOutputs(DescribeRequest pd, ProcessEntity pe) {
 
         for (IOutputSpecifier specifier : pd.getOutputs()) {
