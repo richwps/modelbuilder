@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.properties;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * A group of property fields / components.
@@ -15,7 +16,7 @@ public class PropertyGroup {
 
     public PropertyGroup(String name) {
         this.name = name;
-        propertyComponents = new HashMap<>();
+        propertyComponents = new LinkedHashMap<>();
     }
 
     public String getName() {

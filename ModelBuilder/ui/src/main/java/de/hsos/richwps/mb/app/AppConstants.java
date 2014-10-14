@@ -267,7 +267,7 @@ public class AppConstants {
 
     // TODO move & get colors from lookAndFeel / UIManager
     @Deprecated
-    public final static Color SELECTION_BG_COLOR = new Color(0xc3c9e6); //new Color(0xa0ace5); // <-- original MB style
+    public final static Color SELECTION_BG_COLOR = new Color(0xb0c0e0); //new Color(0xa0ace5); // <-- original MB style
     // new Color(0xa8cde8); // RichWPS logo blue
     // new Color(0x37ABC8); // <-- old RichWPS turquoise
     @Deprecated
