@@ -154,9 +154,13 @@ public class MainTreeViewController extends AbstractTreeViewController {
     public void addNode(String uri) {
         IRichWPSProvider provider = new RichWPSProvider();
         List<ProcessEntity> pes = new ArrayList<>();
+        DefaultMutableTreeNode root = getRoot();
+        DefaultMutableTreeNode processesNode = (DefaultMutableTreeNode) root.getFirstChild();
         try {
             provider.connect(uri);
             List<String> processes = provider.getAvailableProcesses(uri);
+            // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
+            DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
             for (String processid : processes) {
 
                 DescribeRequest pd = new DescribeRequest();
@@ -168,11 +172,14 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 pe.setOwsAbstract(pd.getAbstract());
                 pe.setOwsTitle(pd.getTitle());
                 //FIXME pe.setOwsVersion
-
                 this.transformInputs(pd, pe);
                 this.transformOutputs(pd, pe);
-                Logger.log("Debug\n:" + pd);
+                Logger.log("Debug:\n adding process "+pe.getOwsIdentifier());
+                serverNode.add(new DefaultMutableTreeNode(pe));
             }
+            Logger.log("Debug:\n adding server "+uri);
+            processesNode.add(serverNode);
+            this.updateUI();
         } catch (Exception e) {
         }
     }
