@@ -143,7 +143,7 @@ public class App {
 
     protected TreenodeTransferHandler getProcessTransferHandler() {
         if (null == processTransferHandler) {
-            processTransferHandler = new TreenodeTransferHandler();
+            processTransferHandler = new TreenodeTransferHandler(getProcessProvider());
         }
 
         return processTransferHandler;
@@ -398,9 +398,8 @@ public class App {
         dialog.addWindowListener(new WindowAdapter() {
 
             @Override
-            public void windowClosing(WindowEvent e) {
-                // TODO add remote nodes to main tree view
-//                getMainTreeView().setRemotes(dialog.getRemotes());
+            public void windowClosed(WindowEvent e) {
+                getMainTreeView().setRemotes(dialog.getRemotes());
             }
 
         });

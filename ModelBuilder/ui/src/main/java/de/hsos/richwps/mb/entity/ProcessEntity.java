@@ -1,6 +1,13 @@
 package de.hsos.richwps.mb.entity;
 
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,33 +16,38 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class ProcessEntity implements IOwsObject, Serializable {
+public class ProcessEntity implements IOwsObject, IObjectWithProperties, Serializable {
 
-    private String owsTitle;
-    private String owsAbstract;
-    private String server;
-    private String owsIdentifier;
+    public static String KEY_IDENTIFIER;
+    public static String KEY_SERVER;
+    public static String KEY_TITLE;
+    public static String KEY_ABSTRACT;
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
     private String toolTipText;
     private boolean isLocal;
-    
+
     public static String toolTipCssForMainContainer;
 
     private boolean isFullyLoaded = false;
+
+    private HashMap<String, AbstractPropertyComponent> properties = new HashMap<>();
+    private PropertyGroup owsGroup;
 
     public ProcessEntity() {
         this("", "");
     }
 
     public ProcessEntity(String server, String owsIdentifier) {
-        this.server = server;
-        this.owsIdentifier = owsIdentifier;
+//        this.server = server;
+//        this.owsIdentifier = owsIdentifier;
         this.isLocal = false;
 
         this.inputPorts = new LinkedList<>();
         this.outputPorts = new LinkedList<>();
+
+        createProperties(server, owsIdentifier);
     }
 
     public void setIsFullyLoaded(boolean isFullyLoaded) {
@@ -61,7 +73,7 @@ public class ProcessEntity implements IOwsObject, Serializable {
      */
     @Override
     public void setOwsTitle(String owsTitle) {
-        this.owsTitle = owsTitle;
+        owsGroup.getPropertyComponent(KEY_TITLE).setValue(owsTitle);
         toolTipText = null;
     }
 
@@ -72,7 +84,7 @@ public class ProcessEntity implements IOwsObject, Serializable {
      */
     @Override
     public void setOwsIdentifier(String owsIdentifier) {
-        this.owsIdentifier = owsIdentifier;
+        owsGroup.getPropertyComponent(KEY_IDENTIFIER).setValue(owsIdentifier);
         toolTipText = null;
     }
 
@@ -83,23 +95,33 @@ public class ProcessEntity implements IOwsObject, Serializable {
      */
     @Override
     public void setOwsAbstract(String owsAbstract) {
-        this.owsAbstract = owsAbstract;
+        owsGroup.getPropertyComponent(KEY_ABSTRACT).setValue(owsAbstract);
         toolTipText = null;
     }
 
     public void setServer(String server) {
-        this.server = server;
+        owsGroup.getPropertyComponent(KEY_SERVER).setValue(server);
     }
 
     public String getServer() {
-        return server;
+        return (String) owsGroup.getPropertyComponent(KEY_SERVER).getValue();
     }
 
     @Override
     public String getOwsIdentifier() {
-        return owsIdentifier;
+        return (String) owsGroup.getPropertyComponent(KEY_IDENTIFIER).getValue();
     }
 
+    @Override
+    public String getOwsTitle() {
+        return (String) owsGroup.getPropertyComponent(KEY_TITLE).getValue();
+    }
+
+    @Override
+    public String getOwsAbstract() {
+        return (String) owsGroup.getPropertyComponent(KEY_ABSTRACT).getValue();
+    }
+    
     public int getNumInputs() {
         return inputPorts.size();
     }
@@ -139,15 +161,6 @@ public class ProcessEntity implements IOwsObject, Serializable {
         return outputPorts;
     }
 
-    @Override
-    public String getOwsTitle() {
-        return owsTitle;
-    }
-
-    @Override
-    public String getOwsAbstract() {
-        return owsAbstract;
-    }
 
     public String getToolTipText() {
         if (null == toolTipText) {
@@ -181,7 +194,6 @@ public class ProcessEntity implements IOwsObject, Serializable {
 // @TODO calculate new capacity after the refactoring!
             // length of vars + length of port texts + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
             int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + portTextsLength + 13 + 7 + 4 + 8;
-
 
             StringBuilder sb = new StringBuilder(sbCapacity);
             sb.append("<html><body style='").append(ProcessEntity.toolTipCssForMainContainer).append("'><b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><i>").append(getOwsAbstract()).append("</i>");
@@ -222,9 +234,9 @@ public class ProcessEntity implements IOwsObject, Serializable {
     }
 
     public ProcessEntity clone() {
-        ProcessEntity clone = new ProcessEntity(server, owsIdentifier);
-        clone.owsAbstract = owsAbstract;
-        clone.owsTitle = owsTitle;
+        ProcessEntity clone = new ProcessEntity(getServer(), getOwsIdentifier());
+        clone.setOwsAbstract(getOwsAbstract());
+        clone.setOwsTitle(getOwsTitle());
         clone.toolTipText = null; // indicate lazy initialisation
 
         for (ProcessPort inPort : inputPorts) {
@@ -236,6 +248,26 @@ public class ProcessEntity implements IOwsObject, Serializable {
         }
 
         return clone;
+    }
+
+    @Override
+    public String getPropertiesObjectName() {
+        return "ProcessEntity";
+    }
+
+    @Override
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        return Arrays.asList(new IObjectWithProperties[]{
+            owsGroup
+        });
+    }
+
+    private void createProperties(String server, String owsIdentifier) {
+        owsGroup = new PropertyGroup("Process");
+        owsGroup.addComponent(new PropertyMultilineLabel(KEY_IDENTIFIER, owsIdentifier, false));
+        owsGroup.addComponent(new PropertyMultilineLabel(KEY_SERVER, server, false));
+        owsGroup.addComponent(new PropertyMultilineLabel(KEY_TITLE, "", false));
+        owsGroup.addComponent(new PropertyMultilineLabel(KEY_ABSTRACT, "", false));
     }
 
 }

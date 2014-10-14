@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.properties;
 
 import java.awt.Component;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -9,9 +10,12 @@ import java.util.Collection;
  *
  * @author dziegenh
  */
-public abstract class AbstractPropertyComponent implements IObjectWithProperties {
+public abstract class AbstractPropertyComponent<E> implements IObjectWithProperties, Serializable {
 
-    private String name;
+    private String propertiesObjectName;
+
+    public AbstractPropertyComponent() {
+    }
 
     /**
      * A name must be given to identify the property which the component
@@ -20,7 +24,7 @@ public abstract class AbstractPropertyComponent implements IObjectWithProperties
      * @param name
      */
     public AbstractPropertyComponent(String name) {
-        this.name = name;
+        this.propertiesObjectName = name;
     }
 
     /**
@@ -30,7 +34,7 @@ public abstract class AbstractPropertyComponent implements IObjectWithProperties
      */
     @Override
     public String getPropertiesObjectName() {
-        return this.name;
+        return this.propertiesObjectName;
     }
 
     /**
@@ -38,14 +42,14 @@ public abstract class AbstractPropertyComponent implements IObjectWithProperties
      *
      * @return
      */
-    public abstract Object getValue();
+    public abstract E getValue();
 
     /**
      * Sets the property value.
      *
      * @param value
      */
-    public abstract void setValue(Object value);
+    public abstract void setValue(E value);
 
     /**
      * Gets the propertie's GUI component.
@@ -70,6 +74,10 @@ public abstract class AbstractPropertyComponent implements IObjectWithProperties
     @Override
     public Collection<? extends IObjectWithProperties> getProperties() {
         return null;
+    }
+
+    public void setPropertiesObjectName(String propertiesObjectName) {
+        this.propertiesObjectName = propertiesObjectName;
     }
 
 }

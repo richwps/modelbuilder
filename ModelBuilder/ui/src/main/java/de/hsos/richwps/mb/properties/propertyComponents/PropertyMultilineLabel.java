@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.properties.propertyComponents;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.Component;
+import java.io.Serializable;
 
 /**
  * A label for property values which is able to contain multiple lines. Can be
@@ -10,22 +11,37 @@ import java.awt.Component;
  *
  * @author dziegenh
  */
-public class PropertyMultilineLabel extends AbstractPropertyComponent {
+public class PropertyMultilineLabel extends AbstractPropertyComponent<String> implements Serializable {
 
     private MultilineLabel component;
 
-    public PropertyMultilineLabel(String propertyName) {
+    public PropertyMultilineLabel() {
+        this("", "");
+    }
+
+    public PropertyMultilineLabel(MultilineLabel component) {
+        super("");
+        this.component = component;
+    }
+
+    public PropertyMultilineLabel(String propertyName, String value) {
+        this(propertyName, value, false);
+    }
+    
+    public PropertyMultilineLabel(String propertyName, String value, boolean editable) {
         super(propertyName);
+        component = new MultilineLabel(value);
+//        this.component.setEditable(editable);
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return component.getText();
     }
 
     @Override
-    public void setValue(Object value) {
-        component.setText((String) value);
+    public void setValue(String value) {
+        component.setText(value);
     }
 
     @Override
@@ -35,7 +51,7 @@ public class PropertyMultilineLabel extends AbstractPropertyComponent {
 
     @Override
     public void setEditable(boolean editable) {
-        component.setEditable(editable);
+//        component.setEditable(editable);
     }
 
     public void setComponent(MultilineLabel multilineLabel) {

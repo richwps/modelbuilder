@@ -40,9 +40,10 @@ public class PropertiesView extends TitledComponent {
     private final int cardGap = 0;
 
     private MultiProcessCard multiProcessCard;
-    private SingleProcessCard singleProcessCard;
     private JPanel voidCard;
 
+//    private SingleProcessCard singleProcessCard;
+    private PropertiesCard singleProcessCard;
 //    private ModelCard modelCard;
     private PropertiesCard modelCard;
 
@@ -137,22 +138,23 @@ public class PropertiesView extends TitledComponent {
         if (1 == processes.size()) {
 
             // store panel foldings
-            boolean processFolded = singleProcessCard.isProcessPanelFolded();
-            boolean inputsFolded = singleProcessCard.isInputsPanelFolded();
-            boolean outputsFolded = singleProcessCard.isOutputsPanelFolded();
+//            boolean processFolded = singleProcessCard.isProcessPanelFolded();
+//            boolean inputsFolded = singleProcessCard.isInputsPanelFolded();
+//            boolean outputsFolded = singleProcessCard.isOutputsPanelFolded();
 
             // create new card and replace the old one
             Component tmp = singleProcessCard;
-            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
-            singleProcessCard.setProcess(processes.get(0));
+            singleProcessCard.setObjectWithProperties(processes.get(0));
+//            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
+//            singleProcessCard.setProcess(processes.get(0));
             contentPanel.remove(tmp);
             contentPanel.add(singleProcessCard, CARD.PROCESS_SINGLE_SELECTION.name());
             showCard(CARD.PROCESS_SINGLE_SELECTION);
 
             // recall panel foldings
-            singleProcessCard.setProcessPanelFolded(processFolded);
-            singleProcessCard.setInputsPanelFolded(inputsFolded);
-            singleProcessCard.setOutputsPanelFolded(outputsFolded);
+//            singleProcessCard.setProcessPanelFolded(processFolded);
+//            singleProcessCard.setInputsPanelFolded(inputsFolded);
+//            singleProcessCard.setOutputsPanelFolded(outputsFolded);
 
             // multiple processes selected => show multi card
         } else if (1 < processes.size()) {
@@ -239,9 +241,11 @@ public class PropertiesView extends TitledComponent {
 //        }
 //}
 
-    private SingleProcessCard getSingleProcessCard() {
+//    private SingleProcessCard getSingleProcessCard() {
+    private PropertiesCard getSingleProcessCard() {
         if (null == singleProcessCard) {
-            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
+//            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
+            singleProcessCard = new PropertiesCard(parentWindow, new JPanel());
         }
 
         return singleProcessCard;

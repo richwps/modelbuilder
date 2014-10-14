@@ -258,6 +258,12 @@ public class AppConstants {
     public final static String PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT = "Endpoint";
     public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
 
+    public final static String PROPERTIES_KEY_PROCESS_IDENTIFIER = "Identifier";
+    public final static String PROPERTIES_KEY_PROCESS_SERVER = "Server";
+    public final static String PROPERTIES_KEY_PROCESS_ABSTRACT = "Abstract";
+    public final static String PROPERTIES_KEY_PROCESS_TITLE = "Title";
+
+
     // Undo-/Redo-Manager
     public final static String UNDOMANAGER_CANT_UNDO = "Can't undo";
     public final static String UNDOMANAGER_CANT_REDO = "Can't redo";

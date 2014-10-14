@@ -56,7 +56,6 @@ class PropertiesCard extends JScrollPane {
         return objectWithProperties;
     }
 
-    @Deprecated
     public PropertiesCard(final Window parentWindow, final JPanel contentPanel) {
         super(contentPanel);
 

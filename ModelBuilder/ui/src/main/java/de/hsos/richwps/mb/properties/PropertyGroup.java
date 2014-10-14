@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.properties;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,14 +11,22 @@ import java.util.LinkedHashMap;
  * @author dziegenh
  * @see AbstractPropertyComponent
  */
-public class PropertyGroup implements IObjectWithProperties {
+public class PropertyGroup implements IObjectWithProperties, Serializable {
 
     private HashMap<String, AbstractPropertyComponent> propertyComponents;
-    private String name;
+    private String propertiesObjectName;
+
+    public PropertyGroup() {
+        this("");
+    }
 
     public PropertyGroup(String name) {
-        this.name = name;
+        this.propertiesObjectName = name;
         propertyComponents = new LinkedHashMap<>();
+    }
+
+    public void setPropertyComponents(HashMap<String, AbstractPropertyComponent> propertyComponents) {
+        this.propertyComponents = propertyComponents;
     }
 
     public HashMap<String, AbstractPropertyComponent> getPropertyComponents() {
@@ -43,12 +52,16 @@ public class PropertyGroup implements IObjectWithProperties {
 
     @Override
     public String getPropertiesObjectName() {
-        return name;
+        return propertiesObjectName;
     }
 
     @Override
     public Collection<? extends IObjectWithProperties> getProperties() {
         return getPropertyComponents().values();
+    }
+
+    public void setPropertiesObjectName(String propertiesObjectName) {
+        this.propertiesObjectName = propertiesObjectName;
     }
 
 }

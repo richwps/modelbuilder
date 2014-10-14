@@ -278,7 +278,9 @@ public class MainTreeViewController extends AbstractTreeViewController {
         for (String remote : remotes) {
             if (!remoteNodes.containsKey(remote)) {
                 DefaultMutableTreeNode node = new DefaultMutableTreeNode(remote);
-                processesNode.add(node);
+
+                addNode(remote);
+
                 remoteNodes.put(remote, node);
             } else {
                 unusedNodes.remove(remote);
@@ -289,6 +291,8 @@ public class MainTreeViewController extends AbstractTreeViewController {
             processesNode.remove(remoteNodes.get(unusedNode));
             remoteNodes.remove(unusedNode);
         }
+
+        updateUI();
     }
 
 }

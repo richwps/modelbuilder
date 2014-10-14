@@ -169,7 +169,7 @@ public class AbstractPortCard extends PropertiesCard {
 
         } else {
             MultilineLabel labelComponent = createBodyLabel(content);
-            PropertyMultilineLabel propertyLabel = new PropertyMultilineLabel(property);
+            PropertyMultilineLabel propertyLabel = new PropertyMultilineLabel(property, "");
             propertyLabel.setComponent(labelComponent);
             propertyLabel.setEditable(false);
             getPropertyFields().add(propertyLabel);

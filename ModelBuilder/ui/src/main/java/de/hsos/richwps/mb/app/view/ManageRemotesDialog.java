@@ -23,6 +23,7 @@ public class ManageRemotesDialog extends MbDialog {
     public ManageRemotesDialog(Window parent) {
         super(parent, AppConstants.MANAGEREMOTES_DIALOG_TITLE, BTN_ID_CANCEL | BTN_ID_OK);
         createContent();
+        setSize(400, 100);
     }
 
     private void createContent() {

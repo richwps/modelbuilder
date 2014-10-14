@@ -47,6 +47,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
      *
      * @param dtde
      */
+    @Override
     public void drop(DropTargetDropEvent dtde) {
         Transferable transferable = dtde.getTransferable();
 

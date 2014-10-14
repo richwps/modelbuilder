@@ -5,27 +5,32 @@ import java.awt.Component;
 import javax.swing.JTextField;
 
 /**
- * Input field for property values.
+ * Simple input for property values.
  *
  * @author dziegenh
  */
-public class PropertyTextField extends AbstractPropertyComponent {
+public class PropertyTextField extends AbstractPropertyComponent<String> {
 
     private final JTextField textField = new JTextField();
 
-    public PropertyTextField(String proptertyName, String value) {
-        super(proptertyName);
+    public PropertyTextField(String propertyName, String value) {
+        this(propertyName, value, true);
+    }
+
+    public PropertyTextField(String propertyName, String value, boolean editable) {
+        super(propertyName);
         this.textField.setText(value);
+        this.textField.setEditable(editable);
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return textField.getText();
     }
 
     @Override
-    public void setValue(Object value) {
-        this.textField.setText((String) value);
+    public void setValue(String value) {
+        this.textField.setText(value);
     }
 
     @Override
@@ -35,7 +40,7 @@ public class PropertyTextField extends AbstractPropertyComponent {
 
     @Override
     public void setEditable(boolean editable) {
-        // TODO
+        this.textField.setEditable(editable);
     }
 
 }
