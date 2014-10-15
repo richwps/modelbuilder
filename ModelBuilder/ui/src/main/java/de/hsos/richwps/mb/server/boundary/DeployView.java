@@ -43,7 +43,7 @@ public class DeployView extends MbDialog {
 
         selectView = new SelectDeployConfigView(this);
         selectView.init(configs);
-        selectView.addSelectConfigListener(new ListSelectionListener() {
+        selectView.addSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 updateButtons();
@@ -57,7 +57,7 @@ public class DeployView extends MbDialog {
     }
 
     protected void updateButtons() {
-        boolean hasSelection = null != selectView.getSelectedConfig();
+        boolean hasSelection = null != selectView.getSelectedItem();
         JButton okButton = getDialogButton(BTN_ID_OK);
         if (null != okButton) {
             okButton.setEnabled(hasSelection);
@@ -65,6 +65,6 @@ public class DeployView extends MbDialog {
     }
 
     public DeployConfig getConfig() {
-        return selectView.getSelectedConfig();
+        return selectView.getSelectedItem();
     }
 }

@@ -34,7 +34,7 @@ public class MbDialog extends JDialog {
     private JPanel buttonPanel;
 
     public final static int BTN_ID_NONE = 0;
-    public final static int BTN_ID_CLOSE = 1 << 0;
+    public final static int BTN_ID_CLOSE = 1;
     public final static int BTN_ID_OK = 1 << 1;
     public final static int BTN_ID_CANCEL = 1 << 2;
 
