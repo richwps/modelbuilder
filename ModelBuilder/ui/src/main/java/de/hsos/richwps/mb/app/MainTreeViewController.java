@@ -48,13 +48,13 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         // handle changes of the SP url config
         app.getPreferencesDialog().addWindowListener(new WindowAdapter() {
-            
+
             private boolean urlHasChanged() {
                 ProcessProvider processProvider = getProcessProvider();
                 String spUrl = getSpUrlFromConfig();
                 return !processProvider.getUrl().equals(spUrl);
             }
-            
+
             @Override
             public void windowClosed(WindowEvent e) {
                 if (urlHasChanged()) {
@@ -74,10 +74,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
         String defaultValue = AppConstants.SEMANTICPROXY_DEFAULT_URL;
         return AppConfig.getConfig().get(key, defaultValue);
     }
-    
+
     @Override
     void fillTree() {
-        
+
         ProcessProvider processProvider = getProcessProvider();
 
         // Remove existing child-nodes from root
@@ -89,21 +89,21 @@ public class MainTreeViewController extends AbstractTreeViewController {
         if (processProvider != null) {
             try {
                 String url = getSpUrlFromConfig();
-                
+
                 boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(url);
-                
+
                 if (connected || processProvider.connect(url)) {
                     for (WpsServer server : processProvider.getAllServerWithProcesses()) {
                         // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
                         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server.getEndpoint());
-                        
+
                         for (ProcessEntity process : server.getProcesses()) {
                             serverNode.add(new DefaultMutableTreeNode(process));
                         }
                         processesNode.add(serverNode);
                     }
                 }
-                
+
             } catch (Exception ex) {
                 // Inform user when SP client can't be created
                 AppEvent event = new AppEvent(AppConstants.SEMANTICPROXY_CANNOT_CREATE_CLIENT, this, AppConstants.INFOTAB_ID_SEMANTICPROXY);
@@ -148,7 +148,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.add(processesNode);
         root.add(downloadServices);
         root.add(local);
-        
+
         updateUI();
     }
 
@@ -165,27 +165,27 @@ public class MainTreeViewController extends AbstractTreeViewController {
         try {
             provider.connect(uri);
             List<String> processes = provider.getAvailableProcesses(uri);
-            
+
             for (String processid : processes) {
-                
+
                 DescribeRequest pd = new DescribeRequest();
                 pd.setEndpoint(uri);
                 pd.setIdentifier(processid);
                 provider.describeProcess(pd);
-                
+
                 ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
-                pe.setOwsAbstract(pd.getAbstract());
                 //TRICKY
-                if (pd.getTitle() != null) {
-                    if (!pd.getTitle().contains("xml-fragment")) {
-                        pe.setOwsTitle(pd.getTitle());
-                    } else {
-                        pe.setOwsTitle(pd.getIdentifier());
-                    }
+                if (pd.getAbstract() != null) {
+                    pe.setOwsAbstract(pd.getAbstract());
+                } else {
+                    pe.setOwsAbstract("");
                 }
+                
+                pe.setOwsTitle(pd.getTitle());
                 //FIXME pe.setOwsVersion
                 this.transformInputs(pd, pe);
                 this.transformOutputs(pd, pe);
+                pe.setIsFullyLoaded(true);
                 serverNode.add(new DefaultMutableTreeNode(pe));
             }
             processesNode.add(serverNode);
@@ -202,7 +202,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
      * @param pe ProcessEntity with ProcessPorts.
      */
     private void transformInputs(DescribeRequest pd, ProcessEntity pe) {
-        
+
         for (IInputSpecifier specifier : pd.getInputs()) {
             if (specifier instanceof InputComplexDataSpecifier) {
                 InputComplexDataSpecifier complex = (InputComplexDataSpecifier) specifier;
@@ -239,7 +239,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
      * @param pe ProcessEntity with ProcessPorts.
      */
     private void transformOutputs(DescribeRequest pd, ProcessEntity pe) {
-        
+
         for (IOutputSpecifier specifier : pd.getOutputs()) {
             if (specifier instanceof OutputComplexDataSpecifier) {
                 OutputComplexDataSpecifier complex = (OutputComplexDataSpecifier) specifier;

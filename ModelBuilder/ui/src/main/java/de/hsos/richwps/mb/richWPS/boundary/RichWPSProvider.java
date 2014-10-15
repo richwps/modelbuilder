@@ -36,6 +36,7 @@ import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.WPSTClientSession;
 import org.n52.wps.client.transactional.TrasactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 
 /**
  * Interface to RichWPS enabled servers.
@@ -53,6 +54,9 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     private WPSTClientSession wpst;
 
+    /**
+     * The deploymentprofile, that should be used.
+     */
     public static String deploymentProfile = "rola";
 
     /**
@@ -234,15 +238,15 @@ public class RichWPSProvider implements IRichWPSProvider {
             ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
             ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
-            
+
             ProcessDescriptionType processdescriptions = descs[0];
-            
+
             if (processdescriptions.getProcessVersion() != null) {
                 request.setProcessVersion(processdescriptions.getProcessVersion());
             }
-            
-            if (processdescriptions.getTitle()!= null) {
-                request.setTitle(processdescriptions.getTitle().toString());
+
+            if (processdescriptions.getTitle() != null) {
+                request.setTitle(processdescriptions.getTitle().getStringValue());
             }
 
             if (processdescriptions.getAbstract() != null) {
@@ -354,8 +358,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             //de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
             //FIXME
-            String endp = request.getEndpoint().split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-            System.err.println(endp);
+            String endp = request.getEndpoint();
+            endp = endp.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+            de.hsos.richwps.mb.Logger.log("Debug:\n Deploying at " + endp);
             Object response = this.wpst.deploy(endp, builder.getDeploydocument());
 
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
@@ -363,13 +368,13 @@ public class RichWPSProvider implements IRichWPSProvider {
                 request.addException(exception.getExceptionReport().toString());
             } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
                 net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
-                //de.hsos.richwps.mb.Logger.log("Debug:\n" + deplok.getStringValue());
             } else {
                 de.hsos.richwps.mb.Logger.log("Debug:\n Unknown reponse" + response);
                 de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
             }
         } catch (WPSClientException ex) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create "
+                    + "deploymentdocument." + ex.getLocalizedMessage());
         }
     }
 
@@ -400,7 +405,8 @@ public class RichWPSProvider implements IRichWPSProvider {
                 //de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
             }
         } catch (WPSClientException ex) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create deploymentdocument." + ex.getLocalizedMessage());
+            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create "
+                    + "deploymentdocument." + ex.getLocalizedMessage());
         }
     }
 
@@ -423,8 +429,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.deployProcess((DeployRequest) request);
         } else if (request instanceof UndeployRequest) {
             this.undeployProcess((UndeployRequest) request);
-        } else if (request instanceof de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) {
-            this.describeProcess((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) request);
+        } else if (request instanceof DescribeRequest) {
+            this.describeProcess((DescribeRequest) request);
         }
     }
 
@@ -450,7 +456,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             description = descs[0];
 
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, describing the process " + request.getIdentifier() + ", " + e);
+            de.hsos.richwps.mb.Logger.log("Debug:\n Something went wrong, "
+                    + "describing the process " + request.getIdentifier() + ", " + e);
         }
         return description;
     }
@@ -466,18 +473,20 @@ public class RichWPSProvider implements IRichWPSProvider {
      * and outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    private void execAnalyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
+    private void execAnalyseResponse(ExecuteDocument execute,
+            ProcessDescriptionType description, Object responseObject,
+            ExecuteRequest request) {
         java.net.URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
-        System.out.println(file);
+        de.hsos.richwps.mb.Logger.log("Debug:\n using configuration" + file);
         WPSClientConfig.getInstance(file);
 
         ExecuteRequest resultrequest = request;
         HashMap theoutputs = request.getOutputArguments();
-        de.hsos.richwps.mb.Logger.log("Debug: " + responseObject.getClass());
+        de.hsos.richwps.mb.Logger.log("Debug:\n" + responseObject.getClass());
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
-            de.hsos.richwps.mb.Logger.log("Debug: \n" + response.toString());
+            de.hsos.richwps.mb.Logger.log("Debug:\n" + response.toString());
 
             try {
                 java.util.Set<String> keys = theoutputs.keySet();
@@ -492,7 +501,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                             String wantedIdentifer = argument.getIdentifier();
                             if (givenIdentifier.equals(wantedIdentifer)) {
                                 value = output.getData().getLiteralData().getStringValue();
-                                de.hsos.richwps.mb.Logger.log("#thevalue " + value);
+                                de.hsos.richwps.mb.Logger.log("Debug;\n #thevalue " + value);
                             }
                         }
                         request.addResult(key, value);
@@ -506,8 +515,9 @@ public class RichWPSProvider implements IRichWPSProvider {
                             request.addResult(key, httpkvpref);
                         } else {
                             // FIXME proper analytics for different bindings.
-                            GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);//FIXME
-                            System.out.println(binding.getPayload().size());
+                            // Blocked by broken commons.
+                            GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);
+                            de.hsos.richwps.mb.Logger.log("Debug:\n the size " + binding.getPayload().size());
                         }
                     }
                 }
@@ -517,7 +527,8 @@ public class RichWPSProvider implements IRichWPSProvider {
         } else {
             net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());
-            de.hsos.richwps.mb.Logger.log("Debug: \n Unable to analyse response. Response is Exception: " + exception.toString());
+            de.hsos.richwps.mb.Logger.log("Debug: \n Unable to analyse response."
+                    + "Response is Exception: " + exception.toString());
             de.hsos.richwps.mb.Logger.log("Debug: \n " + exception.getExceptionReport());
         }
     }
@@ -529,7 +540,8 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request, ProcessDescriptionType process) {
+    private void execAddInputs(DescribeRequest
+            request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
         InputDescriptionType[] _inputs = inputs.getInputArray();
         for (InputDescriptionType description : _inputs) {
@@ -544,8 +556,8 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
-    private void execAddOutputs(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request, ProcessDescriptionType process) {
-
+    private void execAddOutputs(
+           DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
         OutputDescriptionType[] _outputs = outputs.getOutputArray();
         for (OutputDescriptionType description : _outputs) {
@@ -584,7 +596,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 String[] split = param.getValue().split(",");
                 BigInteger dimension = BigInteger.valueOf(split.length);
                 List<String> values = Arrays.asList(split);
-                
+
                 //FIXME Correct values                
                 executeBuilder.addBoundingBoxData(
                         key, crs, dimension, values, values
