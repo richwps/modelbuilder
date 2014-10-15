@@ -138,7 +138,7 @@ public class AppConstants {
     /**
      * Common CSS for input and output ports.
      */
-    private final static String TOOLTIP_CSS_FOR_PORTS = "border:1px solid #cccccc;padding:2px;margin: 2px 0 1px 0;";
+    private final static String TOOLTIP_CSS_FOR_PORTS = "color:#000000;border:1px solid #cccccc;padding:2px;margin: 2px 0 1px 0;";
 
     /**
      * The CSS which is used for input port html containers in ToolTipTexts.
@@ -156,7 +156,7 @@ public class AppConstants {
     /**
      * The CSS which is used for the main html container in ToolTipTexts.
      */
-    static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "background:#" +TOOLTIP_BG_COLOR_HEX_STRING+ ";border:0;margin:0;";
+    static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "color:#000000;background:#" +TOOLTIP_BG_COLOR_HEX_STRING+ ";border:0;margin:0;";
 
     public enum PREFERENCES_TAB {
 
