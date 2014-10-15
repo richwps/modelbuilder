@@ -69,7 +69,7 @@ public class TreeView {
                             return port.getDatatype().toString() + (port.isGlobalInput() ? " Input" : " Output");
                         }
                     } else if (userObject instanceof ProcessEntity) {
-                        return UiHelper.limitString(((ProcessEntity) userObject).toString(), AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);
+                        return UiHelper.limitString(((ProcessEntity) userObject).toString(), AppConstants.TREEVIEW_PROCESS_TITLE_MAX_VIEW_LENGTH);
                     }
 //                    else if(userObject instanceof String) {
 //                        return UiHelper.limitString((String) userObject, AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);

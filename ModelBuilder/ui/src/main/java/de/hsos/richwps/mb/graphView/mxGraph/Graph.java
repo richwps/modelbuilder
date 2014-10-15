@@ -41,7 +41,7 @@ public class Graph extends mxGraph {
     public String getLabel(Object cell) {
         Object value = model.getValue(cell);
         if (null != value && value instanceof ProcessEntity) {
-            return UiHelper.limitString(((ProcessEntity) value).toString(), AppConstants.PROCESS_TITLE_MAX_VIEW_LENGTH);
+            return UiHelper.limitString(((ProcessEntity) value).toString(), AppConstants.GRAPHVIEW_PROCESS_TITLE_MAX_VIEW_LENGTH);
         }
 
         return super.getLabel(cell);
