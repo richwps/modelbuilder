@@ -393,7 +393,7 @@ public class App {
      *
      * @return entered wps-server.
      */
-    void addRemote() {
+    void manageRemotes() {
         final ManageRemotesDialog dialog = new ManageRemotesDialog(frame);
         dialog.addWindowListener(new WindowAdapter() {
 

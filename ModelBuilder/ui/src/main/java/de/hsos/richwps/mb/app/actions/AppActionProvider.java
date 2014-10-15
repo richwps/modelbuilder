@@ -31,7 +31,7 @@ public class AppActionProvider {
         UNDEPLOY,
         //
         RELOAD_PROCESSES,
-        ADD_REMOTE,
+        MANAGE_REMOTES,
         PUBLISH,
         //others
         SHOW_ERROR_MSG
@@ -43,7 +43,7 @@ public class AppActionProvider {
 
     public AppActionProvider(IAppActionHandler actionHandler) {
         this.actionHandler = actionHandler;
-        this.actionInstances = new HashMap<APP_ACTIONS, AppAbstractAction>();
+        this.actionInstances = new HashMap<>();
     }
 
     /**

@@ -210,7 +210,7 @@ public class AppConstants {
         {"DEPLOY", "Deploy"},
         {"UNDEPLOY", "Undeploy"},
         {"RELOAD_PROCESSES", "Reload processes"},
-        {"ADD_REMOTE", "Add a new remote"},
+        {"MANAGE_REMOTES", "Manage remotes"},
         {"PUBLISH", "Publish model at SemanticProxy"},
         {"EXECUTE", "Execute this process"},
         {"EXECUTE_ANY", "Execute a process"},

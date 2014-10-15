@@ -82,8 +82,8 @@ public class AppActionHandler implements IAppActionHandler {
             case RELOAD_PROCESSES:
                 doReloadProcesses();
                 break;
-            case ADD_REMOTE:
-                addRemote();
+            case MANAGE_REMOTES:
+                doShowManageRemotes();
                 break;
             case PUBLISH:
                 //TODO
@@ -327,8 +327,8 @@ public class AppActionHandler implements IAppActionHandler {
         app.undeploy();
     }
 
-    private void addRemote(){
-        app.addRemote();
+    private void doShowManageRemotes(){
+        app.manageRemotes();
     }
     
     private void doUndo() {
