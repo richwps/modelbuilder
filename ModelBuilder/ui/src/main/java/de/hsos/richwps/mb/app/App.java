@@ -399,7 +399,10 @@ public class App {
 
             @Override
             public void windowClosed(WindowEvent e) {
-                getMainTreeView().setRemotes(dialog.getRemotes());
+                String[] remotes = dialog.getRemotes();
+                if (null != remotes) {
+                    getMainTreeView().setRemotes(remotes);
+                }
             }
 
         });

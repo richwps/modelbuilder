@@ -20,6 +20,8 @@ public class ManageRemotesDialog extends MbDialog {
 
     private PerstistableComboBox remotesComboPanel;
 
+    private String[] exportRemotes;
+
     public ManageRemotesDialog(Window parent) {
         super(parent, AppConstants.MANAGEREMOTES_DIALOG_TITLE, BTN_ID_CANCEL | BTN_ID_OK);
         createContent();
@@ -44,6 +46,7 @@ public class ManageRemotesDialog extends MbDialog {
         switch (buttonId) {
             case BTN_ID_OK:
                 remotesComboPanel.saveItemsToPreferences();
+                exportRemotes();
                 break;
         }
 
@@ -53,23 +56,26 @@ public class ManageRemotesDialog extends MbDialog {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
+            exportRemotes = null;
             remotesComboPanel.loadItemsFromPreferences();
         }
 
         super.setVisible(visible);
     }
 
-    public String[] getRemotes() {
+    private void exportRemotes() {
         JComboBox<String> remotesCombo = remotesComboPanel.getComboBox();
 
         int numItems = remotesCombo.getItemCount();
-        String[] remotes = new String[numItems];
+        exportRemotes = new String[numItems];
 
         for (int i = 0; i < numItems; i++) {
-            remotes[i] = remotesCombo.getItemAt(i);
+            exportRemotes[i] = remotesCombo.getItemAt(i);
         }
+    }
 
-        return remotes;
+    public String[] getRemotes() {
+        return exportRemotes;
     }
 
 }
