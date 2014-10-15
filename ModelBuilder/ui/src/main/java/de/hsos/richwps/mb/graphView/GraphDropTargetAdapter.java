@@ -4,7 +4,7 @@ import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TransferableProcessEntity;
 import de.hsos.richwps.mb.treeView.TransferableProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableTreeNodes;

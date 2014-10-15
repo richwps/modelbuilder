@@ -6,6 +6,7 @@
 
 package de.hsos.richwps.mb.semanticProxy.boundary;
 
+import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import java.util.List;
 import junit.framework.TestCase;

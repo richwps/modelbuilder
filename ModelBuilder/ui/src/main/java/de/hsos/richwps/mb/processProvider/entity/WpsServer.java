@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.semanticProxy.entity;
+package de.hsos.richwps.mb.processProvider.entity;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.util.LinkedList;

@@ -164,7 +164,6 @@ public class ManageRemotesDialog extends MbDialog {
             if (null != value) {
                 // avoid duplicates
                 if (!loadedItems.contains(value)) {
-//                    remotesPanel.addItemToList(value);
                     loadedItems.add(value);
                 }
 
@@ -178,9 +177,9 @@ public class ManageRemotesDialog extends MbDialog {
         // assure the list contains the current item after loading
         if (!currentItemAdded) {
             loadedItems.add(currentItem);
-//            remotesPanel.addItemToList(currentItem);
         }
 
+        // set items
         remotesPanel.init(loadedItems);
 
         // Select the currently used item

@@ -7,7 +7,7 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyComplexDataTypeFormat;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
-import de.hsos.richwps.mb.semanticProxy.exception.LoadDataTypesException;
+import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.Component;

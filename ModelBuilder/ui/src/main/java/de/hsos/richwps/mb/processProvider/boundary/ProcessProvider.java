@@ -1,12 +1,13 @@
-package de.hsos.richwps.mb.semanticProxy.boundary;
+package de.hsos.richwps.mb.processProvider.boundary;
 
+import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.semanticProxy.entity.WpsServer;
-import de.hsos.richwps.mb.semanticProxy.exception.UnsupportedWpsDatatypeException;
+import de.hsos.richwps.mb.processProvider.entity.WpsServer;
+import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
 import de.hsos.richwps.sp.client.wps.Vocabulary;
@@ -19,6 +20,8 @@ import de.hsos.richwps.sp.client.wps.gettypes.WPS;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * Connects to the semantic proxy and receives/provides a list of available
@@ -252,6 +255,47 @@ public class ProcessProvider {
         }
 
         throw new UnsupportedWpsDatatypeException(inputFormChoice.getDataType());
+    }
+
+    public String[] getPersistedRemotes() {
+        // TODO let app set these values !!!
+        Preferences preferences = AppConfig.getConfig();
+        String persistKeyBase = AppConfig.CONFIG_KEYS.REMOTES_S_URL.name();
+        String persistKeyCount = persistKeyBase + "_COUNT";
+        String persistKeyFormat = persistKeyBase + "_%d";
+
+
+        String currentItem = preferences.get(persistKeyBase, "");
+        int count = preferences.getInt(persistKeyCount, 0);
+
+        boolean currentItemAvailable = null != currentItem && !currentItem.isEmpty();
+        boolean currentItemAdded = !currentItemAvailable;
+
+        // load and add persisted items
+        List<String> loadedItems = new LinkedList<>();
+        for (int c = 0; c < count; c++) {
+            String key = String.format(persistKeyFormat, c);
+            String value = preferences.get(key, "").trim();
+
+            if (null != value) {
+                // avoid duplicates
+                if (!loadedItems.contains(value)) {
+                    loadedItems.add(value);
+                }
+
+                // remember if the currently used item has been added
+                if (value.equals(currentItem)) {
+                    currentItemAdded = true;
+                }
+            }
+        }
+
+        // assure the list contains the current item after loading
+        if (!currentItemAdded) {
+            loadedItems.add(currentItem);
+        }
+
+        return loadedItems.toArray(new String[] {});
     }
 
 }

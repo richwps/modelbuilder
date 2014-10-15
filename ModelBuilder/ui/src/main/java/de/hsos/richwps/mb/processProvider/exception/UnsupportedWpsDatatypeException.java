@@ -1,6 +1,6 @@
-package de.hsos.richwps.mb.semanticProxy.exception;
+package de.hsos.richwps.mb.processProvider.exception;
 
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 
 /**
  * Is thrown by the ProcessProvider if an unsupported datatype occurs.

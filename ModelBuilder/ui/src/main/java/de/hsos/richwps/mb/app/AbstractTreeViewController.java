@@ -2,7 +2,7 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
 import java.awt.dnd.DnDConstants;

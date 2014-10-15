@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.treeView;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import java.awt.datatransfer.Transferable;
 import java.util.LinkedList;
 import java.util.List;

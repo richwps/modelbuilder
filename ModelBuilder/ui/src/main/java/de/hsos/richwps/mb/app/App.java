@@ -12,7 +12,7 @@ import de.hsos.richwps.mb.execView.ExecViewDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;

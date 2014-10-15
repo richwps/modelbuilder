@@ -3,7 +3,7 @@ package de.hsos.richwps.mb.treeView;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Point;
 import java.awt.event.MouseEvent;

@@ -9,6 +9,8 @@ import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -20,8 +22,6 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import de.hsos.richwps.mb.semanticProxy.boundary.ProcessProvider;
-import de.hsos.richwps.mb.semanticProxy.entity.WpsServer;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -149,6 +149,9 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.add(downloadServices);
         root.add(local);
 
+        // adds persisted remote servers
+        setRemotes(processProvider.getPersistedRemotes());
+
         updateUI();
     }
 
@@ -180,7 +183,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 } else {
                     pe.setOwsAbstract("");
                 }
-                
+
                 pe.setOwsTitle(pd.getTitle());
                 //FIXME pe.setOwsVersion
                 this.transformInputs(pd, pe);
@@ -287,9 +290,14 @@ public class MainTreeViewController extends AbstractTreeViewController {
             }
         }
 
-        for (String unusedNode : unusedNodes) {
-            processesNode.remove(remoteNodes.get(unusedNode));
-            remoteNodes.remove(unusedNode);
+        for (String unusedNodeKey : unusedNodes) {
+            DefaultMutableTreeNode unusedNode = remoteNodes.get(unusedNodeKey);
+            
+            if (null != unusedNode && processesNode.isNodeChild(unusedNode)) {
+                processesNode.remove(remoteNodes.get(unusedNodeKey));
+            }
+            
+            remoteNodes.remove(unusedNodeKey);
         }
 
         updateUI();
