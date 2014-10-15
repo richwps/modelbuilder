@@ -6,14 +6,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 /**
- * A group of property fields / components.
+ * A group of objects with properties.
  *
  * @author dziegenh
- * @see AbstractPropertyComponent
  */
-public class PropertyGroup implements IObjectWithProperties, Serializable {
+public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWithProperties, Serializable {
 
-    private HashMap<String, AbstractPropertyComponent> propertyComponents;
+    private HashMap<String, E> propertyObjects;
     private String propertiesObjectName;
 
     public PropertyGroup() {
@@ -22,32 +21,32 @@ public class PropertyGroup implements IObjectWithProperties, Serializable {
 
     public PropertyGroup(String name) {
         this.propertiesObjectName = name;
-        propertyComponents = new LinkedHashMap<>();
+        propertyObjects = new LinkedHashMap<>();
     }
 
-    public void setPropertyComponents(HashMap<String, AbstractPropertyComponent> propertyComponents) {
-        this.propertyComponents = propertyComponents;
+    public void setPropertyComponents(HashMap<String, E> propertyObjects) {
+        this.propertyObjects = propertyObjects;
     }
 
-    public HashMap<String, AbstractPropertyComponent> getPropertyComponents() {
-        return propertyComponents;
+    public HashMap<String, E> getPropertyComponents() {
+        return propertyObjects;
     }
 
-    public AbstractPropertyComponent getPropertyComponent(String propertyName) {
-        return propertyComponents.get(propertyName);
+    public E getPropertyObject(String propertyName) {
+        return propertyObjects.get(propertyName);
     }
 
-    public void addComponent(AbstractPropertyComponent component) {
-        if (null == component) {
-            throw new IllegalArgumentException("Property component cannot be null.");
+    public void addObject(E object) {
+        if (null == object) {
+            throw new IllegalArgumentException("Property object cannot be null.");
         }
 
-        String propertyName = component.getPropertiesObjectName();
+        String propertyName = object.getPropertiesObjectName();
         if (null == propertyName || propertyName.isEmpty()) {
-            throw new IllegalArgumentException("Property component has no valid property name.");
+            throw new IllegalArgumentException("Property object has no valid property name.");
         }
 
-        propertyComponents.put(propertyName, component);
+        propertyObjects.put(propertyName, object);
     }
 
     @Override
@@ -56,7 +55,7 @@ public class PropertyGroup implements IObjectWithProperties, Serializable {
     }
 
     @Override
-    public Collection<? extends IObjectWithProperties> getProperties() {
+    public Collection<? extends E> getProperties() {
         return getPropertyComponents().values();
     }
 

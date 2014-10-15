@@ -106,25 +106,9 @@ class PropertiesCard extends JScrollPane {
     private void createContentPanel() {
         contentPanel.removeAll();
         createPropertyPanel(objectWithProperties, contentPanel);
-                //        Collection<? extends IObjectWithProperties> propertyGroups = objectWithProperties.getProperties();
-        //        int numGroups = propertyGroups.size();
-        //
-        //        // setup layout
-        //        double[][] layoutSize = new double[2][];
-        //        layoutSize[0] = new double[]{TableLayout.FILL};     // columns
-        //        layoutSize[1] = new double[numGroups];              // rows
-        //        Arrays.fill(layoutSize[1], TableLayout.PREFERRED);  // set rows to preferred size
-        //
-        //        contentPanel.setLayout(new TableLayout(layoutSize));
-        //
-        //        int row = 0;
-        //        for (PropertyGroup aGroup : propertyGroups) {
-        //            Component aGroupPanel = createPropertyGroupPanel(aGroup);
-        //            contentPanel.add(aGroupPanel, "0 " + row++);
-        //        }
     }
 
-    private Component createPropertyPanel(IObjectWithProperties objectWithProperties, JPanel propertyPanel) {
+    private JPanel createPropertyPanel(IObjectWithProperties objectWithProperties, JPanel propertyPanel) {
         if (null == propertyPanel) {
             propertyPanel = new JPanel();
         }
@@ -142,9 +126,9 @@ class PropertiesCard extends JScrollPane {
 
         int row = 0;
         for (IObjectWithProperties aProperty : properties) {
-            Component aPropertyRow;
+            JPanel aPropertyRow;
 
-            // Component
+            // Property Component
             if (aProperty instanceof AbstractPropertyComponent) {
                 aPropertyRow = createPropertyComponentPanel((AbstractPropertyComponent) aProperty);
 
@@ -155,6 +139,7 @@ class PropertiesCard extends JScrollPane {
             // other: recursive handling
             } else {
                 aPropertyRow = createPropertyPanel(aProperty, null);
+                aPropertyRow.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2.brighter(), 0, 0, 1, 0));
             }
 
             propertyPanel.add(aPropertyRow, "0 "+ row++);

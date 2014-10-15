@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.PropertyComponentGroup;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
 import java.io.Serializable;
@@ -33,15 +34,13 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
     private boolean isFullyLoaded = false;
 
     private HashMap<String, AbstractPropertyComponent> properties = new HashMap<>();
-    private PropertyGroup owsGroup;
+    private PropertyComponentGroup owsGroup;
 
     public ProcessEntity() {
         this("", "");
     }
 
     public ProcessEntity(String server, String owsIdentifier) {
-//        this.server = server;
-//        this.owsIdentifier = owsIdentifier;
         this.isLocal = false;
 
         this.inputPorts = new LinkedList<>();
@@ -73,7 +72,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
      */
     @Override
     public void setOwsTitle(String owsTitle) {
-        owsGroup.getPropertyComponent(KEY_TITLE).setValue(owsTitle);
+        owsGroup.getPropertyObject(KEY_TITLE).setValue(owsTitle);
         toolTipText = null;
     }
 
@@ -84,7 +83,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
      */
     @Override
     public void setOwsIdentifier(String owsIdentifier) {
-        owsGroup.getPropertyComponent(KEY_IDENTIFIER).setValue(owsIdentifier);
+        owsGroup.getPropertyObject(KEY_IDENTIFIER).setValue(owsIdentifier);
         toolTipText = null;
     }
 
@@ -95,33 +94,33 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
      */
     @Override
     public void setOwsAbstract(String owsAbstract) {
-        owsGroup.getPropertyComponent(KEY_ABSTRACT).setValue(owsAbstract);
+        owsGroup.getPropertyObject(KEY_ABSTRACT).setValue(owsAbstract);
         toolTipText = null;
     }
 
     public void setServer(String server) {
-        owsGroup.getPropertyComponent(KEY_SERVER).setValue(server);
+        owsGroup.getPropertyObject(KEY_SERVER).setValue(server);
     }
 
     public String getServer() {
-        return (String) owsGroup.getPropertyComponent(KEY_SERVER).getValue();
+        return (String) owsGroup.getPropertyObject(KEY_SERVER).getValue();
     }
 
     @Override
     public String getOwsIdentifier() {
-        return (String) owsGroup.getPropertyComponent(KEY_IDENTIFIER).getValue();
+        return (String) owsGroup.getPropertyObject(KEY_IDENTIFIER).getValue();
     }
 
     @Override
     public String getOwsTitle() {
-        return (String) owsGroup.getPropertyComponent(KEY_TITLE).getValue();
+        return (String) owsGroup.getPropertyObject(KEY_TITLE).getValue();
     }
 
     @Override
     public String getOwsAbstract() {
-        return (String) owsGroup.getPropertyComponent(KEY_ABSTRACT).getValue();
+        return (String) owsGroup.getPropertyObject(KEY_ABSTRACT).getValue();
     }
-    
+
     public int getNumInputs() {
         return inputPorts.size();
     }
@@ -160,7 +159,6 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
     public List<ProcessPort> getOutputPorts() {
         return outputPorts;
     }
-
 
     public String getToolTipText() {
         if (null == toolTipText) {
@@ -252,22 +250,41 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
 
     @Override
     public String getPropertiesObjectName() {
-        return "ProcessEntity";
+        return getOwsIdentifier();
     }
 
     @Override
     public Collection<? extends IObjectWithProperties> getProperties() {
+
+        // add inputs
+        PropertyGroup inputsGroup = new PropertyGroup("Inputs");
+        if (null != inputPorts) {
+            for (ProcessPort port : inputPorts) {
+                inputsGroup.addObject(port);
+            }
+        }
+
+        // add outputs
+        PropertyGroup outputsGroup = new PropertyGroup("Outputs");
+        if (null != outputPorts) {
+            for (ProcessPort port : outputPorts) {
+                outputsGroup.addObject(port);
+            }
+        }
+
         return Arrays.asList(new IObjectWithProperties[]{
-            owsGroup
+            owsGroup,
+            inputsGroup,
+            outputsGroup
         });
     }
 
     private void createProperties(String server, String owsIdentifier) {
-        owsGroup = new PropertyGroup("Process");
-        owsGroup.addComponent(new PropertyMultilineLabel(KEY_IDENTIFIER, owsIdentifier, false));
-        owsGroup.addComponent(new PropertyMultilineLabel(KEY_SERVER, server, false));
-        owsGroup.addComponent(new PropertyMultilineLabel(KEY_TITLE, "", false));
-        owsGroup.addComponent(new PropertyMultilineLabel(KEY_ABSTRACT, "", false));
+        owsGroup = new PropertyComponentGroup("Process");
+        owsGroup.addObject(new PropertyMultilineLabel(KEY_IDENTIFIER, owsIdentifier, false));
+        owsGroup.addObject(new PropertyMultilineLabel(KEY_SERVER, server, false));
+        owsGroup.addObject(new PropertyMultilineLabel(KEY_TITLE, "", false));
+        owsGroup.addObject(new PropertyMultilineLabel(KEY_ABSTRACT, "", false));
     }
 
 }

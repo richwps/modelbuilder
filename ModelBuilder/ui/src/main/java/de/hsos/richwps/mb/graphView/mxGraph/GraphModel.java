@@ -7,7 +7,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.mb.properties.PropertyComponentGroup;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyDropdown;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
 import java.util.Collection;
@@ -23,22 +23,22 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
     private String name;
 
-    private List<PropertyGroup> propertyGroups;
+    private List<PropertyComponentGroup> propertyGroups;
 
     public GraphModel() {
         super();
 
         propertyGroups = new LinkedList<>();
 
-        PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title"));
-        group1.addComponent(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version"));
+        PropertyComponentGroup group1 = new PropertyComponentGroup(AppConstants.PROPERTIES_MODELDATA);
+        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id"));
+        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract"));
+        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title"));
+        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version"));
 
         // TODO add servers from the actual list.
-        PropertyGroup group2 = new PropertyGroup("Deployment");
-        group2.addComponent(new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT, new String[]{"Server a", "Server b"}));
+        PropertyComponentGroup group2 = new PropertyComponentGroup("Deployment");
+        group2.addObject(new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT, new String[]{"Server a", "Server b"}));
 
         propertyGroups.add(group1);
         propertyGroups.add(group2);
@@ -209,8 +209,8 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     }
 
     public Object getPropertyValue(String propertyName) {
-        for (PropertyGroup aGroup : propertyGroups) {
-            AbstractPropertyComponent component = aGroup.getPropertyComponent(propertyName);
+        for (PropertyComponentGroup aGroup : propertyGroups) {
+            AbstractPropertyComponent component = aGroup.getPropertyObject(propertyName);
             if (null != component) {
                 return component.getValue();
             }

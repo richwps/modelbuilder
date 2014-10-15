@@ -1,7 +1,12 @@
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * A port entitiy can either be global (model-wide) or local (part of a
@@ -9,14 +14,18 @@ import java.io.Serializable;
  *
  * @author dziegenh
  */
-public class ProcessPort implements IOwsObject, Serializable {
+public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializable {
 
     public static String TOOLTIP_STYLE_INPUT = "";
     public static String TOOLTIP_STYLE_OUTPUT = "";
 
-    private String owsIdentifier = "";
-    private String owsTitle = "";
-    private String owsAbstract = "";
+    private HashMap<String, AbstractPropertyComponent> properties;
+
+    // TODO init keys in AppSetup
+    public static String PROPERTY_KEY_IDENTIFIER = "Identifier";
+    public static String PROPERTY_KEY_TITLE = "Title";
+    public static String PROPERTY_KEY_ABSTRACT = "Abstract";
+
     private ProcessPortDatatype datatype;
     private IDataTypeDescription dataTypeDescription;
 
@@ -27,11 +36,17 @@ public class ProcessPort implements IOwsObject, Serializable {
     private boolean global;
 
     public ProcessPort() {
+        this(null, false);
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
         this.datatype = processPortDatatype;
         this.global = global;
+
+        properties = new HashMap<>();
+        properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyMultilineLabel(PROPERTY_KEY_IDENTIFIER, ""));
+        properties.put(PROPERTY_KEY_TITLE, new PropertyMultilineLabel(PROPERTY_KEY_TITLE, ""));
+        properties.put(PROPERTY_KEY_ABSTRACT, new PropertyMultilineLabel(PROPERTY_KEY_ABSTRACT, ""));
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype) {
@@ -156,7 +171,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      */
     @Override
     public String getOwsIdentifier() {
-        return owsIdentifier;
+        return (String) properties.get(PROPERTY_KEY_IDENTIFIER).getValue();
     }
 
     /**
@@ -166,7 +181,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      */
     @Override
     public void setOwsIdentifier(String owsIdentifier) {
-        this.owsIdentifier = owsIdentifier;
+        properties.get(PROPERTY_KEY_IDENTIFIER).setValue(owsIdentifier);
         toolTipText = null;
     }
 
@@ -175,7 +190,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      */
     @Override
     public String getOwsTitle() {
-        return owsTitle;
+        return (String) properties.get(PROPERTY_KEY_TITLE).getValue();
     }
 
     /**
@@ -185,7 +200,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      */
     @Override
     public void setOwsTitle(String owsTitle) {
-        this.owsTitle = owsTitle;
+        properties.get(PROPERTY_KEY_TITLE).setValue(owsTitle);
         toolTipText = null;
     }
 
@@ -194,7 +209,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      */
     @Override
     public String getOwsAbstract() {
-        return owsAbstract;
+        return (String) properties.get(PROPERTY_KEY_ABSTRACT).getValue();
     }
 
     /**
@@ -204,7 +219,7 @@ public class ProcessPort implements IOwsObject, Serializable {
      */
     @Override
     public void setOwsAbstract(String owsAbstract) {
-        this.owsAbstract = owsAbstract;
+        properties.get(PROPERTY_KEY_ABSTRACT).setValue(owsAbstract);
         toolTipText = null;
     }
 
@@ -245,7 +260,7 @@ public class ProcessPort implements IOwsObject, Serializable {
                 }
             }
             sb.append("'");
-            
+
             if (null != getDatatype()) {
                 sb.append("[").append(getDatatype().toString().charAt(0)).append("] ");
             }
@@ -264,12 +279,24 @@ public class ProcessPort implements IOwsObject, Serializable {
     public ProcessPort clone() {
         ProcessPort clone = new ProcessPort(datatype, global);
         clone.flowInput = flowInput;
-        clone.owsAbstract = owsAbstract;
-        clone.owsIdentifier = owsIdentifier;
-        clone.owsTitle = owsTitle;
+
+        clone.setOwsAbstract(getOwsAbstract());
+        clone.setOwsIdentifier(getOwsIdentifier());
+        clone.setOwsTitle(getOwsTitle());
+
         clone.toolTipText = null; // indicate lazy init.
 
         return clone;
+    }
+
+    @Override
+    public String getPropertiesObjectName() {
+        return getOwsIdentifier();
+    }
+
+    @Override
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        return properties.values();
     }
 
 }
