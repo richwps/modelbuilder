@@ -5,10 +5,12 @@ import java.util.List;
 import javax.swing.border.TitledBorder;
 
 /**
- * Shows title & abstract of BBInput and allows selection of type and value.
+ * Shows title and abstract of BBInput and allows selection of type and value.
+ *
  * @author caduevel
  */
 public class InputBoundingBoxData extends javax.swing.JPanel {
+
     /**
      * id For input-identification in InputParameterization.
      */
@@ -18,6 +20,8 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
      * specifier For usage in InputParameterization.
      */
     private InputBoundingBoxDataSpecifier specifier;
+
+    private boolean isMandatory = false;
 
     /**
      *
@@ -40,8 +44,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
                 + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
             this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory = false;
         } else {
             this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
 
@@ -83,6 +89,14 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         return this.value.getText();
     }
 
+    public String getCRS() {
+        return (String) this.selectType.getSelectedItem();
+    }
+
+    public boolean isMandatory() {
+        return this.isMandatory;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -108,6 +122,8 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         setPreferredSize(new java.awt.Dimension(500, 225));
         setLayout(new java.awt.GridBagLayout());
 
+        value.setText("42.943 -71.032,43.039 -69.856");
+        value.setToolTipText("lowerCorner coordinates, upperCornerCoordinates. ");
         value.setMinimumSize(new java.awt.Dimension(450, 27));
         value.setPreferredSize(new java.awt.Dimension(450, 27));
         gridBagConstraints = new java.awt.GridBagConstraints();

@@ -39,7 +39,7 @@ public class InputBoundingBoxDataArgument implements IInputArgument{
             final InputBoundingBoxDataSpecifier specifier, String value) {
         this.specifier = specifier;
         this.value = value;
-        this.crsType = "";
+        this.crsType= "";
     }
 
     /**

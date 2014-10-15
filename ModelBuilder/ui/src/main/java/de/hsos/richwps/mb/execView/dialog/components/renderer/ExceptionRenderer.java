@@ -71,8 +71,8 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         value.setColumns(20);
         value.setLineWrap(true);
         value.setRows(10);
-        value.setMinimumSize(new java.awt.Dimension(500, 500));
-        value.setPreferredSize(new java.awt.Dimension(500, 500));
+        value.setMinimumSize(new java.awt.Dimension(600, 500));
+        value.setPreferredSize(new java.awt.Dimension(700, 500));
         jScrollPane1.setViewportView(value);
 
         add(jScrollPane1, new java.awt.GridBagConstraints());

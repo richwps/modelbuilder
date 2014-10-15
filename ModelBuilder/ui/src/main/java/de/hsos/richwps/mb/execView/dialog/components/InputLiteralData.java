@@ -11,6 +11,7 @@ public class InputLiteralData extends javax.swing.JPanel {
 
     private String id;
     private InputLiteralDataSpecifier specifier;
+    private boolean isMandatory=false;
 
     /**
      *
@@ -34,8 +35,10 @@ public class InputLiteralData extends javax.swing.JPanel {
         String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
             this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory=false;
         } else {
             this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory=true;
         }
         this.occurs.setText(occurstxt);
 
@@ -57,6 +60,10 @@ public class InputLiteralData extends javax.swing.JPanel {
      */
     public String getText() {
         return this.value.getText();
+    }
+    
+    public boolean isMandatory(){
+        return this.isMandatory;
     }
 
     /**

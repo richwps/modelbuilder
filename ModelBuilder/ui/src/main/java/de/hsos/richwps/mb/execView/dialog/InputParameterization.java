@@ -70,7 +70,7 @@ public class InputParameterization extends ADialogPanel {
                 );
             } else if (specifier instanceof InputComplexDataSpecifier) {
                 this.inputs.add(new InputComplexData(
-                                (InputComplexDataSpecifier) specifier)
+                        (InputComplexDataSpecifier) specifier)
                 );
             } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
                 this.inputs.add(new InputBoundingBoxData(
@@ -118,44 +118,63 @@ public class InputParameterization extends ADialogPanel {
                 InputComplexData pan = (InputComplexData) panel;
                 InputComplexDataSpecifier specifier = pan.getSpecifier();
 
-                List type = pan.getMimeType();
-
-                String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
-                String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
-                String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
-
-                InputComplexDataArgument param = null;
-                if (pan.isReference()) {
-                    param = new InputComplexDataArgument(specifier);
-                    String url = pan.getValue();
-                    param.setURL(url);
+                if (pan.isMandatory() & pan.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    break;
+                } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
+                    //nothing to do
                 } else {
-                    throw new UnsupportedOperationException("Not implemented, yet.");
-                }
+                    List type = pan.getMimeType();
+                    String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
+                    String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
+                    String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
 
-                param.setMimeType(amimetype);
-                if (aschema != null) {
-                    System.out.println(aschema);
-                    param.setSchema(aschema);
-                }
-                if (aencoding != null) {
-                    System.out.println(aencoding);
-                    param.setEncoding(aencoding);
-                }
+                    InputComplexDataArgument param = null;
+                    if (pan.isReference()) {
+                        param = new InputComplexDataArgument(specifier);
+                        String url = pan.getText();
+                        param.setURL(url);
+                    } else {
+                        throw new UnsupportedOperationException("Not implemented, yet.");
+                    }
 
-                theinputs.put(param.getIdentifier(), param);
+                    param.setMimeType(amimetype);
+                    if (aschema != null) {
+                        System.out.println(aschema);
+                        param.setSchema(aschema);
+                    }
+                    if (aencoding != null) {
+                        System.out.println(aencoding);
+                        param.setEncoding(aencoding);
+                    }
+                    theinputs.put(param.getIdentifier(), param);
+                }
             } else if (panel instanceof InputLiteralData) {
                 InputLiteralData pan = (InputLiteralData) panel;
                 InputLiteralDataSpecifier specifier = pan.getSpecifier();
-                InputLiteralDataArgument param = new InputLiteralDataArgument(specifier, pan.getText());
-                theinputs.put(param.getIdentifier(), param);
+                if (pan.isMandatory() & pan.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    break;
+                } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
+                    //nothing to do
+                } else {
+                    InputLiteralDataArgument param = new InputLiteralDataArgument(specifier, pan.getText());
+                    theinputs.put(param.getIdentifier(), param);
+                }
             } else if (panel instanceof InputBoundingBoxData) {
-                //TODO test: BoundingBox
                 InputBoundingBoxData pan = (InputBoundingBoxData) panel;
                 InputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
-                InputBoundingBoxDataArgument param;
-                param = new InputBoundingBoxDataArgument(specifier, pan.getText());
-                theinputs.put(param.getIdentifier(), param);
+                if (pan.isMandatory() & pan.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    break;
+                } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
+                    //nothing to do
+                } else {
+                    InputBoundingBoxDataArgument param;
+                    param = new InputBoundingBoxDataArgument(specifier, pan.getText());
+                    param.setCrsType(pan.getCRS());
+                    theinputs.put(param.getIdentifier(), param);
+                }
             }
         }
         this.request.setInputArguments(theinputs);
@@ -178,17 +197,27 @@ public class InputParameterization extends ADialogPanel {
             if (panel instanceof InputComplexData) {
                 InputComplexData pan = (InputComplexData) panel;
                 //this parameter is optional
-                if(pan.getSpecifier().getMinOccur()==0){
+                if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
                 }
-                if (pan.getValue().isEmpty()) {
+                if (pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
                     return false;
                 }
             } else if (panel instanceof InputLiteralData) {
                 InputLiteralData pan = (InputLiteralData) panel;
                 //this parameter is optional
-                if(pan.getSpecifier().getMinOccur()==0){
+                if (pan.getSpecifier().getMinOccur() == 0) {
+                    return true;
+                }
+                if (pan.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    return false;
+                }
+            } else if (panel instanceof InputBoundingBoxData) {
+                InputBoundingBoxData pan = (InputBoundingBoxData) panel;
+                //this parameter is optional
+                if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {

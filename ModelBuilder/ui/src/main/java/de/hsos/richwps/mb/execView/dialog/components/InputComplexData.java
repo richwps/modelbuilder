@@ -15,6 +15,7 @@ public class InputComplexData extends javax.swing.JPanel {
     private String id;
     private ComplexDataDescriptionType[] subtypes_;
     private InputComplexDataSpecifier specifier;
+    private boolean isMandatory = false;
 
     /**
      * Creates new form ComplexInput
@@ -31,21 +32,21 @@ public class InputComplexData extends javax.swing.JPanel {
 
         this.selectType.removeAllItems();
 
-
-
         for (java.util.List type : specifier.getTypes()) {
-            
+
             String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
             String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
             String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
             String line = "";
 
-            if (specifier.isDefaultType(type)){
-                line = "<html><b>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</b></html>";
+            if (specifier.isDefaultType(type)) {
+                line = "<html><b>" + amimetype + "<br/>Schema: " + aschema
+                        + "<br/>Encoding: " + aencoding + "</b></html>";
                 this.selectType.addItem(line);
                 this.selectType.setSelectedItem(line);
             } else {
-                line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
+                line = "<html>" + amimetype + "<br/>Schema: " + aschema
+                        + "<br/>Encoding: " + aencoding + "</html>";
                 this.selectType.addItem(line);
             }
 
@@ -57,11 +58,14 @@ public class InputComplexData extends javax.swing.JPanel {
 
         this.titleValue.setText(thetitel);
         this.abstractValue.setText(theabstract);
-        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
+        String occurstxt = "Min: " + this.specifier.getMinOccur()
+                + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
             this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory = false;
         } else {
             this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
     }
@@ -103,8 +107,12 @@ public class InputComplexData extends javax.swing.JPanel {
      *
      * @return
      */
-    public String getValue() {
+    public String getText() {
         return this.value.getText();
+    }
+
+    public boolean isMandatory() {
+        return isMandatory;
     }
 
     /**

@@ -71,8 +71,7 @@ public class OutputParameterization extends ADialogPanel {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof OutputComplexDataSpecifier) {
                 this.outputs.add(new OutputComplexData((OutputComplexDataSpecifier) specifier));
-            } 
-            //TODO test BoundingBox
+            } //TODO test BoundingBox
             else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
                 this.outputs.add(new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier));
             }
@@ -139,7 +138,17 @@ public class OutputParameterization extends ADialogPanel {
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
 
+            } else if (panel instanceof OutputBoundingBoxData) {
+                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel;
+
+                if (pan.isSelected()) {
+                    OutputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
+                    OutputBoundingBoxDataArgument argument = new OutputBoundingBoxDataArgument(specifier);
+                    theoutputs.put(argument.getIdentifier(), argument);
+                }
+
             }
+            //FIXME BoundingBox
             //FIXME BoundingBox
         }
         this.request.setOutputArguments(theoutputs);

@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.execView.dialog.components.InputBoundingBoxData;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
@@ -305,7 +304,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             execute.getExecute().setService("WPS");
 
             de.hsos.richwps.mb.Logger.log("Debug:\n Execute String: " + execute.toString());
-
             WPSClientSession wpsClient = WPSClientSession.getInstance();
             responseObject = wpsClient.execute(wpsurl, execute);
         } catch (Exception e) {
@@ -505,7 +503,6 @@ public class RichWPSProvider implements IRichWPSProvider {
                             }
                         }
                         request.addResult(key, value);
-
                     } else if (o instanceof OutputComplexDataArgument) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
 
@@ -540,8 +537,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
-    private void execAddInputs(DescribeRequest
-            request, ProcessDescriptionType process) {
+    private void execAddInputs(DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
         InputDescriptionType[] _inputs = inputs.getInputArray();
         for (InputDescriptionType description : _inputs) {
@@ -557,7 +553,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @see IOutputSpecifier
      */
     private void execAddOutputs(
-           DescribeRequest request, ProcessDescriptionType process) {
+            DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
         OutputDescriptionType[] _outputs = outputs.getOutputArray();
         for (OutputDescriptionType description : _outputs) {
@@ -583,24 +579,24 @@ public class RichWPSProvider implements IRichWPSProvider {
                 executeBuilder.addLiteralData(key, value);
             } else if (o instanceof InputComplexDataArgument) {
                 InputComplexDataArgument param = (InputComplexDataArgument) o;
-
                 String url = param.getURL();
                 String mimetype = param.getMimeType();
                 String encoding = param.getEncoding();
                 String schema = param.getSchema();
                 executeBuilder.addComplexDataReference(key, url, schema, encoding, mimetype);
-            } else if (o instanceof InputBoundingBoxData) {
+            } else if (o instanceof InputBoundingBoxDataArgument) {
                 InputBoundingBoxDataArgument param;
                 param = (InputBoundingBoxDataArgument) o;
                 final String crs = param.getCrsType();
                 String[] split = param.getValue().split(",");
+                for (String s : split) {
+                    System.out.println(s);
+                }
                 BigInteger dimension = BigInteger.valueOf(split.length);
-                List<String> values = Arrays.asList(split);
-
+                String[] lower = split[0].split(" ");
+                String[] upper = split[1].split(" ");
                 //FIXME Correct values                
-                executeBuilder.addBoundingBoxData(
-                        key, crs, dimension, values, values
-                );
+                executeBuilder.addBoundingBoxData(key, crs, dimension, Arrays.asList(lower), Arrays.asList(upper));
             }
         }
     }
