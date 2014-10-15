@@ -11,7 +11,6 @@ import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Container;
 import java.awt.Window;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import layout.TableLayout;
 
@@ -33,8 +32,8 @@ public class GlobalPortCard extends AbstractPortCard {
 
     protected ComplexDataTypeFormatLabel datatypeDescription;
 
-    public GlobalPortCard(final Window parentWindow, final JPanel contentPanel) {
-        super(parentWindow, contentPanel);
+    public GlobalPortCard(final Window parentWindow) {
+        super(parentWindow);
 
         contentPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.MINIMUM}}));
 

@@ -30,8 +30,7 @@ public class PropertyMultilineLabel extends AbstractPropertyComponent<String> im
     
     public PropertyMultilineLabel(String propertyName, String value, boolean editable) {
         super(propertyName);
-        component = new MultilineLabel(value);
-//        this.component.setEditable(editable);
+        component = new MultilineLabel(value, editable);
     }
 
     @Override
@@ -51,7 +50,8 @@ public class PropertyMultilineLabel extends AbstractPropertyComponent<String> im
 
     @Override
     public void setEditable(boolean editable) {
-//        component.setEditable(editable);
+        component.setEditable(editable);
+        component.setFocusable(editable);
     }
 
     public void setComponent(MultilineLabel multilineLabel) {

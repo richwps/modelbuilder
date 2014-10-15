@@ -46,21 +46,17 @@ class PropertiesCard extends JScrollPane {
 
     protected IObjectWithProperties objectWithProperties;
 
-    public PropertiesCard(final Window parentWindow, IObjectWithProperties objectWithProperties, final JPanel contentPanel) {
-        this(parentWindow, contentPanel);
+    public PropertiesCard(final Window parentWindow, IObjectWithProperties objectWithProperties) {
+        this(parentWindow);
         this.objectWithProperties = objectWithProperties;
         createContentPanel();
     }
 
-    public IObjectWithProperties getObjectWithProperties() {
-        return objectWithProperties;
-    }
-
-    public PropertiesCard(final Window parentWindow, final JPanel contentPanel) {
-        super(contentPanel);
+    public PropertiesCard(final Window parentWindow) {
+        super(new JPanel());
 
         this.parentWindow = parentWindow;
-        this.contentPanel = contentPanel;
+        this.contentPanel = (JPanel) getViewport().getView();
 
         // setup Scrollbars
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -86,6 +82,10 @@ class PropertiesCard extends JScrollPane {
                 adjustContentPanelSize();
             }
         });
+    }
+
+    public IObjectWithProperties getObjectWithProperties() {
+        return objectWithProperties;
     }
 
     protected void adjustContentPanelSize() {

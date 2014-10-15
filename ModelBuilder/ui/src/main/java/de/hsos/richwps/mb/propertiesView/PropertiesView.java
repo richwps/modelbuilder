@@ -1,18 +1,14 @@
 package de.hsos.richwps.mb.propertiesView;
 
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyComplexDataTypeFormat;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.ui.ColorBorder;
-import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.CardLayout;
@@ -42,15 +38,13 @@ public class PropertiesView extends TitledComponent {
     private MultiProcessCard multiProcessCard;
     private JPanel voidCard;
 
-//    private SingleProcessCard singleProcessCard;
     private PropertiesCard singleProcessCard;
-//    private ModelCard modelCard;
     private PropertiesCard modelCard;
+    private PropertiesCard globalPortCard;
 
     private JPanel contentPanel;
 
     private Window parentWindow;
-    private GlobalPortCard globalPortCard;
 
     public static enum CARD {
 
@@ -118,7 +112,8 @@ public class PropertiesView extends TitledComponent {
     public void setSelectedGlobalPorts(List<ProcessPort> ports) {
         // show single process card
         if (1 == ports.size()) {
-            getGlobalPortCard().setPort(ports.get(0));
+            getGlobalPortCard().setObjectWithProperties(ports.get(0));
+            setupPropertyFields(CARD.GLOBAL_PORT, globalPortCard.getObjectWithProperties());
             showCard(CARD.GLOBAL_PORT);
 
             // multiple processes selected => show multi card
@@ -137,24 +132,14 @@ public class PropertiesView extends TitledComponent {
         // show single process card
         if (1 == processes.size()) {
 
-            // store panel foldings
-//            boolean processFolded = singleProcessCard.isProcessPanelFolded();
-//            boolean inputsFolded = singleProcessCard.isInputsPanelFolded();
-//            boolean outputsFolded = singleProcessCard.isOutputsPanelFolded();
-
             // create new card and replace the old one
             Component tmp = singleProcessCard;
             singleProcessCard.setObjectWithProperties(processes.get(0));
-//            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
-//            singleProcessCard.setProcess(processes.get(0));
+            setupPropertyFields(CARD.PROCESS_SINGLE_SELECTION, singleProcessCard.getObjectWithProperties());
+
             contentPanel.remove(tmp);
             contentPanel.add(singleProcessCard, CARD.PROCESS_SINGLE_SELECTION.name());
             showCard(CARD.PROCESS_SINGLE_SELECTION);
-
-            // recall panel foldings
-//            singleProcessCard.setProcessPanelFolded(processFolded);
-//            singleProcessCard.setInputsPanelFolded(inputsFolded);
-//            singleProcessCard.setOutputsPanelFolded(outputsFolded);
 
             // multiple processes selected => show multi card
         } else if (1 < processes.size()) {
@@ -179,19 +164,31 @@ public class PropertiesView extends TitledComponent {
         return voidCard;
     }
 
-//    private ModelCard getModelCard() {
     private PropertiesCard getModelCard() {
         if (null == modelCard) {
-//            modelCard = new ModelCard(parentWindow, new JPanel());
-            modelCard = new PropertiesCard(parentWindow, new JPanel());
+            modelCard = new PropertiesCard(parentWindow);
         }
 
         return modelCard;
     }
 
+    private PropertiesCard getSingleProcessCard() {
+        if (null == singleProcessCard) {
+            singleProcessCard = new PropertiesCard(parentWindow);
+        }
+
+        return singleProcessCard;
+    }
+
+    private PropertiesCard getGlobalPortCard() {
+        if (null == globalPortCard) {
+            globalPortCard = new PropertiesCard(parentWindow);
+        }
+
+        return globalPortCard;
+    }
+
     private void setupPropertyFields(final CARD card, final IObjectWithProperties property) {
-//        for (IObjectWithProperties property : objectWithProperties.getProperties()) {
-//            for (final AbstractPropertyComponent property : properties.getPropertyComponents().values()) {
 
         if (property instanceof PropertyTextField) {
             final AbstractPropertyComponent propertyComponent = (AbstractPropertyComponent) property;
@@ -238,18 +235,6 @@ public class PropertiesView extends TitledComponent {
 //                    });
 //                }
     }
-//        }
-//}
-
-//    private SingleProcessCard getSingleProcessCard() {
-    private PropertiesCard getSingleProcessCard() {
-        if (null == singleProcessCard) {
-//            singleProcessCard = new SingleProcessCard(parentWindow, new JPanel());
-            singleProcessCard = new PropertiesCard(parentWindow, new JPanel());
-        }
-
-        return singleProcessCard;
-    }
 
     private MultiProcessCard getMultiProcessesCard() {
         if (null == multiProcessCard) {
@@ -278,35 +263,6 @@ public class PropertiesView extends TitledComponent {
         }
 
         return null;
-    }
-
-    private GlobalPortCard getGlobalPortCard() {
-        if (null == globalPortCard) {
-            globalPortCard = new GlobalPortCard(parentWindow, new JPanel());
-
-            // add listeners to fire property changes
-            for (final AbstractPropertyComponent property : globalPortCard.getPropertyFields()) {
-                if (property instanceof PropertyTextField) {
-                    property.getComponent().addFocusListener(new FocusAdapter() {
-                        @Override
-                        public void focusLost(FocusEvent e) {
-                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertiesObjectName(), getGlobalPortCard().getPort(), property.getValue());
-                        }
-                    });
-
-                } else if (property instanceof PropertyComplexDataTypeFormat) {
-                    ComplexDataTypeFormatLabel component = (ComplexDataTypeFormatLabel) property.getComponent();
-                    component.addSelectionListener(new IFormatSelectionListener() {
-                        @Override
-                        public void formatSelected(ComplexDataTypeFormat format) {
-                            firePropertyChangeEvent(CARD.GLOBAL_PORT, property.getPropertiesObjectName(), getGlobalPortCard().getPort(), format);
-                        }
-                    });
-                }
-            }
-        }
-
-        return globalPortCard;
     }
 
     protected JPanel getContentPanel() {

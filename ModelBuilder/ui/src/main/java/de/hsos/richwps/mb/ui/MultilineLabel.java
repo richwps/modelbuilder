@@ -14,12 +14,16 @@ public class MultilineLabel extends JTextArea {
     }
 
     public MultilineLabel(String text) {
+        this(text, false);
+    }
+
+    public MultilineLabel(String text, boolean editable) {
         super(text);
         setFont(UIManager.getFont("Panel.font"));
         setBorder(null);
         setLineWrap(true);
         setWrapStyleWord(true);
-        setEditable(false);
-        setFocusable(false);
+        setEditable(editable);
+        setFocusable(editable);
     }
 }

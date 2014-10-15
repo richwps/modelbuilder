@@ -24,8 +24,8 @@ import layout.TableLayout;
  */
 public class AbstractPortCard extends PropertiesCard {
 
-    public AbstractPortCard(Window parentWindow, JPanel contentPanel) {
-        super(parentWindow, contentPanel);
+    public AbstractPortCard(Window parentWindow) {
+        super(parentWindow);
     }
 
     protected JPanel createPortsPanelContainer(List<ProcessPort> ports) {

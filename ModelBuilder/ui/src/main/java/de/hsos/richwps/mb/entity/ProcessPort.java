@@ -44,9 +44,16 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         this.global = global;
 
         properties = new HashMap<>();
-        properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyMultilineLabel(PROPERTY_KEY_IDENTIFIER, ""));
-        properties.put(PROPERTY_KEY_TITLE, new PropertyMultilineLabel(PROPERTY_KEY_TITLE, ""));
-        properties.put(PROPERTY_KEY_ABSTRACT, new PropertyMultilineLabel(PROPERTY_KEY_ABSTRACT, ""));
+
+//        if (global) {
+//            properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyTextField(PROPERTY_KEY_IDENTIFIER, ""));
+//            properties.put(PROPERTY_KEY_TITLE, new PropertyTextField(PROPERTY_KEY_TITLE, ""));
+//            properties.put(PROPERTY_KEY_ABSTRACT, new PropertyTextField(PROPERTY_KEY_ABSTRACT, ""));
+//        } else {
+            properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyMultilineLabel(PROPERTY_KEY_IDENTIFIER, "", global));
+            properties.put(PROPERTY_KEY_TITLE, new PropertyMultilineLabel(PROPERTY_KEY_TITLE, "", global));
+            properties.put(PROPERTY_KEY_ABSTRACT, new PropertyMultilineLabel(PROPERTY_KEY_ABSTRACT, "", global));
+//        }
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype) {
@@ -79,6 +86,10 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
 
     public void setGlobal(boolean global) {
         this.global = global;
+
+        for(AbstractPropertyComponent component : properties.values()) {
+            component.setEditable(global);
+        }
     }
 
     /**
@@ -139,7 +150,7 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
      * @param isOutput
      */
     public void setGlobalOutput(boolean isOutput) {
-        this.global = true;
+        setGlobal(true);
         this.flowInput = isOutput;
     }
 
@@ -150,7 +161,7 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
      * @param isInput
      */
     public void setGlobalInput(boolean isInput) {
-        this.global = true;
+        setGlobal(true);
         this.flowInput = !isInput;
     }
 
