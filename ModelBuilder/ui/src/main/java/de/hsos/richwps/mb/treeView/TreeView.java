@@ -30,8 +30,6 @@ public class TreeView {
         tree = new JTree(root) {
 
             public String getToolTipText(MouseEvent event) {
-                String tip = null;
-
                 if (event != null) {
                     Point p = event.getPoint();
                     int selRow = getRowForLocation(p.x, p.y);
