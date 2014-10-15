@@ -93,7 +93,7 @@ public class App {
      * @return
      */
     boolean currentModelFileExists() {
-        File file;
+        File file = null;
         try {
             file = new File(getCurrentModelFilename());
         } catch (Exception ex) {
@@ -356,15 +356,11 @@ public class App {
     }
 
     public void updateModelPropertiesView() {
-        getPropertiesView().setModel(getGraphView().getGraph().getGraphModel());
+        getPropertiesView().setObjectWithProperties(getGraphView().getGraph().getGraphModel());
     }
 
     void deploy() {
-//        if (null == deployManager) {
-        AppDeployManager deployManager = new AppDeployManager(this);
-//        }
-
-        deployManager.deploy();
+        new AppDeployManager(this).deploy();
     }
 
     void undeploy() {

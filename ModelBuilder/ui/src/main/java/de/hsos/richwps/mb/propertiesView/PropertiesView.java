@@ -1,8 +1,5 @@
 package de.hsos.richwps.mb.propertiesView;
 
-import de.hsos.richwps.mb.entity.ProcessEntity;
-import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
@@ -38,9 +35,7 @@ public class PropertiesView extends TitledComponent {
     private MultiProcessCard multiProcessCard;
     private JPanel voidCard;
 
-    private PropertiesCard singleProcessCard;
-    private PropertiesCard modelCard;
-    private PropertiesCard globalPortCard;
+    private PropertiesCard propertiesCard;
 
     private JPanel contentPanel;
 
@@ -48,7 +43,7 @@ public class PropertiesView extends TitledComponent {
 
     public static enum CARD {
 
-        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT;
+        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT, OBJECT_WITH_PROPERTIES;
 
         private static final HashMap<CARD, String> namesForViews = new HashMap<>();
 
@@ -71,14 +66,14 @@ public class PropertiesView extends TitledComponent {
 
         this.parentWindow = parentWindow;
 
+        this.propertiesCard = new PropertiesCard(parentWindow);
+
         contentPanel = (JPanel) getComponent(1);
 
         contentPanel.setLayout(new CardLayout(cardGap, cardGap));
         contentPanel.add(getVoidCard(), CARD.NO_SELECTION.name());
-        contentPanel.add(getModelCard(), CARD.MODEL.name());
-        contentPanel.add(getSingleProcessCard(), CARD.PROCESS_SINGLE_SELECTION.name());
         contentPanel.add(getMultiProcessesCard(), CARD.PROCESS_MULTI_SELECTION.name());
-        contentPanel.add(getGlobalPortCard(), CARD.GLOBAL_PORT.name());
+        contentPanel.add(propertiesCard, CARD.OBJECT_WITH_PROPERTIES.name());
 
         propertyChangeListeners = new LinkedList<>();
     }
@@ -98,52 +93,29 @@ public class PropertiesView extends TitledComponent {
     }
 
     public void showCard(CARD card) {
+        // TODO remove when only the App is refactored and only uses one properties card.
+        if (card.equals(CARD.GLOBAL_PORT) || card.equals(CARD.MODEL) || card.equals(CARD.PROCESS_SINGLE_SELECTION)) {
+            card = CARD.OBJECT_WITH_PROPERTIES;
+        }
+
         getCardLayout().show(getContentPanel(), card.name());
     }
 
-    // TODO create graph model properties as a common layer which GraphView and PropertiesView can use!
-    public void setModel(GraphModel model) {
-        getModelCard().setObjectWithProperties(model); //setModel(model);
-        setupPropertyFields(CARD.MODEL, model);
-
-        getCardLayout().show(getContentPanel(), CARD.MODEL.name());
+    public void setObjectWithProperties(IObjectWithProperties object) {
+        propertiesCard.setObjectWithProperties(object);
+        setupPropertyFields(CARD.OBJECT_WITH_PROPERTIES, propertiesCard.getObjectWithProperties());
+        showCard(CARD.OBJECT_WITH_PROPERTIES);
+        invalidate();
+        updateUI();
     }
 
-    public void setSelectedGlobalPorts(List<ProcessPort> ports) {
-        // show single process card
-        if (1 == ports.size()) {
-            getGlobalPortCard().setObjectWithProperties(ports.get(0));
-            setupPropertyFields(CARD.GLOBAL_PORT, globalPortCard.getObjectWithProperties());
-            showCard(CARD.GLOBAL_PORT);
+    public void setObjectsWithProperties(List<? extends IObjectWithProperties> objects) {
+        if (1 == objects.size()) {
+            setObjectWithProperties(objects.get(0));
 
-            // multiple processes selected => show multi card
-        } else if (1 < ports.size()) {
+            // multiple objects selected => show multi card
+        } else if (1 < objects.size()) {
             getMultiProcessesCard().setProcesses(null);
-            showCard(CARD.PROCESS_MULTI_SELECTION);
-
-            // nothing selected => show "void" card
-        } else {
-            showCard(CARD.NO_SELECTION);
-        }
-    }
-
-    public void setSelectedProcesses(List<ProcessEntity> processes) {
-
-        // show single process card
-        if (1 == processes.size()) {
-
-            // create new card and replace the old one
-            Component tmp = singleProcessCard;
-            singleProcessCard.setObjectWithProperties(processes.get(0));
-            setupPropertyFields(CARD.PROCESS_SINGLE_SELECTION, singleProcessCard.getObjectWithProperties());
-
-            contentPanel.remove(tmp);
-            contentPanel.add(singleProcessCard, CARD.PROCESS_SINGLE_SELECTION.name());
-            showCard(CARD.PROCESS_SINGLE_SELECTION);
-
-            // multiple processes selected => show multi card
-        } else if (1 < processes.size()) {
-            getMultiProcessesCard().setProcesses(processes);
             showCard(CARD.PROCESS_MULTI_SELECTION);
 
             // nothing selected => show "void" card
@@ -162,30 +134,6 @@ public class PropertiesView extends TitledComponent {
             return voidCard;
         }
         return voidCard;
-    }
-
-    private PropertiesCard getModelCard() {
-        if (null == modelCard) {
-            modelCard = new PropertiesCard(parentWindow);
-        }
-
-        return modelCard;
-    }
-
-    private PropertiesCard getSingleProcessCard() {
-        if (null == singleProcessCard) {
-            singleProcessCard = new PropertiesCard(parentWindow);
-        }
-
-        return singleProcessCard;
-    }
-
-    private PropertiesCard getGlobalPortCard() {
-        if (null == globalPortCard) {
-            globalPortCard = new PropertiesCard(parentWindow);
-        }
-
-        return globalPortCard;
     }
 
     private void setupPropertyFields(final CARD card, final IObjectWithProperties property) {
@@ -242,27 +190,6 @@ public class PropertiesView extends TitledComponent {
         }
 
         return multiProcessCard;
-    }
-
-    protected AbstractPropertyComponent getPropertyComponent(CARD card, String property) {
-        List<AbstractPropertyComponent> properties = null;
-
-        switch (card) {
-            case GLOBAL_PORT:
-                properties = getGlobalPortCard().getPropertyFields();
-                break;
-            case MODEL:
-                properties = getModelCard().getPropertyFields();
-                break;
-        }
-
-        for (AbstractPropertyComponent component : properties) {
-            if (component.getPropertiesObjectName().equals(property)) {
-                return component;
-            }
-        }
-
-        return null;
     }
 
     protected JPanel getContentPanel() {
