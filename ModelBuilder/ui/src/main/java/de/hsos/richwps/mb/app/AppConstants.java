@@ -129,7 +129,7 @@ public class AppConstants {
      */
     public final static String DEPLOY_DIALOG_TITLE = "Deploy process";
 
-    public static int PROCESS_TITLE_MAX_VIEW_LENGTH = 30;
+    public static int PROCESS_TITLE_MAX_VIEW_LENGTH = 50;
 
     final static String INPUT_PORT_COLOR_STRING = "bbe8c6";
     final static String OUTPUT_PORT_COLOR_STRING = "cfe1fc";
