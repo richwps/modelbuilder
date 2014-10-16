@@ -215,6 +215,10 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         return toolTipText;
     }
 
+    public void setToolTipText(String text) {
+        this.toolTipText = text;
+    }
+
     /**
      * ProcessEntities are equal if their server and identifier match.
      *

@@ -88,7 +88,9 @@ public class ProcessPortCodec extends mxObjectCodec {
 
                 // b) first time port is decoded: save instance
                 } else {
-                    decodedPorts.put(id, (ProcessPort) obj);
+                    port = (ProcessPort) obj;
+                    port.setToolTipText(null);
+                    decodedPorts.put(id, port);
                 }
             }
         }
@@ -101,9 +103,10 @@ public class ProcessPortCodec extends mxObjectCodec {
 
         // add port id to node
         if (obj instanceof ProcessPort) {
+            ProcessPort port = (ProcessPort) obj;
 
             // a) existing ID (=port already encoded)
-            if (encodedPorts.contains((ProcessPort) obj)) {
+            if (encodedPorts.contains(port)) {
                 int id = encodedPorts.indexOf(obj);
                 Element nodeEl = (Element) node;
                 nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
@@ -114,6 +117,7 @@ public class ProcessPortCodec extends mxObjectCodec {
                 int id = encodedPorts.size(); // current node will be the next list entry
                 Element nodeEl = (Element) node;
                 nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
+                port.setToolTipText("");
             }
         }
 
