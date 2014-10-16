@@ -178,7 +178,7 @@ public class ProcessProvider {
                             ProcessEntity processEntity = new ProcessEntity(wps.getEndpoint(), process.getIdentifier());
                             processEntity.setOwsAbstract(process.getAbstract());
                             processEntity.setOwsTitle(process.getTitle());
-                            processEntity.setIsLocal(true);
+                            processEntity.setLocal(true);
 
                             server.addProcess(processEntity);
                         }
