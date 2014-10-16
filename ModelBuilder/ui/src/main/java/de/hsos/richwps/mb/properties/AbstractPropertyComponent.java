@@ -9,8 +9,9 @@ import java.util.Collection;
  * identified by their name.
  *
  * @author dziegenh
+ * @param <C>
  */
-public abstract class AbstractPropertyComponent<E> implements IObjectWithProperties, Serializable {
+public abstract class AbstractPropertyComponent<C extends Component, E> implements IObjectWithProperties, Serializable {
 
     private String propertiesObjectName;
 
@@ -56,7 +57,7 @@ public abstract class AbstractPropertyComponent<E> implements IObjectWithPropert
      *
      * @return
      */
-    public abstract Component getComponent();
+    public abstract C getComponent();
 
     /**
      * Property components can/must decide by theirselves if they enable

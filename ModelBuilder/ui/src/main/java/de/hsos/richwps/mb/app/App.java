@@ -373,7 +373,7 @@ public class App {
      */
     String askRemote() {
         //TODO receive list from sp+cache.
-        List<String> remotes = (List) processProvider.getAllServer();
+        List<String> remotes = (List) processProvider.getAllServersFromSemanticProxy();
         Object[] remotes_arr = remotes.toArray();
         String selectedRemote = (String) JOptionPane.showInputDialog(getFrame(),
                 AppConstants.SELECTREMOTE_DIALOG_MSG,
@@ -411,7 +411,7 @@ public class App {
 
     void showExecute() {
         if (null == execViewDialog) {
-            List<String> remotes = (List) processProvider.getAllServer();
+            List<String> remotes = (List) processProvider.getAllServersFromSemanticProxy();
             execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
         }
 

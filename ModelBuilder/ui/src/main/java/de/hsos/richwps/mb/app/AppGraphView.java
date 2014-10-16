@@ -126,6 +126,7 @@ public class AppGraphView extends GraphView {
             }
         });
 
+        setRemoteServers(app.getProcessProvider().getAllServers());
         app.setChangesSaved(true);
     }
 

@@ -180,7 +180,7 @@ public class AppConstants {
     public static final Point FRAME_DEFAULT_LOCATION = new Point(100, 100);
     public static final boolean FRAME_DEFAULT_MAXIMIZED = false;
     public static final Dimension LEFT_PANEL_MIN_SIZE = new Dimension(250, 200);
-    public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(250, 200);
+    public static final Dimension PROPERTIES_PANEL_MIN_SIZE = new Dimension(350, 200);
 
     // InfoTabs View
     public static final Dimension INFOTABS_MIN_SIZE = new Dimension(100, 150);

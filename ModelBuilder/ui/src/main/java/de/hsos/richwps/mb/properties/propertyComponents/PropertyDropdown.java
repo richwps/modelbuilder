@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.properties.propertyComponents;
 
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
-import java.awt.Component;
 import javax.swing.JComboBox;
 
 /**
@@ -10,9 +9,9 @@ import javax.swing.JComboBox;
  *
  * @author dziegenh
  */
-public class PropertyDropdown extends AbstractPropertyComponent {
+public class PropertyDropdown<E> extends AbstractPropertyComponent<JComboBox<E>, E> {
 
-    private final JComboBox component;
+    private final JComboBox<E> component;
 
     public PropertyDropdown(String propertyName, Object[] values) {
         super(propertyName);
@@ -21,23 +20,31 @@ public class PropertyDropdown extends AbstractPropertyComponent {
     }
 
     @Override
-    public Object getValue() {
-        return component.getSelectedItem();
+    public E getValue() {
+        return component.getModel().getElementAt(component.getSelectedIndex());
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(E value) {
         component.setSelectedItem(value);
     }
 
     @Override
-    public Component getComponent() {
+    public JComboBox<E> getComponent() {
         return component;
     }
 
     @Override
     public void setEditable(boolean editable) {
         component.setEditable(editable);
+    }
+
+    public void setItems(E[] items) {
+        component.removeAllItems();
+
+        for (E anItem : items) {
+            component.addItem(anItem);
+        }
     }
 
 }

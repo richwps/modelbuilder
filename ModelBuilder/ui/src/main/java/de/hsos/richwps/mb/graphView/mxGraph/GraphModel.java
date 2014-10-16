@@ -24,6 +24,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     private String name;
 
     private List<PropertyComponentGroup> propertyGroups;
+    private final PropertyDropdown remotesDropdown;
 
     public GraphModel() {
         super();
@@ -38,7 +39,8 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
         // TODO add servers from the actual list.
         PropertyComponentGroup group2 = new PropertyComponentGroup("Deployment");
-        group2.addObject(new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT, new String[]{"Server a", "Server b"}));
+        remotesDropdown = new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT, new String[]{});
+        group2.addObject(remotesDropdown);
 
         propertyGroups.add(group1);
         propertyGroups.add(group2);
@@ -216,6 +218,10 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
             }
         }
         return null;
+    }
+
+    public void setRemotes(String[] remotes) {
+        remotesDropdown.setItems(remotes);
     }
 
 }

@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.properties.propertyComponents;
 
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
-import java.awt.Component;
 import javax.swing.JTextField;
 
 /**
@@ -9,7 +8,7 @@ import javax.swing.JTextField;
  *
  * @author dziegenh
  */
-public class PropertyTextField extends AbstractPropertyComponent<String> {
+public class PropertyTextField extends AbstractPropertyComponent<JTextField, String> {
 
     private final JTextField textField = new JTextField();
 
@@ -34,7 +33,7 @@ public class PropertyTextField extends AbstractPropertyComponent<String> {
     }
 
     @Override
-    public Component getComponent() {
+    public JTextField getComponent() {
         return this.textField;
     }
 

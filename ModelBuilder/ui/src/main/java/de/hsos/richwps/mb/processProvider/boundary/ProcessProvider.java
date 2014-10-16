@@ -208,7 +208,7 @@ public class ProcessProvider {
      *
      * @return
      */
-    public Collection<String> getAllServer() {
+    public Collection<String> getAllServersFromSemanticProxy() {
         LinkedList<String> servers = new LinkedList<>();
 
         // indicate error occurences but don't abort loading servers.
@@ -264,7 +264,6 @@ public class ProcessProvider {
         String persistKeyCount = persistKeyBase + "_COUNT";
         String persistKeyFormat = persistKeyBase + "_%d";
 
-
         String currentItem = preferences.get(persistKeyBase, "");
         int count = preferences.getInt(persistKeyCount, 0);
 
@@ -295,7 +294,27 @@ public class ProcessProvider {
             loadedItems.add(currentItem);
         }
 
-        return loadedItems.toArray(new String[] {});
+        return loadedItems.toArray(new String[]{});
+    }
+
+    public String[] getAllServers() {
+        Collection<String> spServers = getAllServersFromSemanticProxy();
+        String[] remotes = getPersistedRemotes();
+
+        String[] servers = new String[spServers.size() + remotes.length];
+        int i = 0;
+
+        // add SP servers
+        for (String server : spServers) {
+            servers[i++] = server;
+        }
+
+        // add persisted remotes
+        for (String server : remotes) {
+            servers[i++] = server;
+        }
+
+        return servers;
     }
 
 }

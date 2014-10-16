@@ -77,6 +77,10 @@ public class GraphView extends JPanel {
         return getGraphComponent();
     }
 
+    public void setRemoteServers(String[] remotes) {
+        getGraph().getGraphModel().setRemotes(remotes);
+    }
+
     /**
      * Returns the custom (JGraphX) graph.
      *

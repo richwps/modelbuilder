@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.properties.propertyComponents;
 
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.MultilineLabel;
-import java.awt.Component;
 import java.io.Serializable;
 
 /**
@@ -11,7 +10,7 @@ import java.io.Serializable;
  *
  * @author dziegenh
  */
-public class PropertyMultilineLabel extends AbstractPropertyComponent<String> implements Serializable {
+public class PropertyMultilineLabel extends AbstractPropertyComponent<MultilineLabel, String> implements Serializable {
 
     private MultilineLabel component;
 
@@ -44,7 +43,7 @@ public class PropertyMultilineLabel extends AbstractPropertyComponent<String> im
     }
 
     @Override
-    public Component getComponent() {
+    public MultilineLabel getComponent() {
         return component;
     }
 
