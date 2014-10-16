@@ -27,7 +27,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
     private String toolTipText;
-    private boolean isLocal;
+    private boolean local;
 
     public static String toolTipCssForMainContainer;
 
@@ -41,7 +41,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
     }
 
     public ProcessEntity(String server, String owsIdentifier) {
-        this.isLocal = false;
+        this.local = false;
 
         this.inputPorts = new LinkedList<>();
         this.outputPorts = new LinkedList<>();
@@ -129,12 +129,12 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         return outputPorts.size();
     }
 
-    public boolean isIsLocal() {
-        return isLocal;
+    public boolean isLocal() {
+        return local;
     }
 
-    public void setIsLocal(boolean isLocal) {
-        this.isLocal = isLocal;
+    public void setLocal(boolean isLocal) {
+        this.local = isLocal;
     }
 
     @Override
