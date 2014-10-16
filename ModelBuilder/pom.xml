@@ -9,8 +9,12 @@
     <packaging>pom</packaging>
 
     <name>RichWPS ModelBuilder</name>
-    <url>http://maven.apache.org</url>
-    <description>RichWPS ModelBuilder.</description>
+    <url>http://richwps.github.io</url>
+    <description>Java based graphical modelling tool for OWS orchestration.</description>
+    <issueManagement>
+        <system>Bugzilla</system>
+        <url>https://github.com/richwps/modelbuilder/issues</url>
+    </issueManagement>
   
     <modules>
         <module>ui</module>
