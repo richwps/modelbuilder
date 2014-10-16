@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/richwps/modelbuilder.png?label=ready&title=Ready)](https://waffle.io/richwps/modelbuilder)
 RichWPS ModelBuilder for orchestrating OWS processes.
 This library is part of the BMBF research project RichWPS.
 
