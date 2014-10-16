@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.PropertyGroup;
@@ -88,6 +89,11 @@ class PropertiesCard extends JScrollPane {
         return objectWithProperties;
     }
 
+    public void setObjectWithProperties(IObjectWithProperties objectWithProperties) {
+        this.objectWithProperties = objectWithProperties;
+        createContentPanel();
+    }
+
     protected void adjustContentPanelSize() {
         if (getHorizontalScrollBar().isVisible()) {
             Dimension prefSize = contentPanel.getPreferredSize();
@@ -98,19 +104,19 @@ class PropertiesCard extends JScrollPane {
         contentPanel.repaint();
     }
 
-    public void setObjectWithProperties(IObjectWithProperties objectWithProperties) {
-        this.objectWithProperties = objectWithProperties;
-        createContentPanel();
-    }
-
     private void createContentPanel() {
         contentPanel.removeAll();
         createPropertyPanel(objectWithProperties, contentPanel);
+        contentPanel.setPreferredSize(AppConstants.PROPERTIES_PANEL_MIN_SIZE);
     }
 
     private JPanel createPropertyPanel(IObjectWithProperties objectWithProperties, JPanel propertyPanel) {
         if (null == propertyPanel) {
             propertyPanel = new JPanel();
+        }
+
+        if (null == objectWithProperties) {
+            return propertyPanel;
         }
 
         Collection<? extends IObjectWithProperties> properties = objectWithProperties.getProperties();
@@ -132,17 +138,17 @@ class PropertiesCard extends JScrollPane {
             if (aProperty instanceof AbstractPropertyComponent) {
                 aPropertyRow = createPropertyComponentPanel((AbstractPropertyComponent) aProperty);
 
-            // Property Group
-            } else if(aProperty instanceof PropertyGroup) {
+                // Property Group
+            } else if (aProperty instanceof PropertyGroup) {
                 aPropertyRow = createPropertyGroupPanel((PropertyGroup) aProperty);
 
-            // other: recursive handling
+                // other: recursive handling
             } else {
                 aPropertyRow = createPropertyPanel(aProperty, null);
                 aPropertyRow.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2.brighter(), 0, 0, 1, 0));
             }
 
-            propertyPanel.add(aPropertyRow, "0 "+ row++);
+            propertyPanel.add(aPropertyRow, "0 " + row++);
         }
 
         return propertyPanel;
@@ -150,7 +156,7 @@ class PropertiesCard extends JScrollPane {
 
     private TitledComponent createPropertyGroupPanel(PropertyGroup propertyGroup) {
         JPanel propertiesPanel = new JPanel();
-        propertiesPanel.setLayout(new TableLayout(new double[][] {{TableLayout.FILL}, {TableLayout.FILL}}));
+        propertiesPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
 
         // create and add properties
         createPropertyPanel(propertyGroup, propertiesPanel);

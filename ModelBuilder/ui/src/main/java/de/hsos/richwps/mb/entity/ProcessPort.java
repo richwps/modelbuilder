@@ -1,12 +1,17 @@
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.propertyComponents.PropertyComplexDataTypeFormat;
 import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A port entitiy can either be global (model-wide) or local (part of a
@@ -25,10 +30,12 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     public static String PROPERTY_KEY_IDENTIFIER = "Identifier";
     public static String PROPERTY_KEY_TITLE = "Title";
     public static String PROPERTY_KEY_ABSTRACT = "Abstract";
+    public static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
 
     private ProcessPortDatatype datatype;
     private IDataTypeDescription dataTypeDescription;
 
+//    private AbstractPropertyComponent<?, IDataTypeDescription> propertyDatatypeDescription;
     private String toolTipText = null;
 
     private boolean flowInput;
@@ -40,28 +47,43 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
-        this.datatype = processPortDatatype;
         this.global = global;
+        this.datatype = processPortDatatype;
 
-        properties = new HashMap<>();
+        properties = new LinkedHashMap<>();
+        properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyMultilineLabel(PROPERTY_KEY_IDENTIFIER, "", global));
+        properties.put(PROPERTY_KEY_TITLE, new PropertyMultilineLabel(PROPERTY_KEY_TITLE, "", global));
+        properties.put(PROPERTY_KEY_ABSTRACT, new PropertyMultilineLabel(PROPERTY_KEY_ABSTRACT, "", global));
 
-//        if (global) {
-//            properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyTextField(PROPERTY_KEY_IDENTIFIER, ""));
-//            properties.put(PROPERTY_KEY_TITLE, new PropertyTextField(PROPERTY_KEY_TITLE, ""));
-//            properties.put(PROPERTY_KEY_ABSTRACT, new PropertyTextField(PROPERTY_KEY_ABSTRACT, ""));
-//        } else {
-            properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyMultilineLabel(PROPERTY_KEY_IDENTIFIER, "", global));
-            properties.put(PROPERTY_KEY_TITLE, new PropertyMultilineLabel(PROPERTY_KEY_TITLE, "", global));
-            properties.put(PROPERTY_KEY_ABSTRACT, new PropertyMultilineLabel(PROPERTY_KEY_ABSTRACT, "", global));
-//        }
+        createDatatypeProperty();
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype) {
         this(processPortDatatype, false);
     }
 
+    private void createDatatypeProperty() {
+        AbstractPropertyComponent datatypeComponent = null;
+        if (null != datatype && datatype.equals(ProcessPortDatatype.COMPLEX)) {
+            try {
+                datatypeComponent = new PropertyComplexDataTypeFormat();
+                datatypeComponent.setEditable(global);
+            } catch (LoadDataTypesException ex) {
+                Logger.getLogger(ProcessPort.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        properties.put(PROPERTY_KEY_DATATYPEDESCRIPTION, datatypeComponent);
+    }
+
     public IDataTypeDescription getDataTypeDescription() {
-        return dataTypeDescription;
+        AbstractPropertyComponent property = properties.get(PROPERTY_KEY_DATATYPEDESCRIPTION);
+
+        if (null != property) {
+            return (IDataTypeDescription) property.getValue();
+        }
+
+        return null;
     }
 
     private String createIncompatibleDescriptionMessage(ProcessPortDatatype datatype, IDataTypeDescription dataTypeDescription) {
@@ -77,6 +99,11 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
             throw new IllegalArgumentException(msg);
         }
 
+        AbstractPropertyComponent datatypeComponent = properties.get(PROPERTY_KEY_DATATYPEDESCRIPTION);
+        if(null != datatypeComponent) {
+            datatypeComponent.setValue(dataTypeDescription);
+        }
+
         this.dataTypeDescription = dataTypeDescription;
     }
 
@@ -87,8 +114,10 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     public void setGlobal(boolean global) {
         this.global = global;
 
-        for(AbstractPropertyComponent component : properties.values()) {
-            component.setEditable(global);
+        for (AbstractPropertyComponent component : properties.values()) {
+            if (null != component) {
+                component.setEditable(global);
+            }
         }
     }
 
@@ -175,6 +204,8 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         }
 
         this.datatype = datatype;
+
+        createDatatypeProperty();
     }
 
     /**

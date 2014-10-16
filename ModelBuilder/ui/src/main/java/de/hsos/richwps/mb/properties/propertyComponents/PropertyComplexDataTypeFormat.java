@@ -1,13 +1,12 @@
 package de.hsos.richwps.mb.properties.propertyComponents;
 
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IFormatSelectionListener;
-import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
 import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
+import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
-import java.awt.Component;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,13 +15,15 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent {
+public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<ComplexDataTypeFormatLabel, DataTypeDescriptionComplex> {
 
     ComplexDataTypeFormat format;
     ComplexDataTypeFormatLabel component;
 
+    public static String PROPERTY_NAME = "Complex datatype format";
+
     public PropertyComplexDataTypeFormat() throws LoadDataTypesException {
-        super(AbstractPortCard.PORT_DATATYPE_FORMAT);
+        super(PROPERTY_NAME);
 
         // add empty entry as first list element
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
@@ -42,18 +43,23 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent {
     }
 
     @Override
-    public Object getValue() {
-        return format;
+    public DataTypeDescriptionComplex getValue() {
+        return new DataTypeDescriptionComplex(format);
     }
 
     @Override
-    public void setValue(Object value) {
-        this.format = (ComplexDataTypeFormat) value;
-        component.setComplexDataTypeFormat(format);
+    public void setValue(DataTypeDescriptionComplex value) {
+        if (null == value) {
+            this.format = null;
+        } else {
+            this.format = value.getFormat();
+        }
+
+        component.setComplexDataTypeFormat(this.format);
     }
 
     @Override
-    public Component getComponent() {
+    public ComplexDataTypeFormatLabel getComponent() {
         return component;
     }
 

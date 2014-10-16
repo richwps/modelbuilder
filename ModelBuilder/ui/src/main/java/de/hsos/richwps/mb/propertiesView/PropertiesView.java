@@ -166,7 +166,7 @@ public class PropertiesView extends TitledComponent {
             });
         }
 
-        if (null != property.getProperties()) {
+        if (null != property && null != property.getProperties()) {
             for (IObjectWithProperties aProperty : property.getProperties()) {
                 setupPropertyFields(card, aProperty);
             }

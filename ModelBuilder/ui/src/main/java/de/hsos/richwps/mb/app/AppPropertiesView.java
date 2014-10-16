@@ -1,12 +1,7 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.propertiesView.AbstractPortCard;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
-import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -81,67 +76,73 @@ public class AppPropertiesView extends PropertiesView {
     }
 
     /**
+     * @TODO refactor / implement new property change mechanism with the new properties layer !!
+     *
      * Sets the (new) property value to the property source object.
      *
      * @param event
      * @return
      */
-    private Object setPropertyValue(PropertyChangeEvent event) {
-        Object oldValue = null;
+//    private Object setPropertyValue(PropertyChangeEvent event) {
 
-        switch (event.getSourceCard()) {
-            case NO_SELECTION:
-                break;
 
-            case MODEL:
-                // TODO move String to config or new properties model
-                if (event.getProperty().equals("name")) {
-                    oldValue = getGraphView().getGraphName();
-                    getGraphView().setGraphName((String) event.getNewValue());
-                }
-                break;
+        //
 
-            case PROCESS_SINGLE_SELECTION:
-                break;
-            case PROCESS_MULTI_SELECTION:
-                break;
+//        Object oldValue = null;
+//
+//        switch (event.getSourceCard()) {
+//            case NO_SELECTION:
+//                break;
+//
+//            case MODEL:
+//                // TODO move String to config or new properties model
+//                if (event.getProperty().equals("name")) {
+//                    oldValue = getGraphView().getGraphName();
+//                    getGraphView().setGraphName((String) event.getNewValue());
+//                }
+//                break;
+//
+//            case PROCESS_SINGLE_SELECTION:
+//                break;
+//            case PROCESS_MULTI_SELECTION:
+//                break;
+//
+//            case GLOBAL_PORT:
+//                Object newValue = event.getNewValue();
+//                if ((null != event.getSourceObject()
+//                        && event.getSourceObject() instanceof ProcessPort)) {
+//
+//                    ProcessPort port = (ProcessPort) event.getSourceObject();
+//
+//                    switch (event.getProperty()) {
+//                        case AbstractPortCard.PORT_TITLE:
+//                            oldValue = port.getOwsTitle();
+//                            port.setOwsTitle((String) newValue);
+//                            break;
+//                        case AbstractPortCard.PORT_ABSTRACT:
+//                            oldValue = port.getOwsAbstract();
+//                            port.setOwsAbstract((String) newValue);
+//                            break;
+//                        case AbstractPortCard.PORT_IDENTIFIER:
+//                            oldValue = port.getOwsIdentifier();
+//                            port.setOwsIdentifier((String) newValue);
+//                            break;
+//                        case AbstractPortCard.PORT_DATATYPE_FORMAT:
+//                            oldValue = port.getDataTypeDescription();
+//                            if (null != oldValue) {
+//                                oldValue = ((DataTypeDescriptionComplex) oldValue).getFormat();
+//                            }
+//                            port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
+//                    }
+//                }
+//                break;
+//
+//            default:
+//            // nothing
+//        }
 
-            case GLOBAL_PORT:
-                Object newValue = event.getNewValue();
-                if ((null != event.getSourceObject()
-                        && event.getSourceObject() instanceof ProcessPort)) {
-
-                    ProcessPort port = (ProcessPort) event.getSourceObject();
-
-                    switch (event.getProperty()) {
-                        case AbstractPortCard.PORT_TITLE:
-                            oldValue = port.getOwsTitle();
-                            port.setOwsTitle((String) newValue);
-                            break;
-                        case AbstractPortCard.PORT_ABSTRACT:
-                            oldValue = port.getOwsAbstract();
-                            port.setOwsAbstract((String) newValue);
-                            break;
-                        case AbstractPortCard.PORT_IDENTIFIER:
-                            oldValue = port.getOwsIdentifier();
-                            port.setOwsIdentifier((String) newValue);
-                            break;
-                        case AbstractPortCard.PORT_DATATYPE_FORMAT:
-                            oldValue = port.getDataTypeDescription();
-                            if (null != oldValue) {
-                                oldValue = ((DataTypeDescriptionComplex) oldValue).getFormat();
-                            }
-                            port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
-                    }
-                }
-                break;
-
-            default:
-            // nothing
-        }
-
-        return oldValue;
-    }
+//        return oldValue;
+//    }
 
     private GraphView getGraphView() {
         return app.getGraphView();
