@@ -36,6 +36,9 @@ import org.n52.wps.client.WPSTClientSession;
 import org.n52.wps.client.transactional.TrasactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Interface to RichWPS enabled servers.
@@ -638,4 +641,55 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
 
+    /**
+     * Checks whether an URI is an (52n) WPS-Endpoint or not.
+     *
+     * @param uri the given endpoint.
+     * @return true for wps endpoint, false if not.
+     */
+    public static boolean isWPSEndpoint(String uri) {
+        if (uri.contains(IRichWPSProvider.DEFAULT_WPS_ENDPOINT)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks whether an URI is an (52n) WPST-Endpoint or not.
+     *
+     * @param uri the given endpoint.
+     * @return true for wpst endpoint, false if not.
+     */
+    public static boolean isWPSTEndpoint(String uri) {
+        if (uri.contains(IRichWPSProvider.DEFAULT_WPST_ENDPOINT)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Checks if WPSTEndpoint exists.
+     * @param uri
+     * @return 
+     */
+    public static boolean checkWPSTEndpoint(String uri) {
+        // FIXME How else can we check the endpoints existence, and readiness?
+        // HTTP::HEAD Operation 405 Method Not Allowed, instead of 404?
+        // HTTP::GET Operation 405 Method Not Allowed, instead of 404?
+        try {
+            URL urlobj = new URL(uri);
+            URLConnection conn = urlobj.openConnection();
+            conn.connect();
+            HttpURLConnection httpConnection = (HttpURLConnection) conn;
+            int resp = httpConnection.getResponseCode();
+            if (resp != 405) {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

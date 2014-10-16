@@ -360,6 +360,14 @@ public class App {
     }
 
     void deploy() {
+        AppDeployManager manager = new AppDeployManager(this);
+        manager.deploy();
+        if (manager.isError()) {
+            JOptionPane.showMessageDialog(frame, 
+                    AppConstants.DIALOG_DEPL_ERROR_MSG,
+                    AppConstants.DIALOG_DEPL_ERROR,
+                    JOptionPane.ERROR_MESSAGE);
+        }
         new AppDeployManager(this).deploy();
     }
 

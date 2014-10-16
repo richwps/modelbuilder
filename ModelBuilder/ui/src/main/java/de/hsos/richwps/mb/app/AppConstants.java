@@ -60,7 +60,10 @@ public class AppConstants {
     public final static String SEMANTICPROXY_RECEIVE_ERROR = "An error occured while receiving from SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
 
+    
     // Dialoges
+    public final static String DIALOG_DEPL_ERROR = "Error while deployment";
+    public final static String DIALOG_DEPL_ERROR_MSG = "An error occured while deployment. See logs for further information.";
     public final static String DIALOG_BTN_CLOSE = "Close";
     public final static String DIALOG_BTN_CANCEL = "Cancel";
     public final static String DIALOG_BTN_OK = "Ok";
@@ -358,7 +361,7 @@ public class AppConstants {
 
     public final static String SUB_TREEVIEW_TITLE = "Used elements";
 
-    final static String DEPLOYMENT_FAILED = "Deployment failed!";
+    public final static String DEPLOYMENT_FAILED = "Deployment failed!";
 
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 

@@ -31,7 +31,7 @@ import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
- * Controlls the main tree view component and it's interaction with the
+ * Controls the main tree view component and it's interaction with the
  * ModelBuilder.
  *
  * @author dziegenh
@@ -156,16 +156,16 @@ public class MainTreeViewController extends AbstractTreeViewController {
     }
 
     /**
-     * Adds a node.
+     * Adds a node to the maintree.
      *
      * @param uri (WPS-endpoint).
      */
     public void addNode(String uri) {
-        IRichWPSProvider provider = new RichWPSProvider();
-        List<ProcessEntity> pes = new ArrayList<>();
         // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
+        //Perform discovery.
         try {
+            IRichWPSProvider provider = new RichWPSProvider();
             provider.connect(uri);
             List<String> processes = provider.getAvailableProcesses(uri);
 
@@ -302,5 +302,4 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         updateUI();
     }
-
 }

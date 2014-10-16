@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -34,74 +35,121 @@ import java.util.List;
  */
 public class AppDeployManager {
 
+    /**
+     * The overall app.
+     */
     private App app;
+    /**
+     * The given graph, that shall be exported.
+     */
     private Graph graph;
 
     /**
      * Indicates deployment error.
      */
-    private static boolean deploymentError = false;
+    private boolean error = false;
 
+    /**
+     * Constructs a new AppDeployManager.
+     *
+     * @param app the overall app.
+     */
     public AppDeployManager(App app) {
         this.app = app;
-
-        AppDeployManager.deploymentError = false;
         this.graph = app.getGraphView().getGraph();
+        this.error = false;
     }
 
     /**
-     * Starts the Deploy-Dialog.
+     * Starts the deployment.
      */
     void deploy() {
 
+        final GraphModel model = this.graph.getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String title = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        final String version = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        final String theabstract = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
+
+        if (identifier.isEmpty()) {
+            this.error = true;
+            this.processingFailed("Insufficient model information. Identifier is missing.");
+            return;
+        } else if (title.isEmpty()) {
+            this.error = true;
+            this.processingFailed("Insufficient odel information. Title is missing.");
+            return;
+        } else if (version.isEmpty()) {
+            this.error = true;
+            this.processingFailed("Insufficient model information. Version is missing.");
+            return;
+        }
+
+        String wpsendpoint = "";
+        String wpstendpoint = "";
+        if (RichWPSProvider.isWPSEndpoint(auri)) {
+            wpsendpoint = auri;
+            wpstendpoint = wpsendpoint.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_WPST_ENDPOINT);
+        } else if (RichWPSProvider.isWPSTEndpoint(auri)) {
+            wpstendpoint = auri;
+            wpsendpoint = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+        }
+
+        Logger.log("Debug:\n " + wpsendpoint + ", " + wpstendpoint);
+
+        if (!RichWPSProvider.checkWPSTEndpoint(wpstendpoint)) {
+            this.error = true;
+            this.deploymentFailed("Unable to connect to server.");
+            return;
+        }
+
         //generate rola
-        String wpsturi = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
         final String rola = this.generateROLA();
         if (null == rola) {
-            AppDeployManager.deploymentError = true;
+            this.error = true;
+            this.processingFailed("Unable to create underlying workflow"
+                    + " description (ROLA).");
+            return;
         }
 
         //generate processdescription
-        String identifier = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        String title = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
-        String version = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
-        String theabstract = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
-
-        //TODO remove endpoint assumption :(
-        String wpsuri = wpsturi;
-        wpsuri = wpsuri.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
-        DeployRequest request = new DeployRequest(wpsuri, wpsturi, identifier, title, version, RichWPSProvider.deploymentProfile);
+        DeployRequest request = new DeployRequest(wpsendpoint, wpstendpoint,
+                identifier, title, version, RichWPSProvider.deploymentProfile);
         request.setAbstract(theabstract);
         request.setExecutionUnit(rola);
 
         try {
             this.defineInOut(request);
         } catch (GraphToRequestTransformationException ex) {
-            AppDeployManager.deploymentError = true;
-            AppDeployManager.deploymentFailed("An error occured while assembling "
-                    + "information for deploy request.");
+            this.error = true;
+            this.processingFailed("Unable to create WPS:ProcessDescription.");
+            Logger.log("Debug:\n" + ex.getLocalizedMessage());
+            return;
         }
 
-
+        //perform request
         RichWPSProvider instance = new RichWPSProvider();
         try {
-            instance.connect(wpsuri, wpsturi);
+            instance.connect(wpsendpoint, wpstendpoint);
             instance.deployProcess(request);
 
             if (request.isException()) {
-                AppDeployManager.deploymentError = true;
-                AppDeployManager.deploymentFailed("An error occured while deployment.");
-
+                this.error = true;
+                this.deploymentFailed("An error occured while "
+                        + "deployment. A serverside error has been invoked.");
+                Logger.log("Debug:\n" + request.getException());
+                return;
             }
 
             AppEventService service = AppEventService.getInstance();
             service.fireAppEvent("Process deployed.", AppConstants.INFOTAB_ID_SERVER);
 
         } catch (Exception ex) {
-            AppDeployManager.deploymentError = true;
-            AppDeployManager.deploymentFailed("An error occured while deployment.");
+            this.error = true;
+            this.deploymentFailed("An error occured while deployment.");
+            Logger.log("Debug:\n" + ex.getLocalizedMessage());
         }
-
     }
 
     /**
@@ -120,8 +168,8 @@ public class AppDeployManager {
                 f = File.createTempFile(System.currentTimeMillis() + "", ".dsl");
                 f.deleteOnExit();
             } catch (Exception e) {
-                AppDeployManager.deploymentError = true;
-                AppDeployManager.processingFailed(AppConstants.TMP_FILE_FAILED);
+                this.error = true;
+                this.processingFailed(AppConstants.TMP_FILE_FAILED);
                 de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateROLA()\n "
                         + AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
@@ -137,41 +185,18 @@ public class AppDeployManager {
                 reader.read(chars);
                 content = new String(chars);
             } catch (IOException e) {
-                AppDeployManager.deploymentError = true;
-                e.printStackTrace();
+                this.error = true;
+                this.processingFailed("");
             } finally {
                 reader.close();
             }
             return content;
 
         } catch (Exception ex) {
-            AppDeployManager.deploymentError = true;
-            AppDeployManager.deploymentFailed("An error occured whilst generating "
-                    + "ROLA-script for deploy request.");
+            this.error = true;
+            this.processingFailed("Unable to create underlying workflow"
+                    + " description (ROLA).");
             Logger.log("Debug:\n" + ex.getLocalizedMessage());
-            /*StringBuilder sb = new StringBuilder(200);
-             sb.append(AppConstants.DEPLOYMENT_FAILED);
-             sb.append('\n');
-             sb.append(AppConstants.SEE_LOGGING_TABS);
-
-             JOptionPane.showMessageDialog(getFrame(), sb.toString());
-
-             String exMsg;
-             if (ex.getMessage() == null || ex.getMessage().isEmpty()) {
-             exMsg = ex.getClass().getSimpleName();
-             } else {
-             exMsg = ex.getMessage();
-             }
-
-             sb = new StringBuilder(200);
-             sb.append(AppConstants.DEPLOYMENT_FAILED);
-             sb.append('\n');
-             sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, exMsg));
-
-             AppEventService.getInstance().fireAppEvent(sb.toString(), AppConstants.INFOTAB_ID_SERVER);
-             Logger
-             .getLogger(App.class
-             .getName()).log(Level.SEVERE, null, ex);*/
         }
         return null;
     }
@@ -180,7 +205,7 @@ public class AppDeployManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputSpecifier specifier = AppDeployManager.createInputPortSpecifier(port);
+            IInputSpecifier specifier = this.createInputPortSpecifier(port);
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -190,7 +215,7 @@ public class AppDeployManager {
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
             IOutputSpecifier specifier = null;
-            specifier = AppDeployManager.createOutputPortSpecifier(port);
+            specifier = this.createOutputPortSpecifier(port);
 
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
@@ -199,7 +224,7 @@ public class AppDeployManager {
         }
     }
 
-    public static IInputSpecifier createInputPortSpecifier(ProcessPort port) {
+    public IInputSpecifier createInputPortSpecifier(ProcessPort port) {
         if (null == port || !port.isGlobalInput()) {
             throw new IllegalArgumentException("invalid port (null or not an input)");
         }
@@ -249,42 +274,36 @@ public class AppDeployManager {
                     supportedTypes.add(supportedType);
 
                     if (supportedTypes.isEmpty()) {
-                        AppDeployManager.deploymentError = true;
-                        AppDeployManager.processingFailed("Supported types for input "
+                        this.error = true;
+                        this.processingFailed("Supported types for input "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
                     if (supportedType.isEmpty()) {
-                        AppDeployManager.deploymentError = true;
-                        AppDeployManager.processingFailed("Default type for input "
+                        this.error = true;
+                        this.processingFailed("Default type for input "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
 
                     complexSpecifier.setTypes(supportedTypes);
                     complexSpecifier.setDefaulttype(supportedType);
-                } catch (Exception e) {
-                    AppDeployManager.deploymentError = true;
-                    AppDeployManager.processingFailed("Definition of supported typesy/default type for input "
+                } catch (Exception ex) {
+                    this.error = true;
+                    this.processingFailed("Definition of supported types/default type for input "
                             + complexSpecifier.getIdentifier() + " is invalid.");
+                    Logger.log("Debug:\n" + ex.getLocalizedMessage());
                 }
 
                 specifier = complexSpecifier;
                 break;
 
             case BOUNDING_BOX:
+                //TODO
                 break;
         }
-
-//        if (null != specifier) {
-//            specifier.setIdentifier(port.getOwsIdentifier());
-//            specifier.setAbstract(port.getOwsAbstract());
-//            specifier.setTitle(port.getOwsTitle());
-//            specifier.setMinOccur(0);
-//            specifier.setMaxOccur(1);
-//        }
         return specifier;
     }
 
-    public static IOutputSpecifier createOutputPortSpecifier(ProcessPort port) {
+    public IOutputSpecifier createOutputPortSpecifier(ProcessPort port) {
         if (null == port || !port.isGlobalOutput()) {
             throw new IllegalArgumentException("invalid port (null or not an output)");
         }
@@ -330,22 +349,23 @@ public class AppDeployManager {
                     supportedTypes.add(supportedType);
 
                     if (supportedTypes.isEmpty()) {
-                        AppDeployManager.deploymentError = true;
-                        AppDeployManager.processingFailed("Supported types for output "
+                        this.error = true;
+                        this.processingFailed("Supported types for output "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
                     if (supportedType.isEmpty()) {
-                        AppDeployManager.deploymentError = true;
-                        AppDeployManager.processingFailed("Default type for output "
+                        this.error = true;
+                        this.processingFailed("Default type for output "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
 
                     complexSpecifier.setTypes(supportedTypes);
                     complexSpecifier.setDefaulttype(supportedType);
-                } catch (Exception e) {
-                    AppDeployManager.deploymentError = true;
-                    AppDeployManager.processingFailed("Definition of supported typesy/default type for output "
+                } catch (Exception ex) {
+                    this.error = true;
+                    this.processingFailed("Definition of supported types/default type for output "
                             + complexSpecifier.getIdentifier() + " is invalid.");
+                    Logger.log("Debug:\n" + ex.getLocalizedMessage());
                 }
 
                 specifier = complexSpecifier;
@@ -356,13 +376,6 @@ public class AppDeployManager {
                 break;
         }
 
-//        if (null != specifier) {
-//            specifier.setIdentifier(port.getOwsIdentifier());
-//            specifier.setAbstract(port.getOwsAbstract());
-//            specifier.setTitle(port.getOwsTitle());
-//            specifier.setMinOccur(0);
-//            specifier.setMaxOccur(1);
-//        }
         return specifier;
     }
 
@@ -371,7 +384,7 @@ public class AppDeployManager {
      *
      * @param reason The reason for failing.
      */
-    public static void deploymentFailed(final String reason) {
+    private void deploymentFailed(final String reason) {
         AppEventService.getInstance().fireAppEvent(reason,
                 AppConstants.INFOTAB_ID_SERVER);
     }
@@ -381,8 +394,12 @@ public class AppDeployManager {
      *
      * @param reason The reason for failing.
      */
-    public static void processingFailed(final String reason) {
+    private void processingFailed(final String reason) {
         AppEventService.getInstance().fireAppEvent(reason,
                 AppConstants.INFOTAB_ID_EDITOR);
+    }
+
+    public boolean isError() {
+        return this.error;
     }
 }
