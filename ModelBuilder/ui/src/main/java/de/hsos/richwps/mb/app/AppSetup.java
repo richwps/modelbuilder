@@ -222,7 +222,7 @@ public class AppSetup {
         
         UIManager.put(AppConstants.ICON_RELOAD_KEY, new ImageIcon(iconDir + "database-refresh.png", "reload icon"));
         UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
-        UIManager.put(AppConstants.ICON_ADD_REMOTE, new ImageIcon(iconDir + "list-add-6.png", "add icon"));
+        UIManager.put(AppConstants.ICON_MANAGE_REMOTE, new ImageIcon(iconDir +"database-gear.png", "manage rmeotes icon"));
         UIManager.put(AppConstants.ICON_PUBLISH, new ImageIcon(iconDir + "database-go.png", "publish icon"));
         
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));

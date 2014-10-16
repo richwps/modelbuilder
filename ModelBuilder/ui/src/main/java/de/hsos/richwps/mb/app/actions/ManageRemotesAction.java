@@ -10,7 +10,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 public class ManageRemotesAction extends AppAbstractAction {
 
     public ManageRemotesAction(IAppActionHandler actionHandler) {
-        super(actionHandler, AppActionProvider.APP_ACTIONS.MANAGE_REMOTES, AppConstants.ICON_ADD_REMOTE);
+        super(actionHandler, AppActionProvider.APP_ACTIONS.MANAGE_REMOTES, AppConstants.ICON_MANAGE_REMOTE);
     }
 
 }
