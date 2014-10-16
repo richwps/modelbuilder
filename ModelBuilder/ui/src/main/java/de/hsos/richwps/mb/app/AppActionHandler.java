@@ -92,8 +92,7 @@ public class AppActionHandler implements IAppActionHandler {
                 JOptionPane.showMessageDialog(app.getFrame(), e.getActionCommand());
                 break;
             case EXECUTE:
-                //TODO
-                doExecute();
+                doExecuteThisProcess();
                 break;
             case EXECUTE_ANY:
                 doExecute();
@@ -348,6 +347,11 @@ public class AppActionHandler implements IAppActionHandler {
     private void doExecute() {
         app.showExecute();
     }
+    
+    private void doExecuteThisProcess() {
+        app.showExecuteThisProcess();
+    }
+    
 
     private void doAbout() {
         app.showAbout();

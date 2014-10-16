@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.execView.ExecViewDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
@@ -419,8 +420,21 @@ public class App {
 
     void showExecute() {
         if (null == execViewDialog) {
+            //TODO change datasource.
             List<String> remotes = (List) processProvider.getAllServersFromSemanticProxy();
             execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
+        }
+
+        execViewDialog.setVisible(true);
+    }
+    
+    void showExecuteThisProcess() {
+        if (null == execViewDialog) {
+            final GraphModel model = this.getGraphView().getGraph().getGraphModel();
+            final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+            final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+            
+            execViewDialog = new ExecViewDialog(getFrame(), false, auri, identifier);
         }
 
         execViewDialog.setVisible(true);

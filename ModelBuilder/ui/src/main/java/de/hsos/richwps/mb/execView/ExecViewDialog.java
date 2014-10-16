@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.execView;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.execView.dialog.ADialogPanel;
@@ -11,12 +12,17 @@ import de.hsos.richwps.mb.execView.dialog.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
+ * A dialog that displays five consecutive panels for serverselection,
+ * processselection, inputparameterisation, outputparameterisation and
+ * resultvisualisation.
  *
  * @author dalcacer
+ * @version 0.0.2
  */
 public class ExecViewDialog extends MbDialog {
 
@@ -31,7 +37,8 @@ public class ExecViewDialog extends MbDialog {
     private ExecuteRequest request;
 
     /**
-     * Creates new form execViewDialog
+     * Creates new form execViewDialog, starting with the first dialog
+     * (serverselection).
      */
     public ExecViewDialog(java.awt.Frame parent, boolean modal, List<String> wpsurls) {
         super(parent, "Execute");
@@ -42,6 +49,33 @@ public class ExecViewDialog extends MbDialog {
         this.initComponents();
         this.backButton.setVisible(false);
         this.showServerSelection(false);
+    }
+
+    /**
+     * Creates new form execViewDialog, starting with the inputparamerization.
+     */
+    public ExecViewDialog(java.awt.Frame parent, boolean modal, String wpsurl,
+            String processid) {
+        super(parent, "Execute");
+
+        this.provider = new RichWPSProvider();
+        try {
+            this.provider.connect(wpsurl);
+        } catch (Exception e) {
+            Logger.log("Debug:\n Unable to connect to " + wpsurl);
+        }
+        this.request = new ExecuteRequest();
+        request.setEndpoint(wpsurl);
+        request.setIdentifier(processid);
+
+        this.remotes = new ArrayList();
+        this.initComponents();
+        this.backButton.setVisible(false);
+
+        this.inputspanel = new InputParameterization(this.provider, this.request);
+        this.add(this.inputspanel);
+        this.pack();
+        this.currentPanel = inputspanel;
     }
 
     private void showServerSelection(boolean isBackAction) {
@@ -78,11 +112,12 @@ public class ExecViewDialog extends MbDialog {
 
         try {
             this.provider.connect(this.request.getEndpoint());
-        } catch (Exception e) {
+        } catch (Exception ex) {
             String msg = "Unable to connect to selected WebProcessingService.";
             JOptionPane.showMessageDialog(this, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            Logger.log("Debug:\n " + ex);
             return;
         }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.request);
@@ -236,13 +271,13 @@ public class ExecViewDialog extends MbDialog {
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
         this.showServerSelection(false);     //Reset
-        
+
         //Make sure the client cache is emptied.
         if (provider != null) {
             try {
                 provider.disconnect();
-            } catch (Exception e) {
-                //NOP.
+            } catch (Exception ex) {
+                Logger.log("Debug:\n " + ex);
             }
         }
 
