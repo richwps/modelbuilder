@@ -62,8 +62,6 @@ public class AppConstants {
 
     
     // Dialoges
-    public final static String DIALOG_DEPL_ERROR = "Error while deployment";
-    public final static String DIALOG_DEPL_ERROR_MSG = "An error occured while deployment. See logs for further information.";
     public final static String DIALOG_BTN_CLOSE = "Close";
     public final static String DIALOG_BTN_CANCEL = "Cancel";
     public final static String DIALOG_BTN_OK = "Ok";
@@ -86,6 +84,26 @@ public class AppConstants {
     public final static String MANAGEREMOTES_DIALOG_TITLE = "Manage remote servers";
     public final static String MANAGEREMOTES_DIALOG_MSG = "Please enter a WPS server to work with.";
 
+    //Deployerror Dialog
+    public final static String DEPLOY_ERROR_DIALOG_TITLE = "Error while deployment";
+    public final static String DEPLOY_ERROR_DIALOG_MSG = "An error occured while deployment. See logs for further information.";
+    public final static String DEPLOY_ID_MISSING ="Insufficient model information. Identifier is missing.";
+    public final static String DEPLOY_TITLE_MISSING ="Insufficient model information. Title is missing.";
+    public final static String DEPLOY_VERSION_MISSING ="Insufficient model information. Version is missing.";
+    public final static String DEPLOY_ROLA_FAILED ="Unable to create underlying workflow description (ROLA) based on model.";
+    public final static String DEPLOY_DESC_FAILED = "Unable to create WPS:ProcessDescription based on model.";
+    public final static String DEPLOY_CONNECT_FAILED = "Unable to connect to selected WPS-T server.";
+    public final static String DEPLOY_SERVERSIDE_ERROR = "An error occured while deployment. A serverside error has been invoked.";
+    
+    //Undeployerror Dialog
+    public final static String UNDEPLOY_ERROR_DIALOG_TITLE = "Error while undeployment";
+    public final static String UNDEPLOY_ERROR_DIALOG_MSG = "An error occured while undeployment. See logs for further information.";
+    
+    //Execute/Undeployerror Dialog
+    public final static String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
+    public final static String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
+
+    
     // About Dialog
     /**
      * Title of the about dialog.

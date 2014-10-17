@@ -24,6 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  * Manages script creation, processdescription creation and the deployment.
@@ -61,10 +62,11 @@ public class AppDeployManager {
     }
 
     /**
-     * Starts the deployment.
+     * Performs the deployment.
      */
     void deploy() {
 
+        //load information from model.
         final GraphModel model = this.graph.getGraphModel();
         final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
@@ -72,17 +74,18 @@ public class AppDeployManager {
         final String version = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
         final String theabstract = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
 
+        //verify information
         if (identifier.isEmpty()) {
             this.error = true;
-            this.processingFailed("Insufficient model information. Identifier is missing.");
+            this.processingFailed(AppConstants.DEPLOY_ID_MISSING);
             return;
         } else if (title.isEmpty()) {
             this.error = true;
-            this.processingFailed("Insufficient odel information. Title is missing.");
+            this.processingFailed(AppConstants.DEPLOY_TITLE_MISSING);
             return;
         } else if (version.isEmpty()) {
             this.error = true;
-            this.processingFailed("Insufficient model information. Version is missing.");
+            this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
             return;
         }
 
@@ -96,11 +99,10 @@ public class AppDeployManager {
             wpsendpoint = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
         }
 
-        Logger.log("Debug:\n " + wpsendpoint + ", " + wpstendpoint);
-
         if (!RichWPSProvider.checkWPSTEndpoint(wpstendpoint)) {
             this.error = true;
-            this.deploymentFailed("Unable to connect to server.");
+            this.deploymentFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
+                    + wpstendpoint);
             return;
         }
 
@@ -108,8 +110,7 @@ public class AppDeployManager {
         final String rola = this.generateROLA();
         if (null == rola) {
             this.error = true;
-            this.processingFailed("Unable to create underlying workflow"
-                    + " description (ROLA).");
+            this.processingFailed(AppConstants.DEPLOY_ROLA_FAILED);
             return;
         }
 
@@ -123,7 +124,7 @@ public class AppDeployManager {
             this.defineInOut(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
-            this.processingFailed("Unable to create WPS:ProcessDescription.");
+            this.processingFailed(AppConstants.DEPLOY_DESC_FAILED);
             Logger.log("Debug:\n" + ex.getLocalizedMessage());
             return;
         }
@@ -136,8 +137,9 @@ public class AppDeployManager {
 
             if (request.isException()) {
                 this.error = true;
-                this.deploymentFailed("An error occured while "
-                        + "deployment. A serverside error has been invoked.");
+                this.deploymentFailed(AppConstants.DEPLOY_SERVERSIDE_ERROR);
+                String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n" + request.getException();
+                JOptionPane.showMessageDialog(null, msg);
                 Logger.log("Debug:\n" + request.getException());
                 return;
             }

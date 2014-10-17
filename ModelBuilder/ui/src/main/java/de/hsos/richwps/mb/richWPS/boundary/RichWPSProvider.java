@@ -692,4 +692,15 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
         return true;
     }
+    
+    public static boolean hasProcess(String auri, String processid){
+        RichWPSProvider provider = new RichWPSProvider();
+        try{
+            provider.connect(auri);
+        }catch(Exception ex){
+            Logger.log("Debug:\n unable to connect to "+auri);
+        }
+        List<String> processes = provider.getAvailableProcesses(auri);
+        return processes.contains(processid);
+    }
 }

@@ -6,9 +6,7 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.execView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.execView.dialog.InputParameterization;
 import de.hsos.richwps.mb.execView.dialog.OutputParameterization;
-import de.hsos.richwps.mb.execView.dialog.ProcessSelection;
 import de.hsos.richwps.mb.execView.dialog.ResultVisualisation;
-import de.hsos.richwps.mb.execView.dialog.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
@@ -24,11 +22,9 @@ import javax.swing.JOptionPane;
  * @author dalcacer
  * @version 0.0.2
  */
-public class ExecViewDialog extends MbDialog {
+public class ExecuteModelDialog extends MbDialog {
 
     private ADialogPanel currentPanel;
-    private SeverSelection serverselectionpanel;
-    private ProcessSelection processesselectionpanel;
     private InputParameterization inputspanel;
     private OutputParameterization outputsspanel;
     private ResultVisualisation resultpanel;
@@ -37,117 +33,47 @@ public class ExecViewDialog extends MbDialog {
     private ExecuteRequest request;
 
     /**
-     * Creates new form execViewDialog, starting with the first dialog
-     * (serverselection).
-     */
-    public ExecViewDialog(java.awt.Frame parent, boolean modal, List<String> wpsurls) {
-        super(parent, "Execute");
-
-        this.provider = new RichWPSProvider();
-        this.request = new ExecuteRequest();
-        this.remotes = wpsurls;
-        this.initComponents();
-        this.backButton.setVisible(false);
-        this.showServerSelection(false);
-    }
-
-    /**
      * Creates new form execViewDialog, starting with the inputparamerization.
      */
-    public ExecViewDialog(java.awt.Frame parent, boolean modal, String wpsurl,
+    public ExecuteModelDialog(java.awt.Frame parent, boolean modal, String wpsurl,
             String processid) {
         super(parent, "Execute");
 
-        this.provider = new RichWPSProvider();
-        try {
-            this.provider.connect(wpsurl);
-        } catch (Exception e) {
-            Logger.log("Debug:\n Unable to connect to " + wpsurl);
-        }
         this.request = new ExecuteRequest();
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
-
-        this.remotes = new ArrayList();
-        this.initComponents();
-        this.backButton.setVisible(false);
-
-        this.inputspanel = new InputParameterization(this.provider, this.request);
-        this.add(this.inputspanel);
-        this.pack();
-        this.currentPanel = inputspanel;
-    }
-
-    private void showServerSelection(boolean isBackAction) {
-        this.backButton.setVisible(false);
-        this.nextButton.setVisible(true);
-        this.serverselectionpanel = new SeverSelection(this.remotes, this.request);
-
-        if (this.currentPanel != null) {
-            this.remove(this.currentPanel);
-            this.currentPanel.setVisible(false);
-        }
-
-        this.add(this.serverselectionpanel);
-        this.pack();
-        this.currentPanel = serverselectionpanel;
-    }
-
-    /**
-     * Switches from serverselectionpanel to processselectionpanel.
-     */
-    private void showProcessSelection(boolean isBackAction) {
-        if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
-                return;
-            }
-        }
-
-        this.backButton.setVisible(true);
-        this.nextButton.setVisible(true);
-
-        //refresh the request
-        this.currentPanel.updateRequest();
-        this.request = this.currentPanel.getRequest();
-
+        this.provider = new RichWPSProvider();
         try {
-            this.provider.connect(this.request.getEndpoint());
+            this.provider.connect(request.getEndpoint());
         } catch (Exception ex) {
-            String msg = "Unable to connect to selected WebProcessingService.";
+               String msg = "Unable to connect to selected WebProcessingService.";
             JOptionPane.showMessageDialog(this, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
             Logger.log("Debug:\n " + ex);
             return;
         }
-        this.processesselectionpanel = new ProcessSelection(this.provider, this.request);
-        this.remove(this.currentPanel);
-        this.currentPanel.setVisible(false);
-        this.add(this.processesselectionpanel);
-        this.pack();
-        this.currentPanel = processesselectionpanel;
-
+         
+        this.remotes = new ArrayList();
+        this.remotes.add(wpsurl);
+        this.initComponents();
+        this.showParameterizeInputsPanel(false);
     }
 
+  
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
     private void showParameterizeInputsPanel(boolean isBackAction) {
-        if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
-                return;
-            }
-        }
-        this.backButton.setVisible(true);
+        this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
 
-        //refresh the request
-        this.currentPanel.updateRequest();
-        this.request = this.currentPanel.getRequest();
-
         this.inputspanel = new InputParameterization(this.provider, this.request);
-        this.remove(this.currentPanel);
-        this.currentPanel.setVisible(false);
+        if(isBackAction){
+            
+            this.remove(this.currentPanel);
+            this.currentPanel.setVisible(false);
+        }
         this.add(this.inputspanel);
         this.pack();
         this.currentPanel = inputspanel;
@@ -258,11 +184,7 @@ public class ExecViewDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
-        if (this.currentPanel == this.serverselectionpanel) {
-            this.showProcessSelection(false);
-        } else if (this.currentPanel == this.processesselectionpanel) {
-            this.showParameterizeInputsPanel(false);
-        } else if (this.currentPanel == this.inputspanel) {
+        if (this.currentPanel == this.inputspanel) {
             this.showParameterizeOutputsPanel(false);
         } else if (this.currentPanel == this.outputsspanel) {
             this.showResultPanel(false);
@@ -270,7 +192,7 @@ public class ExecViewDialog extends MbDialog {
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
-        this.showServerSelection(false);     //Reset
+        this.showParameterizeInputsPanel(false);     //Reset
 
         //Make sure the client cache is emptied.
         if (provider != null) {
@@ -286,11 +208,7 @@ public class ExecViewDialog extends MbDialog {
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
-        if (this.currentPanel == this.processesselectionpanel) {
-            this.showServerSelection(true);
-        } else if (this.currentPanel == this.inputspanel) {
-            this.showProcessSelection(true);
-        } else if (this.currentPanel == this.outputsspanel) {
+        if (this.currentPanel == this.outputsspanel) {
             this.showParameterizeInputsPanel(true);
         } else if (this.currentPanel == this.resultpanel) {
             this.showParameterizeOutputsPanel(true);

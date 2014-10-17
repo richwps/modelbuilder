@@ -5,7 +5,9 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifi
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +32,8 @@ public class DescribeRequest implements IRequest {
      * The id of the process which shall be described.
      */
     protected String identifier = "";
-    
-        /**
+
+    /**
      * The title of the process.
      */
     protected String title = "";
@@ -223,7 +225,8 @@ public class DescribeRequest implements IRequest {
             IInputSpecifier aninput = new InputLiteralDataSpecifier(description);
             this.availableinputs.add(aninput);
         } else if (description.getBoundingBoxData() != null) {
-            //FIXME
+            IInputSpecifier aninput = new InputBoundingBoxDataSpecifier(description);
+            this.availableinputs.add(aninput);
         }
     }
 
@@ -240,7 +243,8 @@ public class DescribeRequest implements IRequest {
             IOutputSpecifier anoutput = new OutputLiteralDataSpecifier(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getBoundingBoxOutput() != null) {
-            //FIXME 
+            IOutputSpecifier anoutput = new OutputBoundingBoxDataSpecifier(description);
+            this.availableoutputs.add(anoutput);
         }
     }
 
@@ -314,7 +318,7 @@ public class DescribeRequest implements IRequest {
 
     @Override
     public void flushResults() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

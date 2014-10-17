@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
@@ -8,12 +9,15 @@ import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.execView.ExecViewDialog;
+import de.hsos.richwps.mb.execView.ExecuteModelDialog;
+import de.hsos.richwps.mb.execView.ExecuteDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
@@ -68,7 +72,8 @@ public class App {
     private SubTreeViewController subTreeView;
     private AppPreferencesDialog preferencesDialog;
 //    private AppDeployManager deployManager;
-    private ExecViewDialog execViewDialog;
+    private ExecuteDialog execAnyDialog;
+    private ExecuteModelDialog execDialog;
 
     private boolean changesSaved = false;
     private CardLayout mainTreeViewCardLayout;
@@ -360,19 +365,70 @@ public class App {
         getPropertiesView().setObjectWithProperties(getGraphView().getGraph().getGraphModel());
     }
 
+    /**
+     * Deploys the opend model.
+     */
     void deploy() {
         AppDeployManager manager = new AppDeployManager(this);
         manager.deploy();
         if (manager.isError()) {
-            JOptionPane.showMessageDialog(frame, 
-                    AppConstants.DIALOG_DEPL_ERROR_MSG,
-                    AppConstants.DIALOG_DEPL_ERROR,
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.DEPLOY_ERROR_DIALOG_MSG,
+                    AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
+            //TODO get error?
         }
         new AppDeployManager(this).deploy();
     }
 
+    /**
+     * Undeploys the opend model.
+     */
     void undeploy() {
+
+        final GraphModel model = this.getGraphView().getGraph().getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        if (RichWPSProvider.hasProcess(auri, identifier)) {
+            String wpsendpoint = "";
+            String wpstendpoint = "";
+            if (RichWPSProvider.isWPSEndpoint(auri)) {
+                wpsendpoint = auri;
+                wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_WPST_ENDPOINT);
+            } else if (RichWPSProvider.isWPSTEndpoint(auri)) {
+                wpstendpoint = auri;
+                wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_WPST_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
+            }
+            RichWPSProvider provider = new RichWPSProvider();
+            try {
+                provider.connect(wpsendpoint, wpstendpoint);
+
+                UndeployRequest request = new UndeployRequest(wpsendpoint, wpstendpoint, identifier);
+                provider.request(request);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame,
+                        AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
+                        AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
+                        JOptionPane.ERROR_MESSAGE);
+                Logger.log("Debug:\n" + ex);
+                String msg = "An error occured while undeploying  " + identifier + " from"
+                        + "on " + auri + ". " + ex.getLocalizedMessage();
+                JOptionPane.showMessageDialog(this.frame, msg);
+                AppEventService appservice = AppEventService.getInstance();
+                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            }
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
+                    AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+            String msg = "The requested process " + identifier + " was not found"
+                    + "on " + auri;
+            JOptionPane.showMessageDialog(this.frame, msg);
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+        }
+
     }
 
     /**
@@ -418,26 +474,44 @@ public class App {
         dialog.setVisible(true);
     }
 
+    
+    /**
+     * Shows an dialog to execute a given process on any connected server.
+     */
     void showExecute() {
-        if (null == execViewDialog) {
+        if (null == execAnyDialog) {
             //TODO change datasource.
             List<String> remotes = (List) processProvider.getAllServersFromSemanticProxy();
-            execViewDialog = new ExecViewDialog(getFrame(), false, remotes);
+            execAnyDialog = new ExecuteDialog(getFrame(), false, remotes);
         }
 
-        execViewDialog.setVisible(true);
+        execAnyDialog.setVisible(true);
     }
-    
-    void showExecuteThisProcess() {
-        if (null == execViewDialog) {
+
+    /**
+     * Shows an dialog to execute the currently opened model.
+     */
+    void showExecuteModel() {
+        if (null == execDialog) {
             final GraphModel model = this.getGraphView().getGraph().getGraphModel();
             final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
             final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-            
-            execViewDialog = new ExecViewDialog(getFrame(), false, auri, identifier);
+            if (RichWPSProvider.hasProcess(auri, identifier)) {
+                execDialog = new ExecuteModelDialog(getFrame(), false, auri, identifier);
+            } else {
+                JOptionPane.showMessageDialog(frame,
+                        AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
+                        AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+                        JOptionPane.ERROR_MESSAGE);
+                String msg = "The requested process " + identifier + " was not found"
+                        + " on " + auri;
+                JOptionPane.showMessageDialog(this.frame, msg);
+                AppEventService appservice = AppEventService.getInstance();
+                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            }
         }
 
-        execViewDialog.setVisible(true);
+        execDialog.setVisible(true);
     }
 
     void showAbout() {
