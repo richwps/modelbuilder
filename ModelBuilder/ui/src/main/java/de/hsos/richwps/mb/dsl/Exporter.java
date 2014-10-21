@@ -51,7 +51,7 @@ public class Exporter {
     /**
      * The workflow.
      */
-    private Worksequence workflow;
+    private Workflow workflow;
 
     /**
      * Constructs a new Exporter.
@@ -67,7 +67,7 @@ public class Exporter {
         this.variables = new HashMap<>();
         this.bindings = new ArrayList<>();
         this.executes = new ArrayList<>();
-        this.workflow = new Worksequence();
+        this.workflow = new Workflow();
     }
 
     /**

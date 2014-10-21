@@ -43,10 +43,10 @@ public interface IRichWPSProvider {
      * Connects the provider to a WPS-server with WPS-T functionality.
      *
      * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
+     * @param richwpsurl endpoint of transactional interface.
      * @throws java.lang.Exception
      */
-    public void connect(final String wpsurl, final String wpsturl) throws Exception;
+    public void connect(final String wpsurl, final String richwpsurl) throws Exception;
 
     /**
      * Disconnects the provider to a WPS-server with WPS-T functionality.

@@ -7,10 +7,11 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
+    <description>Java based graphical modelling tool for OWS orchestration.</description>
 
     <name>RichWPS ModelBuilder</name>
     <url>http://richwps.github.io</url>
-    <description>Java based graphical modelling tool for OWS orchestration.</description>
+    
     <issueManagement>
         <system>Bugzilla</system>
         <url>https://github.com/richwps/modelbuilder/issues</url>
