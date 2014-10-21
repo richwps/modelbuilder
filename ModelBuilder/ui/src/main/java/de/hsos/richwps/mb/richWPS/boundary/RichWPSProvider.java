@@ -33,7 +33,7 @@ import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.WPSTClientSession;
-import org.n52.wps.client.transactional.TrasactionalRequestBuilder;
+import org.n52.wps.client.transactional.TransactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import java.net.HttpURLConnection;
@@ -325,7 +325,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return <code>true</code> for deployment success.
      */
     public String showDeployRequest(DeployRequest request) {
-        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+        TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
         builder.setDeployExecutionUnit(request.getExecutionUnit());
         builder.setDeployProcessDescription(request.toProcessDescriptionType());
@@ -349,7 +349,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public void deployProcess(DeployRequest request) {
-        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+        TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
         builder.setDeployExecutionUnit(request.getExecutionUnit());
         builder.setDeployProcessDescription(request.toProcessDescriptionType());
@@ -389,7 +389,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public void undeployProcess(UndeployRequest request) {
 
-        TrasactionalRequestBuilder builder = new TrasactionalRequestBuilder();
+        TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
         builder.setIdentifier(request.getIdentifier());
 
