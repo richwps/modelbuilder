@@ -67,9 +67,7 @@ class PropertiesCard extends JScrollPane {
             }
 
             @Override
-            // Set content panel width to match the viewport.
-            // Otherwise, when resizing the panel to a smaller width, the
-            // panel width would not adjust and the horizontal scrollbar appears
+            // reset content panel as otherwise some visual glitches appear
             public void componentResized(ComponentEvent e) {
                 adjustContentPanelSize();
             }
@@ -86,13 +84,8 @@ class PropertiesCard extends JScrollPane {
     }
 
     protected void adjustContentPanelSize() {
-        if (getHorizontalScrollBar().isVisible()) {
-            Dimension prefSize = contentPanel.getPreferredSize();
-            prefSize.width -= 2 * getVerticalScrollBar().getWidth();
-            contentPanel.setPreferredSize(prefSize);
-        }
-        contentPanel.revalidate();
-        contentPanel.repaint();
+        // FIXME find a better way...
+        createContentPanel();
     }
 
     private void createContentPanel() {
