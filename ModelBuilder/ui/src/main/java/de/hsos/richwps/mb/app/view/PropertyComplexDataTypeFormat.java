@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
+import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,4 +76,12 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<Com
         property.setEditable(editable);
     }
 
+    @Override
+    public void setProperty(Property<DataTypeDescriptionComplex> property) {
+        super.setProperty(property);
+        setEditable(property.isEditable());
+    }
+
+    
+    
 }

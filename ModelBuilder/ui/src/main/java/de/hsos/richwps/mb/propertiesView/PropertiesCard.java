@@ -98,7 +98,7 @@ class PropertiesCard extends JScrollPane {
     private void createContentPanel() {
         contentPanel.removeAll();
         createPropertyPanel(objectWithProperties, contentPanel);
-        contentPanel.setPreferredSize(AppConstants.PROPERTIES_PANEL_MIN_SIZE);
+        contentPanel.setPreferredSize(AppConstants.PROPERTIES_PANEL_PREFERRED_SIZE);
     }
 
     private JPanel createPropertyPanel(IObjectWithProperties objectWithProperties, JPanel propertyPanel) {

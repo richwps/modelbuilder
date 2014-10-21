@@ -20,6 +20,6 @@ public class MultilineLabel extends JTextArea {
         setLineWrap(true);
         setWrapStyleWord(true);
         setEditable(false);
-        setFocusable(false);
+//        setFocusable(false);
     }
 }

@@ -138,7 +138,7 @@ public class AppFrame extends JFrame {
     private Component getPropertiesView() {
         if (null == propertiesView) {
             propertiesView = app.getPropertiesViewGui();
-            propertiesView.setMinimumSize(AppConstants.PROPERTIES_PANEL_MIN_SIZE);
+            propertiesView.setPreferredSize(AppConstants.PROPERTIES_PANEL_PREFERRED_SIZE);
         }
 
         return propertiesView;
@@ -206,7 +206,7 @@ public class AppFrame extends JFrame {
             // only expand the center panel on resize
             centerAndRightPanel.setResizeWeight(1);
             // TODO Resizing the panel is disabled because of buggy behaviours in SingleProcessCard
-            centerAndRightPanel.setEnabled(false);
+//            centerAndRightPanel.setEnabled(false);
         }
 
         return centerAndRightPanel;

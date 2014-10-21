@@ -148,8 +148,7 @@ public class AppPropertiesView extends PropertiesView {
         AbstractPropertyComponent component;
 
         if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX)) {
-            component = getPropertyComplexDataTypeFormat();
-            component.setProperty(property);
+            component = createPropertyComplexDataTypeFormat(property);
 
         } else {
 
@@ -160,15 +159,14 @@ public class AppPropertiesView extends PropertiesView {
         return component;
     }
 
-    private PropertyComplexDataTypeFormat propertyComplexDataTypeFormat;
+    private PropertyComplexDataTypeFormat createPropertyComplexDataTypeFormat(Property property) {
+        PropertyComplexDataTypeFormat propertyComplexDataTypeFormat = null;
+        try {
+            propertyComplexDataTypeFormat = new PropertyComplexDataTypeFormat(app.getFormatProvider());
+            propertyComplexDataTypeFormat.setProperty(property);
 
-    private PropertyComplexDataTypeFormat getPropertyComplexDataTypeFormat() {
-        if (null == propertyComplexDataTypeFormat) {
-            try {
-                propertyComplexDataTypeFormat = new PropertyComplexDataTypeFormat(app.getFormatProvider());
-            } catch (LoadDataTypesException ex) {
-                JOptionPane.showMessageDialog(app.getFrame(), AppConstants.FORMATS_CSV_FILE_LOAD_ERROR, AppConstants.DIALOG_TITLE_ERROR, JOptionPane.ERROR_MESSAGE);
-            }
+        } catch (LoadDataTypesException ex) {
+            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.FORMATS_CSV_FILE_LOAD_ERROR, AppConstants.DIALOG_TITLE_ERROR, JOptionPane.ERROR_MESSAGE);
         }
 
         return propertyComplexDataTypeFormat;
