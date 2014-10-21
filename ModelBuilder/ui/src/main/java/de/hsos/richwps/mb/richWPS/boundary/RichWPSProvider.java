@@ -32,7 +32,7 @@ import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
-import org.n52.wps.client.WPSTClientSession;
+import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.transactional.TransactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
@@ -43,6 +43,7 @@ import java.net.URLConnection;
 /**
  * Interface to RichWPS enabled servers.
  *
+ * @version 0.0.3
  * @author dalcacer
  */
 public class RichWPSProvider implements IRichWPSProvider {
@@ -52,9 +53,9 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     private WPSClientSession wps;
     /**
-     * WPS-T client.
+     * RichWPS client.
      */
-    private WPSTClientSession wpst;
+    private RichWPSClientSession wpst;
 
     /**
      * The deploymentprofile, that should be used.
@@ -114,25 +115,25 @@ public class RichWPSProvider implements IRichWPSProvider {
      * Connects the provider to a WPS-server with WPS-T functionality.
      *
      * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
+     * @param richwpsurl endpoint of transactional interface.
      * @throws java.lang.Exception
      */
     @Override
-    public void connect(String wpsurl, String wpsturl) throws Exception {
+    public void connect(String wpsurl, String richwpsurl) throws Exception {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
         } catch (WPSClientException e) {
             de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service " + wpsurl + ", " + wpsturl);
+            throw new Exception("Unable to connect to service " + wpsurl + ", " + richwpsurl);
         }
 
         try {
-            this.wpst = WPSTClientSession.getInstance();
-            this.wpst.connect(wpsurl, wpsturl);
+            this.wpst = RichWPSClientSession.getInstance();
+            this.wpst.connect(wpsurl, richwpsurl);
         } catch (WPSClientException e) {
             de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service " + wpsurl + ", " + wpsturl);
+            throw new Exception("Unable to connect to service " + wpsurl + ", " + richwpsurl);
         }
     }
 
@@ -154,7 +155,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
 
         try {
-            this.wpst = WPSTClientSession.getInstance();
+            this.wpst = RichWPSClientSession.getInstance();
             this.wpst.disconnect(wpsurl);
         } catch (Exception e) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
@@ -162,35 +163,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
 
-    /**
-     * Connects the provider to a WPS-server with WPS-T and testing
-     * functionality.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
-     * @param testurl endpoint of testing interface.
-     * @throws java.lang.Exception
-     */
-    @Override
-    public void connect(String wpsurl, String wpsturl, String testurl) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    /**
-     * Connects the provider to a WPS-server with WPS-T, testing and profiling
-     * functionality.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
-     * @param testurl endpoint of testing interface.
-     * @param profileurl endpoint of profiling interface.
-     * @throws java.lang.Exception
-     */
-    @Override
-    public void connect(String wpsurl, String wpsturl, String testurl, String profileurl) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+   
     /**
      * Lists all available processes.
      *

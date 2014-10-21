@@ -11,7 +11,7 @@ import java.util.List;
  * Interface to RichWPS-enabled servers.
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public interface IRichWPSProvider {
     public static final String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";
@@ -52,33 +52,11 @@ public interface IRichWPSProvider {
      * Disconnects the provider to a WPS-server with WPS-T functionality.
      *
      * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
+     * @param richwpsurl endpoint of transactional interface.
      * @throws java.lang.Exception
      */
-    public void disconnect(final String wpsurl, final String wpsturl) throws Exception;
+    public void disconnect(final String wpsurl, final String richwpsurl) throws Exception;
 
-    /**
-     * Connects the provider to a WPS-server with WPS-T and testing
-     * functionality.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
-     * @param testurl endpoint of testing interface.
-     * @throws java.lang.Exception
-     */
-    public void connect(final String wpsurl, final String wpsturl, final String testurl) throws Exception;
-
-    /**
-     * Connects the provider to a WPS-server with WPS-T, testing and profiling
-     * functionality.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
-     * @param testurl endpoint of testing interface.
-     * @param profileurl endpoint of profiling interface.
-     * @throws java.lang.Exception
-     */
-    public void connect(final String wpsurl, final String wpsturl, final String testurl, final String profileurl) throws Exception;
 
     /**
      * Lists all available processes.
