@@ -6,8 +6,10 @@ import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
+import de.hsos.richwps.mb.properties.Property;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,6 +21,7 @@ public class AppGraphView extends GraphView {
 
     private final App app;
     private boolean init = false;
+    private Property endpointProperty;
 
     public AppGraphView(App app) {
         super();
@@ -105,6 +108,12 @@ public class AppGraphView extends GraphView {
         AppEventService.getInstance().addSourceCommand(this, AppConstants.INFOTAB_ID_EDITOR);
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
+        // add property for endpoint selection
+        String propertyEndpointName = AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
+        String propertyEndpointType = Property.COMPONENT_TYPE_DROPDOWN;
+        endpointProperty = new Property(propertyEndpointName, propertyEndpointType, null, true);
+        getGraph().getGraphModel().addProperty(endpointProperty);
+
         init = true;
     }
 
@@ -126,8 +135,12 @@ public class AppGraphView extends GraphView {
             }
         });
 
-        setRemoteServers(app.getProcessProvider().getAllServers());
+        updateRemotes();
         app.setChangesSaved(true);
+    }
+
+    void updateRemotes() {
+        endpointProperty.setPossibleValues(Arrays.asList(app.getProcessProvider().getAllServers()));
     }
 
     private App getApp() {

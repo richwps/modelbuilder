@@ -32,7 +32,7 @@ public class ProcessEntityCodec extends mxObjectCodec {
             ((ProcessEntity) obj).setToolTipText("");
         }
 
-        return super.beforeEncode(enc, obj, node); //To change body of generated methods, choose Tools | Templates.
+        return super.beforeEncode(enc, obj, node);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ProcessEntityCodec extends mxObjectCodec {
             ((ProcessEntity) obj).setToolTipText(null);
         }
 
-        return super.afterDecode(dec, node, obj); //To change body of generated methods, choose Tools | Templates.
+        return super.afterDecode(dec, node, obj);
     }
 
 }

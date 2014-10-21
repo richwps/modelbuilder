@@ -6,13 +6,13 @@ package de.hsos.richwps.mb.properties;
  * @author dziegenh
  * @see AbstractPropertyComponent
  */
-public class PropertyComponentGroup extends PropertyGroup<AbstractPropertyComponent> {
-
-    public PropertyComponentGroup() {
-        this("");
-    }
-
-    public PropertyComponentGroup(String name) {
-        super(name);
-    }
-}
+//public class PropertyComponentGroup extends PropertyGroup<AbstractPropertyComponent> {
+//
+//    public PropertyComponentGroup() {
+//        this("");
+//    }
+//
+//    public PropertyComponentGroup(String name) {
+//        super(name);
+//    }
+//}

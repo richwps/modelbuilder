@@ -19,7 +19,7 @@ public class PropertyCardsConfig {
     /**
      * fixed width of first column ("header").
      */
-    public final static int COLUMN_1_WIDTH = 56;
+    public final static int COLUMN_1_WIDTH = 70;
 
     /**
      * height of titles ("process", "inputs" etc).

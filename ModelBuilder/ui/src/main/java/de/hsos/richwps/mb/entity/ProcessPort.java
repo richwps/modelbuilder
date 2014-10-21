@@ -1,17 +1,12 @@
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyComplexDataTypeFormat;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
+import de.hsos.richwps.mb.properties.Property;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A port entitiy can either be global (model-wide) or local (part of a
@@ -24,7 +19,7 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     public static String TOOLTIP_STYLE_INPUT = "";
     public static String TOOLTIP_STYLE_OUTPUT = "";
 
-    private HashMap<String, AbstractPropertyComponent> properties;
+    private HashMap<String, Property> properties;
 
     // TODO init keys in AppSetup
     public static String PROPERTY_KEY_IDENTIFIER = "Identifier";
@@ -32,15 +27,19 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     public static String PROPERTY_KEY_ABSTRACT = "Abstract";
     public static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
 
-    private ProcessPortDatatype datatype;
-    private IDataTypeDescription dataTypeDescription;
+    public static String COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX = "Datatype description complex";
+    public static String COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL = "Datatype description literal";
+    public static String COMPONENTTYPE_DATATYPEDESCRIPTION_BBOX = "Datatype description bbox";
 
-//    private AbstractPropertyComponent<?, IDataTypeDescription> propertyDatatypeDescription;
+    private ProcessPortDatatype datatype;
+
     private String toolTipText = null;
 
     private boolean flowInput;
 
     private boolean global;
+
+    private final Property<IDataTypeDescription> descriptionProperty;
 
     public ProcessPort() {
         this(null, false);
@@ -51,39 +50,24 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         this.datatype = processPortDatatype;
 
         properties = new LinkedHashMap<>();
-        properties.put(PROPERTY_KEY_IDENTIFIER, new PropertyMultilineLabel(PROPERTY_KEY_IDENTIFIER, "", global));
-        properties.put(PROPERTY_KEY_TITLE, new PropertyMultilineLabel(PROPERTY_KEY_TITLE, "", global));
-        properties.put(PROPERTY_KEY_ABSTRACT, new PropertyMultilineLabel(PROPERTY_KEY_ABSTRACT, "", global));
+        properties.put(PROPERTY_KEY_IDENTIFIER, new Property<>(PROPERTY_KEY_IDENTIFIER, "", global));
+        properties.put(PROPERTY_KEY_TITLE, new Property<>(PROPERTY_KEY_TITLE, "", global));
+        properties.put(PROPERTY_KEY_ABSTRACT, new Property<>(PROPERTY_KEY_ABSTRACT, "", global));
 
-        createDatatypeProperty();
+        // Property for datatype description
+        String descPropertyName = PROPERTY_KEY_DATATYPEDESCRIPTION;
+
+        descriptionProperty = new Property<>(descPropertyName, null, global);
+        updateDescriptionProperty(processPortDatatype);
+        properties.put(PROPERTY_KEY_DATATYPEDESCRIPTION, descriptionProperty);
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype) {
         this(processPortDatatype, false);
     }
 
-    private void createDatatypeProperty() {
-        AbstractPropertyComponent datatypeComponent = null;
-        if (null != datatype && datatype.equals(ProcessPortDatatype.COMPLEX)) {
-            try {
-                datatypeComponent = new PropertyComplexDataTypeFormat();
-                datatypeComponent.setEditable(global);
-            } catch (LoadDataTypesException ex) {
-                Logger.getLogger(ProcessPort.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        properties.put(PROPERTY_KEY_DATATYPEDESCRIPTION, datatypeComponent);
-    }
-
     public IDataTypeDescription getDataTypeDescription() {
-        AbstractPropertyComponent property = properties.get(PROPERTY_KEY_DATATYPEDESCRIPTION);
-
-        if (null != property) {
-            return (IDataTypeDescription) property.getValue();
-        }
-
-        return null;
+        return descriptionProperty.getValue();
     }
 
     private String createIncompatibleDescriptionMessage(ProcessPortDatatype datatype, IDataTypeDescription dataTypeDescription) {
@@ -99,12 +83,10 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
             throw new IllegalArgumentException(msg);
         }
 
-        AbstractPropertyComponent datatypeComponent = properties.get(PROPERTY_KEY_DATATYPEDESCRIPTION);
-        if(null != datatypeComponent) {
+        Property datatypeComponent = properties.get(PROPERTY_KEY_DATATYPEDESCRIPTION);
+        if (null != datatypeComponent) {
             datatypeComponent.setValue(dataTypeDescription);
         }
-
-        this.dataTypeDescription = dataTypeDescription;
     }
 
     public boolean isGlobal() {
@@ -114,9 +96,9 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     public void setGlobal(boolean global) {
         this.global = global;
 
-        for (AbstractPropertyComponent component : properties.values()) {
-            if (null != component) {
-                component.setEditable(global);
+        for (Property property : properties.values()) {
+            if (null != property) {
+                property.setEditable(global);
             }
         }
     }
@@ -198,14 +180,36 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
      * @param datatype the data to set
      */
     public void setDatatype(ProcessPortDatatype datatype) {
-        if (null != this.dataTypeDescription && !this.dataTypeDescription.isDescriptionFor(datatype)) {
-            String msg = createIncompatibleDescriptionMessage(datatype, this.dataTypeDescription);
+        IDataTypeDescription dataTypeDescription = getDataTypeDescription();
+
+        if (null != dataTypeDescription && !dataTypeDescription.isDescriptionFor(datatype)) {
+            String msg = createIncompatibleDescriptionMessage(datatype, dataTypeDescription);
             throw new IllegalArgumentException(msg);
         }
 
         this.datatype = datatype;
+        updateDescriptionProperty(datatype);
+    }
 
-        createDatatypeProperty();
+    private void updateDescriptionProperty(ProcessPortDatatype datatype) {
+        if (null == datatype) {
+            return;
+        }
+
+        String descPropertyType;
+        switch (datatype) {
+            case COMPLEX:
+                descPropertyType = COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX;
+                break;
+            case BOUNDING_BOX:
+                descPropertyType = COMPONENTTYPE_DATATYPEDESCRIPTION_BBOX;
+                break;
+            case LITERAL:
+            default:
+                descPropertyType = COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL;
+
+        }
+        descriptionProperty.setComponentType(descPropertyType);
     }
 
     /**

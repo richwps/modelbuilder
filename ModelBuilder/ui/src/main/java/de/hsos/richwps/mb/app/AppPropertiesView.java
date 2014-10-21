@@ -1,7 +1,13 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.app.view.PropertyComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -36,9 +42,6 @@ public class AppPropertiesView extends PropertiesView {
         });
 
         // TODO refactor / implement new property change mechanism with the new properties layer !!
-
-
-
         // listen to property changes and add them to the UndoManager
 //        addPropertyChangeListener(new PropertyChangeListener() {
 //            @Override
@@ -76,7 +79,8 @@ public class AppPropertiesView extends PropertiesView {
     }
 
     /**
-     * @TODO refactor / implement new property change mechanism with the new properties layer !!
+     * @TODO refactor / implement new property change mechanism with the new
+     * properties layer !!
      *
      * Sets the (new) property value to the property source object.
      *
@@ -84,10 +88,7 @@ public class AppPropertiesView extends PropertiesView {
      * @return
      */
 //    private Object setPropertyValue(PropertyChangeEvent event) {
-
-
-        //
-
+    //
 //        Object oldValue = null;
 //
 //        switch (event.getSourceCard()) {
@@ -140,9 +141,38 @@ public class AppPropertiesView extends PropertiesView {
 //            default:
 //            // nothing
 //        }
-
 //        return oldValue;
 //    }
+    @Override
+    protected AbstractPropertyComponent getComponentFor(Property property) {
+        AbstractPropertyComponent component;
+
+        if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX)) {
+            component = getPropertyComplexDataTypeFormat();
+            component.setProperty(property);
+
+        } else {
+
+            component = super.getComponentFor(property);
+            // TODO add property change listener (undo manager etc.)
+        }
+
+        return component;
+    }
+
+    private PropertyComplexDataTypeFormat propertyComplexDataTypeFormat;
+
+    private PropertyComplexDataTypeFormat getPropertyComplexDataTypeFormat() {
+        if (null == propertyComplexDataTypeFormat) {
+            try {
+                propertyComplexDataTypeFormat = new PropertyComplexDataTypeFormat(app.getFormatProvider());
+            } catch (LoadDataTypesException ex) {
+                JOptionPane.showMessageDialog(app.getFrame(), AppConstants.FORMATS_CSV_FILE_LOAD_ERROR, AppConstants.DIALOG_TITLE_ERROR, JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        return propertyComplexDataTypeFormat;
+    }
 
     private GraphView getGraphView() {
         return app.getGraphView();

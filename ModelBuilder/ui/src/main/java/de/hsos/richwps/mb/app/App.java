@@ -9,13 +9,14 @@ import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.execView.ExecuteModelDialog;
 import de.hsos.richwps.mb.execView.ExecuteDialog;
+import de.hsos.richwps.mb.execView.ExecuteModelDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
-import de.hsos.richwps.mb.propertiesView.PropertiesView;
+import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
@@ -78,6 +79,7 @@ public class App {
     private boolean changesSaved = false;
     private CardLayout mainTreeViewCardLayout;
     private JPanel card1Panel;
+    private FormatProvider formatProvider;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -464,6 +466,7 @@ public class App {
                 String[] remotes = dialog.getRemotes();
                 if (null != remotes) {
                     getMainTreeView().setRemotes(remotes);
+                    getGraphView().updateRemotes();
                 }
 
                 getFrame().setCursor(Cursor.getDefaultCursor());
@@ -517,6 +520,14 @@ public class App {
     void showAbout() {
         AboutDialog aboutDialog = new AboutDialog(getFrame());
         aboutDialog.setVisible(true);
+    }
+
+    FormatProvider getFormatProvider() {
+        if(null == formatProvider) {
+            formatProvider = new FormatProvider(AppConstants.FORMATS_CSV_FILE);
+        }
+
+        return formatProvider;
     }
 
 }

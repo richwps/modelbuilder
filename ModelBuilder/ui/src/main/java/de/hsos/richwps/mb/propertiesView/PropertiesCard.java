@@ -1,23 +1,20 @@
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -25,9 +22,7 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import layout.TableLayout;
 
@@ -43,21 +38,17 @@ class PropertiesCard extends JScrollPane {
     protected final Window parentWindow;
 
     @Deprecated
-    protected List<AbstractPropertyComponent> propertyFields;
+    private List<AbstractPropertyComponent> propertyFields;
 
     protected IObjectWithProperties objectWithProperties;
+    private PropertiesView propertiesView;
 
-    public PropertiesCard(final Window parentWindow, IObjectWithProperties objectWithProperties) {
-        this(parentWindow);
-        this.objectWithProperties = objectWithProperties;
-        createContentPanel();
-    }
-
-    public PropertiesCard(final Window parentWindow) {
+    public PropertiesCard(final Window parentWindow, PropertiesView view) {
         super(new JPanel());
 
         this.parentWindow = parentWindow;
         this.contentPanel = (JPanel) getViewport().getView();
+        this.propertiesView = view;
 
         // setup Scrollbars
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -115,7 +106,7 @@ class PropertiesCard extends JScrollPane {
             propertyPanel = new JPanel();
         }
 
-        if (null == objectWithProperties) {
+        if (null == objectWithProperties || null == objectWithProperties.getProperties()) {
             return propertyPanel;
         }
 
@@ -141,6 +132,10 @@ class PropertiesCard extends JScrollPane {
                 // Property Group
             } else if (aProperty instanceof PropertyGroup) {
                 aPropertyRow = createPropertyGroupPanel((PropertyGroup) aProperty);
+
+                // Property: get component
+            } else if (aProperty instanceof Property) {
+                aPropertyRow = createPropertyComponentPanel(propertiesView.getComponentFor((Property) aProperty));
 
                 // other: recursive handling
             } else {
@@ -178,7 +173,7 @@ class PropertiesCard extends JScrollPane {
         componentPanel.setLayout(new TableLayout(layoutSize));
 
         // label + component
-        componentPanel.add(createHeadLabel(component.getPropertiesObjectName()), "0 0");
+        componentPanel.add(createHeadLabel(component.getProperty().getPropertiesObjectName()), "0 0");
         componentPanel.add(component.getComponent(), "1 0");
         // bottom border(s)
         componentPanel.add(createColumn1Border(), "0 1");
@@ -196,31 +191,31 @@ class PropertiesCard extends JScrollPane {
         return propertyFields;
     }
 
-    @Deprecated
-    protected JTextField createEditablePropertyField(String property, String text) {
+//    @Deprecated
+//    protected JTextField createEditablePropertyField(String property, String text) {
 
-        PropertyTextField propertyField = new PropertyTextField(property, text);
-
-        JTextField label = (JTextField) propertyField.getComponent();
-        CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
-        label.setBorder(border);
-        label.setFont(label.getFont().deriveFont(PropertyCardsConfig.propertyFieldFontSize));
-
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-
-        getPropertyFields().add(propertyField);
-        return label;
-    }
+//        PropertyTextField propertyField = new PropertyTextField(property, text);
+//
+//        JTextField label = (JTextField) propertyField.getComponent();
+//        CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
+//        label.setBorder(border);
+//        label.setFont(label.getFont().deriveFont(PropertyCardsConfig.propertyFieldFontSize));
+//
+//        label.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseEntered(MouseEvent e) {
+//                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+//            }
+//
+//            @Override
+//            public void mouseExited(MouseEvent e) {
+//                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//            }
+//        });
+//
+//        getPropertyFields().add(propertyField);
+//        return label;
+//    }
 
     protected TitledComponent createTitledComponent(String title, Component component) {
         TitledComponent titledComponent = new TitledComponent(title, component, PropertyCardsConfig.titleHeight, true);

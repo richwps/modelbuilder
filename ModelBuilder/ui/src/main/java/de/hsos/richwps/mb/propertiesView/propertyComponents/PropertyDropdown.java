@@ -1,22 +1,33 @@
-package de.hsos.richwps.mb.properties.propertyComponents;
+package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.IPropertyChangeListener;
+import de.hsos.richwps.mb.properties.Property;
 import javax.swing.JComboBox;
 
 /**
  * Property GUI component which enables selecting a property value from a
- * dropdown combobox. Currently no longer used, but may be useful later.
+ * dropdown combobox.
  *
  * @author dziegenh
  */
-public class PropertyDropdown<E> extends AbstractPropertyComponent<JComboBox<E>, E> {
+public class PropertyDropdown<E extends Object> extends AbstractPropertyComponent<JComboBox<E>, E> {
 
     private final JComboBox<E> component;
 
-    public PropertyDropdown(String propertyName, Object[] values) {
-        super(propertyName);
+    public PropertyDropdown(final Property property) {
+        super(property);
 
-        component = new JComboBox(values);
+        component = new JComboBox<>((E[]) property.getPossibleValues().toArray());
+
+        property.addChangeListener(new IPropertyChangeListener() {
+            @Override
+            public void propertyChanged() {
+                component.removeAllItems();
+                for (Object item : property.getPossibleValues()) {
+                    component.addItem((E) item);
+                }
+            }
+        });
     }
 
     @Override

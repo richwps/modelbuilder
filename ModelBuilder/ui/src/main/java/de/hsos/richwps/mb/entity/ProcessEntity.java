@@ -1,10 +1,8 @@
 package de.hsos.richwps.mb.entity;
 
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.PropertyComponentGroup;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyMultilineLabel;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,6 +21,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
     public static String KEY_SERVER;
     public static String KEY_TITLE;
     public static String KEY_ABSTRACT;
+    public static String KEY_VERSION = "Version";
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
@@ -33,8 +32,8 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
 
     private boolean isFullyLoaded = false;
 
-    private HashMap<String, AbstractPropertyComponent> properties = new HashMap<>();
-    private PropertyComponentGroup owsGroup;
+    private HashMap<String, Property> properties = new HashMap<>();
+    private PropertyGroup<Property> owsGroup;
 
     public ProcessEntity() {
         this("", "");
@@ -283,12 +282,32 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         });
     }
 
+//    public Object getPropertyValue(String key) {
+//        AbstractPropertyComponent component = properties.get(key);
+//
+//        if (null != component) {
+//            return component.getValue();
+//        }
+//
+//        return null;
+//    }
+
+//    public void setPropertyValue(String key, Object value) {
+//        AbstractPropertyComponent component = properties.get(key);
+//
+//        if (null != component) {
+//            component.setValue(value);
+//        }
+//    }
+
     private void createProperties(String server, String owsIdentifier) {
-        owsGroup = new PropertyComponentGroup("Process");
-        owsGroup.addObject(new PropertyMultilineLabel(KEY_IDENTIFIER, owsIdentifier, false));
-        owsGroup.addObject(new PropertyMultilineLabel(KEY_SERVER, server, false));
-        owsGroup.addObject(new PropertyMultilineLabel(KEY_TITLE, "", false));
-        owsGroup.addObject(new PropertyMultilineLabel(KEY_ABSTRACT, "", false));
+        owsGroup = new PropertyGroup("Process");
+
+        owsGroup.addObject(new Property<>(KEY_IDENTIFIER, Property.COMPONENT_TYPE_TEXTFIELD, owsIdentifier));
+        owsGroup.addObject(new Property<>(KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
+        owsGroup.addObject(new Property<>(KEY_TITLE, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        owsGroup.addObject(new Property<>(KEY_ABSTRACT, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        owsGroup.addObject(new Property<>(KEY_VERSION, Property.COMPONENT_TYPE_TEXTFIELD, ""));
     }
 
 }

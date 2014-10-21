@@ -156,6 +156,9 @@ public class AppConstants {
     final static String INPUT_PORT_COLOR_STRING = "bbe8c6";
     final static String OUTPUT_PORT_COLOR_STRING = "cfe1fc";
 
+    static String FORMATS_CSV_FILE_LOAD_ERROR = "Error while loading complex data formats!";
+    static String DIALOG_TITLE_ERROR = "An error occured";
+
     /**
      * Common CSS for input and output ports.
      */
@@ -178,6 +181,7 @@ public class AppConstants {
      * The CSS which is used for the main html container in ToolTipTexts.
      */
     static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "color:#000000;background:#" +TOOLTIP_BG_COLOR_HEX_STRING+ ";border:0;margin:0;";
+    public static final String FORMATS_CSV_FILE = "formats.csv";
 
     public enum PREFERENCES_TAB {
 

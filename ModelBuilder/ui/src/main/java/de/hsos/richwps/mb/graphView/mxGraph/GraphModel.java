@@ -5,17 +5,15 @@ import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.PropertyComponentGroup;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyDropdown;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
+import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * The model for the RIchWPS graph. Extends the underlying mxGraphModel.
+ * The model for the RichWPS graph. Extends the underlying mxGraphModel.
  *
  * @author dziegenh
  */
@@ -23,27 +21,20 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
     private String name;
 
-    private List<PropertyComponentGroup> propertyGroups;
-    private final PropertyDropdown remotesDropdown;
+    private List<PropertyGroup> propertyGroups;
 
     public GraphModel() {
         super();
 
         propertyGroups = new LinkedList<>();
 
-        PropertyComponentGroup group1 = new PropertyComponentGroup(AppConstants.PROPERTIES_MODELDATA);
-        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id"));
-        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract"));
-        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title"));
-        group1.addObject(new PropertyTextField(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version"));
-
-        // TODO add servers from the actual list.
-        PropertyComponentGroup group2 = new PropertyComponentGroup("Deployment");
-        remotesDropdown = new PropertyDropdown(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT, new String[]{});
-        group2.addObject(remotesDropdown);
+        PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version", true));
 
         propertyGroups.add(group1);
-        propertyGroups.add(group2);
     }
 
     public GraphModel(mxGraphModel modelToClone) throws CloneNotSupportedException {
@@ -211,17 +202,17 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     }
 
     public Object getPropertyValue(String propertyName) {
-        for (PropertyComponentGroup aGroup : propertyGroups) {
-            AbstractPropertyComponent component = aGroup.getPropertyObject(propertyName);
-            if (null != component) {
-                return component.getValue();
+        for (PropertyGroup aGroup : propertyGroups) {
+            IObjectWithProperties property = aGroup.getPropertyObject(propertyName);
+            if (null != property && (property instanceof Property)) {
+                return ((Property) property).getValue();
             }
         }
         return null;
     }
 
-    public void setRemotes(String[] remotes) {
-        remotesDropdown.setItems(remotes);
+    public void addProperty(Property property) {
+        propertyGroups.get(0).addObject(property);
     }
 
 }

@@ -1,10 +1,12 @@
 package de.hsos.richwps.mb.propertiesView;
 
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.propertyComponents.PropertyTextField;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyDropdown;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -12,8 +14,6 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Window;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ public class PropertiesView extends TitledComponent {
 
         this.parentWindow = parentWindow;
 
-        this.propertiesCard = new PropertiesCard(parentWindow);
+        this.propertiesCard = new PropertiesCard(parentWindow, this);
 
         contentPanel = (JPanel) getComponent(1);
 
@@ -142,12 +142,12 @@ public class PropertiesView extends TitledComponent {
             final AbstractPropertyComponent propertyComponent = (AbstractPropertyComponent) property;
 
             // listen to changes
-            propertyComponent.getComponent().addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(FocusEvent e) {
-                    firePropertyChangeEvent(card, property.getPropertiesObjectName(), property, propertyComponent.getValue());
-                }
-            });
+//            propertyComponent.getComponent().addFocusListener(new FocusAdapter() {
+//                @Override
+//                public void focusLost(FocusEvent e) {
+//                    firePropertyChangeEvent(card, property.getPropertiesObjectName(), property, propertyComponent.getValue());
+//                }
+//            });
             // setup GUI
             JTextField label = (JTextField) ((AbstractPropertyComponent) property).getComponent();
             CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
@@ -194,6 +194,14 @@ public class PropertiesView extends TitledComponent {
 
     protected JPanel getContentPanel() {
         return contentPanel;
+    }
+
+    protected AbstractPropertyComponent getComponentFor(Property property) {
+        if(property.getComponentType().equals(Property.COMPONENT_TYPE_DROPDOWN)) {
+            return new PropertyDropdown(property);
+        }
+
+        return new PropertyTextField(property);
     }
 
 }

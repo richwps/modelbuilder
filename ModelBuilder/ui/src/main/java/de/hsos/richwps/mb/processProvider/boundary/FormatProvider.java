@@ -19,23 +19,13 @@ import java.util.List;
  */
 public class FormatProvider {
 
-    private static FormatProvider instance;
-
-    private String csvFile = "formats.csv";
+    private String csvFile;
 
     private ComplexDataTypeFormat defaultType;
     private List<ComplexDataTypeFormat> dataTypes;
 
-    // hide
-    private FormatProvider() {
-    }
-
-    public static FormatProvider getInstance() {
-        if (null == instance) {
-            instance = new FormatProvider();
-        }
-
-        return instance;
+    public FormatProvider(String formatCsvFile) {
+        this.csvFile = formatCsvFile;
     }
 
     public List<ComplexDataTypeFormat> getComplexDataTypes() throws LoadDataTypesException {

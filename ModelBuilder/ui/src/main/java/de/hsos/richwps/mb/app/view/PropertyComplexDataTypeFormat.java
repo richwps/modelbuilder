@@ -1,11 +1,12 @@
-package de.hsos.richwps.mb.properties.propertyComponents;
+package de.hsos.richwps.mb.app.view;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
-import de.hsos.richwps.mb.properties.AbstractPropertyComponent;
+import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,18 +18,18 @@ import java.util.List;
  */
 public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<ComplexDataTypeFormatLabel, DataTypeDescriptionComplex> {
 
-    ComplexDataTypeFormat format;
     ComplexDataTypeFormatLabel component;
 
     public static String PROPERTY_NAME = "Complex datatype format";
+    public static String COMPONENT_TYPE = "Complex datatype format";
 
-    public PropertyComplexDataTypeFormat() throws LoadDataTypesException {
-        super(PROPERTY_NAME);
+    public PropertyComplexDataTypeFormat(FormatProvider formatProvider) throws LoadDataTypesException {
+        super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE));
 
         // add empty entry as first list element
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
         formats.add(null);
-        formats.addAll(FormatProvider.getInstance().getComplexDataTypes());
+        formats.addAll(formatProvider.getComplexDataTypes());
         component = new ComplexDataTypeFormatLabel(formats);
         component.addSelectionListener(new IFormatSelectionListener() {
             @Override
@@ -39,23 +40,28 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<Com
     }
 
     private void setFormat(ComplexDataTypeFormat format) {
-        this.format = format;
+        if (null == property.getValue()) {
+            property.setValue(new DataTypeDescriptionComplex(format));
+        } else {
+            property.getValue().setFormat(format);
+        }
     }
 
     @Override
     public DataTypeDescriptionComplex getValue() {
-        return new DataTypeDescriptionComplex(format);
+        return property.getValue();
     }
 
     @Override
     public void setValue(DataTypeDescriptionComplex value) {
-        if (null == value) {
-            this.format = null;
-        } else {
-            this.format = value.getFormat();
+        ComplexDataTypeFormat format = null;
+        if (null != value) {
+            format = value.getFormat();
         }
 
-        component.setComplexDataTypeFormat(this.format);
+        component.setComplexDataTypeFormat(format);
+
+        property.setValue(value);
     }
 
     @Override
@@ -66,6 +72,7 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<Com
     @Override
     public void setEditable(boolean editable) {
         component.setEditable(editable);
+        property.setEditable(editable);
     }
 
 }
