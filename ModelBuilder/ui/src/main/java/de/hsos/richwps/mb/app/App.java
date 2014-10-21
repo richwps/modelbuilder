@@ -396,10 +396,10 @@ public class App {
             String wpstendpoint = "";
             if (RichWPSProvider.isWPSEndpoint(auri)) {
                 wpsendpoint = auri;
-                wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_WPST_ENDPOINT);
+                wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
             } else if (RichWPSProvider.isWPSTEndpoint(auri)) {
                 wpstendpoint = auri;
-                wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_WPST_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
+                wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
             }
             RichWPSProvider provider = new RichWPSProvider();
             try {

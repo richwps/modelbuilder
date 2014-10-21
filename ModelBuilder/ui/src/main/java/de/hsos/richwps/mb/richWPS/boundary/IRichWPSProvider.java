@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface IRichWPSProvider {
     public static final String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";
-    public static final String DEFAULT_WPST_ENDPOINT = "/WPS-T";
+    public static final String DEFAULT_RICHWPS_ENDPOINT = "/RichWPS";
     public static final String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
 
     /**
@@ -118,6 +118,5 @@ public interface IRichWPSProvider {
      * @return <code>true</code> for deployment success.
      */
     public void request(IRequest request);
-    
     
 }

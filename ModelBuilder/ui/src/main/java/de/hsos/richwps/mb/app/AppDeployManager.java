@@ -93,10 +93,10 @@ public class AppDeployManager {
         String wpstendpoint = "";
         if (RichWPSProvider.isWPSEndpoint(auri)) {
             wpsendpoint = auri;
-            wpstendpoint = wpsendpoint.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_WPST_ENDPOINT);
+            wpstendpoint = wpsendpoint.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
         } else if (RichWPSProvider.isWPSTEndpoint(auri)) {
             wpstendpoint = auri;
-            wpsendpoint = wpstendpoint.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+            wpsendpoint = wpstendpoint.replace(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
         }
 
         if (!RichWPSProvider.checkWPSTEndpoint(wpstendpoint)) {

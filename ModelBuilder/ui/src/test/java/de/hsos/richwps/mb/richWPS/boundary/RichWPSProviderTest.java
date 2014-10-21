@@ -452,7 +452,7 @@ public class RichWPSProviderTest extends TestCase {
     public void testDeployUndeploy() {
         System.out.println("testDeployUndeploy");
         String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
-        String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WPS-T";
+        String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
         RichWPSProvider instance = new RichWPSProvider();
         try {
             instance.connect(wpsurl, wpsturl);

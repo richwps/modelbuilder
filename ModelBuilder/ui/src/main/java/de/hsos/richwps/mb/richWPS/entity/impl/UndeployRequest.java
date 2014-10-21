@@ -66,7 +66,7 @@ public class UndeployRequest implements IRequest {
     public String getServerId() {
         if (this.serverid.length() == 0) {
             String uri = this.endpoint;
-            uri = uri.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+            uri = uri.replace(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
             return uri;
         }
         return serverid;

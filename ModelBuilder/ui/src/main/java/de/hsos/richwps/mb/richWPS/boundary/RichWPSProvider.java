@@ -287,7 +287,6 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
 
         this.execAnalyseResponse(execute, description, responseObject, request);
-
     }
 
     /**
@@ -333,7 +332,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             //de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
             //FIXME
             String endp = request.getEndpoint();
-            endp = endp.split(RichWPSProvider.DEFAULT_WPST_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
             de.hsos.richwps.mb.Logger.log("Debug:\n Deploying at " + endp);
             Object response = this.wpst.deploy(endp, builder.getDeploydocument());
 
@@ -635,7 +634,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return true for wpst endpoint, false if not.
      */
     public static boolean isWPSTEndpoint(String uri) {
-        if (uri.contains(IRichWPSProvider.DEFAULT_WPST_ENDPOINT)) {
+        if (uri.contains(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)) {
             return true;
         } else {
             return false;

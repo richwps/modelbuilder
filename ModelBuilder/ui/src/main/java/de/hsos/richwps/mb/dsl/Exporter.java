@@ -97,7 +97,7 @@ public class Exporter {
             if (this.graph.getGraphModel().isProcess(cell)) {
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
                 //local/remote identification based on given hostname.
-                String baseuria = wpstuurl.replace(IRichWPSProvider.DEFAULT_WPST_ENDPOINT, "");
+                String baseuria = wpstuurl.replace(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
                 this.handleProcessCell(cell, isLocalBinding);
