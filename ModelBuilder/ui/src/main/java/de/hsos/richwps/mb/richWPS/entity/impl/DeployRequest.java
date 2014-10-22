@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionType;
-import org.n52.wps.client.transactional.ProcessDescriptionTypeBuilder;
+import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
 
 /**
  * Represents a DeployRequest. The RichWPSProvider is able to perform a

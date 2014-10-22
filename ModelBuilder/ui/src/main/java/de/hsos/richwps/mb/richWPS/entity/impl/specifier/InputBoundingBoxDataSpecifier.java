@@ -9,7 +9,7 @@ import java.util.Objects;
 import net.opengis.wps.x100.CRSsType;
 import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.SupportedCRSsType;
-import org.n52.wps.client.transactional.InputDescriptionTypeBuilder;
+import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
 
 /**
  * InputSpecifier for BoundingBoxData.

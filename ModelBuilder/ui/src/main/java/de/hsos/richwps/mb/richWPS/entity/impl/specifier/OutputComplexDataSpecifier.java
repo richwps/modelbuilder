@@ -9,7 +9,7 @@ import net.opengis.wps.x100.ComplexDataCombinationsType;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.SupportedComplexDataType;
-import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
+import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
 
 /**
  *

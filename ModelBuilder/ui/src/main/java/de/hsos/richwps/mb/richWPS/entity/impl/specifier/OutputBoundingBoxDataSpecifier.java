@@ -8,7 +8,7 @@ import java.util.Objects;
 import net.opengis.wps.x100.CRSsType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.SupportedCRSsType;
-import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
+import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
 
 /**
  *

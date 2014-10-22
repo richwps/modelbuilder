@@ -33,7 +33,7 @@ import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.RichWPSClientSession;
-import org.n52.wps.client.transactional.TransactionalRequestBuilder;
+import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import java.net.HttpURLConnection;

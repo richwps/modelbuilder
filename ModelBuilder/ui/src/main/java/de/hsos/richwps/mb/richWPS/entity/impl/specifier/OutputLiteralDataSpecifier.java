@@ -3,7 +3,7 @@ package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import java.util.Objects;
 import net.opengis.wps.x100.OutputDescriptionType;
-import org.n52.wps.client.transactional.OutputDescriptionTypeBuilder;
+import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
 import org.n52.wps.io.data.binding.literal.AbstractLiteralDataBinding;
 import org.n52.wps.io.data.binding.literal.LiteralIntBinding;
 import org.n52.wps.io.data.binding.literal.LiteralStringBinding;
