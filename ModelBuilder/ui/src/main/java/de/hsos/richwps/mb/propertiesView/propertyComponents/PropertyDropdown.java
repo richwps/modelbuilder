@@ -1,7 +1,11 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.IPropertyChangeListener;
 import de.hsos.richwps.mb.properties.Property;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collection;
 import javax.swing.JComboBox;
 
 /**
@@ -20,14 +24,47 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         component = new JComboBox<>((E[]) property.getPossibleValues().toArray());
 
         property.addChangeListener(new IPropertyChangeListener() {
+
             @Override
-            public void propertyChanged() {
-                component.removeAllItems();
-                for (Object item : property.getPossibleValues()) {
-                    component.addItem((E) item);
+            public void propertyChanged(IPropertyChangeListener.PropertyChangeType changeType) {
+                switch (changeType) {
+                    case VALUE_CHANGED:
+//                                selectPropertyValue();
+
+                        break;
+                    case POSSIBLE_VALUES_CHANGED:
+                        component.removeAllItems();
+                        for (Object item : property.getPossibleValues()) {
+                            component.addItem((E) item);
+                        }
+                        break;
                 }
             }
         });
+
+        // update property value on selection
+        component.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                property.setValue(component.getSelectedItem());
+            }
+        });
+
+        selectPropertyValue();
+    }
+
+    private void selectPropertyValue() {
+        // property has a value: select item
+        if (property.getValue() != null) {
+            component.setSelectedItem(property.getValue());
+
+            // no property value: set it to the first possible item if available
+        } else {
+            Collection<E> possibleValues = property.getPossibleValues();
+            if (null != possibleValues) {
+                property.setValue(possibleValues.iterator().next());
+            }
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.properties;
 
+import de.hsos.richwps.mb.properties.IPropertyChangeListener.PropertyChangeType;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -73,7 +74,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
 
     public void setValue(E value) {
         this.value = value;
-        firePropertyChanged();
+        firePropertyChanged(PropertyChangeType.VALUE_CHANGED);
     }
 
     public String getComponentType() {
@@ -124,7 +125,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
 
     public void setPossibleValues(Collection<E> values) {
         this.possibleValues = values;
-        firePropertyChanged();
+        firePropertyChanged(PropertyChangeType.POSSIBLE_VALUES_CHANGED);
     }
 
     public Collection<E> getPossibleValues() {
@@ -139,9 +140,9 @@ public class Property<E> implements IObjectWithProperties, Serializable {
         changeListeners.remove(listner);
     }
 
-    public void firePropertyChanged() {
+    public void firePropertyChanged(PropertyChangeType changeType) {
         for(IPropertyChangeListener listener : changeListeners) {
-            listener.propertyChanged();
+            listener.propertyChanged(changeType);
         }
     }
 
