@@ -13,6 +13,13 @@ import java.util.Collection;
 public interface IObjectWithProperties {
 
     /**
+     * Sets the object's property name.
+     *
+     * @param name
+     */
+    public void setPropertiesObjectName(String name);
+
+    /**
      * Return the object's name which is used as a key.
      *
      * @return
@@ -26,5 +33,13 @@ public interface IObjectWithProperties {
      * @return
      */
     public Collection<? extends IObjectWithProperties> getProperties();
+
+    /**
+     * Sets a specific property.
+     *
+     * @param propertyName identifies the property
+     * @param property the property to be set
+     */
+    public void setProperty(String propertyName, IObjectWithProperties property);
 
 }

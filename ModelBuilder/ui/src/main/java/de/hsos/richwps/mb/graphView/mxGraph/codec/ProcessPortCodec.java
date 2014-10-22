@@ -2,14 +2,17 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.properties.Property;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * Encodes additional port attributes (mainly the datatype description) and
@@ -17,7 +20,7 @@ import org.w3c.dom.Node;
  *
  * @author dziegenh
  */
-public class ProcessPortCodec extends mxObjectCodec {
+public class ProcessPortCodec extends ObjectWithPropertiesCodec {
 
     /**
      * Name of the (xml) attribute holding the port id.
@@ -45,10 +48,13 @@ public class ProcessPortCodec extends mxObjectCodec {
 
     @Override
     protected void decodeAttribute(mxCodec dec, Node attr, Object obj) {
+
         // decode datatype attribute
-        if (obj instanceof ProcessPort && attr.getNodeName().equals(ATTR_DATATYPE)) {
+        if (obj instanceof ProcessPort) {
             ProcessPort port = (ProcessPort) obj;
-            port.setDatatype(ProcessPortDatatype.getValueByName(attr.getNodeValue()));
+            if (attr.getNodeName().equals(ATTR_DATATYPE)) {
+                port.setDatatype(ProcessPortDatatype.getValueByName(attr.getNodeValue()));
+            }
 
         } else {
             super.decodeAttribute(dec, attr, obj);
@@ -72,7 +78,7 @@ public class ProcessPortCodec extends mxObjectCodec {
 
     @Override
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
-        obj = super.afterDecode(dec, node, obj); //To change body of generated methods, choose Tools | Templates.
+        obj = super.afterDecode(dec, node, obj);
 
         // identify non-global process ports
         Node idNode = node.getAttributes().getNamedItem(ATTR_PORT_ID);
@@ -86,9 +92,12 @@ public class ProcessPortCodec extends mxObjectCodec {
                 if (port != null) {
                     return port;
 
-                // b) first time port is decoded: save instance
+                    // b) first time port is decoded: save instance
                 } else {
                     port = (ProcessPort) obj;
+
+//                    Element nodeEl = (Element) node;
+//                    port.set
                     port.setToolTipText(null);
                     decodedPorts.put(id, port);
                 }
@@ -112,7 +121,7 @@ public class ProcessPortCodec extends mxObjectCodec {
                 nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
                 return obj;
 
-            // b) create new ID (=port is to be encoded)
+                // b) create new ID (=port is to be encoded)
             } else {
                 int id = encodedPorts.size(); // current node will be the next list entry
                 Element nodeEl = (Element) node;

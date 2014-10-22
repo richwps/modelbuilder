@@ -345,4 +345,16 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         return properties.values();
     }
 
+    @Override
+    public void setProperty(String propertyName, IObjectWithProperties property) {
+        if (property instanceof Property) {
+            this.properties.put(propertyName, (Property) property);
+        }
+    }
+
+    @Override
+    public void setPropertiesObjectName(String name) {
+        setOwsIdentifier(name);
+    }
+
 }

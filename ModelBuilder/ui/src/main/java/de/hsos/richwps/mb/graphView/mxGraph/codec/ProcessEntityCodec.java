@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
-import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.util.Map;
 import org.w3c.dom.Node;
@@ -12,7 +11,7 @@ import org.w3c.dom.Node;
  *
  * @author dziegenh
  */
-public class ProcessEntityCodec extends mxObjectCodec {
+public class ProcessEntityCodec extends ObjectWithPropertiesCodec {
 
     public ProcessEntityCodec(Object template, String[] exclude, String[] idrefs, Map<String, String> mapping) {
         super(template, exclude, idrefs, mapping);

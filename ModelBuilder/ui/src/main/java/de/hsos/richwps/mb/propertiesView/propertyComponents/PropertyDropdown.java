@@ -21,17 +21,14 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
     public PropertyDropdown(final Property property) {
         super(property);
 
+        // initially add all possible values to the combobox
         component = new JComboBox<>((E[]) property.getPossibleValues().toArray());
 
+        // update items when the property's possible values changed
         property.addChangeListener(new IPropertyChangeListener() {
-
             @Override
             public void propertyChanged(IPropertyChangeListener.PropertyChangeType changeType) {
                 switch (changeType) {
-                    case VALUE_CHANGED:
-//                                selectPropertyValue();
-
-                        break;
                     case POSSIBLE_VALUES_CHANGED:
                         component.removeAllItems();
                         for (Object item : property.getPossibleValues()) {
@@ -57,9 +54,9 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         // property has a value: select item
         if (property.getValue() != null) {
             component.setSelectedItem(property.getValue());
-
-            // no property value: set it to the first possible item if available
         } else {
+            
+            // no property value: set it to the first possible item if available
             Collection<E> possibleValues = property.getPossibleValues();
             if (null != possibleValues) {
                 property.setValue(possibleValues.iterator().next());

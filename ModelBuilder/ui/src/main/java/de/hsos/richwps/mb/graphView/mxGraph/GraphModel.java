@@ -179,7 +179,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
 //        clone.setName(this.name);
         clone.propertyGroups = this.propertyGroups; // TODO clone properties !!
-        
+
         return clone;
     }
 
@@ -205,6 +205,44 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
     public void addProperty(Property property) {
         propertyGroups.get(0).addObject(property);
+    }
+
+    public void setPropertyGroups(PropertyGroup[] propertyGroups) {
+        this.propertyGroups.clear();
+
+        if (null == propertyGroups) {
+            return;
+        }
+
+        for (PropertyGroup group : propertyGroups) {
+            this.propertyGroups.add(group);
+        }
+    }
+
+    @Override
+    public void setProperty(String propertyName, IObjectWithProperties property) {
+        // find the parent group of the property 
+        for (PropertyGroup group : this.propertyGroups) {
+
+            // try to find the property inside the group
+            for (Object aGroupProperty : group.getProperties()) {
+                if (aGroupProperty instanceof IObjectWithProperties) {
+                    IObjectWithProperties aProperty = (IObjectWithProperties) aGroupProperty;
+
+                    // property in group found: set it to the given parameter
+                    if (aProperty.getPropertiesObjectName().equals(propertyName)) {
+                        group.setProperty(propertyName, property);
+                    }
+
+                }
+
+            }
+        }
+    }
+
+    @Override
+    public void setPropertiesObjectName(String name) {
+        // ignore, name is fix
     }
 
 }

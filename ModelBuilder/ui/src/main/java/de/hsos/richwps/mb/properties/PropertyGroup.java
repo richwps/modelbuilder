@@ -28,22 +28,18 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
         this.propertyObjects = propertyObjects;
     }
 
-    public HashMap<String, E> getPropertyComponents() {
-        return propertyObjects;
-    }
-
     public E getPropertyObject(String propertyName) {
         return propertyObjects.get(propertyName);
     }
 
     public void addObject(E object) {
         if (null == object) {
-            throw new IllegalArgumentException("Property object cannot be null.");
+            throw new IllegalArgumentException("Trying to add a null object.");
         }
 
         String propertyName = object.getPropertiesObjectName();
         if (null == propertyName || propertyName.isEmpty()) {
-            throw new IllegalArgumentException("Property object has no valid property name.");
+            throw new IllegalArgumentException("Trying to add a property object without a valid property name.");
         }
 
         propertyObjects.put(propertyName, object);
@@ -56,11 +52,16 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
 
     @Override
     public Collection<? extends E> getProperties() {
-        return getPropertyComponents().values();
+        return propertyObjects.values();
     }
 
     public void setPropertiesObjectName(String propertiesObjectName) {
         this.propertiesObjectName = propertiesObjectName;
+    }
+
+    @Override
+    public void setProperty(String propertyName, IObjectWithProperties property) {
+        this.propertyObjects.put(propertyName, (E) property);
     }
 
 }

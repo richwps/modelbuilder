@@ -146,4 +146,9 @@ public class Property<E> implements IObjectWithProperties, Serializable {
         }
     }
 
+    @Override
+    public void setProperty(String propertyName, IObjectWithProperties property) {
+        // a property has no nested properties => ignore setter
+    }
+
 }

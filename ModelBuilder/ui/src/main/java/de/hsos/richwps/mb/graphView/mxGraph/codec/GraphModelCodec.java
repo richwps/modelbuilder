@@ -1,9 +1,8 @@
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
+import de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup;
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxModelCodec;
-import com.mxgraph.io.mxObjectCodec;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.PropertyGroup;
@@ -18,12 +17,9 @@ import org.w3c.dom.NodeList;
  *
  * @author dziegenh
  */
-@Deprecated
 public class GraphModelCodec extends mxModelCodec {
 
-
-
-    private String propertyGroupsAttributeName = "propertyGroups";
+    private final String propertyGroupsElement = "tmpPropertyGroup";
 
     public GraphModelCodec() {
         super();
@@ -38,34 +34,109 @@ public class GraphModelCodec extends mxModelCodec {
         super(template, exclude, idrefs, mapping);
     }
 
+//    @Override
+//    public Object decode(mxCodec dec, Node node, Object into) {
+//        // reset port cache for decoding the model's children
+//        ProcessPortCodec.reset();
+//
+//        NodeList childNodes = node.getChildNodes();
+//        for (int i = 0; i < childNodes.getLength(); i++) {
+//            Node item = childNodes.item(i);
+//            if (null != item.getNodeName() && "Array" == item.getNodeName()) {
+////                Object decode = super.decode(dec, item, null);
+//                Node nameItem = item.getAttributes().getNamedItem("name");
+//                if (null != nameItem) {
+//                    String nameItemValue = nameItem.getNodeValue();
+//                    if (nameItemValue.equals(this.propertyGroupsAttributeName)) {
+//
+//                        tmpPropertyGroup tmpPropertyGroup = new tmpPropertyGroup();
+//
+//                        decodeChild(dec, item, tmpPropertyGroup);
+//
+////                        Logger.log(new mxObjectCodec(tmpPropertyGroup).decode(dec, node, tmpPropertyGroup));
+//                         Logger.log("properties groups: " + tmpPropertyGroup.propertyGroups.length);
+//                    }
+//                }
+//            }
+////            Logger.log(item);
+//        }
+//
+//        return super.decode(dec, node, into);
+//    }
     @Override
-    public Object decode(mxCodec dec, Node node, Object into) {
-        // reset port cache for decoding the model's children
+    public Node beforeDecode(mxCodec dec, Node node, Object into) {
+
         ProcessPortCodec.reset();
+        
+//    @Override
+//    public Object decode(mxCodec dec, Node node, Object into) {
+//        // reset port cache for decoding the model's children
+//        ProcessPortCodec.reset();
+//
+//        NodeList childNodes = node.getChildNodes();
+//        for (int i = 0; i < childNodes.getLength(); i++) {
+//            Node item = childNodes.item(i);
+//            if (null != item.getNodeName() && "Array" == item.getNodeName()) {
+////                Object decode = super.decode(dec, item, null);
+//                Node nameItem = item.getAttributes().getNamedItem("name");
+//                if (null != nameItem) {
+//                    String nameItemValue = nameItem.getNodeValue();
+//                    if (nameItemValue.equals(this.propertyGroupsAttributeName)) {
+//
+//                        tmpPropertyGroup tmpPropertyGroup = new tmpPropertyGroup();
+//                        
+//                        decodeChild(dec, item, tmpPropertyGroup);
+//                        
+////                        Logger.log(new mxObjectCodec(tmpPropertyGroup).decode(dec, node, tmpPropertyGroup));
+//                         Logger.log("properties groups: " + tmpPropertyGroup.propertyGroups.length);
+//                    }
+//                }
+//            }
+////            Logger.log(item);
+//        }
+//
+//        return super.decode(dec, node, into);
+//    }
+        if (node instanceof Element) {
+            Element elt = (Element) node;
 
-        NodeList childNodes = node.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node item = childNodes.item(i);
-            if (null != item.getNodeName() && "Array" == item.getNodeName()) {
-//                Object decode = super.decode(dec, item, null);
-                Node nameItem = item.getAttributes().getNamedItem("name");
-                if (null != nameItem) {
-                    String nameItemValue = nameItem.getNodeValue();
-                    if (nameItemValue.equals(this.propertyGroupsAttributeName)) {
+            NodeList pGroupsElements = elt.getElementsByTagName(this.propertyGroupsElement);
 
-                        tmpPropertyGroup tmpPropertyGroup = new tmpPropertyGroup();
-                        
-                        decodeChild(dec, item, tmpPropertyGroup);
-                        
-//                        Logger.log(new mxObjectCodec(tmpPropertyGroup).decode(dec, node, tmpPropertyGroup));
-                         Logger.log("properties groups: " + tmpPropertyGroup.propertyGroups.length);
-                    }
+            if (null != pGroupsElements && pGroupsElements.getLength() > 0) {
+                Node pGroups = pGroupsElements.item(0);
+
+                if (null != into && (into instanceof GraphModel)) {
+                    tmpPropertyGroup tmpGroup = new tmpPropertyGroup();
+                    dec.decode(pGroups, tmpGroup);
+//                    ((GraphModel) into).setPropertyGroups(tmpGroup.propertyGroups);
                 }
+//                return dec.decode(pGroups);
+//            mxICell rootCell = null;
+
+//            if (root != null) {
+//                Node tmp = root.getFirstChild();
+//
+//                while (tmp != null) {
+//                    mxICell cell = dec.decodeCell(tmp, true);
+//
+//                    if (cell != null && cell.getParent() == null) {
+//                        rootCell = cell;
+//                    }
+//
+//                    tmp = tmp.getNextSibling();
+//                }
+//
+//                root.getParentNode().removeChild(root);
+//            }
+                // Sets the root on the model if one has been decoded
+//            if (rootCell != null) {
+//                model.setRoot(rootCell);
+//            }
+                elt.removeChild(pGroups);
             }
-//            Logger.log(item);
         }
 
-        return super.decode(dec, node, into);
+        return super.beforeDecode(dec, node, into);
     }
 
     @Override
@@ -81,10 +152,16 @@ public class GraphModelCodec extends mxModelCodec {
             GraphModel model = (GraphModel) o;
             Collection<? extends IObjectWithProperties> properties = model.getProperties();
             PropertyGroup[] pArr = properties.toArray(new PropertyGroup<?>[]{});
-            Node propertiesNode = new mxObjectCodec(pArr).encode(mxcdc, pArr);
+
+            tmpPropertyGroup tmpPropertyGroup = new tmpPropertyGroup();
+            tmpPropertyGroup.properties = pArr;
+            Node propertiesNode = mxcdc.encode(tmpPropertyGroup);
+//            Node propertiesNode = new mxObjectCodec(tmpPropertyGroup).encode(mxcdc, tmpPropertyGroup);
+
+//            Node propertiesNode = new mxObjectCodec(pArr).encode(mxcdc, pArr);
             Element nodeEl = (Element) node;
-            ((Element) propertiesNode).setAttribute("name", this.propertyGroupsAttributeName);
-            ((Element) propertiesNode).setAttribute("as", "propertyGroups");
+//            ((Element) propertiesNode).setAttribute("name", this.propertyGroupsElement);
+//            ((Element) propertiesNode).setAttribute("as", "propertyGroups");
             nodeEl.appendChild(propertiesNode);
         }
 

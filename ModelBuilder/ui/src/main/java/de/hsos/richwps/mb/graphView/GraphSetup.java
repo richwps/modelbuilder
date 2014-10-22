@@ -13,9 +13,10 @@ import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdgeShape;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.ObjectWithPropertiesCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.BasicStroke;
@@ -80,9 +81,13 @@ public class GraphSetup {
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
 //        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
-//        mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
-        mxCodecRegistry.register(new PropertyCodec(new de.hsos.richwps.mb.properties.Property<>()));
-        mxCodecRegistry.register(new PropertyCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph.codec.objects");
+        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup()));
+        
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
+//        mxCodecRegistry.register(new PropertyCodec(new de.hsos.richwps.mb.properties.Property<>()));
+        mxCodecRegistry.register(new PropertyGroupCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
+//        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
 
         // style for cell selection
         mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
