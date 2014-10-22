@@ -407,7 +407,6 @@ public class GraphView extends JPanel {
         // TODO check if graph model is really clean/empty after method call
         mxGraph graph = getGraph();
         graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
-        getGraph().getGraphModel().setName(null);
     }
 
     /**
@@ -416,25 +415,7 @@ public class GraphView extends JPanel {
     public void deleteSelectedCells() {
         getGraph().removeCells(getGraph().getSelectionCells());
     }
-
-    /**
-     * Returns the name property of the current graph/model.
-     *
-     * @return
-     */
-    public String getGraphName() {
-        return getGraph().getGraphModel().getName();
-    }
-
-    /**
-     * Sets the graph (model) name.
-     *
-     * @param name
-     */
-    public void setGraphName(String name) {
-        getGraph().getGraphModel().setName(name);
-    }
-
+    
     /**
      * Arrangens the modelling elements (cells) using a custom LayoutManager.
      */

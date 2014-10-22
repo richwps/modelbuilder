@@ -4,7 +4,7 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
 /**
- *
+ * Label for displaying multiple lines with breaks / line wraps.
  * @author dziegenh
  */
 public class MultilineLabel extends JTextArea {
@@ -20,6 +20,5 @@ public class MultilineLabel extends JTextArea {
         setLineWrap(true);
         setWrapStyleWord(true);
         setEditable(false);
-//        setFocusable(false);
     }
 }

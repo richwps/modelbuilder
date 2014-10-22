@@ -15,6 +15,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.BasicStroke;
@@ -78,6 +79,10 @@ public class GraphSetup {
         mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
+//        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
+//        mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
+        mxCodecRegistry.register(new PropertyCodec(new de.hsos.richwps.mb.properties.Property<>()));
+        mxCodecRegistry.register(new PropertyCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
 
         // style for cell selection
         mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;

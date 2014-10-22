@@ -19,8 +19,6 @@ import java.util.List;
  */
 public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
-    private String name;
-
     private List<PropertyGroup> propertyGroups;
 
     public GraphModel() {
@@ -28,6 +26,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
         propertyGroups = new LinkedList<>();
 
+        // TODO move keys here
         PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
         group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id", true));
         group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract", true));
@@ -81,14 +80,6 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         boolean isLocalInput = isFlowInput(o) && !isGlobalOutputPort(o);
         boolean isLocalOutput = isFlowOutput(o) && !isGlobalInputPort(o);
         return isVertex(o) && (isLocalInput || isLocalOutput);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public boolean isGlobalPort(Object o) {
@@ -186,8 +177,9 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     public GraphModel clone() throws CloneNotSupportedException {
         GraphModel clone = new GraphModel();
         clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
-        clone.setName(this.name);
-
+//        clone.setName(this.name);
+        clone.propertyGroups = this.propertyGroups; // TODO clone properties !!
+        
         return clone;
     }
 

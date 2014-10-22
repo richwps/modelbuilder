@@ -14,7 +14,6 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -173,13 +172,8 @@ public class AppActionHandler implements IAppActionHandler {
     private boolean loadModelFromFile(String filename) {
         try {
             getGraphView().loadGraphFromXml(filename);
-            String graphName = getGraphView().getGraphName();
-            if (null == graphName) {
-                graphName = "";
-            }
             String previousModelFilename = app.getCurrentModelFilename();
             app.setCurrentModelFilename(filename);
-//                    app.getFrame().setGraphViewTitle(graphName);
             app.getFrame().setGraphViewTitle(filename);
             app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
             app.getUndoManager().discardAllEdits();
