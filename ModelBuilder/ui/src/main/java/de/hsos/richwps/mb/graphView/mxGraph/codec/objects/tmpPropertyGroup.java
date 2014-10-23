@@ -16,6 +16,11 @@ public class tmpPropertyGroup implements IObjectWithProperties {
 
     public PropertyGroup[] properties;
 
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+    
     public void setProperties(PropertyGroup[] propertyGroups) {
         this.properties = propertyGroups;
     }

@@ -17,6 +17,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * Encoding and decoding of objects with properties.
+ *
  * @author dziegenh
  */
 public class ObjectWithPropertiesCodec extends mxObjectCodec {
@@ -31,13 +32,12 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
     public ObjectWithPropertiesCodec(Object template, String[] exclude, String[] idrefs, Map<String, String> mapping) {
         super(template, exclude, idrefs, mapping);
     }
-    
+
     @Override
     public Node beforeDecode(mxCodec dec, Node node, Object obj) {
 //        NodeList arrays = ((Element) node).getElementsByTagName("Array");
         NodeList childNodes = ((Element) node).getChildNodes();
-        
-        
+
         for (int i = 0; i < childNodes.getLength(); i++) {
             if (childNodes.item(i) instanceof Element) {
                 Element item = (Element) childNodes.item(i);
@@ -48,8 +48,8 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
                         if (null != obj && (obj instanceof IObjectWithProperties) && (decodedProperty instanceof IObjectWithProperties)) {
                             IObjectWithProperties property = (IObjectWithProperties) decodedProperty;
                             IObjectWithProperties objectWithProperties = ((IObjectWithProperties) obj);
-                            
-                            objectWithProperties.setPropertiesObjectName(item.getAttribute(ATTRIBUTE_OBJECTNAME)); 
+
+//                            objectWithProperties.setPropertiesObjectName(item.getAttribute(ATTRIBUTE_OBJECTNAME));
 
                             // set property to the current object
                             objectWithProperties.setProperty(property.getPropertiesObjectName(), property);
@@ -67,16 +67,20 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
 
     @Override
     public Object beforeEncode(mxCodec enc, Object obj, Node node) {
-        
         // save object name as attribute
-        if(obj instanceof IObjectWithProperties) {
-            String name = ((IObjectWithProperties) obj).getPropertiesObjectName();
-            Element nodeEl = (Element) node;
-            nodeEl.setAttribute(this.ATTRIBUTE_OBJECTNAME, name);
+        if (obj instanceof IObjectWithProperties) {
+//            IObjectWithProperties objectWithProperties = (IObjectWithProperties) obj;
+
+//            if (objectWithProperties.isTransient()) {
+//                return null;
+//            }
+//
+//            String name = objectWithProperties.getPropertiesObjectName();
+//            Element nodeEl = (Element) node;
+//            nodeEl.setAttribute(ATTRIBUTE_OBJECTNAME, name);
         }
-        
-        
+
         return super.beforeEncode(enc, obj, node); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

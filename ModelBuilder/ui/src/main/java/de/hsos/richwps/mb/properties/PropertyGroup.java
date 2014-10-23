@@ -14,6 +14,7 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
 
     private HashMap<String, E> propertyObjects;
     private String propertiesObjectName;
+    private boolean isTransient = false;
 
     public PropertyGroup() {
         this("");
@@ -63,5 +64,17 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
     public void setProperty(String propertyName, IObjectWithProperties property) {
         this.propertyObjects.put(propertyName, (E) property);
     }
+
+    @Override
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    public void setIsTransient(boolean isTransient) {
+        this.isTransient = isTransient;
+    }
+    
+    
+    
 
 }

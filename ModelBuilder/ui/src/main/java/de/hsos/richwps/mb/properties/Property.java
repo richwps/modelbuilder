@@ -25,6 +25,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     private Collection<E> possibleValues;
 
     private Collection<IPropertyChangeListener> changeListeners;
+    private boolean isTransient = false;
 
     public Property() {
         this(null);
@@ -141,7 +142,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     }
 
     public void firePropertyChanged(PropertyChangeType changeType) {
-        for(IPropertyChangeListener listener : changeListeners) {
+        for (IPropertyChangeListener listener : changeListeners) {
             listener.propertyChanged(changeType);
         }
     }
@@ -149,6 +150,15 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {
         // a property has no nested properties => ignore setter
+    }
+
+    @Override
+    public boolean isTransient() {
+        return isTransient;
+    }
+
+    public void setIsTransient(boolean isTransient) {
+        this.isTransient = isTransient;
     }
 
 }

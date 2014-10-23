@@ -357,4 +357,9 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         setOwsIdentifier(name);
     }
 
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+
 }

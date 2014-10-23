@@ -13,6 +13,13 @@ import java.util.Collection;
 public interface IObjectWithProperties {
 
     /**
+     * Returns true if the property (value) is transient should not be persisted.
+     *
+     * @return
+     */
+    public boolean isTransient();
+
+    /**
      * Sets the object's property name.
      *
      * @param name

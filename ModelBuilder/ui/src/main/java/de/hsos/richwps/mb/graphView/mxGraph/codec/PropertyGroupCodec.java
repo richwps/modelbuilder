@@ -56,6 +56,11 @@ public class PropertyGroupCodec extends mxObjectCodec {
     public Node encode(mxCodec enc, Object obj) {
         if (obj instanceof PropertyGroup) {
             PropertyGroup pGroup = (PropertyGroup) obj;
+            
+            if(pGroup.isTransient()) {
+                return enc.encode("");
+            }
+            
             Collection<? extends IObjectWithProperties> properties = pGroup.getProperties();
 
             // create property array for encoding

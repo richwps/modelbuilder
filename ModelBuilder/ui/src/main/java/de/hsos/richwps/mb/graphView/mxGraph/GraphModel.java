@@ -245,4 +245,9 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         // ignore, name is fix
     }
 
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+
 }

@@ -263,6 +263,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
 
         // add inputs
         PropertyGroup inputsGroup = new PropertyGroup("Inputs");
+        inputsGroup.setIsTransient(true);
         if (null != inputPorts) {
             for (ProcessPort port : inputPorts) {
                 inputsGroup.addObject(port);
@@ -271,6 +272,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
 
         // add outputs
         PropertyGroup outputsGroup = new PropertyGroup("Outputs");
+        outputsGroup.setIsTransient(true);
         if (null != outputPorts) {
             for (ProcessPort port : outputPorts) {
                 outputsGroup.addObject(port);
@@ -313,4 +315,9 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         setOwsIdentifier(name);
     }
 
+    @Override
+    public boolean isTransient() {
+        return false;
+    }
+    
 }
