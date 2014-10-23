@@ -134,7 +134,7 @@ public class AppGraphView extends GraphView {
                 }
             }
         });
-
+        
         updateRemotes();
         app.setChangesSaved(true);
     }

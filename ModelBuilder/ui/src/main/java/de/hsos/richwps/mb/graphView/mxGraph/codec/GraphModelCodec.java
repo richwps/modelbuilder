@@ -108,7 +108,7 @@ public class GraphModelCodec extends mxModelCodec {
                 if (null != into && (into instanceof GraphModel)) {
                     tmpPropertyGroup tmpGroup = new tmpPropertyGroup();
                     dec.decode(pGroups, tmpGroup);
-//                    ((GraphModel) into).setPropertyGroups(tmpGroup.propertyGroups);
+                    ((GraphModel) into).setPropertyGroups(tmpGroup.properties);
                 }
 //                return dec.decode(pGroups);
 //            mxICell rootCell = null;
