@@ -54,10 +54,10 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
             ProcessPort port = (ProcessPort) obj;
             if (attr.getNodeName().equals(ATTR_DATATYPE)) {
                 port.setDatatype(ProcessPortDatatype.getValueByName(attr.getNodeValue()));
-            }
 
-        } else {
-            super.decodeAttribute(dec, attr, obj);
+            } else {
+                super.decodeAttribute(dec, attr, obj);
+            }
         }
     }
 

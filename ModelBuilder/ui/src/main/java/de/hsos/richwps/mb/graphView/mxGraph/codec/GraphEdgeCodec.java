@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCellCodec;
 import com.mxgraph.io.mxCodec;
+import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import java.util.Map;
 import org.w3c.dom.Node;
@@ -25,6 +26,7 @@ public class GraphEdgeCodec extends mxCellCodec {
         super(template, exclude, idrefs, mapping);
     }
 
+    
     @Override
     public Node afterEncode(mxCodec mxcdc, Object o, Node node) {
         
@@ -33,12 +35,11 @@ public class GraphEdgeCodec extends mxCellCodec {
         // encode ports
         if(o instanceof GraphEdge) {
             GraphEdge edge = (GraphEdge) o;
-            mxCellCodec cellCodec = new mxCellCodec();
             
-            Node sourceNode = cellCodec.encode(mxcdc, edge.getSourcePortCell());
+            Node sourceNode = mxcdc.encode(edge.getSourcePortCell());
             node.appendChild(sourceNode);
 
-            Node targetNode = cellCodec.encode(mxcdc, edge.getTargetPortCell());
+            Node targetNode = mxcdc.encode(edge.getTargetPortCell());
             node.appendChild(targetNode);
         }
 
