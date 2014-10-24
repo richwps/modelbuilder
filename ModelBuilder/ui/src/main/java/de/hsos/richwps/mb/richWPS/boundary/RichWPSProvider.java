@@ -656,7 +656,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             conn.connect();
             HttpURLConnection httpConnection = (HttpURLConnection) conn;
             int resp = httpConnection.getResponseCode();
-            if (resp != 405) {
+            //FIXME move to wps-client-lib
+            if ((resp != 405) && (resp!=200)) {
                 return false;
             }
         } catch (Exception e) {
