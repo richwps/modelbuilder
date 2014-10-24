@@ -334,8 +334,9 @@ public class RichWPSProvider implements IRichWPSProvider {
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
             de.hsos.richwps.mb.Logger.log("Debug:\n Deploying at " + endp);
+            
             Object response = this.wpst.deploy(endp, builder.getDeploydocument());
-
+            de.hsos.richwps.mb.Logger.log("Debug:\n"+builder.getDeploydocument());
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
@@ -633,7 +634,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param uri the given endpoint.
      * @return true for wpst endpoint, false if not.
      */
-    public static boolean isWPSTEndpoint(String uri) {
+    public static boolean isRichWPSEndpoint(String uri) {
         if (uri.contains(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)) {
             return true;
         } else {
@@ -646,7 +647,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param uri
      * @return 
      */
-    public static boolean checkWPSTEndpoint(String uri) {
+    public static boolean checkRichWPSEndpoint(String uri) {
         // FIXME How else can we check the endpoints existence, and readiness?
         // HTTP::HEAD Operation 405 Method Not Allowed, instead of 404?
         // HTTP::GET Operation 405 Method Not Allowed, instead of 404?

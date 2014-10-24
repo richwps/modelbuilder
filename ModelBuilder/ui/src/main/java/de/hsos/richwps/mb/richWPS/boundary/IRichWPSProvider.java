@@ -92,7 +92,7 @@ public interface IRichWPSProvider {
     public void executeProcess(ExecuteRequest request);
 
     /**
-     * Deploys a process, via wpst:deploy()-Request.
+     * Deploys a process, via RichWPS:deploy()-Request.
      *
      * @param request DeployRequest.
      * @see DeployRequest
@@ -100,7 +100,7 @@ public interface IRichWPSProvider {
     public void deployProcess(DeployRequest request);
 
     /**
-     * Undeploys a given process, via wpst:undeploy()-Request.
+     * Undeploys a given process, via RichWPS:undeploy()-Request.
      *
      * @param request DeployRequest.
      * @see UneployRequest

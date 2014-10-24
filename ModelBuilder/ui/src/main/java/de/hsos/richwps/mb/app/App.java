@@ -397,7 +397,7 @@ public class App {
             if (RichWPSProvider.isWPSEndpoint(auri)) {
                 wpsendpoint = auri;
                 wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-            } else if (RichWPSProvider.isWPSTEndpoint(auri)) {
+            } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
                 wpstendpoint = auri;
                 wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
             }

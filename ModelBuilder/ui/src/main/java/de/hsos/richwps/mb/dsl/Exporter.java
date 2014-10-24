@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.dsl;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.*;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
@@ -74,7 +75,6 @@ public class Exporter {
      * Launches the export and writes results to specifed file.
      *
      * @param path file to write to.
-     * @param wpstendpoint for local/remote detection.
      * @throws Exception
      */
     public void export(String path) throws Exception {
@@ -82,7 +82,7 @@ public class Exporter {
         String identifier = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
         String title = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
         String version = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
-        String wpstuurl = (String)  this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        String url = (String)  this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
         
         Writer writer = new Writer();
 
@@ -97,8 +97,9 @@ public class Exporter {
             if (this.graph.getGraphModel().isProcess(cell)) {
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
                 //local/remote identification based on given hostname.
-                String baseuria = wpstuurl.replace(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, "");
+                String baseuria = url.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
+                Logger.log("Debug:\n comparing "+baseuria+" with "+baseurib);
                 boolean isLocalBinding = baseuria.equals(baseurib);
                 this.handleProcessCell(cell, isLocalBinding);
 

@@ -90,19 +90,23 @@ public class AppDeployManager {
         }
 
         String wpsendpoint = "";
-        String wpstendpoint = "";
+        String richwpsendpoint = "";
         if (RichWPSProvider.isWPSEndpoint(auri)) {
             wpsendpoint = auri;
-            wpstendpoint = wpsendpoint.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        } else if (RichWPSProvider.isWPSTEndpoint(auri)) {
-            wpstendpoint = auri;
-            wpsendpoint = wpstendpoint.replace(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+            richwpsendpoint = wpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
+                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
+            richwpsendpoint = auri;
+            wpsendpoint = richwpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
         }
 
-        if (!RichWPSProvider.checkWPSTEndpoint(wpstendpoint)) {
+        if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
             this.error = true;
             this.deploymentFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
-                    + wpstendpoint);
+                    + richwpsendpoint);
             return;
         }
 
@@ -115,7 +119,7 @@ public class AppDeployManager {
         }
 
         //generate processdescription
-        DeployRequest request = new DeployRequest(wpsendpoint, wpstendpoint,
+        DeployRequest request = new DeployRequest(wpsendpoint, richwpsendpoint,
                 identifier, title, version, RichWPSProvider.deploymentProfile);
         request.setAbstract(theabstract);
         request.setExecutionUnit(rola);
@@ -132,13 +136,15 @@ public class AppDeployManager {
         //perform request
         RichWPSProvider instance = new RichWPSProvider();
         try {
-            instance.connect(wpsendpoint, wpstendpoint);
+            instance.connect(wpsendpoint, richwpsendpoint);
+            Logger.log("Debug:\n" + request.toString());
             instance.deployProcess(request);
 
             if (request.isException()) {
                 this.error = true;
                 this.deploymentFailed(AppConstants.DEPLOY_SERVERSIDE_ERROR);
-                String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n" + request.getException();
+                String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n" 
+                        + request.getException();
                 JOptionPane.showMessageDialog(null, msg);
                 Logger.log("Debug:\n" + request.getException());
                 return;
@@ -157,9 +163,7 @@ public class AppDeployManager {
     /**
      * Generates a ROLA-script based on the current model.
      *
-     * @param wpstendpoint WPST-endpoint for automatic detection of local
-     * bindings.
-     * @return Emptystring in case of exception, else rola-script.
+     * @return emptystring in case of exception, else rola-script.
      */
     private String generateROLA() {
         try {
@@ -181,16 +185,14 @@ public class AppDeployManager {
             exporter.export(f.getAbsolutePath());
 
             String content = null;
-            FileReader reader = new FileReader(f);
-            try {
+            try (FileReader reader = new FileReader(f)) {
                 char[] chars = new char[(int) f.length()];
                 reader.read(chars);
                 content = new String(chars);
-            } catch (IOException e) {
+            } catch (IOException ex) {
                 this.error = true;
                 this.processingFailed("");
-            } finally {
-                reader.close();
+                Logger.log("Debug:\n" + ex.getLocalizedMessage());
             }
             return content;
 
@@ -257,9 +259,10 @@ public class AppDeployManager {
                 if (complexSpecifier.getTitle().equals("")) {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
+                //FIXME
                 complexSpecifier.setMinOccur(0);
                 complexSpecifier.setMaxOccur(1);
-                complexSpecifier.setMaximumMegabytes(50);//FIXME
+                complexSpecifier.setMaximumMegabytes(50);
                 try {
                     List<List> supportedTypes = new ArrayList<>();
                     List<String> supportedType = new ArrayList<>();
