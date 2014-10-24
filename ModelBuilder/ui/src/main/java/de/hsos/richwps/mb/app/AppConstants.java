@@ -283,9 +283,13 @@ public class AppConstants {
     public final static String PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT = "Endpoint";
     public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
 
+    @Deprecated
     public final static String PROPERTIES_KEY_PROCESS_IDENTIFIER = "Identifier";
+    @Deprecated
     public final static String PROPERTIES_KEY_PROCESS_SERVER = "Server";
+    @Deprecated
     public final static String PROPERTIES_KEY_PROCESS_ABSTRACT = "Abstract";
+    @Deprecated
     public final static String PROPERTIES_KEY_PROCESS_TITLE = "Title";
 
 

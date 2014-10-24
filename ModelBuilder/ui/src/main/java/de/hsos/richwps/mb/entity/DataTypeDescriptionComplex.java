@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Datatype description for complex datatypes.
@@ -33,4 +34,21 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
         return null == dataType || dataType.equals(ProcessPortDatatype.COMPLEX);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(null == obj || !(obj instanceof DataTypeDescriptionComplex))
+            return false;
+        
+        ComplexDataTypeFormat otherFormat = ((DataTypeDescriptionComplex) obj).getFormat();
+        
+        return (null != otherFormat) && format.equals(otherFormat);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + Objects.hashCode(this.format);
+        return hash;
+    }
+    
 }

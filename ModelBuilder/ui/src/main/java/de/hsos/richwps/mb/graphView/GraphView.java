@@ -106,9 +106,9 @@ public class GraphView extends JPanel {
      * Removes local process ports from the current selection.
      */
     protected void removePortSelection() {
-        for(Object cell : graph.getSelectionCells()) {
-            if(graph.getGraphModel().isLocalPort(cell)) {
-                graph.removeSelectionCell(cell);
+        for(Object cell : getGraph().getSelectionCells()) {
+            if(getGraph().getGraphModel().isLocalPort(cell)) {
+                getGraph().removeSelectionCell(cell);
             }
         }
     }
@@ -394,9 +394,9 @@ public class GraphView extends JPanel {
         mxCodec codec = new mxCodec();
         Document doc = mxXmlUtils.parseXml(mxUtils.readFile(filename));
         GraphModel graphModel = (GraphModel) codec.decode(doc.getFirstChild());
-        graph.setModel(graphModel);
-        graphComponent.zoomTo(1., true);
-        graphComponent.refresh();
+        getGraph().setModel(graphModel);
+        getGraphComponent().zoomTo(1., true);
+        getGraphComponent().refresh();
     }
 
     /**
@@ -406,7 +406,7 @@ public class GraphView extends JPanel {
     public void newGraph() {
         // TODO check if graph model is really clean/empty after method call
         mxGraph graph = getGraph();
-        graph.removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
+        getGraph().removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
     }
 
     /**

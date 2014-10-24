@@ -111,12 +111,6 @@ public class AppSetup {
         }
 
 
-        // Setup property keys
-        ProcessEntity.KEY_IDENTIFIER = AppConstants.PROPERTIES_KEY_PROCESS_IDENTIFIER;
-        ProcessEntity.KEY_ABSTRACT = AppConstants.PROPERTIES_KEY_PROCESS_ABSTRACT;
-        ProcessEntity.KEY_TITLE = AppConstants.PROPERTIES_KEY_PROCESS_TITLE;
-        ProcessEntity.KEY_SERVER = AppConstants.PROPERTIES_KEY_PROCESS_SERVER;
-
         // Configure MB components before initialisation
         GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
         GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;

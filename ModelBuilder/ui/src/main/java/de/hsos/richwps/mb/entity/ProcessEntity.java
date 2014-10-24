@@ -9,40 +9,30 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A specific WPS process with input and output ports.
  *
  * @author dziegenh
  */
-public class ProcessEntity implements IOwsObject, IObjectWithProperties, Serializable {
+public class ProcessEntity extends OwsObjectWithProperties {
 
-    public static String KEY_IDENTIFIER;
-    public static String KEY_SERVER;
-    public static String KEY_TITLE;
-    public static String KEY_ABSTRACT;
-    public static String KEY_VERSION = "Version";
+    public static String KEY_SERVER = "Server";
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
-    private String toolTipText;
-    private boolean local;
 
     public static String toolTipCssForMainContainer;
-
-    private boolean isFullyLoaded = false;
-
-    private HashMap<String, Property> properties = new HashMap<>();
-    private PropertyGroup<Property> owsGroup;
-
-    private final String OWS_PROPERTY_GROUP_NAME = "Process Data";
+    
+    private boolean isFullyLoaded;
 
     public ProcessEntity() {
         this("", "");
     }
 
     public ProcessEntity(String server, String owsIdentifier) {
-        this.local = false;
+        super(owsIdentifier);
 
         this.inputPorts = new LinkedList<>();
         this.outputPorts = new LinkedList<>();
@@ -50,8 +40,9 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         createProperties(server, owsIdentifier);
     }
 
-    public void setIsFullyLoaded(boolean isFullyLoaded) {
-        this.isFullyLoaded = isFullyLoaded;
+    private void createProperties(String server, String owsIdentifier) {
+        super.createProperties(owsIdentifier);
+        owsGroup.addObject(new Property<>(KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
     }
 
     public boolean isIsFullyLoaded() {
@@ -66,39 +57,6 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         this.outputPorts = ports;
     }
 
-    /**
-     * Sets the title and resets the toolTipText.
-     *
-     * @param owsTitle
-     */
-    @Override
-    public void setOwsTitle(String owsTitle) {
-        owsGroup.getPropertyObject(KEY_TITLE).setValue(owsTitle);
-        toolTipText = null;
-    }
-
-    /**
-     * Sets the identifier and resets the toolTipText.
-     *
-     * @param owsIdentifier
-     */
-    @Override
-    public void setOwsIdentifier(String owsIdentifier) {
-        owsGroup.getPropertyObject(KEY_IDENTIFIER).setValue(owsIdentifier);
-        toolTipText = null;
-    }
-
-    /**
-     * Sets the abstract and resets the toolTipText.
-     *
-     * @param owsAbstract
-     */
-    @Override
-    public void setOwsAbstract(String owsAbstract) {
-        owsGroup.getPropertyObject(KEY_ABSTRACT).setValue(owsAbstract);
-        toolTipText = null;
-    }
-
     public void setServer(String server) {
         owsGroup.getPropertyObject(KEY_SERVER).setValue(server);
     }
@@ -107,35 +65,12 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         return (String) owsGroup.getPropertyObject(KEY_SERVER).getValue();
     }
 
-    @Override
-    public String getOwsIdentifier() {
-        return (String) owsGroup.getPropertyObject(KEY_IDENTIFIER).getValue();
-    }
-
-    @Override
-    public String getOwsTitle() {
-        return (String) owsGroup.getPropertyObject(KEY_TITLE).getValue();
-    }
-
-    @Override
-    public String getOwsAbstract() {
-        return (String) owsGroup.getPropertyObject(KEY_ABSTRACT).getValue();
-    }
-
     public int getNumInputs() {
         return inputPorts.size();
     }
 
     public int getNumOutputs() {
         return outputPorts.size();
-    }
-
-    public boolean isLocal() {
-        return local;
-    }
-
-    public void setLocal(boolean isLocal) {
-        this.local = isLocal;
     }
 
     @Override
@@ -161,6 +96,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         return outputPorts;
     }
 
+    @Override
     public String getToolTipText() {
         if (null == toolTipText) {
 
@@ -216,6 +152,7 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         return toolTipText;
     }
 
+    @Override
     public void setToolTipText(String text) {
         this.toolTipText = text;
     }
@@ -236,88 +173,34 @@ public class ProcessEntity implements IOwsObject, IObjectWithProperties, Seriali
         return other.getServer().equals(this.getServer()) && other.getOwsIdentifier().equals(this.getOwsIdentifier());
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.getServer());
+        hash = 83 * hash + Objects.hashCode(this.getOwsIdentifier());
+        return hash;
+    }
+
     public ProcessEntity clone() {
-        ProcessEntity clone = new ProcessEntity(getServer(), getOwsIdentifier());
-        clone.setOwsAbstract(getOwsAbstract());
-        clone.setOwsTitle(getOwsTitle());
-        clone.toolTipText = null; // indicate lazy initialisation
+        ProcessEntity clone = new ProcessEntity();
+        super.cloneInto(clone);
 
-        for (ProcessPort inPort : inputPorts) {
-            clone.addInputPort(inPort.clone());
+        clone.setServer(getServer());
+        clone.toolTipText = null; // indicate lazy init.
+
+        for(ProcessPort port : getInputPorts()) {
+            clone.addInputPort(port);
         }
 
-        for (ProcessPort outPort : outputPorts) {
-            clone.addOutputPort(outPort.clone());
+        for(ProcessPort port : getOutputPorts()) {
+            clone.addOutputPort(port);
         }
-
+        
         return clone;
     }
 
-    @Override
-    public String getPropertiesObjectName() {
-        return getOwsIdentifier();
+    public void setIsFullyLoaded(boolean fullyLoaded) {
+        this.isFullyLoaded = fullyLoaded;
     }
 
-    @Override
-    public Collection<? extends IObjectWithProperties> getProperties() {
-
-        // add inputs
-        PropertyGroup inputsGroup = new PropertyGroup("Inputs");
-        inputsGroup.setIsTransient(true);
-        if (null != inputPorts) {
-            for (ProcessPort port : inputPorts) {
-                inputsGroup.addObject(port);
-            }
-        }
-
-        // add outputs
-        PropertyGroup outputsGroup = new PropertyGroup("Outputs");
-        outputsGroup.setIsTransient(true);
-        if (null != outputPorts) {
-            for (ProcessPort port : outputPorts) {
-                outputsGroup.addObject(port);
-            }
-        }
-
-        return Arrays.asList(new IObjectWithProperties[]{
-            owsGroup,
-            inputsGroup,
-            outputsGroup
-        });
-    }
-
-    private void createProperties(String server, String owsIdentifier) {
-        owsGroup = new PropertyGroup(OWS_PROPERTY_GROUP_NAME);
-
-        owsGroup.addObject(new Property<>(KEY_IDENTIFIER, Property.COMPONENT_TYPE_TEXTFIELD, owsIdentifier));
-        owsGroup.addObject(new Property<>(KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
-        owsGroup.addObject(new Property<>(KEY_TITLE, Property.COMPONENT_TYPE_TEXTFIELD, ""));
-        owsGroup.addObject(new Property<>(KEY_ABSTRACT, Property.COMPONENT_TYPE_TEXTFIELD, ""));
-        owsGroup.addObject(new Property<>(KEY_VERSION, Property.COMPONENT_TYPE_TEXTFIELD, ""));
-    }
-
-    @Override
-    public void setProperty(String propertyName, IObjectWithProperties property) {
-        if (property instanceof PropertyGroup) {
-            if (propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
-                this.owsGroup = (PropertyGroup<Property>) property;
-            }
-
-        } else {
-
-            // set property
-            this.properties.put(propertyName, (Property) property);
-        }
-    }
-
-    @Override
-    public void setPropertiesObjectName(String name) {
-        setOwsIdentifier(name);
-    }
-
-    @Override
-    public boolean isTransient() {
-        return false;
-    }
-    
 }

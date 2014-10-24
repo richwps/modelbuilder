@@ -1,18 +1,14 @@
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
-import com.mxgraph.io.mxObjectCodec;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.properties.Property;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Encodes additional port attributes (mainly the datatype description) and
@@ -59,6 +55,10 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
                 super.decodeAttribute(dec, attr, obj);
             }
         }
+    }
+    
+    public static boolean hasBeenEncoded(ProcessPort port) {
+        return encodedPorts.contains(port);
     }
 
     @Override

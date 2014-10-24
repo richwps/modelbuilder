@@ -32,14 +32,13 @@ import javax.swing.border.EmptyBorder;
  */
 public class GraphSetup {
 
-    // TODO move to config/constants
-    private static final int fontSize = 15;
-    private static final int spacing = 4;
+    public static final int fontSize = 15;
+    public static final int spacing = 4;
 
     final static int CELLS_VERTICAL_OFFSET = 100;
 
-    static String STYLENAME_GLOBAL_INPUT = "PROCESS_INPUT";
-    static String STYLENAME_GLOBAL_OUTPUT = "PROCESS_OUTPUT";
+    static String STYLENAME_GLOBAL_INPUT = "GLOBAL_INPUT";
+    static String STYLENAME_GLOBAL_OUTPUT = "GLOBAL_OUTPUT";
     static String STYLENAME_PROCESS = "PROCESS";
 
     static String STYLENAME_LOCAL_INPUT = "LOCAL_INPUT";

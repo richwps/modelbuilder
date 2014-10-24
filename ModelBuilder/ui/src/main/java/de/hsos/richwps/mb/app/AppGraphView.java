@@ -6,6 +6,8 @@ import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -135,7 +137,21 @@ public class AppGraphView extends GraphView {
             }
         });
         
+        GraphModel model = getGraph().getGraphModel();
+        Property loadedEndpointProperty = null;
+        for(IObjectWithProperties p : model.getProperties()) {
+            if(p.getPropertiesObjectName().equals(endpointProperty.getPropertiesObjectName())) {
+                loadedEndpointProperty = (Property) p;
+            }
+        }
+        
         updateRemotes();
+
+        if(null != loadedEndpointProperty) {
+            endpointProperty.setValue(loadedEndpointProperty.getValue());
+            model.setProperty(loadedEndpointProperty.getPropertiesObjectName(), endpointProperty);
+        }
+        
         app.setChangesSaved(true);
     }
 

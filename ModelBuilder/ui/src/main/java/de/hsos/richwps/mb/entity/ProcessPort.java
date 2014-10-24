@@ -1,12 +1,7 @@
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * A port entitiy can either be global (model-wide) or local (part of a
@@ -14,17 +9,12 @@ import java.util.LinkedHashMap;
  *
  * @author dziegenh
  */
-public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializable {
+public class ProcessPort extends OwsObjectWithProperties {
 
     public static String TOOLTIP_STYLE_INPUT = "";
     public static String TOOLTIP_STYLE_OUTPUT = "";
 
-    private HashMap<String, Property> properties;
-
-    // TODO init keys in AppSetup
-    public static String PROPERTY_KEY_IDENTIFIER = "Identifier";
-    public static String PROPERTY_KEY_TITLE = "Title";
-    public static String PROPERTY_KEY_ABSTRACT = "Abstract";
+//    private HashMap<String, Property> properties;
     public static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
 
     public static String COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX = "Datatype description complex";
@@ -33,41 +23,32 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
 
     private ProcessPortDatatype datatype;
 
-    private String toolTipText = null;
-
     private boolean flowInput;
 
     private boolean global;
 
-    private final Property<IDataTypeDescription> descriptionProperty;
-
     public ProcessPort() {
         this(null, false);
-    }
-
-    public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
-        this.global = global;
-        this.datatype = processPortDatatype;
-
-        properties = new LinkedHashMap<>();
-        properties.put(PROPERTY_KEY_IDENTIFIER, new Property<>(PROPERTY_KEY_IDENTIFIER, "", global));
-        properties.put(PROPERTY_KEY_TITLE, new Property<>(PROPERTY_KEY_TITLE, "", global));
-        properties.put(PROPERTY_KEY_ABSTRACT, new Property<>(PROPERTY_KEY_ABSTRACT, "", global));
-
-        // Property for datatype description
-        String descPropertyName = PROPERTY_KEY_DATATYPEDESCRIPTION;
-
-        descriptionProperty = new Property<>(descPropertyName, null, global);
-        updateDescriptionProperty(processPortDatatype);
-        properties.put(PROPERTY_KEY_DATATYPEDESCRIPTION, descriptionProperty);
     }
 
     public ProcessPort(ProcessPortDatatype processPortDatatype) {
         this(processPortDatatype, false);
     }
 
+    public ProcessPort(ProcessPortDatatype processPortDatatype, boolean global) {
+        this.global = global;
+        this.datatype = processPortDatatype;
+
+        createProperties("");
+
+        // Property for datatype description
+        Property descriptionProperty = new Property<>(PROPERTY_KEY_DATATYPEDESCRIPTION, (IDataTypeDescription) null, global);
+        owsGroup.addObject(descriptionProperty);
+        updateDescriptionProperty(processPortDatatype);
+    }
+
     public IDataTypeDescription getDataTypeDescription() {
-        return descriptionProperty.getValue();
+        return (IDataTypeDescription) getPropertyValue(PROPERTY_KEY_DATATYPEDESCRIPTION);
     }
 
     private String createIncompatibleDescriptionMessage(ProcessPortDatatype datatype, IDataTypeDescription dataTypeDescription) {
@@ -83,10 +64,8 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
             throw new IllegalArgumentException(msg);
         }
 
-        Property datatypeComponent = properties.get(PROPERTY_KEY_DATATYPEDESCRIPTION);
-        if (null != datatypeComponent) {
-            datatypeComponent.setValue(dataTypeDescription);
-        }
+        Property property = owsGroup.getPropertyObject(PROPERTY_KEY_DATATYPEDESCRIPTION);
+        property.setValue(dataTypeDescription);
     }
 
     public boolean isGlobal() {
@@ -96,7 +75,7 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
     public void setGlobal(boolean global) {
         this.global = global;
 
-        for (Property property : properties.values()) {
+        for (Property property : owsGroup.getProperties()) {
             if (null != property) {
                 property.setEditable(global);
             }
@@ -209,64 +188,8 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
                 descPropertyType = COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL;
 
         }
-        descriptionProperty.setComponentType(descPropertyType);
-    }
-
-    /**
-     * @return the owsIdentifier
-     */
-    @Override
-    public String getOwsIdentifier() {
-        return (String) properties.get(PROPERTY_KEY_IDENTIFIER).getValue();
-    }
-
-    /**
-     * Sets the identifier and resets the toolTipText.
-     *
-     * @param owsIdentifier the owsIdentifier to set
-     */
-    @Override
-    public void setOwsIdentifier(String owsIdentifier) {
-        properties.get(PROPERTY_KEY_IDENTIFIER).setValue(owsIdentifier);
-        toolTipText = null;
-    }
-
-    /**
-     * @return the owsTitle
-     */
-    @Override
-    public String getOwsTitle() {
-        return (String) properties.get(PROPERTY_KEY_TITLE).getValue();
-    }
-
-    /**
-     * Sets the title and resets the toolTipText.
-     *
-     * @param owsTitle the owsTitle to set
-     */
-    @Override
-    public void setOwsTitle(String owsTitle) {
-        properties.get(PROPERTY_KEY_TITLE).setValue(owsTitle);
-        toolTipText = null;
-    }
-
-    /**
-     * @return the owsAbstract
-     */
-    @Override
-    public String getOwsAbstract() {
-        return (String) properties.get(PROPERTY_KEY_ABSTRACT).getValue();
-    }
-
-    /**
-     * Sets the abstract and resets the toolTipText.
-     *
-     * @param owsAbstract the owsAbstract to set
-     */
-    @Override
-    public void setOwsAbstract(String owsAbstract) {
-        properties.get(PROPERTY_KEY_ABSTRACT).setValue(owsAbstract);
-        toolTipText = null;
+        Property property = owsGroup.getPropertyObject(PROPERTY_KEY_DATATYPEDESCRIPTION);
+        property.setComponentType(descPropertyType);
     }
 
     @Override
@@ -285,6 +208,7 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         }
     }
 
+    @Override
     public String getToolTipText() {
         if (null == toolTipText) {
             if (null == getOwsTitle() || null == getOwsAbstract() || null == getOwsIdentifier()) {
@@ -318,48 +242,15 @@ public class ProcessPort implements IOwsObject, IObjectWithProperties, Serializa
         return toolTipText;
     }
 
-    public void setToolTipText(String text) {
-        this.toolTipText = text;
-    }
-
     public ProcessPort clone() {
         ProcessPort clone = new ProcessPort(datatype, global);
+        super.cloneInto(clone);
+
         clone.flowInput = flowInput;
-
-        clone.setOwsAbstract(getOwsAbstract());
-        clone.setOwsIdentifier(getOwsIdentifier());
-        clone.setOwsTitle(getOwsTitle());
-
         clone.toolTipText = null; // indicate lazy init.
+//        clone.setDataTypeDescription(getDataTypeDescription());
 
         return clone;
-    }
-
-    @Override
-    public String getPropertiesObjectName() {
-        return getOwsIdentifier();
-    }
-
-    @Override
-    public Collection<? extends IObjectWithProperties> getProperties() {
-        return properties.values();
-    }
-
-    @Override
-    public void setProperty(String propertyName, IObjectWithProperties property) {
-        if (property instanceof Property) {
-            this.properties.put(propertyName, (Property) property);
-        }
-    }
-
-    @Override
-    public void setPropertiesObjectName(String name) {
-        setOwsIdentifier(name);
-    }
-
-    @Override
-    public boolean isTransient() {
-        return false;
     }
 
 }
