@@ -4,7 +4,7 @@ import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
-import de.hsos.richwps.mb.app.view.AppFrame;
+import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
@@ -280,10 +280,16 @@ public class App {
      * called after a new model has been created or loaded.
      */
     void modelLoaded() {
+        getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
+        
         getSubTreeView().fillTree();
+        
         updateGraphDependentActions();
         updateModelPropertiesView();
+        
+        getFrame().init(this);
+        getFrame().setModellingEnabled(true);
     }
 
     /**

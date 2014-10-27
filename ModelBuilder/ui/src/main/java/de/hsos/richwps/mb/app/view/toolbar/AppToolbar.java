@@ -20,25 +20,24 @@ public class AppToolbar extends JToolBar {
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS));
 
         addSeparator();
-
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDO));
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.REDO));
-
-        if (!AppConstants.GRAPH_AUTOLAYOUT) {
-            addSeparator();
-            add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DO_LAYOUT));
-        }
+//
+//        if (!AppConstants.GRAPH_AUTOLAYOUT) {
+//            addSeparator();
+//            add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DO_LAYOUT));
+//        }
 
         addSeparator();
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.EXECUTE_ANY));
-        addSeparator();
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DEPLOY));
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDEPLOY));
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.EXECUTE));
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.TEST));
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.PROFILE));
-        addSeparator();
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.PUBLISH));
+//        addSeparator();
+//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DEPLOY));
+//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDEPLOY));
+//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.EXECUTE));
+//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.TEST));
+//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.PROFILE));
+//        addSeparator();
+//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.PUBLISH));
 
     }
 

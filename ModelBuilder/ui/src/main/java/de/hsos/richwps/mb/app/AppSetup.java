@@ -2,7 +2,7 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.AppFrame;
+import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.app.view.AppSplashScreen;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
@@ -11,6 +11,7 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.ui.UiHelper;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -110,7 +111,6 @@ public class AppSetup {
             });
         }
 
-
         // Configure MB components before initialisation
         GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
         GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
@@ -128,6 +128,7 @@ public class AppSetup {
 
         // Create frame.
         app.getFrame().init(app);
+        app.getFrame().setModellingEnabled(false);
         app.getFrame().setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
 
         // Delegate frame closing action
@@ -155,6 +156,7 @@ public class AppSetup {
         app.initDragAndDrop();
         app.getPreferencesDialog().init();
         app.getGraphView().init();
+        app.getGraphView().setEnabled(false);
 
         splash.showMessageAndProgress("Requesting processes", 60);
 
@@ -173,7 +175,7 @@ public class AppSetup {
             app.getFrame().setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
         }
 
-        app.modelLoaded();
+//        app.modelLoaded();
     }
 
     /**
@@ -199,8 +201,6 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
 
         // Tools Menu Icons
-
-
         // Help Menu Icons
         UIManager.put(AppConstants.ICON_ABOUT_KEY, new ImageIcon(iconDir + "help-about-3.png", "about icon"));
 
@@ -211,14 +211,14 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "server-go.png", "execute icon"));
         UIManager.put(AppConstants.ICON_PROFILE_KEY, new ImageIcon(iconDir + "server-chart.png", "profile icon"));
         UIManager.put(AppConstants.ICON_TEST_KEY, new ImageIcon(iconDir + "report-magnify.png", "debug icon"));
-        
+
         UIManager.put(AppConstants.ICON_INFO_KEY, new ImageIcon(iconDir + "dialog-information-4.png", "info icon"));
-        
+
         UIManager.put(AppConstants.ICON_RELOAD_KEY, new ImageIcon(iconDir + "database-refresh.png", "reload icon"));
         UIManager.put(AppConstants.ICON_REFRESH_KEY, new ImageIcon(iconDir + "view-refresh-4.png", "refresh icon"));
-        UIManager.put(AppConstants.ICON_MANAGE_REMOTE, new ImageIcon(iconDir +"database-gear.png", "manage rmeotes icon"));
+        UIManager.put(AppConstants.ICON_MANAGE_REMOTE, new ImageIcon(iconDir + "database-gear.png", "manage rmeotes icon"));
         UIManager.put(AppConstants.ICON_PUBLISH, new ImageIcon(iconDir + "database-go.png", "publish icon"));
-        
+
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));
         UIManager.put(AppConstants.ICON_EDIT_KEY, new ImageIcon(iconDir + "edit-3.png", "edit icon"));
         UIManager.put(AppConstants.ICON_ADD_KEY, new ImageIcon(iconDir + "list-add-6.png", "add icon"));

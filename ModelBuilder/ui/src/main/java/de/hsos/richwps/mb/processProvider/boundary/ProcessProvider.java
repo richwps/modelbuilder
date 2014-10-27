@@ -100,6 +100,12 @@ public class ProcessProvider {
         AppEventService.getInstance().fireAppEvent(msg, this);
     }
 
+    public void clear() {
+        if (null != spClient) {
+            spClient.clearCache();
+        }
+    }
+
     private ProcessEntity getProcessWithPorts(String server, String identifier) {
 
         ProcessEntity process = null;

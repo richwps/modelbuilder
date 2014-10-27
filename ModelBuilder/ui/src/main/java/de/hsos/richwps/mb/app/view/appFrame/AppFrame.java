@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.app.view;
+package de.hsos.richwps.mb.app.view.appFrame;
 
 import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.app.AppConfig;
@@ -7,11 +7,13 @@ import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import de.hsos.richwps.mb.app.view.toolbar.AppToolbar;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import layout.TableLayout;
@@ -26,11 +28,9 @@ public class AppFrame extends JFrame {
     // Comnponent container
     private JSplitPane leftPanel;
     private JSplitPane mainPanel;
-    private JSplitPane centerAndRightPanel;
     private JSplitPane centerPanel;
     private App app;
     private Component infoTabs;
-    private Component propertiesView;
     private AppMenuBar appMenuBar;
     private TitledComponent treeViewGui;
 
@@ -39,7 +39,12 @@ public class AppFrame extends JFrame {
     private TitledComponent graphViewGui;
     private JPanel serviceSummaryView;
     private String frameTitle;
+    private JPanel mainModellingPanel;
+    private CardLayout modellingLayout;
+    private ModellingPanel modellingPanel;
 
+    private boolean init = false;
+    
     /**
      * Frame setup.
      */
@@ -49,6 +54,11 @@ public class AppFrame extends JFrame {
     }
 
     public void init(App app) {
+        if(this.init) {
+            return;
+        }        
+        
+        
         this.app = app;
 
         this.actionProvider = app.getActionProvider();
@@ -63,10 +73,13 @@ public class AppFrame extends JFrame {
         // init gui
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
         addComponents();
+        modellingPanel.init(app);
 
         // call after component is visible and has a size
         getLeftPanel().setDividerLocation(.5);
         // TODO restore divider locations from config
+        
+        this.init = true;
     }
 
     @Override
@@ -131,20 +144,6 @@ public class AppFrame extends JFrame {
     }
 
     /**
-     * The properties view (east side of the frame).
-     *
-     * @return
-     */
-    private Component getPropertiesView() {
-        if (null == propertiesView) {
-            propertiesView = app.getPropertiesViewGui();
-            propertiesView.setPreferredSize(AppConstants.PROPERTIES_PANEL_PREFERRED_SIZE);
-        }
-
-        return propertiesView;
-    }
-
-    /**
      * The main toolbar.
      *
      * @return
@@ -167,7 +166,7 @@ public class AppFrame extends JFrame {
         if (null == mainPanel) {
             mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
             mainPanel.add(getLeftPanel(), JSplitPane.LEFT);
-            mainPanel.add(getCenterAndRightPanel(), JSplitPane.RIGHT);
+            mainPanel.add(getCenterPanel(), JSplitPane.RIGHT);
         }
 
         return mainPanel;
@@ -193,26 +192,6 @@ public class AppFrame extends JFrame {
     }
 
     /**
-     * A horizontal splitpane containing the center panel (left) and the
-     * properties view (right).
-     *
-     * @return
-     */
-    private Component getCenterAndRightPanel() {
-        if (null == centerAndRightPanel) {
-            centerAndRightPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-            centerAndRightPanel.add(getCenterPanel(), JSplitPane.LEFT);
-            centerAndRightPanel.add(getPropertiesView(), JSplitPane.RIGHT);
-            // only expand the center panel on resize
-            centerAndRightPanel.setResizeWeight(1);
-            // TODO Resizing the panel is disabled because of buggy behaviours in SingleProcessCard
-//            centerAndRightPanel.setEnabled(false);
-        }
-
-        return centerAndRightPanel;
-    }
-
-    /**
      * The center splitpane contains the graph (top component) and tabs (bottom
      * component).
      *
@@ -221,7 +200,7 @@ public class AppFrame extends JFrame {
     private Component getCenterPanel() {
         if (null == centerPanel) {
             centerPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-            centerPanel.add(getGraphViewGui(), JSplitPane.TOP);
+            centerPanel.add(getMainModellingPanel(), JSplitPane.TOP);
             centerPanel.add(getBottomView(), JSplitPane.BOTTOM);
 
             // disable border => there is already another surrounding splitpane/border
@@ -232,6 +211,36 @@ public class AppFrame extends JFrame {
         }
 
         return centerPanel;
+    }
+
+    private static enum MODELLING_CARDS {
+
+        DISABLED,
+        ENABLED
+    }
+
+    private JPanel getMainModellingPanel() {
+        if (null == mainModellingPanel) {
+
+            modellingLayout = new CardLayout();
+            modellingPanel = new ModellingPanel();
+
+            this.mainModellingPanel = new JPanel(modellingLayout);
+            this.mainModellingPanel.add(new JLabel(""), MODELLING_CARDS.DISABLED.name());
+            this.mainModellingPanel.add(modellingPanel, MODELLING_CARDS.ENABLED.name());
+        }
+
+        return mainModellingPanel;
+    }
+
+    public void setModellingEnabled(boolean enabled) {
+        
+        MODELLING_CARDS card = MODELLING_CARDS.DISABLED;
+        if (enabled) {
+            card = MODELLING_CARDS.ENABLED;
+        }
+
+        modellingLayout.show(mainModellingPanel, card.name());
     }
 
     private Component getBottomView() {

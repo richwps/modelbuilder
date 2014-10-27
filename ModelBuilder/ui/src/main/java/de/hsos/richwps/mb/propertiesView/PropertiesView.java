@@ -43,7 +43,7 @@ public class PropertiesView extends TitledComponent {
 
     public static enum CARD {
 
-        NO_SELECTION, MODEL, PROCESS_SINGLE_SELECTION, PROCESS_MULTI_SELECTION, GLOBAL_PORT, OBJECT_WITH_PROPERTIES;
+        NO_SELECTION, PROCESS_MULTI_SELECTION, OBJECT_WITH_PROPERTIES;
 
         private static final HashMap<CARD, String> namesForViews = new HashMap<>();
 
@@ -93,11 +93,6 @@ public class PropertiesView extends TitledComponent {
     }
 
     public void showCard(CARD card) {
-        // TODO remove when only the App is refactored and only uses one properties card.
-        if (card.equals(CARD.GLOBAL_PORT) || card.equals(CARD.MODEL) || card.equals(CARD.PROCESS_SINGLE_SELECTION)) {
-            card = CARD.OBJECT_WITH_PROPERTIES;
-        }
-
         getCardLayout().show(getContentPanel(), card.name());
     }
 
@@ -197,7 +192,7 @@ public class PropertiesView extends TitledComponent {
     }
 
     protected AbstractPropertyComponent getComponentFor(Property property) {
-        if(property.getComponentType().equals(Property.COMPONENT_TYPE_DROPDOWN)) {
+        if (property.getComponentType().equals(Property.COMPONENT_TYPE_DROPDOWN)) {
             return new PropertyDropdown(property);
         }
 

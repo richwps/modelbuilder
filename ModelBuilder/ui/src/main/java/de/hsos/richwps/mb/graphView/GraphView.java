@@ -403,10 +403,12 @@ public class GraphView extends JPanel {
      * Removes all modelling elements and resets the graph/model properties
      * (name etc).
      */
-    public void newGraph() {
+    public Graph newGraph() {
         // TODO check if graph model is really clean/empty after method call
-        mxGraph graph = getGraph();
+        Graph graph = getGraph();
+        graph.setModel(new GraphModel());
         getGraph().removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
+        return graph;
     }
 
     /**

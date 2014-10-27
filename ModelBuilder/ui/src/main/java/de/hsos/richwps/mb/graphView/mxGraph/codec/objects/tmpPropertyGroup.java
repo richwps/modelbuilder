@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * Proxy entity for loading arrays of PropertyGroups (e.g. as model properties).
  * @author dziegenh
  */
 public class tmpPropertyGroup implements IObjectWithProperties {

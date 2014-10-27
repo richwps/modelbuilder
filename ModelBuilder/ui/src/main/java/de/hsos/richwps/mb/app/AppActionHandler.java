@@ -12,6 +12,7 @@ import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -118,14 +119,14 @@ public class AppActionHandler implements IAppActionHandler {
         }
 
         if (doNew) {
-            //TODO show remote selection dialog.
             String remote = app.askRemote();
-            getGraphView().newGraph();
+            getGraphView().newGraph(remote);
             app.getFrame().resetGraphViewTitle();
-            app.getUndoManager().discardAllEdits();
-            app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
-            app.updateModelPropertiesView();
-            app.setChangesSaved(true);
+//            app.getUndoManager().discardAllEdits();
+//            app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
+//            app.updateModelPropertiesView();
+//            app.setChangesSaved(true);
+            app.modelLoaded();
         }
     }
 
@@ -235,7 +236,7 @@ public class AppActionHandler implements IAppActionHandler {
         }
     }
 
-    private GraphView getGraphView() {
+    private AppGraphView getGraphView() {
         return app.getGraphView();
     }
 
@@ -335,6 +336,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doReloadProcesses() {
+        app.getProcessProvider().clear();
         app.fillMainTree();
     }
 

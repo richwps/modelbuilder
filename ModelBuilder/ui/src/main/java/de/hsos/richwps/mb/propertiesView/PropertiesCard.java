@@ -10,7 +10,6 @@ import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;

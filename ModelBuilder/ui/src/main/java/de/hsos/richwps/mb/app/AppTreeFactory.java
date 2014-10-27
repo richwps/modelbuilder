@@ -36,7 +36,7 @@ class TreeViewMouseAdapter extends MouseAdapter {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (2 == e.getClickCount()) {
+        if (2 == e.getClickCount() && graphView.isEnabled()) {
             DefaultMutableTreeNode node = treeView.getSelectedNode();
             if (null != node) {
                 Object nodeObject = node.getUserObject();
