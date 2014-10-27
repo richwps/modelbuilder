@@ -9,6 +9,8 @@ import java.awt.Cursor;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -44,6 +46,14 @@ public class ManageRemotesDialog extends MbDialog {
         this.persistKeyBase = AppConfig.CONFIG_KEYS.REMOTES_S_URL.name();
         this.persistKeyCount = this.persistKeyBase + "_COUNT";
         this.persistKeyFormat = this.persistKeyBase + "_%d";
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                parent.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+
     }
 
     private void createContent() {

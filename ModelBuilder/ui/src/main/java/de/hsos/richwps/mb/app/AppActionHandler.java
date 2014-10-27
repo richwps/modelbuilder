@@ -321,7 +321,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doShowManageRemotes(){
-        app.manageRemotes();
+        app.showManageRemotes();
     }
     
     private void doUndo() {

@@ -457,7 +457,7 @@ public class App {
      *
      * @return entered wps-server.
      */
-    void manageRemotes() {
+    void showManageRemotes() {
         final ManageRemotesDialog dialog = new ManageRemotesDialog(frame);
         dialog.addWindowListener(new WindowAdapter() {
 
@@ -469,7 +469,7 @@ public class App {
                     getGraphView().updateRemotes();
                 }
 
-                getFrame().setCursor(Cursor.getDefaultCursor());
+//                getFrame().setCursor(Cursor.getDefaultCursor());
             }
 
         });

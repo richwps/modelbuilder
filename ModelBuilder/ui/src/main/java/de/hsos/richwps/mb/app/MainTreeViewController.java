@@ -24,11 +24,12 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifi
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 /**
  * Controls the main tree view component and it's interaction with the
@@ -41,10 +42,12 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     private DefaultMutableTreeNode processesNode;
 
-    private HashMap<String, DefaultMutableTreeNode> remoteNodes = new HashMap<>();
+    private HashMap<String, MutableTreeNode> remoteNodes = new HashMap<>();
 
     public MainTreeViewController(final App app) {
         super(app);
+
+        processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
 
         // handle changes of the SP url config
         app.getPreferencesDialog().addWindowListener(new WindowAdapter() {
@@ -80,12 +83,12 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         ProcessProvider processProvider = getProcessProvider();
 
-        // Remove existing child-nodes from root
+        // Remove existing child nodes
         DefaultMutableTreeNode root = getRoot();
         root.removeAllChildren();
+        processesNode.removeAllChildren();
 
         // Create and fill Process node
-        processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
         if (processProvider != null) {
             try {
                 String url = getSpUrlFromConfig();
@@ -150,7 +153,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.add(local);
 
         // adds persisted remote servers
-        setRemotes(processProvider.getPersistedRemotes());
+        setRemotes(processProvider.getPersistedRemotes(), true);
 
         updateUI();
     }
@@ -160,7 +163,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
      *
      * @param uri (WPS-endpoint).
      */
-    public void addNode(String uri) {
+    public MutableTreeNode addNode(String uri) {
         // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
         //Perform discovery.
@@ -196,6 +199,8 @@ public class MainTreeViewController extends AbstractTreeViewController {
         } catch (Exception e) {
             Logger.log("Debug:\n error occured " + e);
         }
+        
+        return serverNode;
     }
 
     /**
@@ -273,30 +278,31 @@ public class MainTreeViewController extends AbstractTreeViewController {
     }
 
     void setRemotes(String[] remotes) {
+        this.setRemotes(remotes, false);
+    }
+
+    void setRemotes(String[] remotes, boolean addExistingNodes) {
 
         // clone currently used remote nodes to identify removed nodes
         LinkedList<String> unusedNodes = new LinkedList<>(remoteNodes.keySet());
         unusedNodes = (LinkedList<String>) unusedNodes.clone();
 
         for (String remote : remotes) {
-            if (!remoteNodes.containsKey(remote)) {
-                DefaultMutableTreeNode node = new DefaultMutableTreeNode(remote);
-
-                addNode(remote);
-
+            if (!remoteNodes.containsKey(remote) || addExistingNodes) {
+                MutableTreeNode node = addNode(remote);
                 remoteNodes.put(remote, node);
-            } else {
+                
                 unusedNodes.remove(remote);
             }
         }
 
         for (String unusedNodeKey : unusedNodes) {
-            DefaultMutableTreeNode unusedNode = remoteNodes.get(unusedNodeKey);
-            
+            MutableTreeNode unusedNode = remoteNodes.get(unusedNodeKey);
+
             if (null != unusedNode && processesNode.isNodeChild(unusedNode)) {
                 processesNode.remove(remoteNodes.get(unusedNodeKey));
             }
-            
+
             remoteNodes.remove(unusedNodeKey);
         }
 
