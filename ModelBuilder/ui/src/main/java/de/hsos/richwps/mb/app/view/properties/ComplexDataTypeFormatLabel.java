@@ -1,9 +1,11 @@
-package de.hsos.richwps.mb.ui;
+package de.hsos.richwps.mb.app.view.properties;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.propertiesView.PropertyCardsConfig;
+import de.hsos.richwps.mb.ui.MultilineLabel;
+import de.hsos.richwps.mb.ui.PopupMenuAdapter;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;

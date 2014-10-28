@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.app.view.PropertyComplexDataTypeFormat;
+import de.hsos.richwps.mb.app.view.properties.PropertyComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;

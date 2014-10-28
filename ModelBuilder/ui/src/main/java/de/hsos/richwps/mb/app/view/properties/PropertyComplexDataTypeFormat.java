@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.app.view;
+package de.hsos.richwps.mb.app.view.properties;
 
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
@@ -7,7 +7,6 @@ import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
-import de.hsos.richwps.mb.ui.ComplexDataTypeFormatLabel;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.util.LinkedList;
 import java.util.List;

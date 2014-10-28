@@ -18,6 +18,7 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
+@Deprecated
 public class DeployView extends MbDialog {
 
     private SelectDeployConfigView selectView;

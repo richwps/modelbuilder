@@ -1,7 +1,9 @@
-package de.hsos.richwps.mb.ui;
+package de.hsos.richwps.mb.app.view.properties;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.ui.ColorBorder;
+import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
