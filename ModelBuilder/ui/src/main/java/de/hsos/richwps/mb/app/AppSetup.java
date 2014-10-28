@@ -178,6 +178,7 @@ public class AppSetup {
         app.setChangesSaved(true);
         app.getGraphView().setEnabled(false);
         app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS).setEnabled(false);
+        app.getSubTreeView().fillTree();
     }
 
     /**

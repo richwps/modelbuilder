@@ -2,7 +2,10 @@ package de.hsos.richwps.mb.app;
 
 import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.ui.UiHelper;
+import java.awt.Color;
 import java.util.HashMap;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -11,9 +14,18 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author dziegenh
  */
 public class SubTreeViewController extends AbstractTreeViewController {
+    
+    private final Color enabledBgColor;
+    private  Color disabledBgColor;
 
     public SubTreeViewController(App app) {
         super(app);
+        
+        this.enabledBgColor = UIManager.getColor("Tree.background");
+        
+        // Workaround for JTree background color bug
+        // (setting JTree bg color to (240, 240, 240) restults in a white bg?!)
+        this.disabledBgColor = UiHelper.deriveColor(UIManager.getColor("Panel.background"), -1);
     }
 
     private HashMap<Object, Integer> nodeCount = new HashMap<>();
@@ -25,10 +37,16 @@ public class SubTreeViewController extends AbstractTreeViewController {
             root.removeAllChildren();
         }
 
-        for (mxCell cell : app.getGraphView().getProcessCells()) {
-            if (cell.getValue() instanceof ProcessEntity) {
-                addNode(cell.getValue());
+        if (app.getGraphView().isEnabled()) {
+            getTreeView().getGui().setBackground(enabledBgColor);
+            
+            for (mxCell cell : app.getGraphView().getProcessCells()) {
+                if (cell.getValue() instanceof ProcessEntity) {
+                    addNode(cell.getValue());
+                }
             }
+        } else {
+            getTreeView().getGui().setBackground(disabledBgColor);
         }
 
         updateUI();
