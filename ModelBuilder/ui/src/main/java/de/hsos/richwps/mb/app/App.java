@@ -183,7 +183,7 @@ public class App {
     }
 
     /**
-     *
+     * Gets the SubTreeView's controller for currently used modelling elements.
      * @return
      */
     SubTreeViewController getSubTreeView() {

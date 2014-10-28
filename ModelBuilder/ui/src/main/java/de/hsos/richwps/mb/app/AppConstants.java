@@ -287,16 +287,6 @@ public class AppConstants {
     public final static String PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT = "Endpoint";
     public final static String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
 
-    @Deprecated
-    public final static String PROPERTIES_KEY_PROCESS_IDENTIFIER = "Identifier";
-    @Deprecated
-    public final static String PROPERTIES_KEY_PROCESS_SERVER = "Server";
-    @Deprecated
-    public final static String PROPERTIES_KEY_PROCESS_ABSTRACT = "Abstract";
-    @Deprecated
-    public final static String PROPERTIES_KEY_PROCESS_TITLE = "Title";
-
-
     // Undo-/Redo-Manager
     public final static String UNDOMANAGER_CANT_UNDO = "Can't undo";
     public final static String UNDOMANAGER_CANT_REDO = "Can't redo";
@@ -304,12 +294,10 @@ public class AppConstants {
     public final static String TREE_VIEW_TITLE = null;//"Modelling Elements";
     public final static String EDITOR_DEFAULT_TITLE = "Model Editor"; //(untitled)";
 
-    // TODO move & get colors from lookAndFeel / UIManager
-    @Deprecated
-    public final static Color SELECTION_BG_COLOR = new Color(0xb0c0e0); //new Color(0xa0ace5); // <-- original MB style
-    // new Color(0xa8cde8); // RichWPS logo blue
+    public final static Color SELECTION_BG_COLOR = new Color(0xb0c0e0);
+    // new Color(0xa0ace5); // <-- original MB style
+    // new Color(0xa8cde8); // <-- RichWPS logo blue
     // new Color(0x37ABC8); // <-- old RichWPS turquoise
-    @Deprecated
     public final static Color SELECTION_FG_COLOR = Color.WHITE;
 
     /**
@@ -376,7 +364,7 @@ public class AppConstants {
     // Graph error messages
     public final static String GRAPH_ERROR_INPUT_OCCUPIED = "Port is already connected";
     public final static String GRAPH_ERROR_OUTPUT_OCCUPIED = "Port is already connected";
-    public final static String GRAPH_ERROR_SINGLE_FEEDBACK = "Connecting an input to an output of the same process is not possible"; //"Feedback connection loops are not allowed";
+    public final static String GRAPH_ERROR_SINGLE_FEEDBACK = "Connecting an input to an output of the same process is not possible"; //"Feedback connection loops are not possible";
     public final static String GRAPH_ERROR_IN_TO_IN = "An input port must be connected to an output port";
     public final static String GRAPH_ERROR_OUT_TO_OUT = "An output port must be connected to an input port";
     public final static String GRAPH_ERROR_PORTTYPES_NOT_COMPATIBLE = "Port types are not compatible";
