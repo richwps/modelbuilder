@@ -166,7 +166,7 @@ public class AppPropertiesView extends PropertiesView {
             propertyComplexDataTypeFormat.setProperty(property);
 
         } catch (LoadDataTypesException ex) {
-            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.FORMATS_CSV_FILE_LOAD_ERROR, AppConstants.DIALOG_TITLE_ERROR, JOptionPane.ERROR_MESSAGE);
+            app.showErrorMessage(AppConstants.FORMATS_CSV_FILE_LOAD_ERROR);
         }
 
         return propertyComplexDataTypeFormat;

@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 
 /**
  * Delegates ActionEvents to the actionHandler.
+ * Provides the execution of action events.
  *
  * @author dziegenh
  */
@@ -42,6 +43,7 @@ public abstract class AppAbstractAction extends AbstractAction {
         this.actionSource = actionSource;
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (null != actionSource) {
             e.setSource(actionSource);
@@ -63,5 +65,5 @@ public abstract class AppAbstractAction extends AbstractAction {
         putValue(Action.NAME, name);
         putValue(Action.SHORT_DESCRIPTION, name);
     }
-
+    
 }

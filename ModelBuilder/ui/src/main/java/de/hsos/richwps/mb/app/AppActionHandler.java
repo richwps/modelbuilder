@@ -87,7 +87,12 @@ public class AppActionHandler implements IAppActionHandler {
                 //TODO
                 break;
             case SHOW_ERROR_MSG:
-                JOptionPane.showMessageDialog(app.getFrame(), e.getActionCommand());
+                JOptionPane.showMessageDialog(
+                        app.getFrame(),
+                        e.getActionCommand(),
+                        AppConstants.DIALOG_TITLE_ERROR,
+                        JOptionPane.ERROR_MESSAGE
+                );
                 break;
             case EXECUTE:
                 doExecuteModel();
@@ -118,12 +123,14 @@ public class AppActionHandler implements IAppActionHandler {
 
         if (doNew) {
             String remote = app.askRemote();
+
+            // cancel if no remote is available
+            if (null == remote || remote.isEmpty()) {
+                return;
+            }
+
             getGraphView().newGraph(remote);
             app.getFrame().resetGraphViewTitle();
-//            app.getUndoManager().discardAllEdits();
-//            app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(false);
-//            app.updateModelPropertiesView();
-//            app.setChangesSaved(true);
             app.modelLoaded();
         }
     }
@@ -319,10 +326,10 @@ public class AppActionHandler implements IAppActionHandler {
         app.undeploy();
     }
 
-    private void doShowManageRemotes(){
+    private void doShowManageRemotes() {
         app.showManageRemotes();
     }
-    
+
     private void doUndo() {
         app.getUndoManager().undo();
         app.updateGraphDependentActions();
@@ -341,11 +348,10 @@ public class AppActionHandler implements IAppActionHandler {
     private void doExecute() {
         app.showExecute();
     }
-    
+
     private void doExecuteModel() {
         app.showExecuteModel();
     }
-    
 
     private void doAbout() {
         app.showAbout();

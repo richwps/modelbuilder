@@ -63,7 +63,11 @@ public class AppActionProvider {
                 for (Constructor ctor : actionClass.getDeclaredConstructors()) {
                     if (ctor.getGenericParameterTypes().length == 1) {
                         instance = (AppAbstractAction) ctor.newInstance(new Object[]{actionHandler});
-                        actionInstances.put(item, instance);
+
+                        // show error message action is just temporary and thus not saved
+                        if (!item.equals(APP_ACTIONS.SHOW_ERROR_MSG)) {
+                            actionInstances.put(item, instance);
+                        }
                     }
                 }
 

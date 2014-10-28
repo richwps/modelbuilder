@@ -182,6 +182,10 @@ public class AppConstants {
      */
     static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "color:#000000;background:#" +TOOLTIP_BG_COLOR_HEX_STRING+ ";border:0;margin:0;";
     public static final String FORMATS_CSV_FILE = "formats.csv";
+    
+    static String REMOTES_NOT_AVAILABLE_ERROR_MSG = "No remote server available!"
+            + System.lineSeparator()
+            + "Please check the SemanticProxy preferences or add a remote server using the 'Manage Remotes' dialog.";
 
     public enum PREFERENCES_TAB {
 

@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
@@ -33,6 +34,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -72,13 +74,10 @@ public class App {
     private JPanel subTreeViewPanel;
     private SubTreeViewController subTreeView;
     private AppPreferencesDialog preferencesDialog;
-//    private AppDeployManager deployManager;
     private ExecuteDialog execAnyDialog;
     private ExecuteModelDialog execDialog;
 
     private boolean changesSaved = false;
-    private CardLayout mainTreeViewCardLayout;
-    private JPanel card1Panel;
     private FormatProvider formatProvider;
 
     /**
@@ -453,9 +452,13 @@ public class App {
      * @return selected WPS server.
      */
     String askRemote() {
-        //TODO receive list from sp+cache.
-        List<String> remotes = (List) processProvider.getAllServersFromSemanticProxy();
-        Object[] remotes_arr = remotes.toArray();
+        String[] remotes_arr = processProvider.getAllServers();
+
+        if (null == remotes_arr || remotes_arr.length < 1) {
+            showErrorMessage(AppConstants.REMOTES_NOT_AVAILABLE_ERROR_MSG);
+            return null;
+        }
+
         String selectedRemote = (String) JOptionPane.showInputDialog(getFrame(),
                 AppConstants.SELECTREMOTE_DIALOG_MSG,
                 AppConstants.SELECTREMOTE_DIALOG_TITLE,
@@ -541,6 +544,15 @@ public class App {
         }
 
         return formatProvider;
+    }
+
+    /**
+     * Fires the "show error message" action with the given message.
+     * @param message 
+     */
+    void showErrorMessage(String message) {
+        AppAbstractAction action = getActionProvider().getAction(APP_ACTIONS.SHOW_ERROR_MSG);
+        action.fireActionPerformed(message);
     }
 
 }

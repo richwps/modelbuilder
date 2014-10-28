@@ -1,6 +1,8 @@
 package de.hsos.richwps.mb.app.actions;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
 
 /**
  * Action for showing a message box.
