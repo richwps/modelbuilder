@@ -11,8 +11,6 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JFileChooser;

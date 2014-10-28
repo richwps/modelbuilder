@@ -156,7 +156,6 @@ public class AppSetup {
         app.initDragAndDrop();
         app.getPreferencesDialog().init();
         app.getGraphView().init();
-        app.getGraphView().setEnabled(false);
 
         splash.showMessageAndProgress("Requesting processes", 60);
 
@@ -175,7 +174,10 @@ public class AppSetup {
             app.getFrame().setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
         }
 
-//        app.modelLoaded();
+        // no model loaded
+        app.setChangesSaved(true);
+        app.getGraphView().setEnabled(false);
+        app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS).setEnabled(false);
     }
 
     /**

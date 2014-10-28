@@ -404,8 +404,8 @@ public class GraphView extends JPanel {
      * (name etc).
      */
     public Graph newGraph() {
-        // TODO check if graph model is really clean/empty after method call
         Graph graph = getGraph();
+        graph.clearSelection();
         graph.setModel(new GraphModel());
         getGraph().removeCells(graph.getChildCells(graph.getDefaultParent(), true, true));
         return graph;

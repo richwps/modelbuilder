@@ -101,6 +101,12 @@ public class App {
      * @return
      */
     boolean currentModelFileExists() {
+        // no current file => return true
+        if (null == getCurrentModelFilename() || getCurrentModelFilename().isEmpty()) {
+            return true;
+        }
+
+        // check file existence
         File file = null;
         try {
             file = new File(getCurrentModelFilename());
@@ -111,7 +117,8 @@ public class App {
         return null != file && file.exists();
     }
 
-    public void setChangesSaved(boolean changesSaved) {
+    void setChangesSaved(boolean changesSaved
+    ) {
         if (currentModelFileExists()) {
             this.changesSaved = changesSaved;
             getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(!changesSaved);
@@ -282,12 +289,12 @@ public class App {
     void modelLoaded() {
         getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
-        
+
         getSubTreeView().fillTree();
-        
+
         updateGraphDependentActions();
         updateModelPropertiesView();
-        
+
         getFrame().init(this);
         getFrame().setModellingEnabled(true);
     }
@@ -299,6 +306,7 @@ public class App {
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
         getActionProvider().getAction(APP_ACTIONS.DO_LAYOUT).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.SAVE_MODEL_AS).setEnabled(getGraphView().isEnabled());
 
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(!graphIsEmpty);
@@ -483,7 +491,6 @@ public class App {
         dialog.setVisible(true);
     }
 
-    
     /**
      * Shows an dialog to execute a given process on any connected server.
      */
@@ -529,7 +536,7 @@ public class App {
     }
 
     FormatProvider getFormatProvider() {
-        if(null == formatProvider) {
+        if (null == formatProvider) {
             formatProvider = new FormatProvider(AppConstants.FORMATS_CSV_FILE);
         }
 
