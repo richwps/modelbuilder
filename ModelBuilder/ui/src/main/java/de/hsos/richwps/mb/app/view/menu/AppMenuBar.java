@@ -39,9 +39,8 @@ public class AppMenuBar extends JMenuBar {
      * @param item
      * @return
      */
-    @Deprecated
-    public static String getMenuItemCaption(AppActionProvider.APP_ACTIONS item) {
-        return App.getMenuItemCaption(item);
+    private static String getMenuItemCaption(AppActionProvider.APP_ACTIONS item) {
+        return App.getActionItemCaption(item);
     }
 
     /**

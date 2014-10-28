@@ -346,7 +346,7 @@ public class App {
      * @param item
      * @return
      */
-    public static String getMenuItemCaption(APP_ACTIONS item) {
+    public static String getActionItemCaption(APP_ACTIONS item) {
         String itemString = item.name();
         for (String[] itemCaption : AppConstants.MENU_ITEM_CAPTIONS) {
             if (itemCaption[0].equals(itemString)) {

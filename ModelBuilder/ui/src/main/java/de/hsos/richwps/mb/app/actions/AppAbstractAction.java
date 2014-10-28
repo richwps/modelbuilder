@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app.actions;
 
+import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
@@ -29,7 +30,7 @@ public abstract class AppAbstractAction extends AbstractAction {
     public AppAbstractAction(IAppActionHandler actionHandler, AppActionProvider.APP_ACTIONS item, String iconKey) {
         this(actionHandler, item);
 
-        String name = AppMenuBar.getMenuItemCaption(item);
+        String name = App.getActionItemCaption(item);
 
         putValue(Action.NAME, name);
         putValue(Action.SHORT_DESCRIPTION, name);
