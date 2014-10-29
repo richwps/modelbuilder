@@ -7,7 +7,7 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * Colored border with custom thickness for each side. Setters allow different
- * colors for each side (default is one color for all sides).
+ * colors for each side (default via constructor is one color for all sides).
  *
  * @author dziegenh
  */
@@ -31,13 +31,13 @@ public class ColorBorder extends EmptyBorder {
         Color oldColor = g.getColor();
 
         g.setColor(rightColor);
-        g.fillRect(width - right, 0, width, height);
+        g.fillRect(x + width - right, y, right, height);
         g.setColor(leftColor);
         g.fillRect(x, y, left, height);
         g.setColor(topColor);
         g.fillRect(x, y, width, top);
         g.setColor(bottomColor);
-        g.fillRect(x, height - bottom, width, bottom);
+        g.fillRect(x, y + height - bottom, width, bottom);
 
         g.setColor(oldColor);
     }
