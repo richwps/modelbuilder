@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
@@ -158,14 +159,19 @@ class PropertiesCard extends JScrollPane {
         JPanel propertiesPanel = new JPanel();
 
         // create and add properties to panel
-        createPropertyPanel(propertyGroup, propertiesPanel);
+        if (propertyGroup.getProperties().size() > 0) {
+            createPropertyPanel(propertyGroup, propertiesPanel);
+        } else {
+            JLabel emptyLabel = new JLabel("(empty)");
+            emptyLabel.setFont(emptyLabel.getFont().deriveFont(Font.ITALIC));
+            propertiesPanel.add(emptyLabel);
+        }
 
         // setup panel border
         propertiesPanel.setBorder(propertyGroupPanelBorder);
-        
+
         // add panel to foldable titled component
         TitledComponent groupPanel = createTitledComponent(propertyGroup.getPropertiesObjectName(), propertiesPanel);
-//        groupPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
 
         return groupPanel;
     }

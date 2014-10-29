@@ -115,6 +115,11 @@ public class AppSetup {
         GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
         GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
 
+        // Setup monitor client
+        for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
+            app.getProcessMetricProvider().addMonitorKeyTranslation(keyTranslation[0], keyTranslation[1]);
+        }
+
         // Load last used filename
         String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
         File lastFile = new File(lastFilename);

@@ -383,4 +383,9 @@ public class AppConstants {
 
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 
+    // Monitor key translations
+    static String[][] MONITOR_KEY_TRANSLATIONS = {
+        {"response_metric", "Response Metric"}
+    };
+    
 }
