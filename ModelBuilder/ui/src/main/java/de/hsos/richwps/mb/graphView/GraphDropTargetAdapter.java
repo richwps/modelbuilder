@@ -111,16 +111,9 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             // try to update ProcessEntity using SemanticProxy
             String server = processEntity.getServer();
             String identifier = processEntity.getOwsIdentifier();
-            ProcessEntity spProcess = processProvider.getProcessEntity(server, identifier);
+            ProcessEntity spProcess = processProvider.getFullyLoadedProcessEntity(server, identifier);
             if (null != spProcess) {
                 processEntity = spProcess;
-                PropertyGroup<PropertyGroup<Property<String>>> processMetric = null;
-                try {
-                    processMetric = processMetricProvider.getProcessMetric(processEntity.getServer(), processEntity.getOwsIdentifier());
-                    processEntity.setProperty(processMetric.getPropertiesObjectName(), processMetric);
-                } catch (Exception ex) {
-                    Logger.getLogger(GraphDropTargetAdapter.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
 
             node = graphView.createNodeFromProcess(processEntity, location);

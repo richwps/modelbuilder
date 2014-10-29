@@ -167,7 +167,7 @@ public class App {
 
     ProcessProvider getProcessProvider() {
         if (null == processProvider) {
-            processProvider = new ProcessProvider();
+            processProvider = new ProcessProvider(getProcessMetricProvider());
             AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
         }
         return processProvider;

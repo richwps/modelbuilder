@@ -193,11 +193,14 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 //FIXME pe.setOwsVersion
                 this.transformInputs(pd, pe);
                 this.transformOutputs(pd, pe);
-                
-                PropertyGroup<PropertyGroup<Property<String>>> processMetric = app.getProcessMetricProvider().getProcessMetric(uri, processid);
-                pe.setProperty(processMetric.getPropertiesObjectName(), processMetric);
-                
-                pe.setIsFullyLoaded(true);
+
+                // load metric properties
+                pe = getProcessProvider().getFullyLoadedProcessEntity(pe);
+//                PropertyGroup processMetric = app.getProcessMetricProvider().getProcessMetric(uri, processid);
+//                pe.setProperty(processMetric.getPropertiesObjectName(), processMetric);
+//
+//                pe.setIsFullyLoaded(true);
+
                 serverNode.add(new DefaultMutableTreeNode(pe));
             }
             processesNode.add(serverNode);
@@ -205,7 +208,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         } catch (Exception e) {
             Logger.log("Debug:\n error occured " + e);
         }
-        
+
         return serverNode;
     }
 
@@ -297,7 +300,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
             if (!remoteNodes.containsKey(remote) || addExistingNodes) {
                 MutableTreeNode node = addNode(remote);
                 remoteNodes.put(remote, node);
-                
+
                 unusedNodes.remove(remote);
             }
         }

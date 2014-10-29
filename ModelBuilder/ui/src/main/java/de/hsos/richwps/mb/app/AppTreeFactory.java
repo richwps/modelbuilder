@@ -57,9 +57,7 @@ class TreeViewMouseAdapter extends MouseAdapter {
                     ProcessEntity process = ((ProcessEntity) nodeObject);
                     if (!process.isIsFullyLoaded()) {
                         try {
-                            process = getProcessProvider().getProcessEntity(process.getServer(), process.getOwsIdentifier());
-                            PropertyGroup<PropertyGroup<Property<String>>> processMetric = processMetricProvider.getProcessMetric(process.getServer(), process.getOwsIdentifier());
-                            process.setProperty(processMetric.getPropertiesObjectName(), processMetric);
+                            process = getProcessProvider().getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
                             
                             node.setUserObject(process);
                             process.setIsFullyLoaded(true);

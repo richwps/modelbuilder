@@ -6,8 +6,10 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.wps.SPClient;
 import de.hsos.richwps.sp.client.wps.Vocabulary;
@@ -36,10 +38,14 @@ public class ProcessProvider {
     private WPS[] wpss;
     private String url;
 
+    private final ProcessMetricProvider processMetricProvider;
+
     /**
      * Constructor, creates the SP client.
      */
-    public ProcessProvider() {
+    public ProcessProvider(ProcessMetricProvider processMetricProvider) {
+        this.processMetricProvider = processMetricProvider;
+
         spClient = SPClient.getInstance();
         this.wpss = new WPS[]{};
     }
@@ -87,14 +93,6 @@ public class ProcessProvider {
         return null != net;
     }
 
-    /**
-     * Receives all data belonging to a specific process. The process is
-     * identified by its (server-) endpoint and its identifier.
-     */
-    public ProcessEntity getProcessEntity(String server, String identifier) {
-        return getProcessWithPorts(server, identifier);
-    }
-
     private void fireSpReceiveExceptionAsAppEvent(Exception ex) {
         String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, ex.getClass().getSimpleName(), ex.getMessage());
         AppEventService.getInstance().fireAppEvent(msg, this);
@@ -106,7 +104,15 @@ public class ProcessProvider {
         }
     }
 
-    private ProcessEntity getProcessWithPorts(String server, String identifier) {
+    /**
+     * Receives all data belonging to a specific process. The process is
+     * identified by its (server-) endpoint and its identifier.
+     *
+     * @param server
+     * @param identifier
+     * @return
+     */
+    public ProcessEntity getFullyLoadedProcessEntity(String server, String identifier) {
 
         ProcessEntity process = null;
 
@@ -149,7 +155,11 @@ public class ProcessProvider {
                                 fireSpReceiveExceptionAsAppEvent(ex);
                             }
 
+                            // Add metric properties
+                            addProcessMetrics(process);
+
                             // process found, return to stop search
+                            process.setIsFullyLoaded(true);
                             return process;
                         }
                     }
@@ -320,6 +330,36 @@ public class ProcessProvider {
         }
 
         return servers;
+    }
+
+    public ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process) {
+        process = process.clone();
+
+        ProcessEntity loadedProcess = getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+        if (null != loadedProcess) {
+            process = loadedProcess;
+        }
+
+        addProcessMetrics(process);
+        process.setIsFullyLoaded(true);
+        
+        return process;
+    }
+
+    private void addProcessMetrics(ProcessEntity process) {
+        try {
+            String server = process.getServer();
+            String identifier = process.getOwsIdentifier();
+            
+            PropertyGroup processMetric = processMetricProvider.getProcessMetric(server, identifier);
+            processMetric.setIsTransient(true);
+            
+            String metricPropertyName = processMetric.getPropertiesObjectName();
+            process.setProperty(metricPropertyName, processMetric);
+            
+        } catch (Exception ex) {
+            // ignore if metrics couldn't ne loaded
+        }
     }
 
 }

@@ -21,7 +21,7 @@ public class ProcessMetricProvider {
 
     private final WpsMonitorClientImpl client;
 
-    private HashMap<String, String> translations;
+    private final HashMap<String, String> translations;
 
     public ProcessMetricProvider(String url) throws MalformedURLException {
         client = new WpsMonitorClientImpl(new URL(url));
@@ -35,16 +35,16 @@ public class ProcessMetricProvider {
      * @param server
      * @param identifier
      * @return
-     * @throws WpsMonitorClientException
-     * @throws MalformedURLException
      */
-    public PropertyGroup getProcessMetric(String server, String identifier) throws WpsMonitorClientException, MalformedURLException {
-        WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
+    public PropertyGroup getProcessMetric(String server, String identifier) {
 
         // create property group containing all metrics
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
         groups.setPropertiesObjectName("Monitor Data");
 
+        try {
+        WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
+        
         // add metrics sub groups
         for (Map.Entry<String, WpsProcessMetric> aMetric : wpsProcess.getMetrics().entrySet()) {
             PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(translateMonitorKey(aMetric.getKey()));
@@ -62,6 +62,10 @@ public class ProcessMetricProvider {
             }
 
             groups.addObject(subGroup);
+        }
+        } catch(Exception ex) {
+            // ignore as usually thrown if process is not monitored;
+            // the empty group indicates non-monitored processes.
         }
         
         return groups;

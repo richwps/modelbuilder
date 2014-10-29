@@ -56,7 +56,7 @@ public class TreenodeTransferHandler extends TransferHandler {
                     if (null != userObject && userObject instanceof ProcessEntity) {
                         ProcessEntity process = (ProcessEntity) userObject;
                         if (!process.isIsFullyLoaded()) {
-                            process = processProvider.getProcessEntity(process.getServer(), process.getOwsIdentifier());
+                            process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
                             userObject = process;
                             ((DefaultMutableTreeNode) pathComponent).setUserObject(userObject);
                         }

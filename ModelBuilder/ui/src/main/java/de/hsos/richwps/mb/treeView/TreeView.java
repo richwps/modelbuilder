@@ -46,7 +46,7 @@ public class TreeView {
                             if (userObject instanceof ProcessEntity) {
                                 ProcessEntity process = ((ProcessEntity) userObject);
                                 if (!process.isIsFullyLoaded()) {
-                                    process = processProvider.getProcessEntity(process.getServer(), process.getOwsIdentifier());
+                                    process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
                                     treenode.setUserObject(process);
                                 }
 
