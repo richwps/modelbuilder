@@ -82,6 +82,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     @Override
     void fillTree() {
+        fillTree(true);
+    }
+
+    void fillTree(boolean loadRemotes) {
 
         ProcessProvider processProvider = getProcessProvider();
 
@@ -155,7 +159,9 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.add(local);
 
         // adds persisted remote servers
-        setRemotes(processProvider.getPersistedRemotes(), true);
+        if (loadRemotes) {
+            setRemotes(processProvider.getPersistedRemotes(), true);
+        }
 
         updateUI();
     }

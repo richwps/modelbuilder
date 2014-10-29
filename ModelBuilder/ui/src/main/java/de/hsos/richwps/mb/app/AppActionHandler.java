@@ -342,7 +342,7 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doReloadProcesses() {
         app.getProcessProvider().clear();
-        app.fillMainTree();
+        app.fillMainTree(true);
     }
 
     private void doExecute() {

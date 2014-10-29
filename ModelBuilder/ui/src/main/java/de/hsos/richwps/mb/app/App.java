@@ -265,8 +265,8 @@ public class App {
         return mainTreeViewPanel;
     }
 
-    void fillMainTree() {
-        getMainTreeView().fillTree();
+    void fillMainTree(boolean loadRemotes) {
+        getMainTreeView().fillTree(loadRemotes);
     }
 
     AppPreferencesDialog getPreferencesDialog() {

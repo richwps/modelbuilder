@@ -188,6 +188,10 @@ public class AppConstants {
     static String REMOTES_NOT_AVAILABLE_ERROR_MSG = "No remote server available!"
             + System.lineSeparator()
             + "Please check the SemanticProxy preferences or add a remote server using the 'Manage Remotes' dialog.";
+    
+    
+    public final static boolean PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT = true;
+    public static String PREFERENCES_TAB_SP_LOADONSTART_LABEL = "Discover processes of managed remote servers on application start";
 
     public enum PREFERENCES_TAB {
 
