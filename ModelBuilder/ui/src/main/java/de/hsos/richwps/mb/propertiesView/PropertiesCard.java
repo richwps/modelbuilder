@@ -38,11 +38,8 @@ class PropertiesCard extends JScrollPane {
 
     protected final Window parentWindow;
 
-    @Deprecated
-    private List<AbstractPropertyComponent> propertyFields;
-
     protected IObjectWithProperties objectWithProperties;
-    private PropertiesView propertiesView;
+    private final PropertiesView propertiesView;
     private final CompoundBorder propertyGroupPanelBorder;
 
     public PropertiesCard(final Window parentWindow, PropertiesView view) {
@@ -172,6 +169,7 @@ class PropertiesCard extends JScrollPane {
 
         // add panel to foldable titled component
         TitledComponent groupPanel = createTitledComponent(propertyGroup.getPropertiesObjectName(), propertiesPanel);
+        propertiesView.setupPropertyGroupTitledComponent(propertyGroup, groupPanel);
 
         return groupPanel;
     }
@@ -196,39 +194,6 @@ class PropertiesCard extends JScrollPane {
         return componentPanel;
     }
 
-    @Deprecated
-    protected List<AbstractPropertyComponent> getPropertyFields() {
-        if (null == propertyFields) {
-            this.propertyFields = new LinkedList<>();
-        }
-
-        return propertyFields;
-    }
-
-//    @Deprecated
-//    protected JTextField createEditablePropertyField(String property, String text) {
-//        PropertyTextField propertyField = new PropertyTextField(property, text);
-//
-//        JTextField label = (JTextField) propertyField.getComponent();
-//        CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
-//        label.setBorder(border);
-//        label.setFont(label.getFont().deriveFont(PropertyCardsConfig.propertyFieldFontSize));
-//
-//        label.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//                parentWindow.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-//            }
-//        });
-//
-//        getPropertyFields().add(propertyField);
-//        return label;
-//    }
     protected TitledComponent createTitledComponent(String title, Component component) {
         TitledComponent titledComponent = new TitledComponent(title, component, PropertyCardsConfig.titleHeight, true);
         titledComponent.setTitleFontColor(PropertyCardsConfig.propertyTitleFgColor);
@@ -269,14 +234,11 @@ class PropertiesCard extends JScrollPane {
     protected MultilineLabel createBodyLabel(String text) {
         MultilineLabel label = createMultilineLabel(text, PropertyCardsConfig.bodyLabelBgColor);
         label.setFocusable(true);
+        
         return label;
     }
 
     protected MultilineLabel createMultilineLabel(String text, Color background) {
-        return createMultilineLabel(text, background, false);
-    }
-
-    protected MultilineLabel createMultilineLabel(String text, Color background, boolean editable) {
         MultilineLabel label = new MultilineLabel(text);
         label.setBackground(background);
         Border emptyBorder = new EmptyBorder(PropertyCardsConfig.labelInsets);

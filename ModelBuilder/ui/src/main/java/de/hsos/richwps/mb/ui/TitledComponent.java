@@ -90,9 +90,8 @@ public class TitledComponent extends JPanel {
                     }
                 });
 
-                // TODO add doubleclick-listener to ComponentTitle
+                // add doubleclick-listener to ComponentTitle
                 componentTitle.addMouseListener(new MouseAdapter() {
-
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         if (2 == e.getClickCount()) {
@@ -202,5 +201,9 @@ public class TitledComponent extends JPanel {
         } else {
             unfold();
         }
+    }
+
+    public void resetTitleFontStyle() {
+        componentTitle.resetFontStyle();
     }
 }

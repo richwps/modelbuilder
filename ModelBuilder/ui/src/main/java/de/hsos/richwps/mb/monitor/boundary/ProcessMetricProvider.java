@@ -23,11 +23,17 @@ public class ProcessMetricProvider {
 
     private final HashMap<String, String> translations;
 
+    private String mainPropertyGroupName = "monitor data";
+    
     public ProcessMetricProvider(String url) throws MalformedURLException {
         client = new WpsMonitorClientImpl(new URL(url));
         translations = new HashMap<>();
     }
 
+    public void setMainPropertyGroupName(String mainPropertyGroupName) {
+        this.mainPropertyGroupName = mainPropertyGroupName;
+    }
+    
     /**
      * Receives metric values from the monitor client for the given process and
      * creates representing property groups.
@@ -40,7 +46,7 @@ public class ProcessMetricProvider {
 
         // create property group containing all metrics
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
-        groups.setPropertiesObjectName("Monitor Data");
+        groups.setPropertiesObjectName(this.mainPropertyGroupName);
 
         try {
         WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);

@@ -88,7 +88,7 @@ public class AppPreferencesDialog extends MbDialog {
             tab = null;
 
             switch (prefTab) {
-                case SEMANTICPROXY:
+                case PROCESSSOURCES:
                     tab = new PreferencesSemanticProxy();
                     break;
                 case HTTPPROXY:

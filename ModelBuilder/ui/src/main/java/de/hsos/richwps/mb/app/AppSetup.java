@@ -119,6 +119,7 @@ public class AppSetup {
         for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
             app.getProcessMetricProvider().addMonitorKeyTranslation(keyTranslation[0], keyTranslation[1]);
         }
+        app.getProcessMetricProvider().setMainPropertyGroupName(AppConstants.MONITOR_DATA);
 
         // Load last used filename
         String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");

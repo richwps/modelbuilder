@@ -236,7 +236,7 @@ public class GraphViewTest {
 
     private void assertProcessesEqual(ProcessEntity process1, ProcessEntity process2) {
         List<String> keys = new LinkedList<>();
-        keys.add(ProcessEntity.KEY_SERVER);
+        keys.add(ProcessEntity.PROPERTIES_KEY_SERVER);
 
         assertOwsObjectsEqual(process1, process2, keys);
     }

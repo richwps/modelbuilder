@@ -342,24 +342,21 @@ public class ProcessProvider {
 
         addProcessMetrics(process);
         process.setIsFullyLoaded(true);
-        
+
         return process;
     }
 
     private void addProcessMetrics(ProcessEntity process) {
-        try {
-            String server = process.getServer();
-            String identifier = process.getOwsIdentifier();
-            
-            PropertyGroup processMetric = processMetricProvider.getProcessMetric(server, identifier);
-            processMetric.setIsTransient(true);
-            
-            String metricPropertyName = processMetric.getPropertiesObjectName();
-            process.setProperty(metricPropertyName, processMetric);
-            
-        } catch (Exception ex) {
-            // ignore if metrics couldn't ne loaded
-        }
+        
+        // get metric properties group
+        String server = process.getServer();
+        String identifier = process.getOwsIdentifier();
+        PropertyGroup processMetric = processMetricProvider.getProcessMetric(server, identifier);
+
+        // add metric properties group to the process
+        String metricPropertyName = processMetric.getPropertiesObjectName();
+        processMetric.setIsTransient(true);
+        process.setProperty(metricPropertyName, processMetric);
     }
 
 }

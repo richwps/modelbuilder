@@ -28,7 +28,7 @@ public class ShowPreferencesAction extends AppAbstractAction {
         if (null != source && source instanceof Component) {
             Container parent = ((Component) source).getParent();
             if (parent instanceof AppTreeToolbar) {
-                e = new ActionEvent("", e.getID(), AppConstants.PREFERENCES_TAB.SEMANTICPROXY.name());
+                e = new ActionEvent("", e.getID(), AppConstants.PREFERENCES_TAB.PROCESSSOURCES.name());
             }
         }
 

@@ -17,7 +17,9 @@ import java.util.Objects;
  */
 public class ProcessEntity extends OwsObjectWithProperties {
 
-    public static String KEY_SERVER = "Server";
+    public static String PROPERTIES_KEY_SERVER = "Server";
+    public static String PROPERTIES_KEY_INPUT_PORTS = "Inputs";
+    public static String PROPERTIES_KEY_OUTPUT_PORTS = "Outputs";
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
@@ -41,6 +43,13 @@ public class ProcessEntity extends OwsObjectWithProperties {
 
     private HashMap<String, PropertyGroup<? extends IObjectWithProperties>> additionalGroups = new HashMap<>();
 
+    /**
+     * Sets a specific property. If it's a property group, it is added to the
+     * additional property groups.
+     *
+     * @param propertyName
+     * @param property
+     */
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {
         if (property instanceof PropertyGroup && !propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
@@ -53,19 +62,48 @@ public class ProcessEntity extends OwsObjectWithProperties {
     public Collection<? extends IObjectWithProperties> getProperties() {
         List<IObjectWithProperties> properties = new LinkedList<>();
         properties.add(owsGroup);
-
+        
+        // add additional groups
         for (PropertyGroup pGroup : additionalGroups.values()) {
             properties.add(pGroup);
         }
         
+        // add inputs
+        PropertyGroup inputsGroup = new PropertyGroup(PROPERTIES_KEY_INPUT_PORTS);
+        inputsGroup.setIsTransient(true);
+        if (null != inputPorts) {
+            for (ProcessPort port : inputPorts) {
+                inputsGroup.addObject(port);
+            }
+            properties.add(inputsGroup);
+        }
+
+        // add outputs
+        PropertyGroup outputsGroup = new PropertyGroup(PROPERTIES_KEY_OUTPUT_PORTS);
+        outputsGroup.setIsTransient(true);
+        if (null != outputPorts) {
+            for (ProcessPort port : outputPorts) {
+                outputsGroup.addObject(port);
+            }
+            properties.add(outputsGroup);
+        }
+
         return properties;
     }
 
     private void createProperties(String server, String owsIdentifier) {
+        // create OWS object properties
         super.createProperties(owsIdentifier);
-        owsGroup.addObject(new Property<>(KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
+
+        // add server property
+        owsGroup.addObject(new Property<>(PROPERTIES_KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
     }
 
+    /**
+     * Indicates that all ports and properties of this process are available.
+     *
+     * @return
+     */
     public boolean isIsFullyLoaded() {
         return isFullyLoaded;
     }
@@ -79,11 +117,11 @@ public class ProcessEntity extends OwsObjectWithProperties {
     }
 
     public void setServer(String server) {
-        owsGroup.getPropertyObject(KEY_SERVER).setValue(server);
+        owsGroup.getPropertyObject(PROPERTIES_KEY_SERVER).setValue(server);
     }
 
     public String getServer() {
-        return (String) owsGroup.getPropertyObject(KEY_SERVER).getValue();
+        return (String) owsGroup.getPropertyObject(PROPERTIES_KEY_SERVER).getValue();
     }
 
     public int getNumInputs() {
@@ -216,8 +254,8 @@ public class ProcessEntity extends OwsObjectWithProperties {
         for (ProcessPort port : getOutputPorts()) {
             clone.addOutputPort(port);
         }
-        
-        for(Entry<String, PropertyGroup<? extends IObjectWithProperties>> addGroup : additionalGroups.entrySet()) {
+
+        for (Entry<String, PropertyGroup<? extends IObjectWithProperties>> addGroup : additionalGroups.entrySet()) {
             clone.setProperty(addGroup.getKey(), addGroup.getValue());
         }
 

@@ -1,12 +1,16 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.view.properties.PropertyComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.ui.TitledComponent;
+import java.awt.Color;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -157,6 +161,53 @@ public class AppPropertiesView extends PropertiesView {
         }
 
         return component;
+    }
+
+    @Override
+    protected void setupPropertyGroupTitledComponent(PropertyGroup propertyGroup, TitledComponent groupPanel) {
+        super.setupPropertyGroupTitledComponent(propertyGroup, groupPanel);
+
+        // nothing to do here
+        String groupName = propertyGroup.getPropertiesObjectName();
+        if (null == groupName || groupName.isEmpty()) {
+            return;
+        }
+        boolean hasBrightBg = false;
+
+        // Style monitor metrics group
+        boolean isMetricGroup = isMetricGroup(groupName);
+        if (groupName.equals(AppConstants.MONITOR_DATA) || isMetricGroup) {
+            groupPanel.setTitleGradientColor2(AppConstants.MONITOR_DATA_BG_COLOR);
+            hasBrightBg = true;
+
+            if (isMetricGroup) {
+                groupPanel.resetTitleFontStyle();
+            }
+        }
+
+        // Style port groups
+        if (groupName.equals(ProcessEntity.PROPERTIES_KEY_INPUT_PORTS)) {
+            groupPanel.setTitleGradientColor2(AppConstants.INPUT_PORT_COLOR);
+            hasBrightBg = true;
+        } else if (groupName.equals(ProcessEntity.PROPERTIES_KEY_OUTPUT_PORTS)) {
+            groupPanel.setTitleGradientColor2(AppConstants.OUTPUT_PORT_COLOR);
+            hasBrightBg = true;
+        }
+
+        if (hasBrightBg) {
+            groupPanel.setTitleGradientColor1(Color.WHITE);
+            groupPanel.setTitleFontColor(Color.BLACK);
+        }
+    }
+
+    private boolean isMetricGroup(String groupName) {
+        for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
+            if (keyTranslation[1].equals(groupName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private PropertyComplexDataTypeFormat createPropertyComplexDataTypeFormat(Property property) {

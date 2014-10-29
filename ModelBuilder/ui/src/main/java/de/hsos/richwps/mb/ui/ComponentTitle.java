@@ -19,64 +19,68 @@ import javax.swing.border.EmptyBorder;
  * @author dziegenh
  */
 public class ComponentTitle extends JLabel {
-
+    
     private Color gradientColor2;
     private Color gradientColor1;
-
+    
     public ComponentTitle() {
         this("", null, SwingConstants.LEFT);
     }
-
+    
     public ComponentTitle(String title) {
         this(title, null, SwingConstants.LEFT);
     }
-
+    
     public ComponentTitle(String title, int horizontalAlignment) {
         this(title, null, horizontalAlignment);
     }
-
+    
     public ComponentTitle(Icon icon) {
         this("", icon, SwingConstants.LEFT);
     }
-
+    
     public ComponentTitle(Icon image, int horizontalAlignment) {
         this("", image, horizontalAlignment);
     }
-
+    
     public ComponentTitle(String title, Icon icon, int horizontalAlignment) {
         super(title, icon, horizontalAlignment);
         init();
     }
-
+    
     private void init() {
         // TODO move magic numbers to config/constants
         setBorder(new EmptyBorder(5, 5, 5, 5));
         gradientColor1 = Color.WHITE;
         gradientColor2 = AppConstants.SELECTION_BG_COLOR; //new Color(193, 230, 238);  // TODO get color from UIManager
     }
-
+    
     public void setGradientColor1(Color color) {
         gradientColor1 = color;
     }
-
+    
     public void setGradientColor2(Color color) {
         gradientColor2 = color;
     }
-
+    
     public void setFontStyle(int fontStyle, boolean keepOtherStyles) {
         Font font = getFont();
         int newStyle = keepOtherStyles ? font.getStyle() & fontStyle : fontStyle;
         setFont(font.deriveFont(newStyle));
     }
-
+    
+    public void resetFontStyle() {
+        setFont(getFont().deriveFont(0));
+    }
+    
     public void setBold() {
         setFontStyle(Font.BOLD, false);
     }
-
+    
     public void setItalic() {
         setFontStyle(Font.ITALIC, false);
     }
-
+    
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -94,7 +98,7 @@ public class ComponentTitle extends JLabel {
 
         g2d.setColor(gradientColor2.darker());
         g2d.drawLine(0, h - 1, w, h - 1);
-
+        
         Color bgColor = UIManager.getColor("Panel.background"); //gradientColor2.darker();
         if (null == bgColor) {
             bgColor = gradientColor1;
@@ -131,8 +135,8 @@ public class ComponentTitle extends JLabel {
         g2d.drawLine(w - 3, 2, w - 3, 2);
         g2d.drawLine(w - 4, 1, w - 5, 1);
         g2d.drawLine(w - 6, 0, w - 7, 0);
-
+        
         super.paintComponent(g);
     }
-
+    
 }

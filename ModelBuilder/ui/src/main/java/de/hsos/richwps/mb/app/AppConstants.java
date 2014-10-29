@@ -155,6 +155,8 @@ public class AppConstants {
 
     final static String INPUT_PORT_COLOR_STRING = "bbe8c6";
     final static String OUTPUT_PORT_COLOR_STRING = "cfe1fc";
+    final static Color INPUT_PORT_COLOR = new Color(0xbbe8c6);
+    final static Color OUTPUT_PORT_COLOR = new Color(0xcfe1fc);
 
     static String FORMATS_CSV_FILE_LOAD_ERROR = "Error while loading complex data formats!";
     static String DIALOG_TITLE_ERROR = "An error occured";
@@ -189,11 +191,11 @@ public class AppConstants {
 
     public enum PREFERENCES_TAB {
 
-        SEMANTICPROXY,
+        PROCESSSOURCES,
         HTTPPROXY
     }
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
-        {PREFERENCES_TAB.SEMANTICPROXY.name(), "SemanticProxy"},
+        {PREFERENCES_TAB.PROCESSSOURCES.name(), "Process Sources"},
         {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},};
     // SP preferences
     public final static String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
@@ -295,6 +297,7 @@ public class AppConstants {
     public final static String EDITOR_DEFAULT_TITLE = "Model Editor"; //(untitled)";
 
     public final static Color SELECTION_BG_COLOR = new Color(0xb0c0e0);
+    // new Color(0xcdff00); // <-- fr34ky ne0n (needs black FG)
     // new Color(0xa0ace5); // <-- original MB style
     // new Color(0xa8cde8); // <-- RichWPS logo blue
     // new Color(0x37ABC8); // <-- old RichWPS turquoise
@@ -384,8 +387,13 @@ public class AppConstants {
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
 
     // Monitor key translations
+    final static String MONITOR_DATA = "Monitor Data";
+    final static String MONITOR_TRANSLATION_RESPONCE_METRIC = "Response Metric";
     static String[][] MONITOR_KEY_TRANSLATIONS = {
-        {"response_metric", "Response Metric"}
+        {"response_metric", MONITOR_TRANSLATION_RESPONCE_METRIC}
     };
+    
+    final static Color MONITOR_DATA_BG_COLOR = new Color(0xfccfcf);
+
     
 }

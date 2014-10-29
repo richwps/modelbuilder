@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
@@ -199,4 +200,14 @@ public class PropertiesView extends TitledComponent {
         return new PropertyTextField(property);
     }
 
+    /**
+     * Can be overwritten by sub classes to style titled components of property
+     * groups.
+     *
+     * @param propertyGroup
+     * @param groupPanel
+     */
+    protected void setupPropertyGroupTitledComponent(PropertyGroup propertyGroup, TitledComponent groupPanel) {
+        groupPanel.setTitleBold();
+    }
 }
