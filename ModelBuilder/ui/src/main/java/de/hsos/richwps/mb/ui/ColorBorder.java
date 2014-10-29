@@ -33,11 +33,11 @@ public class ColorBorder extends EmptyBorder {
         g.setColor(rightColor);
         g.fillRect(width - right, 0, width, height);
         g.setColor(leftColor);
-        g.fillRect(0, 0, left, height);
+        g.fillRect(x, y, left, height);
         g.setColor(topColor);
-        g.fillRect(0, 0, width, top);
+        g.fillRect(x, y, width, top);
         g.setColor(bottomColor);
-        g.fillRect(0, height - bottom, width, bottom);
+        g.fillRect(x, height - bottom, width, bottom);
 
         g.setColor(oldColor);
     }
