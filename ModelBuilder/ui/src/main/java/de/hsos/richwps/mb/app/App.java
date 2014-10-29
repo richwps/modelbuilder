@@ -15,6 +15,7 @@ import de.hsos.richwps.mb.execView.ExecuteModelDialog;
 import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
@@ -32,8 +33,10 @@ import java.awt.Cursor;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -79,6 +82,7 @@ public class App {
 
     private boolean changesSaved = false;
     private FormatProvider formatProvider;
+    private ProcessMetricProvider processMetricProvider;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -92,6 +96,19 @@ public class App {
 
     public boolean areChangesSaved() {
         return changesSaved;
+    }
+    
+    ProcessMetricProvider getProcessMetricProvider() {
+        if(null == processMetricProvider) {
+            try {
+                // TODO create settings
+                processMetricProvider = new ProcessMetricProvider("http://localhost:1111");
+            } catch (MalformedURLException ex) {
+                showErrorMessage(ex.getMessage());
+            }
+        }
+        
+        return processMetricProvider;
     }
 
     /**

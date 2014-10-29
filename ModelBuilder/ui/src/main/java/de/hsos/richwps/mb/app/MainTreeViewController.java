@@ -11,6 +11,8 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
+import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -191,6 +193,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 //FIXME pe.setOwsVersion
                 this.transformInputs(pd, pe);
                 this.transformOutputs(pd, pe);
+                
+                PropertyGroup<PropertyGroup<Property<String>>> processMetric = app.getProcessMetricProvider().getProcessMetric(uri, processid);
+                pe.setProperty(processMetric.getPropertiesObjectName(), processMetric);
+                
                 pe.setIsFullyLoaded(true);
                 serverNode.add(new DefaultMutableTreeNode(pe));
             }

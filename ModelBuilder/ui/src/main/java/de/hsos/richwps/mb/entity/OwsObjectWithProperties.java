@@ -27,7 +27,7 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
     protected final String OWS_PROPERTY_GROUP_NAME = "OWS Data";
 
     protected PropertyGroup<Property> owsGroup;
-    
+
     protected String toolTipText;
 
 //    protected HashMap<String, Property> properties = new HashMap<>();
@@ -38,8 +38,6 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
     public OwsObjectWithProperties() {
         this("");
     }
-
-
 
     /**
      * Sets the title and resets the toolTipText.
@@ -98,13 +96,13 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
     }
 
     protected OwsObjectWithProperties cloneInto(OwsObjectWithProperties clone) {
-        for(Property property : owsGroup.getProperties()) {
+        for (Property property : owsGroup.getProperties()) {
             // TODO clone properties !!
             clone.setProperty(property.getPropertiesObjectName(), property);
         }
-        
+
         clone.setToolTipText(toolTipText);
-        
+
         return clone;
     }
 
@@ -126,14 +124,16 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
         owsGroup.addObject(new Property<>(KEY_VERSION, Property.COMPONENT_TYPE_TEXTFIELD, ""));
     }
 
+
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {
         if (property instanceof PropertyGroup) {
             if (propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
                 this.owsGroup = (PropertyGroup<Property>) property;
             }
+
         } else {
-            
+
             // set property
             this.owsGroup.setProperty(propertyName, (Property) property);
         }
@@ -158,5 +158,5 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
 
         return property.getValue();
     }
-    
+
 }

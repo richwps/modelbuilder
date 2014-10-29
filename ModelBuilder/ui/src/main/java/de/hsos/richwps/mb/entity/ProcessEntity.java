@@ -3,12 +3,11 @@ package de.hsos.richwps.mb.entity;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 /**
@@ -24,7 +23,7 @@ public class ProcessEntity extends OwsObjectWithProperties {
     private LinkedList<ProcessPort> outputPorts;
 
     public static String toolTipCssForMainContainer;
-    
+
     private boolean isFullyLoaded;
 
     public ProcessEntity() {
@@ -38,6 +37,28 @@ public class ProcessEntity extends OwsObjectWithProperties {
         this.outputPorts = new LinkedList<>();
 
         createProperties(server, owsIdentifier);
+    }
+
+    private HashMap<String, PropertyGroup<? extends IObjectWithProperties>> additionalGroups = new HashMap<>();
+
+    @Override
+    public void setProperty(String propertyName, IObjectWithProperties property) {
+        if (property instanceof PropertyGroup && !propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
+            this.additionalGroups.put(propertyName, (PropertyGroup) property);
+        }
+        super.setProperty(propertyName, property);
+    }
+
+    @Override
+    public Collection<? extends IObjectWithProperties> getProperties() {
+        List<IObjectWithProperties> properties = new LinkedList<>();
+        properties.add(owsGroup);
+
+        for (PropertyGroup pGroup : additionalGroups.values()) {
+            properties.add(pGroup);
+        }
+        
+        return properties;
     }
 
     private void createProperties(String server, String owsIdentifier) {
@@ -188,14 +209,18 @@ public class ProcessEntity extends OwsObjectWithProperties {
         clone.setServer(getServer());
         clone.toolTipText = null; // indicate lazy init.
 
-        for(ProcessPort port : getInputPorts()) {
+        for (ProcessPort port : getInputPorts()) {
             clone.addInputPort(port);
         }
 
-        for(ProcessPort port : getOutputPorts()) {
+        for (ProcessPort port : getOutputPorts()) {
             clone.addOutputPort(port);
         }
         
+        for(Entry<String, PropertyGroup<? extends IObjectWithProperties>> addGroup : additionalGroups.entrySet()) {
+            clone.setProperty(addGroup.getKey(), addGroup.getValue());
+        }
+
         return clone;
     }
 

@@ -56,7 +56,7 @@ public abstract class AbstractTreeViewController {
 
     TreeView getTreeView() {
         if (null == treeView) {
-            this.treeView = AppTreeFactory.createTree(app.getGraphView(), app.getProcessProvider());
+            this.treeView = AppTreeFactory.createTree(app.getGraphView(), app.getProcessProvider(), app.getProcessMetricProvider());
             ToolTipManager.sharedInstance().registerComponent(this.treeView.getGui());
         }
 
@@ -76,7 +76,7 @@ public abstract class AbstractTreeViewController {
                     if (null != dropTargetAdapter) {
                         return;
                     }
-                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), getGraphDndProxy());
+                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), app.getProcessMetricProvider(), getGraphDndProxy());
                     dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
                     dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
                     getGraphDndProxy().setVisible(true);

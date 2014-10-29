@@ -1,13 +1,19 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -23,11 +29,13 @@ class TreeViewMouseAdapter extends MouseAdapter {
     private GraphView graphView;
     private TreeView treeView;
     private ProcessProvider processProvider;
+    private final ProcessMetricProvider processMetricProvider;
 
-    TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider) {
+    TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider, ProcessMetricProvider processMetricProvider) {
         this.graphView = graphView;
         this.treeView = treeView;
         this.processProvider = processProvider;
+        this.processMetricProvider = processMetricProvider;
     }
 
     private ProcessProvider getProcessProvider() {
@@ -48,8 +56,16 @@ class TreeViewMouseAdapter extends MouseAdapter {
                     // load missing process data if necessary
                     ProcessEntity process = ((ProcessEntity) nodeObject);
                     if (!process.isIsFullyLoaded()) {
-                        process = getProcessProvider().getProcessEntity(process.getServer(), process.getOwsIdentifier());
-                        node.setUserObject(process);
+                        try {
+                            process = getProcessProvider().getProcessEntity(process.getServer(), process.getOwsIdentifier());
+                            PropertyGroup<PropertyGroup<Property<String>>> processMetric = processMetricProvider.getProcessMetric(process.getServer(), process.getOwsIdentifier());
+                            process.setProperty(processMetric.getPropertiesObjectName(), processMetric);
+                            
+                            node.setUserObject(process);
+                            process.setIsFullyLoaded(true);
+                        } catch (Exception ex) {
+                            Logger.getLogger(TreeViewMouseAdapter.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
 
                     // create graph cell (node) for this process
@@ -70,14 +86,14 @@ class TreeViewMouseAdapter extends MouseAdapter {
  */
 class AppTreeFactory {
 
-    static TreeView createTree(GraphView graphView, final ProcessProvider processProvider) {
+    static TreeView createTree(GraphView graphView, final ProcessProvider processProvider, final ProcessMetricProvider processMetricProvider) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
 
         // Java 1.7 Bugfix: add dummy node - otherwise the tree doesn't work?!
         root.add(new DefaultMutableTreeNode(""));
 
         TreeView treeView = new TreeView(root, processProvider);
-        treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider));
+        treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider, processMetricProvider));
         treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
         DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
         cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);

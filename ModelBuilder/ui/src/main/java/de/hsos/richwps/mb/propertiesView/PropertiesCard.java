@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import layout.TableLayout;
 
@@ -41,6 +42,7 @@ class PropertiesCard extends JScrollPane {
 
     protected IObjectWithProperties objectWithProperties;
     private PropertiesView propertiesView;
+    private final CompoundBorder propertyGroupPanelBorder;
 
     public PropertiesCard(final Window parentWindow, PropertiesView view) {
         super(new JPanel());
@@ -71,6 +73,13 @@ class PropertiesCard extends JScrollPane {
                 adjustContentPanelSize();
             }
         });
+
+        // create PropertyGroup borders
+        int outerWidth = 1;
+        int innerWidth = 2;
+        Border outerDark = new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, outerWidth, outerWidth, outerWidth);
+        Border innerBright = new ColorBorder(PropertyCardsConfig.headLabelBgColor, innerWidth, innerWidth, innerWidth, innerWidth);
+        propertyGroupPanelBorder = new CompoundBorder(outerDark, innerBright);
     }
 
     public IObjectWithProperties getObjectWithProperties() {
@@ -115,22 +124,26 @@ class PropertiesCard extends JScrollPane {
 
         int row = 0;
         for (IObjectWithProperties aProperty : properties) {
-            JPanel aPropertyRow;
+            JPanel aPropertyRow = null;
 
             // Property Component
             if (aProperty instanceof AbstractPropertyComponent) {
                 aPropertyRow = createPropertyComponentPanel((AbstractPropertyComponent) aProperty);
 
                 // Property Group
-            } else if (aProperty instanceof PropertyGroup) {
+            } else if (aProperty instanceof PropertyGroup
+                    && null != aProperty.getPropertiesObjectName()
+                    && !aProperty.getPropertiesObjectName().isEmpty()) {
                 aPropertyRow = createPropertyGroupPanel((PropertyGroup) aProperty);
 
                 // Property: get component
             } else if (aProperty instanceof Property) {
                 aPropertyRow = createPropertyComponentPanel(propertiesView.getComponentFor((Property) aProperty));
 
-                // other: recursive handling
-            } else {
+            }
+
+            // other: recursive handling
+            if (null == aPropertyRow) {
                 aPropertyRow = createPropertyPanel(aProperty, null);
                 aPropertyRow.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2.brighter(), 0, 0, 1, 0));
             }
@@ -143,13 +156,16 @@ class PropertiesCard extends JScrollPane {
 
     private TitledComponent createPropertyGroupPanel(PropertyGroup propertyGroup) {
         JPanel propertiesPanel = new JPanel();
-        propertiesPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
 
-        // create and add properties
+        // create and add properties to panel
         createPropertyPanel(propertyGroup, propertiesPanel);
 
+        // setup panel border
+        propertiesPanel.setBorder(propertyGroupPanelBorder);
+        
+        // add panel to foldable titled component
         TitledComponent groupPanel = createTitledComponent(propertyGroup.getPropertiesObjectName(), propertiesPanel);
-        groupPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
+//        groupPanel.setBorder(new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, 0, 1, 0));
 
         return groupPanel;
     }
@@ -185,7 +201,6 @@ class PropertiesCard extends JScrollPane {
 
 //    @Deprecated
 //    protected JTextField createEditablePropertyField(String property, String text) {
-
 //        PropertyTextField propertyField = new PropertyTextField(property, text);
 //
 //        JTextField label = (JTextField) propertyField.getComponent();
@@ -208,7 +223,6 @@ class PropertiesCard extends JScrollPane {
 //        getPropertyFields().add(propertyField);
 //        return label;
 //    }
-
     protected TitledComponent createTitledComponent(String title, Component component) {
         TitledComponent titledComponent = new TitledComponent(title, component, PropertyCardsConfig.titleHeight, true);
         titledComponent.setTitleFontColor(PropertyCardsConfig.propertyTitleFgColor);

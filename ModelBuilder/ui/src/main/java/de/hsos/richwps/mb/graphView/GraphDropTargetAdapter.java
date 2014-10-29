@@ -1,10 +1,14 @@
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
+import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientException;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.treeView.TransferableProcessEntity;
 import de.hsos.richwps.mb.treeView.TransferableProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableTreeNodes;
@@ -17,6 +21,8 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Adapter for performing drop actions depending on the transferred object(s).
@@ -30,10 +36,12 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
     private ProcessProvider processProvider;
 
     private List<mxCell> createdNodes;
+    private ProcessMetricProvider processMetricProvider;
 
-    public GraphDropTargetAdapter(ProcessProvider processProvider, GraphView graphView, Component c) {
+    public GraphDropTargetAdapter(ProcessProvider processProvider, GraphView graphView, ProcessMetricProvider processMetricProvider, Component c) {
         this.graphView = graphView;
         this.processProvider = processProvider;
+        this.processMetricProvider = processMetricProvider;
         dropTarget = new DropTarget(c, DnDConstants.ACTION_COPY, this, true, null);
     }
 
@@ -106,6 +114,13 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             ProcessEntity spProcess = processProvider.getProcessEntity(server, identifier);
             if (null != spProcess) {
                 processEntity = spProcess;
+                PropertyGroup<PropertyGroup<Property<String>>> processMetric = null;
+                try {
+                    processMetric = processMetricProvider.getProcessMetric(processEntity.getServer(), processEntity.getOwsIdentifier());
+                    processEntity.setProperty(processMetric.getPropertiesObjectName(), processMetric);
+                } catch (Exception ex) {
+                    Logger.getLogger(GraphDropTargetAdapter.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
 
             node = graphView.createNodeFromProcess(processEntity, location);

@@ -10,9 +10,11 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.Collection;
 import javax.swing.JOptionPane;
 
 /**
@@ -123,8 +125,8 @@ public class AppGraphView extends GraphView {
     public void newGraph(String remote) {
         Graph graph = super.newGraph();
         String remotePropertyKey = AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
-        Property remoteProperty = new Property(remotePropertyKey, remote);
-        graph.getGraphModel().setProperty(remotePropertyKey, remoteProperty);
+        Property remoteProperty = new Property(remotePropertyKey, Property.COMPONENT_TYPE_TEXTFIELD, remote);
+        graph.getGraphModel().addProperty(remoteProperty);
     }
 
     /**
@@ -144,23 +146,39 @@ public class AppGraphView extends GraphView {
                 }
             }
         });
-        
+
         GraphModel model = getGraph().getGraphModel();
-        Property loadedEndpointProperty = null;
-        for(IObjectWithProperties p : model.getProperties()) {
-            if(p.getPropertiesObjectName().equals(endpointProperty.getPropertiesObjectName())) {
-                loadedEndpointProperty = (Property) p;
-            }
-        }
-        
+        Property loadedEndpointProperty = getModelEndpointProperty(model.getProperties());
+
         updateRemotes();
 
-        if(null != loadedEndpointProperty) {
+        if (null != loadedEndpointProperty) {
             endpointProperty.setValue(loadedEndpointProperty.getValue());
             model.setProperty(loadedEndpointProperty.getPropertiesObjectName(), endpointProperty);
         }
-        
+
         app.setChangesSaved(true);
+    }
+
+    private Property getModelEndpointProperty(Collection<? extends IObjectWithProperties> modelProperties) {
+        Property foundProperty = null;
+
+        for (IObjectWithProperties p : modelProperties) {
+            
+            // property found
+            if (p instanceof Property && p.getPropertiesObjectName().equals(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT)) {
+                foundProperty = (Property) p;
+                
+            // current property is a propertygroup -> recursive search
+            } else if (p instanceof PropertyGroup) {
+                Property subProperty = getModelEndpointProperty(p.getProperties());
+                if (null != subProperty) {
+                    foundProperty = subProperty;
+                }
+            }
+        }
+
+        return foundProperty;
     }
 
     void updateRemotes() {
