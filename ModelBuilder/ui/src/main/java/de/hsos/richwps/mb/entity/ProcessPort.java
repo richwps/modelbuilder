@@ -14,7 +14,6 @@ public class ProcessPort extends OwsObjectWithProperties {
     public static String TOOLTIP_STYLE_INPUT = "";
     public static String TOOLTIP_STYLE_OUTPUT = "";
 
-//    private HashMap<String, Property> properties;
     public static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
 
     public static String COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX = "Datatype description complex";
@@ -229,13 +228,13 @@ public class ProcessPort extends OwsObjectWithProperties {
                     sb.append(ProcessPort.TOOLTIP_STYLE_OUTPUT);
                 }
             }
-            sb.append("'");
+            sb.append("'><b>");
 
             if (null != getDatatype()) {
                 sb.append("[").append(getDatatype().toString().charAt(0)).append("] ");
             }
 
-            sb.append("<b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><i>").append(getOwsAbstract()).append("</i></div></html>");
+            sb.append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><i>").append(getOwsAbstract()).append("</i></div></html>");
             toolTipText = sb.toString();
         }
 
@@ -248,7 +247,6 @@ public class ProcessPort extends OwsObjectWithProperties {
 
         clone.flowInput = flowInput;
         clone.toolTipText = null; // indicate lazy init.
-//        clone.setDataTypeDescription(getDataTypeDescription());
 
         return clone;
     }

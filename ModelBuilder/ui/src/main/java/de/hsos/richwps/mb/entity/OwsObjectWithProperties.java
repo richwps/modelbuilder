@@ -97,8 +97,7 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
 
     protected OwsObjectWithProperties cloneInto(OwsObjectWithProperties clone) {
         for (Property property : owsGroup.getProperties()) {
-            // TODO clone properties !!
-            clone.setProperty(property.getPropertiesObjectName(), property);
+            clone.setProperty(property.getPropertiesObjectName(), (IObjectWithProperties) property.clone());
         }
 
         clone.setToolTipText(toolTipText);

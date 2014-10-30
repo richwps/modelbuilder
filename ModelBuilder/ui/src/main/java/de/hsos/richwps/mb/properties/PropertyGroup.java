@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map.Entry;
 
 /**
  * A group of objects with properties.
@@ -74,7 +75,15 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
         this.isTransient = isTransient;
     }
     
-    
-    
+    public PropertyGroup<E> clone() {
+        PropertyGroup<E> clone = new PropertyGroup<>(propertiesObjectName);
+        clone.setIsTransient(isTransient);
+        
+        for(Entry<String, E> pEntry : this.propertyObjects.entrySet()) {
+            clone.setProperty(pEntry.getKey(), pEntry.getValue());
+        }
+        
+        return clone;
+    }
 
 }

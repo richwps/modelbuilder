@@ -57,6 +57,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
         this.editable = editable;
         this.value = value;
 
+        this.possibleValues = new LinkedList<>();
         this.changeListeners = new LinkedList<>();
     }
 
@@ -161,4 +162,22 @@ public class Property<E> implements IObjectWithProperties, Serializable {
         this.isTransient = isTransient;
     }
 
+    public void addPossibleValue(E value) {
+        possibleValues.add(value);
+    }
+    
+    public Property<E> clone() {
+        Property<E> clone = new Property<>(propertiesObjectName);
+        clone.setValue(value);
+        clone.setEditable(editable);
+        clone.setIsTransient(isTransient);
+        clone.setComponentType(componentType);
+
+        for(E pVal : possibleValues) {
+            clone.addPossibleValue(pVal);
+        }
+        
+        return clone;
+    }
+    
 }
