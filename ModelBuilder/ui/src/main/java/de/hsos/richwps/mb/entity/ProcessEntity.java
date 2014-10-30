@@ -20,6 +20,7 @@ public class ProcessEntity extends OwsObjectWithProperties {
     public static String PROPERTIES_KEY_SERVER = "Server";
     public static String PROPERTIES_KEY_INPUT_PORTS = "Inputs";
     public static String PROPERTIES_KEY_OUTPUT_PORTS = "Outputs";
+    public static String PROPERTIES_KEY_VERSION = "Version";
 
     private LinkedList<ProcessPort> inputPorts;
     private LinkedList<ProcessPort> outputPorts;
@@ -62,12 +63,12 @@ public class ProcessEntity extends OwsObjectWithProperties {
     public Collection<? extends IObjectWithProperties> getProperties() {
         List<IObjectWithProperties> properties = new LinkedList<>();
         properties.add(owsGroup);
-        
+
         // add additional groups
         for (PropertyGroup pGroup : additionalGroups.values()) {
             properties.add(pGroup);
         }
-        
+
         // add inputs
         PropertyGroup inputsGroup = new PropertyGroup(PROPERTIES_KEY_INPUT_PORTS);
         inputsGroup.setIsTransient(true);
@@ -95,7 +96,8 @@ public class ProcessEntity extends OwsObjectWithProperties {
         // create OWS object properties
         super.createProperties(owsIdentifier);
 
-        // add server property
+        // additional properties
+        owsGroup.addObject(new Property<>(PROPERTIES_KEY_VERSION, Property.COMPONENT_TYPE_TEXTFIELD, ""));
         owsGroup.addObject(new Property<>(PROPERTIES_KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
     }
 

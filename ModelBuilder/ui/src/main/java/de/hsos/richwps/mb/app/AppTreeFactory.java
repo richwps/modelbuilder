@@ -53,17 +53,13 @@ class TreeViewMouseAdapter extends MouseAdapter {
 
                 if (nodeObject instanceof ProcessEntity) {
 
-                    // load missing process data if necessary
+                    // try to load missing process data
                     ProcessEntity process = ((ProcessEntity) nodeObject);
-                    if (!process.isIsFullyLoaded()) {
-                        try {
-                            process = getProcessProvider().getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
-                            
-                            node.setUserObject(process);
-                            process.setIsFullyLoaded(true);
-                        } catch (Exception ex) {
-                            Logger.getLogger(TreeViewMouseAdapter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    try {
+                        process = getProcessProvider().getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+                        node.setUserObject(process);
+                    } catch (Exception ex) {
+                        Logger.getLogger(TreeViewMouseAdapter.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                     // create graph cell (node) for this process

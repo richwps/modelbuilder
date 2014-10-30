@@ -83,7 +83,7 @@ public class GraphViewTest {
         modelAbstract = "M abstract";
         modelTitle = "M title";
         modelVersion = "M version";
-        
+
         // PROCESS DATA
         processEntityServer = "PE server";
         processEntityIdentifier = "PE id";
@@ -223,7 +223,7 @@ public class GraphViewTest {
             }
 
             modelFile.delete();
-            
+
             if (null != theErr) {
                 throw theErr;
             }
@@ -236,6 +236,7 @@ public class GraphViewTest {
 
     private void assertProcessesEqual(ProcessEntity process1, ProcessEntity process2) {
         List<String> keys = new LinkedList<>();
+        keys.add(ProcessEntity.PROPERTIES_KEY_VERSION);
         keys.add(ProcessEntity.PROPERTIES_KEY_SERVER);
 
         assertOwsObjectsEqual(process1, process2, keys);
@@ -255,10 +256,9 @@ public class GraphViewTest {
             throw new AssertionError(ERR_MSG + " (one is null)");
         }
 
-        propertyKeys.add(OwsObjectWithProperties.KEY_IDENTIFIER);
-        propertyKeys.add(OwsObjectWithProperties.KEY_ABSTRACT);
-        propertyKeys.add(OwsObjectWithProperties.KEY_TITLE);
-        propertyKeys.add(OwsObjectWithProperties.KEY_VERSION);
+        propertyKeys.add(OwsObjectWithProperties.PROPERTIES_KEY_IDENTIFIER);
+        propertyKeys.add(OwsObjectWithProperties.PROPERTIES_KEY_ABSTRACT);
+        propertyKeys.add(OwsObjectWithProperties.PROPERTIES_KEY_TITLE);
 
         for (String key : propertyKeys) {
             Object obj1Value = obj1.getPropertyValue(key);

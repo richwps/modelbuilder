@@ -19,10 +19,9 @@ import java.util.HashMap;
  */
 public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObject, Serializable {
 
-    public static String KEY_IDENTIFIER = "Identifier";
-    public static String KEY_TITLE = "Title";
-    public static String KEY_ABSTRACT = "Abstract";
-    public static String KEY_VERSION = "Version";
+    public static String PROPERTIES_KEY_IDENTIFIER = "Identifier";
+    public static String PROPERTIES_KEY_TITLE = "Title";
+    public static String PROPERTIES_KEY_ABSTRACT = "Abstract";
 
     protected final String OWS_PROPERTY_GROUP_NAME = "OWS Data";
 
@@ -46,7 +45,7 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
      */
     @Override
     public void setOwsTitle(String owsTitle) {
-        owsGroup.getPropertyObject(KEY_TITLE).setValue(owsTitle);
+        owsGroup.getPropertyObject(PROPERTIES_KEY_TITLE).setValue(owsTitle);
         toolTipText = null;
     }
 
@@ -57,7 +56,7 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
      */
     @Override
     public void setOwsIdentifier(String owsIdentifier) {
-        owsGroup.getPropertyObject(KEY_IDENTIFIER).setValue(owsIdentifier);
+        owsGroup.getPropertyObject(PROPERTIES_KEY_IDENTIFIER).setValue(owsIdentifier);
         toolTipText = null;
     }
 
@@ -68,23 +67,23 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
      */
     @Override
     public void setOwsAbstract(String owsAbstract) {
-        owsGroup.getPropertyObject(KEY_ABSTRACT).setValue(owsAbstract);
+        owsGroup.getPropertyObject(PROPERTIES_KEY_ABSTRACT).setValue(owsAbstract);
         toolTipText = null;
     }
 
     @Override
     public String getOwsIdentifier() {
-        return (String) owsGroup.getPropertyObject(KEY_IDENTIFIER).getValue();
+        return (String) owsGroup.getPropertyObject(PROPERTIES_KEY_IDENTIFIER).getValue();
     }
 
     @Override
     public String getOwsTitle() {
-        return (String) owsGroup.getPropertyObject(KEY_TITLE).getValue();
+        return (String) owsGroup.getPropertyObject(PROPERTIES_KEY_TITLE).getValue();
     }
 
     @Override
     public String getOwsAbstract() {
-        return (String) owsGroup.getPropertyObject(KEY_ABSTRACT).getValue();
+        return (String) owsGroup.getPropertyObject(PROPERTIES_KEY_ABSTRACT).getValue();
     }
 
     public String getToolTipText() {
@@ -117,12 +116,10 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
 
     protected void createProperties(String owsIdentifier) {
         owsGroup = new PropertyGroup(OWS_PROPERTY_GROUP_NAME);
-        owsGroup.addObject(new Property<>(KEY_IDENTIFIER, Property.COMPONENT_TYPE_TEXTFIELD, owsIdentifier));
-        owsGroup.addObject(new Property<>(KEY_TITLE, Property.COMPONENT_TYPE_TEXTFIELD, ""));
-        owsGroup.addObject(new Property<>(KEY_ABSTRACT, Property.COMPONENT_TYPE_TEXTFIELD, ""));
-        owsGroup.addObject(new Property<>(KEY_VERSION, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        owsGroup.addObject(new Property<>(PROPERTIES_KEY_IDENTIFIER, Property.COMPONENT_TYPE_TEXTFIELD, owsIdentifier));
+        owsGroup.addObject(new Property<>(PROPERTIES_KEY_TITLE, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        owsGroup.addObject(new Property<>(PROPERTIES_KEY_ABSTRACT, Property.COMPONENT_TYPE_TEXTFIELD, ""));
     }
-
 
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {

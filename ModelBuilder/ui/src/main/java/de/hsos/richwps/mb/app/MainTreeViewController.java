@@ -85,7 +85,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         fillTree(true);
     }
 
-    void fillTree(boolean loadRemotes) {
+    void fillTree(boolean clearCache) {
 
         ProcessProvider processProvider = getProcessProvider();
 
@@ -107,6 +107,9 @@ public class MainTreeViewController extends AbstractTreeViewController {
                         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server.getEndpoint());
 
                         for (ProcessEntity process : server.getProcesses()) {
+                            if (clearCache) {
+                                process.setIsFullyLoaded(false);
+                            }
                             serverNode.add(new DefaultMutableTreeNode(process));
                         }
                         processesNode.add(serverNode);
@@ -159,7 +162,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         root.add(local);
 
         // adds persisted remote servers
-        if (loadRemotes) {
+        if (clearCache) {
             setRemotes(processProvider.getPersistedRemotes(), true);
         }
 

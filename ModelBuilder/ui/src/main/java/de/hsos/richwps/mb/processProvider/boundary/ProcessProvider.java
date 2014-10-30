@@ -9,6 +9,7 @@ import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.ows.SPClient;
@@ -128,6 +129,12 @@ public class ProcessProvider {
                             process = new ProcessEntity(server, spProcess.getIdentifier());
                             process.setOwsAbstract(spProcess.getAbstract());
                             process.setOwsTitle(spProcess.getTitle());
+
+                            String versionKey = ProcessEntity.PROPERTIES_KEY_VERSION;
+                            String versionType = Property.COMPONENT_TYPE_TEXTFIELD;
+                            String versionValue = spProcess.getProcessVersion();
+                            Property versionProperty = new Property(versionKey, versionType, versionValue);
+                            process.setProperty(versionKey, versionProperty);
 
                             // Map input ports
                             try {
@@ -347,7 +354,7 @@ public class ProcessProvider {
     }
 
     private void addProcessMetrics(ProcessEntity process) {
-        
+
         // get metric properties group
         String server = process.getServer();
         String identifier = process.getOwsIdentifier();
