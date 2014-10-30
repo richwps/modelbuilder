@@ -11,14 +11,14 @@ import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.sp.client.RDFException;
-import de.hsos.richwps.sp.client.wps.SPClient;
-import de.hsos.richwps.sp.client.wps.Vocabulary;
-import de.hsos.richwps.sp.client.wps.gettypes.InAndOutputForm;
-import de.hsos.richwps.sp.client.wps.gettypes.Input;
-import de.hsos.richwps.sp.client.wps.gettypes.Network;
-import de.hsos.richwps.sp.client.wps.gettypes.Output;
-import de.hsos.richwps.sp.client.wps.gettypes.Process;
-import de.hsos.richwps.sp.client.wps.gettypes.WPS;
+import de.hsos.richwps.sp.client.ows.SPClient;
+import de.hsos.richwps.sp.client.ows.Vocabulary;
+import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
+import de.hsos.richwps.sp.client.ows.gettypes.Input;
+import de.hsos.richwps.sp.client.ows.gettypes.Network;
+import de.hsos.richwps.sp.client.ows.gettypes.Output;
+import de.hsos.richwps.sp.client.ows.gettypes.Process;
+import de.hsos.richwps.sp.client.ows.gettypes.WPS;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -121,7 +121,7 @@ public class ProcessProvider {
             try {
                 if (server.equals(wps.getEndpoint())) {
 
-                    for (de.hsos.richwps.sp.client.wps.gettypes.Process spProcess : wps.getProcesses()) {
+                    for (de.hsos.richwps.sp.client.ows.gettypes.Process spProcess : wps.getProcesses()) {
 
                         if (spProcess.getIdentifier().equals(identifier)) {
                             // Map process properties
