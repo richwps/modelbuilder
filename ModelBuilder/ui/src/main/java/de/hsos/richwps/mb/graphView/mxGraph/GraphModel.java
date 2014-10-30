@@ -28,10 +28,10 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
         // TODO move keys here
         PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
-        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "id", true));
-        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "abstract", true));
-        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "title", true));
-        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "version", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER, "", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT, "", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE, "", true));
+        group1.addObject(new Property(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION, "", true));
 
         propertyGroups.add(group1);
     }
