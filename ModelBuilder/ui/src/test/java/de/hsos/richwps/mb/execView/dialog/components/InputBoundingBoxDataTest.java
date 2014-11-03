@@ -60,7 +60,7 @@ public class InputBoundingBoxDataTest {
         InputBoundingBoxDataSpecifier spec;
         spec = new InputBoundingBoxDataSpecifier();
         InputBoundingBoxData instance = new InputBoundingBoxData(spec);
-        String expResult = "1.0"+" "+"1.0"+","+"0.0"+" "+"0.0";
+        String expResult = "-2.0"+" "+"-1.0"+","+"3.0"+" "+"4.0";
         String result = instance.getText();
         assertEquals(expResult, result);
     }

@@ -155,7 +155,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="lowerCornerXCoords">
       <Properties>
-        <Property name="text" type="java.lang.String" value="42.943"/>
+        <Property name="text" type="java.lang.String" value="-2.0"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[84, 28]"/>
         </Property>
@@ -163,6 +163,9 @@
       <AccessibilityProperties>
         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="lowerCornerXCoords"/>
       </AccessibilityProperties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lowerCornerXCoordsActionPerformed"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="2" gridY="3" gridWidth="1" gridHeight="1" fill="3" ipadX="5" ipadY="5" insetsTop="5" insetsLeft="5" insetsBottom="5" insetsRight="5" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -171,7 +174,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="lowerCornerYCoords">
       <Properties>
-        <Property name="text" type="java.lang.String" value="-71.032"/>
+        <Property name="text" type="java.lang.String" value="-1.0"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[84, 28]"/>
         </Property>
@@ -187,7 +190,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="upperCornerXCoords">
       <Properties>
-        <Property name="text" type="java.lang.String" value="43.039"/>
+        <Property name="text" type="java.lang.String" value="3.0"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[84, 28]"/>
         </Property>
@@ -203,7 +206,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="upperCornerYCoords">
       <Properties>
-        <Property name="text" type="java.lang.String" value="-69.856"/>
+        <Property name="text" type="java.lang.String" value="4.0"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[84, 28]"/>
         </Property>

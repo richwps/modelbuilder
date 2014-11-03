@@ -281,8 +281,13 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectType, gridBagConstraints);
 
-        lowerCornerXCoords.setText("42.943");
+        lowerCornerXCoords.setText("-2.0");
         lowerCornerXCoords.setMinimumSize(new java.awt.Dimension(84, 28));
+        lowerCornerXCoords.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lowerCornerXCoordsActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
@@ -294,7 +299,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         add(lowerCornerXCoords, gridBagConstraints);
         lowerCornerXCoords.getAccessibleContext().setAccessibleName("lowerCornerXCoords");
 
-        lowerCornerYCoords.setText("-71.032");
+        lowerCornerYCoords.setText("-1.0");
         lowerCornerYCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
@@ -307,7 +312,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         add(lowerCornerYCoords, gridBagConstraints);
         lowerCornerYCoords.getAccessibleContext().setAccessibleName("lowerCornerYCoords");
 
-        upperCornerXCoords.setText("43.039");
+        upperCornerXCoords.setText("3.0");
         upperCornerXCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -319,7 +324,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         add(upperCornerXCoords, gridBagConstraints);
         upperCornerXCoords.getAccessibleContext().setAccessibleName("upperCornerXCoords");
 
-        upperCornerYCoords.setText("-69.856");
+        upperCornerYCoords.setText("4.0");
         upperCornerYCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
@@ -390,6 +395,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
     private void selectTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectTypeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_selectTypeActionPerformed
+
+    private void lowerCornerXCoordsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowerCornerXCoordsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lowerCornerXCoordsActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
