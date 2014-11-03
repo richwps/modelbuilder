@@ -171,8 +171,8 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         valueLabel3 = new javax.swing.JLabel();
         valueLabel4 = new javax.swing.JLabel();
 
-        setMinimumSize(new java.awt.Dimension(600, 225));
-        setPreferredSize(new java.awt.Dimension(500, 225));
+        setMinimumSize(new java.awt.Dimension(600, 250));
+        setPreferredSize(new java.awt.Dimension(500, 250));
         setLayout(new java.awt.GridBagLayout());
 
         abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -201,12 +201,12 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
-        titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        titleValue.setMinimumSize(new java.awt.Dimension(16, 32));
         titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -218,12 +218,11 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
         abstractValue.setRows(2);
-        abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        abstractValue.setMinimumSize(new java.awt.Dimension(16, 32));
         abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -267,6 +266,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         add(typeLabel, gridBagConstraints);
 
         selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "$Supported-CRS-Types" }));
+        selectType.setMinimumSize(new java.awt.Dimension(16, 27));
         selectType.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectTypeActionPerformed(evt);
@@ -282,10 +282,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         add(selectType, gridBagConstraints);
 
         lowerCornerXCoords.setText("42.943");
+        lowerCornerXCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -295,10 +295,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         lowerCornerXCoords.getAccessibleContext().setAccessibleName("lowerCornerXCoords");
 
         lowerCornerYCoords.setText("-71.032");
+        lowerCornerYCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -308,11 +308,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         lowerCornerYCoords.getAccessibleContext().setAccessibleName("lowerCornerYCoords");
 
         upperCornerXCoords.setText("43.039");
+        upperCornerXCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -321,10 +320,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         upperCornerXCoords.getAccessibleContext().setAccessibleName("upperCornerXCoords");
 
         upperCornerYCoords.setText("-69.856");
+        upperCornerYCoords.setMinimumSize(new java.awt.Dimension(84, 28));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -336,14 +335,17 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         valueLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel1.setLabelFor(lowerCornerXCoords);
         valueLabel1.setText("LowerCorner Coordinates X:");
+        valueLabel1.setToolTipText("LowerCorner Coordinates X");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(valueLabel1, gridBagConstraints);
+        valueLabel1.getAccessibleContext().setAccessibleDescription("");
 
         valueLabel2.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel2.setLabelFor(lowerCornerYCoords);
@@ -351,7 +353,6 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -361,14 +362,16 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         valueLabel3.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel3.setLabelFor(upperCornerXCoords);
         valueLabel3.setText("UpperCorner Coordinates X:");
+        valueLabel3.setToolTipText("UpperCorner Coordinates X");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(valueLabel3, gridBagConstraints);
+        valueLabel3.getAccessibleContext().setAccessibleName("UpperCorner Coordinates X:");
 
         valueLabel4.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel4.setLabelFor(upperCornerYCoords);
