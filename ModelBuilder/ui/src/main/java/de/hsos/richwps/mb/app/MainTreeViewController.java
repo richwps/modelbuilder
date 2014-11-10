@@ -202,10 +202,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
                 // load metric properties
                 pe = getProcessProvider().getFullyLoadedProcessEntity(pe);
-//                PropertyGroup processMetric = app.getProcessMetricProvider().getProcessMetric(uri, processid);
-//                pe.setProperty(processMetric.getPropertiesObjectName(), processMetric);
-//
-//                pe.setIsFullyLoaded(true);
 
                 serverNode.add(new DefaultMutableTreeNode(pe));
             }
