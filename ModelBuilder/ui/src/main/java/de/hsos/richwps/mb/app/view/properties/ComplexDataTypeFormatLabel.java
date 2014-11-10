@@ -49,17 +49,19 @@ class SelectFormatFrame extends MbDialog {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // double clicked an entry
-                if(2 == e.getClickCount() && e.getButton() == MouseEvent.BUTTON1) {
+                if (2 == e.getClickCount() && e.getButton() == MouseEvent.BUTTON1) {
                     // store selected format for export and close window
                     handleDialogButton(BTN_ID_OK);
                 }
             }
         });
 
-        // reload selection
-        for (ComplexDataTypeFormat format : selected) {
-            int indexOf = formats.indexOf(format);
-            formatsList.getSelectionModel().addSelectionInterval(indexOf, indexOf);
+        // reload selection if available
+        if (null != selected) {
+            for (ComplexDataTypeFormat format : selected) {
+                int indexOf = formats.indexOf(format);
+                formatsList.getSelectionModel().addSelectionInterval(indexOf, indexOf);
+            }
         }
 
         getContentPane().setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
@@ -170,12 +172,12 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                     @Override
                     public void windowClosed(WindowEvent e) {
                         List<ComplexDataTypeFormat> selectedFormats = selectFormatFrame.getSelectedFormats();
-                        
+
                         // null indicates the selection was cancelled
                         // (and that changes should not be saved)
                         if (null != selectedFormats) {
                             setSelectedFormats(selectedFormats);
-                            
+
                             for (IFormatSelectionListener listener : getSelectionListeners()) {
                                 listener.formatSelected(selectedFormats);
                             }
@@ -187,7 +189,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                 selectFormatFrame.setVisible(true);
             }
         });
-        
+
         double[][] layout = new double[][]{
             {TableLayout.FILL, TableLayout.PREFERRED},
             {TableLayout.PREFERRED},};
@@ -202,7 +204,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         add(formatLabel, "0 0");
         add(bar, "1 0");
     }
-    
+
     private List<ComplexDataTypeFormat> getSelectedFormats() {
         return selectedFormats;
     }
