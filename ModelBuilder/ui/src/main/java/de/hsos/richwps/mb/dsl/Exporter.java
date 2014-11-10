@@ -278,20 +278,22 @@ public class Exporter {
                 InReference inref = new InReference(source.getOwsIdentifier());
                 execute.addInput(inref, target.getOwsIdentifier());
             } else {
-                // Reading varibale from varibale reference map
-                // lookup variable
+                // Read variable from reference map
+                
                 VarReference variable = null;
-                String unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
-                //FIXME
-                String owsin = this.getOwsIdentifier(source.getOwsIdentifier());
+                String unique_src ="";
+                unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
+                
+                // lookup variable
                 if (this.variables.containsKey(unique_src)) {
-                    //variable allready declared, lets use it.
+                    //variable allready declared, lets re-use it.
                     variable = (VarReference) this.variables.get(unique_src);
                 } else {
                     //variable does not exist, we need to create it first.
                     variable = new VarReference(unique_src);
                     this.variables.put(unique_src, variable);
                 }
+                String owsin = this.getOwsIdentifier(target.getOwsIdentifier());
                 execute.addInput(variable, owsin);
             }
         }
