@@ -462,6 +462,11 @@ public class App {
 
                 UndeployRequest request = new UndeployRequest(wpsendpoint, wpstendpoint, identifier);
                 provider.request(request);
+                try {
+                    provider.disconnect();
+                } catch (Exception ex) {
+                    //nop
+                }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(frame,
                         AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
@@ -485,7 +490,6 @@ public class App {
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
         }
-
     }
 
     /**

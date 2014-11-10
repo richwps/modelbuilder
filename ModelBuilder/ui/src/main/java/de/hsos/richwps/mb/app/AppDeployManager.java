@@ -61,7 +61,6 @@ public class AppDeployManager {
         this.error = false;
     }
 
-    
     /**
      * Performs the deployment.
      */
@@ -89,7 +88,7 @@ public class AppDeployManager {
             this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
             return "";
         }
-  //generate rola
+        //generate rola
         final String rola = this.generateROLA();
         if (null == rola) {
             this.error = true;
@@ -98,7 +97,7 @@ public class AppDeployManager {
         }
         return rola;
     }
-    
+
     /**
      * Performs the deployment.
      */
@@ -181,7 +180,7 @@ public class AppDeployManager {
             if (request.isException()) {
                 this.error = true;
                 this.deploymentFailed(AppConstants.DEPLOY_SERVERSIDE_ERROR);
-                String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n" 
+                String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n"
                         + request.getException();
                 JOptionPane.showMessageDialog(null, msg);
                 Logger.log("Debug:\n" + request.getException());
@@ -195,6 +194,11 @@ public class AppDeployManager {
             this.error = true;
             this.deploymentFailed("An error occured while deployment.");
             Logger.log("Debug:\n" + ex.getLocalizedMessage());
+        }
+        try {
+            instance.disconnect();
+        } catch (Exception ex) {
+            //nop
         }
     }
 
