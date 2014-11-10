@@ -16,6 +16,7 @@ public class AppActionProvider {
     public static enum APP_ACTIONS {
 
         // FILE
+// FILE
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP,
         // EDIT
         UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
@@ -27,7 +28,7 @@ public class AppActionProvider {
         // HELP
         ABOUT,
         // (others)
-        PREVIEW,
+        PREVIEW_ROLA,
         DEPLOY,
         UNDEPLOY,
         //

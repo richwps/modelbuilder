@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.app.actions.AppActionProvider;
+import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -233,25 +235,26 @@ public class AppConstants {
      * the keys refer to MenuBar enum.
      */
     public static final String[][] MENU_ITEM_CAPTIONS = new String[][]{
-        {"NEW_MODEL", "New"},
-        {"LOAD_MODEL", "Open"},
-        {"SAVE_MODEL", "Save"},
-        {"SAVE_MODEL_AS", "Save as"},
-        {"SHOW_PREFERENCES", "Configuration"},
-        {"EXIT_APP", "Exit"},
-        {"UNDO", "Undo"},
-        {"REDO", "Redo"},
-        {"DO_LAYOUT", "Layout"},
-        {"DEPLOY", "Deploy"},
-        {"UNDEPLOY", "Undeploy"},
-        {"RELOAD_PROCESSES", "Reload processes"},
-        {"MANAGE_REMOTES", "Manage remotes"},
-        {"PUBLISH", "Publish model at SemanticProxy"},
-        {"EXECUTE", "Execute this process"},
-        {"EXECUTE_ANY", "Execute a process"},
-        {"PROFILE", "Profile this process"},
-        {"TEST", "Test this process"},
-        {"ABOUT", "About"},};
+        {AppActionProvider.APP_ACTIONS.NEW_MODEL.name(), "New"},
+        {AppActionProvider.APP_ACTIONS.LOAD_MODEL.name(), "Open"},
+        {AppActionProvider.APP_ACTIONS.SAVE_MODEL.name(), "Save"},
+        {AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS.name(), "Save as"},
+        {AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES.name(), "Configuration"},
+        {AppActionProvider.APP_ACTIONS.EXIT_APP.name(), "Exit"},
+        {AppActionProvider.APP_ACTIONS.UNDO.name(), "Undo"},
+        {AppActionProvider.APP_ACTIONS.REDO.name(), "Redo"},
+        {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout"},
+        {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy"},
+        {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy"},
+        {AppActionProvider.APP_ACTIONS.PREVIEW_ROLA.name(), "Preview ROLA"},
+        {AppActionProvider.APP_ACTIONS.RELOAD_PROCESSES.name(), "Reload processes"},
+        {AppActionProvider.APP_ACTIONS.MANAGE_REMOTES.name(), "Manage remotes"},
+        {AppActionProvider.APP_ACTIONS.PUBLISH.name(), "Publish model at SemanticProxy"},
+        {AppActionProvider.APP_ACTIONS.EXECUTE.name(), "Execute this process"},
+        {AppActionProvider.APP_ACTIONS.EXECUTE_ANY.name(), "Execute a process"},
+        {AppActionProvider.APP_ACTIONS.PROFILE.name(), "Profile this process"},
+        {AppActionProvider.APP_ACTIONS.TEST.name(), "Test this process"},
+        {AppActionProvider.APP_ACTIONS.ABOUT.name(), "About"},};
 
     /**
      * the keys refer to MenuBar enum.
@@ -285,7 +288,7 @@ public class AppConstants {
     public final static String PROPERTIES_PROPERTY_EDIT = "edit property '%s' of '%s'";
     public final static String PROPERTIES_MODELDATA_TITLE = "Model";
     public final static String PROPERTIES_MODELDATA_IDENTIFIER = "Name";
-    public final static String PROPERTIES_MODELDATA = "OWS information";
+    public final static String PROPERTIES_MODELDATA = "OWS Data";
     public final static String PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER = "Identifier";
     public final static String PROPERTIES_KEY_MODELDATA_OWS_TITLE = "Title";
     public final static String PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT = "Abstract";

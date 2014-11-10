@@ -65,7 +65,7 @@ public class AppActionHandler implements IAppActionHandler {
             case DO_LAYOUT:
                 doLayout();
                 break;
-            case PREVIEW:
+            case PREVIEW_ROLA:
                 doPreview();
                 break;
             case DEPLOY:
