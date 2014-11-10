@@ -360,7 +360,7 @@ public class AppRichWPSManager {
 
                     if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                        ComplexDataTypeFormat format = description.getFormat();
+                        ComplexDataTypeFormat format = description.getDefaultFormat();
                         supportedType.add(format.getMimeType());
                         supportedType.add(format.getSchema());
                         supportedType.add(format.getEncoding());
@@ -435,7 +435,7 @@ public class AppRichWPSManager {
 
                     if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                        ComplexDataTypeFormat format = description.getFormat();
+                        ComplexDataTypeFormat format = description.getDefaultFormat();
                         supportedType.add(format.getMimeType());
                         supportedType.add(format.getSchema());
                         supportedType.add(format.getEncoding());
