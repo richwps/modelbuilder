@@ -97,9 +97,9 @@ public class App {
     public boolean areChangesSaved() {
         return changesSaved;
     }
-    
+
     ProcessMetricProvider getProcessMetricProvider() {
-        if(null == processMetricProvider) {
+        if (null == processMetricProvider) {
             try {
                 // TODO create settings
                 processMetricProvider = new ProcessMetricProvider("http://localhost:1111");
@@ -107,7 +107,7 @@ public class App {
                 showErrorMessage(ex.getMessage());
             }
         }
-        
+
         return processMetricProvider;
     }
 
@@ -201,6 +201,7 @@ public class App {
 
     /**
      * Gets the SubTreeView's controller for currently used modelling elements.
+     *
      * @return
      */
     SubTreeViewController getSubTreeView() {
@@ -397,25 +398,30 @@ public class App {
         getPropertiesView().setObjectWithProperties(getGraphView().getGraph().getGraphModel());
     }
 
-    
     /**
      * Previews the opend model.
      */
     void preview() {
         AppDeployManager manager = new AppDeployManager(this);
         String rola = manager.preview();
+
         if (manager.isError()) {
             JOptionPane.showMessageDialog(frame,
                     AppConstants.DEPLOY_ERROR_DIALOG_MSG,
                     AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
             //TODO get error?
-        }else{
-            JOptionPane.showMessageDialog(frame, rola);
+        } else {
+            javax.swing.JTextArea textArea = new javax.swing.JTextArea(rola);
+            javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+            JOptionPane.showMessageDialog(frame, scrollPane);
         }
         //new AppDeployManager(this).deploy();
     }
-    
+
     /**
      * Deploys the opend model.
      */
@@ -584,7 +590,8 @@ public class App {
 
     /**
      * Fires the "show error message" action with the given message.
-     * @param message 
+     *
+     * @param message
      */
     void showErrorMessage(String message) {
         AppAbstractAction action = getActionProvider().getAction(APP_ACTIONS.SHOW_ERROR_MSG);
