@@ -99,7 +99,7 @@ public class Exporter {
                 //local/remote identification based on given hostname.
                 String baseuria = url.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
-                Logger.log("Debug:\n comparing "+baseuria+" with "+baseurib);
+                //Logger.log("Debug:\n comparing "+baseuria+" with "+baseurib);
                 boolean isLocalBinding = baseuria.equals(baseurib);
                 this.handleProcessCell(cell, isLocalBinding);
 

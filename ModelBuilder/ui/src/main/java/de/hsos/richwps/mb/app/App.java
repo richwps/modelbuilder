@@ -402,7 +402,7 @@ public class App {
      * Previews the opend model.
      */
     void preview() {
-        AppDeployManager manager = new AppDeployManager(this);
+        AppRichWPSManager manager = new AppRichWPSManager(this);
         String rola = manager.preview();
 
         if (manager.isError()) {
@@ -419,14 +419,14 @@ public class App {
             scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
             JOptionPane.showMessageDialog(frame, scrollPane);
         }
-        //new AppDeployManager(this).deploy();
+        //new AppRichWPSManager(this).deploy();
     }
 
     /**
      * Deploys the opend model.
      */
     void deploy() {
-        AppDeployManager manager = new AppDeployManager(this);
+        AppRichWPSManager manager = new AppRichWPSManager(this);
         manager.deploy();
         if (manager.isError()) {
             JOptionPane.showMessageDialog(frame,
@@ -435,60 +435,21 @@ public class App {
                     JOptionPane.ERROR_MESSAGE);
             //TODO get error?
         }
-        //new AppDeployManager(this).deploy();
+        //new AppRichWPSManager(this).deploy();
     }
 
     /**
      * Undeploys the opend model.
      */
     void undeploy() {
-
-        final GraphModel model = this.getGraphView().getGraph().getGraphModel();
-        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        if (RichWPSProvider.hasProcess(auri, identifier)) {
-            String wpsendpoint = "";
-            String wpstendpoint = "";
-            if (RichWPSProvider.isWPSEndpoint(auri)) {
-                wpsendpoint = auri;
-                wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-            } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
-                wpstendpoint = auri;
-                wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
-            }
-            RichWPSProvider provider = new RichWPSProvider();
-            try {
-                provider.connect(wpsendpoint, wpstendpoint);
-
-                UndeployRequest request = new UndeployRequest(wpsendpoint, wpstendpoint, identifier);
-                provider.request(request);
-                try {
-                    provider.disconnect();
-                } catch (Exception ex) {
-                    //nop
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(frame,
-                        AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
-                        AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
-                        JOptionPane.ERROR_MESSAGE);
-                Logger.log("Debug:\n" + ex);
-                String msg = "An error occured while undeploying  " + identifier + " from"
-                        + "on " + auri + ". " + ex.getLocalizedMessage();
-                JOptionPane.showMessageDialog(this.frame, msg);
-                AppEventService appservice = AppEventService.getInstance();
-                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-            }
-        } else {
+        AppRichWPSManager manager = new AppRichWPSManager(this);
+        manager.undeploy();
+         if (manager.isError()) {
             JOptionPane.showMessageDialog(frame,
-                    AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
-                    AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+                    AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
+                    AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
-            String msg = "The requested process " + identifier + " was not found"
-                    + "on " + auri;
-            JOptionPane.showMessageDialog(this.frame, msg);
-            AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            //TODO get error?
         }
     }
 

@@ -306,11 +306,10 @@ public class RichWPSProvider implements IRichWPSProvider {
         String doc = "";
         try {
             doc = builder.getDeploydocument().toString();
-        } catch (Exception e) {
+        } catch (Exception ex) {
             Logger.log("Debug::RichWPSProvider#showDeployRequest()\n unable to create deploy request.");
         }
         return doc;
-
     }
 
     /**
@@ -329,10 +328,11 @@ public class RichWPSProvider implements IRichWPSProvider {
         builder.setKeepExecutionUnit(request.isKeepExecUnit());
 
         try {
-            //de.hsos.richwps.mb.Logger.log("Debug:\n Sending \n" + builder.getDeploydocument());
+            
             //FIXME
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+            //this.wpst.connect(request.getEndpoint(), endp);
             de.hsos.richwps.mb.Logger.log("Debug:\n Deploying at " + endp);
             
             Object response = this.wpst.deploy(endp, builder.getDeploydocument());
@@ -348,7 +348,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create "
-                    + "deploymentdocument." + ex.getLocalizedMessage());
+                    + "deploymentdocument. " + ex.getLocalizedMessage());
         }
     }
 
@@ -365,9 +365,12 @@ public class RichWPSProvider implements IRichWPSProvider {
         TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
         builder.setIdentifier(request.getIdentifier());
-
         try {
-            Object response = this.wpst.undeploy(request.getEndpoint(), builder.getUndeploydocument());
+            //FIXME
+            String endp = request.getEndpoint();
+            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+            //this.wpst.connect(request.getEndpoint(), endp);
+            Object response = this.wpst.undeploy(endp, builder.getUndeploydocument());
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
@@ -376,7 +379,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 de.hsos.richwps.mb.Logger.log("Debug:\n" + deplok.getStringValue());
             } else {
                 de.hsos.richwps.mb.Logger.log("Debug:\n Unknown reponse" + response);
-                //de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
+                de.hsos.richwps.mb.Logger.log("Debug:\n" + response.getClass());
             }
         } catch (WPSClientException ex) {
             de.hsos.richwps.mb.Logger.log("Debug:\n Unable to create "

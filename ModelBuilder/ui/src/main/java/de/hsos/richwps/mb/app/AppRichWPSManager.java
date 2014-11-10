@@ -14,6 +14,7 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
@@ -34,7 +35,7 @@ import javax.swing.JOptionPane;
  * @version 0.0.4
  * @TODO Refactor source.
  */
-public class AppDeployManager {
+public class AppRichWPSManager {
 
     /**
      * The overall app.
@@ -55,7 +56,7 @@ public class AppDeployManager {
      *
      * @param app the overall app.
      */
-    public AppDeployManager(App app) {
+    public AppRichWPSManager(App app) {
         this.app = app;
         this.graph = app.getGraphView().getGraph();
         this.error = false;
@@ -199,6 +200,53 @@ public class AppDeployManager {
             instance.disconnect();
         } catch (Exception ex) {
             //nop
+        }
+    }
+
+    /**
+     * Undeploys the opend model.
+     */
+    void undeploy() {
+
+        //load information from model.
+        final GraphModel model = this.graph.getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        
+        if (RichWPSProvider.hasProcess(auri, identifier)) {
+            String wpsendpoint = "";
+            String wpstendpoint = "";
+            if (RichWPSProvider.isWPSEndpoint(auri)) {
+                wpsendpoint = auri;
+                wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+            } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
+                wpstendpoint = auri;
+                wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
+            }
+            RichWPSProvider provider = new RichWPSProvider();
+            try {
+                provider.connect(wpsendpoint, wpstendpoint);
+
+                UndeployRequest request = new UndeployRequest(wpsendpoint, wpstendpoint, identifier);
+                provider.request(request);
+                try {
+                    provider.disconnect();
+                } catch (Exception ex) {
+                    //nop
+                }
+            } catch (Exception ex) {
+                this.error = true;
+                String msg = "An error occured while undeploying  " + identifier + " from"
+                        + " " + auri + ". " + ex.getLocalizedMessage();
+                AppEventService appservice = AppEventService.getInstance();
+                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            }
+        } else {
+            this.error = true;
+            String msg = "The requested process " + identifier + " was not found"
+                    + " on " + auri;
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
         }
     }
 
