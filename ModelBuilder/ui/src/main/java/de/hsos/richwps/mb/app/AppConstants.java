@@ -400,5 +400,6 @@ public class AppConstants {
     
     final static Color MONITOR_DATA_BG_COLOR = new Color(0xfccfcf);
 
+public final static String EXCEPTION_ILLEGAL_DEFAULT_FORMAT = "The given default format is not a supported format.";
     
 }

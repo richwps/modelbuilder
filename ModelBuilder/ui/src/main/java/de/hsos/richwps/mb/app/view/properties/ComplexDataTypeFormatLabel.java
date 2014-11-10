@@ -1,79 +1,101 @@
 package de.hsos.richwps.mb.app.view.properties;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.IFormatSelectionListener;
 import de.hsos.richwps.mb.propertiesView.PropertyCardsConfig;
+import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.MultilineLabel;
-import de.hsos.richwps.mb.ui.PopupMenuAdapter;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.PopupMenuEvent;
 import layout.TableLayout;
-import org.apache.commons.lang3.SystemUtils;
 
 /**
- * Frame containing a combobox for format selection.
+ * Frame containing a list for format selection.
  *
  * @author dziegenh
  */
-class SelectFormatFrame extends JDialog {
+class SelectFormatFrame extends MbDialog {
 
-    private final JComboBox comboBox;
+    private final JList formatsList;
     private List<IFormatSelectionListener> selectionListeners;
 
-    SelectFormatFrame(List<ComplexDataTypeFormat> formats, ComplexDataTypeFormat selected) {
-        super((Frame) null, "", true);
+    SelectFormatFrame(Window parent, List<ComplexDataTypeFormat> formats, List<ComplexDataTypeFormat> selected) {
+        super(parent, "Select formats", MbDialog.BTN_ID_OK | MbDialog.BTN_ID_CANCEL);
 
-        comboBox = new JComboBox(formats.toArray());
-        comboBox.setRenderer(new ComplexDataTypeFormatCellRenderer(selected));
-        comboBox.setSelectedItem(selected);
-        comboBox.addActionListener(new ActionListener() {
+        formatsList = new JList(formats.toArray());
+        formatsList.setCellRenderer(new ComplexDataTypeFormatCellRenderer(selected));
+
+        // accept an entry on double click
+        formatsList.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                for (IFormatSelectionListener listener : getSelectionListeners()) {
-                    listener.formatSelected((ComplexDataTypeFormat) comboBox.getSelectedItem());
+            public void mouseClicked(MouseEvent e) {
+                // double clicked an entry
+                if(2 == e.getClickCount() && e.getButton() == MouseEvent.BUTTON1) {
+                    // store selected format for export and close window
+                    handleDialogButton(BTN_ID_OK);
                 }
             }
         });
-        comboBox.addPopupMenuListener(new PopupMenuAdapter() {
-            @Override
-            public void popupMenuCanceled(PopupMenuEvent e) {
-                dispose();
-            }
-        });
 
-        add(comboBox);
+        // reload selection
+        for (ComplexDataTypeFormat format : selected) {
+            int indexOf = formats.indexOf(format);
+            formatsList.getSelectionModel().addSelectionInterval(indexOf, indexOf);
+        }
 
-        // close window when user clicks outside
-        addWindowFocusListener(new WindowAdapter() {
-            @Override
-            public void windowDeactivated(WindowEvent e) {
-                dispose();
-            }
+        getContentPane().setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
+        getContentPane().add(new JScrollPane(formatsList), "0 0");
 
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                dispose();
-            }
-        });
-
-        setResizable(false);
+        setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    /**
+     * Empty if selection is clear, null if selection was cancelled.
+     */
+    private List<ComplexDataTypeFormat> exportFormats = null;
+
+    @Override
+    protected void handleDialogButton(int buttonId) {
+
+        // "ok" -> store selected formats for export
+        if (isTheDialogButton(buttonId, MbDialog.BTN_ID_OK)) {
+            this.exportFormats = formatsList.getSelectedValuesList();
+
+            // else -> no export
+        } else if (isTheDialogButton(buttonId, MbDialog.BTN_ID_CANCEL)) {
+            this.exportFormats = null;
+        }
+
+        super.handleDialogButton(buttonId);
+    }
+
+    /**
+     * Gets the formats which are selected at the moment the window is closed.
+     *
+     * @return
+     */
+    List<ComplexDataTypeFormat> getSelectedFormats() {
+        return exportFormats;
     }
 
     /**
@@ -84,14 +106,12 @@ class SelectFormatFrame extends JDialog {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            Dimension cSize = comboBox.getPreferredSize();
+            Dimension cSize = formatsList.getPreferredSize();
             Dimension size = getSize();
-            size.width += cSize.width;
-            size.height += cSize.height + 30;
+            size.width = (int) (cSize.getWidth() + 50);
+            size.height = 500;
             setSize(size);
-            Point location = getLocation();
-            location.x -= size.width;
-            setLocation(location);
+            UiHelper.centerToWindow(this, parent);
         }
 
         super.setVisible(visible);
@@ -121,11 +141,11 @@ public class ComplexDataTypeFormatLabel extends JPanel {
     private final MultilineLabel formatLabel;
     private List<ComplexDataTypeFormat> formats;
     private final Dimension editButtonSize = new Dimension(18, 18);
-    private ComplexDataTypeFormat format;
+    private List<ComplexDataTypeFormat> selectedFormats;
 
     private List<IFormatSelectionListener> selectionListeners;
 
-    public ComplexDataTypeFormatLabel(List<ComplexDataTypeFormat> formats) {
+    public ComplexDataTypeFormatLabel(final Window parent, List<ComplexDataTypeFormat> formats) {
         super();
 
         this.formats = formats;
@@ -139,27 +159,35 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final SelectFormatFrame selectFormatFrame = new SelectFormatFrame(getFormats(), format);
+                final SelectFormatFrame selectFormatFrame = new SelectFormatFrame(parent, getFormats(), getSelectedFormats());
                 Point btnLocation = editButton.getLocationOnScreen();
                 btnLocation.y += editButton.getHeight();
                 btnLocation.x += editButton.getWidth();
                 selectFormatFrame.setLocation(btnLocation);
 
-                selectFormatFrame.addSelectionListener(new IFormatSelectionListener() {
+                // get selected formats when selection window closes
+                selectFormatFrame.addWindowListener(new WindowAdapter() {
                     @Override
-                    public void formatSelected(ComplexDataTypeFormat format) {
-                        setComplexDataTypeFormat(format);
-                        selectFormatFrame.dispose();
-                        for (IFormatSelectionListener listener : getSelectionListeners()) {
-                            listener.formatSelected(format);
+                    public void windowClosed(WindowEvent e) {
+                        List<ComplexDataTypeFormat> selectedFormats = selectFormatFrame.getSelectedFormats();
+                        
+                        // null indicates the selection was cancelled
+                        // (and that changes should not be saved)
+                        if (null != selectedFormats) {
+                            setSelectedFormats(selectedFormats);
+                            
+                            for (IFormatSelectionListener listener : getSelectionListeners()) {
+                                listener.formatSelected(selectedFormats);
+                            }
                         }
                     }
+
                 });
 
                 selectFormatFrame.setVisible(true);
             }
         });
-
+        
         double[][] layout = new double[][]{
             {TableLayout.FILL, TableLayout.PREFERRED},
             {TableLayout.PREFERRED},};
@@ -173,6 +201,10 @@ public class ComplexDataTypeFormatLabel extends JPanel {
 
         add(formatLabel, "0 0");
         add(bar, "1 0");
+    }
+    
+    private List<ComplexDataTypeFormat> getSelectedFormats() {
+        return selectedFormats;
     }
 
     public void addSelectionListener(IFormatSelectionListener listener) {
@@ -206,24 +238,14 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         }
     }
 
-    public void setComplexDataTypeFormat(ComplexDataTypeFormat format) {
-        this.format = format;
+    public void setSelectedFormats(List<ComplexDataTypeFormat> formats) {
+        this.selectedFormats = formats;
 
-        String mimeType = "-", encoding = "-", schema = "-";
-
-        String toolTipText = "-";
-        if (null != format) {
-            mimeType = format.getMimeType();
-            schema = format.getSchema();
-            encoding = format.getEncoding();
-            toolTipText = format.getToolTipText();
+        if (null != formats) {
+            formatLabel.setText(formats.size() + " selected");
+        } else {
+            formatLabel.setText("-");
         }
-        formatLabel.setToolTipText(toolTipText);
-
-        String NL = SystemUtils.LINE_SEPARATOR;
-//        String text = mimeType + NL + schema + NL + encoding;
-
-        formatLabel.setText(mimeType);
     }
 
 }

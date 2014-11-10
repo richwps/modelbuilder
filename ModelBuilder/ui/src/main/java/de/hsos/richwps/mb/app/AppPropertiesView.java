@@ -213,7 +213,7 @@ public class AppPropertiesView extends PropertiesView {
     private PropertyComplexDataTypeFormat createPropertyComplexDataTypeFormat(Property property) {
         PropertyComplexDataTypeFormat propertyComplexDataTypeFormat = null;
         try {
-            propertyComplexDataTypeFormat = new PropertyComplexDataTypeFormat(app.getFormatProvider());
+            propertyComplexDataTypeFormat = new PropertyComplexDataTypeFormat(app.getFrame(), app.getFormatProvider());
             propertyComplexDataTypeFormat.setProperty(property);
 
         } catch (LoadDataTypesException ex) {

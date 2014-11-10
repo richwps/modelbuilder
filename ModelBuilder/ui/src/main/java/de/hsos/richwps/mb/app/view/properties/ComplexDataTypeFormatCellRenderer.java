@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -21,21 +22,21 @@ import javax.swing.border.EmptyBorder;
  */
 public class ComplexDataTypeFormatCellRenderer extends DefaultListCellRenderer {
 
-    protected ComplexDataTypeFormat selectedFormat;
+    protected List<ComplexDataTypeFormat> selectedFormats;
 
     public ComplexDataTypeFormatCellRenderer() {
     }
 
-    public ComplexDataTypeFormatCellRenderer(ComplexDataTypeFormat selectedFormat) {
-        this.selectedFormat = selectedFormat;
+    public ComplexDataTypeFormatCellRenderer(List<ComplexDataTypeFormat> selectedFormats) {
+        this.selectedFormats = selectedFormats;
     }
 
-    public ComplexDataTypeFormat getSelectedFormat() {
-        return selectedFormat;
+    public List<ComplexDataTypeFormat> getSelectedFormat() {
+        return selectedFormats;
     }
 
-    public void setSelectedFormat(ComplexDataTypeFormat selectedFormat) {
-        this.selectedFormat = selectedFormat;
+    public void setSelectedFormats(List<ComplexDataTypeFormat> selectedFormats) {
+        this.selectedFormats = selectedFormats;
     }
 
     @Override
@@ -72,8 +73,8 @@ public class ComplexDataTypeFormatCellRenderer extends DefaultListCellRenderer {
                 label.setBackground(new Color(0, 0, 0, 0));
 
                 // cell with selected list item
-                boolean bothNull = (value == null && value == selectedFormat);
-                boolean notNullAndEqual = (null != selectedFormat && selectedFormat.equals(value));
+                boolean bothNull = (value == null && value == selectedFormats);
+                boolean notNullAndEqual = (null != selectedFormats && selectedFormats.equals(value));
                 if (bothNull || notNullAndEqual) {
                     label.setFont(label.getFont().deriveFont(Font.BOLD));
                     label.setForeground(AppConstants.SELECTION_BG_COLOR);

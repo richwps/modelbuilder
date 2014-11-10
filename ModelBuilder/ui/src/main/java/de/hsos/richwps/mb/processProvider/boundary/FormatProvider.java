@@ -19,9 +19,8 @@ import java.util.List;
  */
 public class FormatProvider {
 
-    private String csvFile;
+    private final String csvFile;
 
-    private ComplexDataTypeFormat defaultType;
     private List<ComplexDataTypeFormat> dataTypes;
 
     public FormatProvider(String formatCsvFile) {
@@ -72,15 +71,6 @@ public class FormatProvider {
         }
 
         return dataTypes;
-    }
-
-    // TODO set a REAL default type
-    public ComplexDataTypeFormat getDefaultDataType() {
-        if (null != dataTypes && !dataTypes.isEmpty()) {
-            return dataTypes.get(0);
-        }
-
-        return null;
     }
 
 }

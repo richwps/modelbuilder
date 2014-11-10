@@ -11,8 +11,6 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
-import de.hsos.richwps.mb.properties.Property;
-import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -31,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 /**
  * Controls the main tree view component and it's interaction with the
@@ -157,9 +154,9 @@ public class MainTreeViewController extends AbstractTreeViewController {
         local.add(new DefaultMutableTreeNode(lOut));
 
         // add all child nodes to root
+        root.add(local);
         root.add(processesNode);
         root.add(downloadServices);
-        root.add(local);
 
         // adds persisted remote servers
         if (clearCache) {

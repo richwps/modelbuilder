@@ -3,13 +3,16 @@ package de.hsos.richwps.mb.app.view.properties;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IFormatSelectionListener;
+import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
-import de.hsos.richwps.mb.ui.MultilineLabel;
+import java.awt.Window;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Property GUI component representing a complex datatype format.
@@ -23,27 +26,40 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<Com
     public static String PROPERTY_NAME = "Complex datatype format";
     public static String COMPONENT_TYPE = "Complex datatype format";
 
-    public PropertyComplexDataTypeFormat(FormatProvider formatProvider) throws LoadDataTypesException {
+    public PropertyComplexDataTypeFormat(final Window parent, FormatProvider formatProvider) throws LoadDataTypesException {
         super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE));
 
-        // add empty entry as first list element
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
-        formats.add(null);
         formats.addAll(formatProvider.getComplexDataTypes());
-        component = new ComplexDataTypeFormatLabel(formats);
+        component = new ComplexDataTypeFormatLabel(parent, formats);
         component.addSelectionListener(new IFormatSelectionListener() {
             @Override
-            public void formatSelected(ComplexDataTypeFormat format) {
-                setFormat(format);
+            public void formatSelected(List<ComplexDataTypeFormat> formats) {
+                try {
+                    setFormats(formats);
+                } catch (IllegalDefaultFormatException ex) {
+                    // ??
+                }
             }
         });
     }
 
-    private void setFormat(ComplexDataTypeFormat format) {
+    private void setFormats(List<ComplexDataTypeFormat> formats) throws IllegalDefaultFormatException {
+
+        // set supported formats
         if (null == property.getValue()) {
-            property.setValue(new DataTypeDescriptionComplex(format));
+            property.setValue(new DataTypeDescriptionComplex(formats));
         } else {
-            property.getValue().setFormat(format);
+            property.getValue().setFormats(formats);
+        }
+
+        // set default format 
+        // TODO get selected default format which is to be set !!
+        if (null != formats && formats.size() > 0) {
+            // workaround: default is the first enty 
+            property.getValue().setDefaultFormat(formats.get(0));
+        } else {
+            property.getValue().setDefaultFormat(null);
         }
     }
 
@@ -54,12 +70,12 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<Com
 
     @Override
     public void setValue(DataTypeDescriptionComplex value) {
-        ComplexDataTypeFormat format = null;
+        List<ComplexDataTypeFormat> formats = null;
         if (null != value) {
-            format = value.getFormat();
+            formats = value.getFormats();
         }
 
-        component.setComplexDataTypeFormat(format);
+        component.setSelectedFormats(formats);
 
         property.setValue(value);
     }
@@ -81,6 +97,4 @@ public class PropertyComplexDataTypeFormat extends AbstractPropertyComponent<Com
         setEditable(property.isEditable());
     }
 
-    
-    
 }
