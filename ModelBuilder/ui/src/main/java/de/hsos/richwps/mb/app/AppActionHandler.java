@@ -65,6 +65,9 @@ public class AppActionHandler implements IAppActionHandler {
             case DO_LAYOUT:
                 doLayout();
                 break;
+            case PREVIEW:
+                doPreview();
+                break;
             case DEPLOY:
                 doDeploy();
                 break;
@@ -316,6 +319,10 @@ public class AppActionHandler implements IAppActionHandler {
         sb.append("\n");
         sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
         AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+    }
+    
+     private void doPreview() {
+        app.preview();
     }
 
     private void doDeploy() {

@@ -27,6 +27,7 @@ public class AppActionProvider {
         // HELP
         ABOUT,
         // (others)
+        PREVIEW,
         DEPLOY,
         UNDEPLOY,
         //

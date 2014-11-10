@@ -352,6 +352,7 @@ public class AppConstants {
     public final static String ICON_PUBLISH = "richwps_icon_propagate";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
+    public final static String ICON_PREVIEW_KEY = "rwps_icon_preview";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
     public final static String ICON_UNDEPLOY_KEY = "rwps_icon_undeploy";
     public final static String ICON_EXECUTE_ANY_KEY = "richwps_icon_executeany";

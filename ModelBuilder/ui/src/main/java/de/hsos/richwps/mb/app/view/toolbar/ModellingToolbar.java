@@ -23,6 +23,7 @@ public class ModellingToolbar extends JToolBar {
         }
 
         addSeparator();
+        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.PREVIEW));
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DEPLOY));
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDEPLOY));
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.EXECUTE));

@@ -61,6 +61,44 @@ public class AppDeployManager {
         this.error = false;
     }
 
+    
+    /**
+     * Performs the deployment.
+     */
+    public String preview() {
+
+        //load information from model.
+        final GraphModel model = this.graph.getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String title = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        final String version = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        final String theabstract = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
+
+        //verify information
+        if (identifier.isEmpty()) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_ID_MISSING);
+            return "";
+        } else if (title.isEmpty()) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_TITLE_MISSING);
+            return "";
+        } else if (version.isEmpty()) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
+            return "";
+        }
+  //generate rola
+        final String rola = this.generateROLA();
+        if (null == rola) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_ROLA_FAILED);
+            return "";
+        }
+        return rola;
+    }
+    
     /**
      * Performs the deployment.
      */

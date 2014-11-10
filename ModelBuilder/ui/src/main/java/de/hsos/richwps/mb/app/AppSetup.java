@@ -218,6 +218,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_ABOUT_KEY, new ImageIcon(iconDir + "help-about-3.png", "about icon"));
 
         // (unsorted Icons)
+        UIManager.put(AppConstants.ICON_PREVIEW_KEY, new ImageIcon(iconDir + "layer-novisible.png", "preview icon"));
         UIManager.put(AppConstants.ICON_DEPLOY_KEY, new ImageIcon(iconDir + "server-add.png", "deploy icon"));
         UIManager.put(AppConstants.ICON_UNDEPLOY_KEY, new ImageIcon(iconDir + "server-delete.png", "undeploy icon"));
         UIManager.put(AppConstants.ICON_EXECUTE_ANY_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));

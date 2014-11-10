@@ -397,6 +397,25 @@ public class App {
         getPropertiesView().setObjectWithProperties(getGraphView().getGraph().getGraphModel());
     }
 
+    
+    /**
+     * Previews the opend model.
+     */
+    void preview() {
+        AppDeployManager manager = new AppDeployManager(this);
+        String rola = manager.preview();
+        if (manager.isError()) {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.DEPLOY_ERROR_DIALOG_MSG,
+                    AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+            //TODO get error?
+        }else{
+            JOptionPane.showMessageDialog(frame, rola);
+        }
+        //new AppDeployManager(this).deploy();
+    }
+    
     /**
      * Deploys the opend model.
      */
@@ -410,7 +429,7 @@ public class App {
                     JOptionPane.ERROR_MESSAGE);
             //TODO get error?
         }
-        new AppDeployManager(this).deploy();
+        //new AppDeployManager(this).deploy();
     }
 
     /**
