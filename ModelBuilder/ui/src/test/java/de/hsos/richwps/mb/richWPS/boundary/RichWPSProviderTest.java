@@ -452,17 +452,17 @@ public class RichWPSProviderTest extends TestCase {
     public void testDeployUndeploy() {
         System.out.println("testDeployUndeploy");
 //        String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
-//        String wpsturl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
+//        String richwpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
 //        RichWPSProvider instance = new RichWPSProvider();
 //        try {
-//            instance.connect(wpsurl, wpsturl);
+//            instance.connect(wpsurl, richwpsurl);
 //        } catch (Exception ex) {
 //            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
 //            fail();
 //        }
 //
 //        System.out.println("performing deploy");
-//        DeployRequest request = new DeployRequest(wpsurl, wpsturl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
+//        DeployRequest request = new DeployRequest(wpsurl, richwpsurl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
 //        request.addInput(this.createComplexDataInput1());
 //        request.addInput(this.createLiteralDataInput1());
 //        request.addOutput(this.createComplexDataOutput1());
@@ -473,8 +473,40 @@ public class RichWPSProviderTest extends TestCase {
 //        assertEquals(request.isException(), false);
 //
 //        System.out.println("performing undeploy");
-//        UndeployRequest unrequest = new UndeployRequest(wpsurl, wpsturl, "Testprocess");
+//        UndeployRequest unrequest = new UndeployRequest(wpsurl, richwpsurl, "Testprocess");
 //        instance.undeployProcess(unrequest);
 //        assertEquals(unrequest.isException(), false);
+    }
+    
+    public void testGetInputTypes(){
+        System.out.println("testGetInputTypes");
+        String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
+        String richwpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
+        RichWPSProvider instance = new RichWPSProvider();
+        try {
+            instance.connect(wpsurl, richwpsurl);
+            List formats = instance.getInputTypes(wpsurl);
+            System.out.println(formats);
+            assertNotNull(formats);
+        } catch (Exception ex) {
+            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
+    }
+    
+    public void testGetOutputTypes(){
+        System.out.println("testGetOutputTypes");
+        String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
+        String richwpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
+        RichWPSProvider instance = new RichWPSProvider();
+        try {
+            instance.connect(wpsurl, richwpsurl);
+            List formats = instance.getOutputTypes(wpsurl);
+            System.out.println(formats);
+            assertNotNull(formats);
+        } catch (Exception ex) {
+            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
+            fail();
+        }
     }
 }

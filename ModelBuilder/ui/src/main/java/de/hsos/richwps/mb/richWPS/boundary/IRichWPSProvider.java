@@ -14,6 +14,7 @@ import java.util.List;
  * @version 0.0.3
  */
 public interface IRichWPSProvider {
+
     public static final String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";
     public static final String DEFAULT_RICHWPS_ENDPOINT = "/RichWPS";
     public static final String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
@@ -28,9 +29,11 @@ public interface IRichWPSProvider {
 
     /**
      * Disconnects all connected services.
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     public void disconnect() throws Exception;
+
     /**
      * Disconnects the provider to a WPS-server.
      *
@@ -57,7 +60,6 @@ public interface IRichWPSProvider {
      */
     public void disconnect(final String wpsurl, final String richwpsurl) throws Exception;
 
-
     /**
      * Lists all available processes.
      *
@@ -66,15 +68,18 @@ public interface IRichWPSProvider {
      */
     public List<String> getAvailableProcesses(final String wpsurl);
 
-     /**
-     * Describes a process, via wps:describeProcess()-Request.
-     * Produces DescribeRequest.
+    public List<List<String>> getInputTypes(String wpsurl);
+    public List<List<String>> getOutputTypes(String wpsurl);
+
+    /**
+     * Describes a process, via wps:describeProcess()-Request. Produces
+     * DescribeRequest.
      *
      * @param request DescribeRequest with endpoint and processid.
      *
      */
     public void describeProcess(DescribeRequest request);
-    
+
     /**
      * Describes a process, via wps:describeProcess()-Request.
      *
@@ -118,5 +123,5 @@ public interface IRichWPSProvider {
      * @return <code>true</code> for deployment success.
      */
     public void request(IRequest request);
-    
+
 }

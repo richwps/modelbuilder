@@ -36,9 +36,15 @@ import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import net.opengis.ows.x11.ExceptionReportDocument;
+import net.opengis.wps.x100.ComplexDataDescriptionType;
+import net.opengis.wps.x100.ComplexTypesType;
+import net.opengis.wps.x100.SupportedTypesResponseDocument;
+import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
 
 /**
  * Interface to RichWPS enabled servers.
@@ -163,7 +169,6 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
     }
 
-   
     /**
      * Lists all available processes.
      *
@@ -195,6 +200,96 @@ public class RichWPSProvider implements IRichWPSProvider {
             de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()#Exception:\n " + e);
         }
         return processes;
+    }
+
+    /**
+     * Lists all available inputtypes.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @return list of formats..
+     */
+    @Override
+    public List<List<String>> getInputTypes(String wpsurl) {
+
+        String richwpsurl = wpsurl;
+        richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
+        List<List<String>> formats = new ArrayList<>();
+        try {
+            this.wpst = RichWPSClientSession.getInstance();
+            this.wpst.connect(wpsurl, richwpsurl);
+            GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
+            builder.setComplexTypesOnly(true);
+            // request supported types
+            Object responseObject = wpst.getSupportedTypes(wpsurl, builder.build());
+            if (responseObject instanceof SupportedTypesResponseDocument) {
+                SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
+                ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedInputTypes().getComplexTypesArray();
+                for (ComplexTypesType type : types) {
+                    ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
+                    for (ComplexDataDescriptionType atype : schonwiedertsypes) {
+                        List<String> aformat = new ArrayList<>();
+                        aformat.add(atype.getMimeType());
+                        aformat.add(atype.getSchema());
+                        aformat.add(atype.getEncoding());
+                        formats.add(aformat);
+                    }
+                }
+            }
+            if (responseObject instanceof ExceptionReportDocument) {
+                ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
+                de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + response.toString());
+            }
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + e);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#Exception:\n " + e);
+        }
+        return formats;
+    }
+    
+     /**
+     * Lists all available inputtypes.
+     *
+     * @param wpsurl endpoint of WebProcessingService.
+     * @return list of formats..
+     */
+    @Override
+    public List<List<String>> getOutputTypes(String wpsurl) {
+
+        String richwpsurl = wpsurl;
+        richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
+        List<List<String>> formats = new ArrayList<>();
+        try {
+            this.wpst = RichWPSClientSession.getInstance();
+            this.wpst.connect(wpsurl, richwpsurl);
+            GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
+            builder.setComplexTypesOnly(true);
+            // request supported types
+            Object responseObject = wpst.getSupportedTypes(wpsurl, builder.build());
+            if (responseObject instanceof SupportedTypesResponseDocument) {
+                SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
+                ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedOutputTypes().getComplexTypesArray();
+                for (ComplexTypesType type : types) {
+                    ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
+                    for (ComplexDataDescriptionType atype : schonwiedertsypes) {
+                        List<String> aformat = new ArrayList<>();
+                        aformat.add(atype.getMimeType());
+                        aformat.add(atype.getSchema());
+                        aformat.add(atype.getEncoding());
+                        formats.add(aformat);
+                    }
+                }
+            }
+            if (responseObject instanceof ExceptionReportDocument) {
+                ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
+                de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + response.toString());
+            }
+        } catch (WPSClientException e) {
+            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + e);
+        } catch (Exception e) {
+            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#Exception:\n " + e);
+        }
+        return formats;
     }
 
     /**
@@ -328,15 +423,15 @@ public class RichWPSProvider implements IRichWPSProvider {
         builder.setKeepExecutionUnit(request.isKeepExecUnit());
 
         try {
-            
+
             //FIXME
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
             //this.wpst.connect(request.getEndpoint(), endp);
             de.hsos.richwps.mb.Logger.log("Debug:\n Deploying at " + endp);
-            
+
             Object response = this.wpst.deploy(endp, builder.getDeploydocument());
-            de.hsos.richwps.mb.Logger.log("Debug:\n"+builder.getDeploydocument());
+            de.hsos.richwps.mb.Logger.log("Debug:\n" + builder.getDeploydocument());
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
@@ -647,8 +742,9 @@ public class RichWPSProvider implements IRichWPSProvider {
 
     /**
      * Checks if WPSTEndpoint exists.
+     *
      * @param uri
-     * @return 
+     * @return
      */
     public static boolean checkRichWPSEndpoint(String uri) {
         // FIXME How else can we check the endpoints existence, and readiness?
@@ -661,7 +757,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             HttpURLConnection httpConnection = (HttpURLConnection) conn;
             int resp = httpConnection.getResponseCode();
             //FIXME move to wps-client-lib
-            if ((resp != 405) && (resp!=200)) {
+            if ((resp != 405) && (resp != 200)) {
                 return false;
             }
         } catch (Exception e) {
@@ -669,13 +765,13 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
         return true;
     }
-    
-    public static boolean hasProcess(String auri, String processid){
+
+    public static boolean hasProcess(String auri, String processid) {
         RichWPSProvider provider = new RichWPSProvider();
-        try{
+        try {
             provider.connect(auri);
-        }catch(Exception ex){
-            Logger.log("Debug:\n unable to connect to "+auri);
+        } catch (Exception ex) {
+            Logger.log("Debug:\n unable to connect to " + auri);
         }
         List<String> processes = provider.getAvailableProcesses(auri);
         return processes.contains(processid);
