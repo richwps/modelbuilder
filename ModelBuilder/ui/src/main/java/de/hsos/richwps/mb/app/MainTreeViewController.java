@@ -178,14 +178,14 @@ public class MainTreeViewController extends AbstractTreeViewController {
         try {
             IRichWPSProvider provider = new RichWPSProvider();
             provider.connect(uri);
-            List<String> processes = provider.getAvailableProcesses(uri);
+            List<String> processes = provider.wpsGetAvailableProcesses(uri);
 
             for (String processid : processes) {
 
                 DescribeRequest pd = new DescribeRequest();
                 pd.setEndpoint(uri);
                 pd.setIdentifier(processid);
-                provider.describeProcess(pd);
+                provider.wpsDescribeProcess(pd);
 
                 ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
                 //TRICKY

@@ -36,7 +36,6 @@ import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -49,7 +48,7 @@ import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
 /**
  * Interface to RichWPS enabled servers.
  *
- * @version 0.0.3
+ * @version 0.0.4
  * @author dalcacer
  */
 public class RichWPSProvider implements IRichWPSProvider {
@@ -61,7 +60,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * RichWPS client.
      */
-    private RichWPSClientSession wpst;
+    private RichWPSClientSession richwps;
 
     /**
      * The deploymentprofile, that should be used.
@@ -71,7 +70,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Connects the provider to a WPS-server.
      *
-     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsurl serverid of WebProcessingService.
      * @throws java.lang.Exception
      */
     @Override
@@ -93,23 +92,27 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public void disconnect() throws Exception {
         this.wps = WPSClientSession.getInstance();
-        List<String> endpoints = this.wps.getLoggedServices();
-        for (String endpoint : endpoints) {
-            this.wps.disconnect(endpoint);
+        this.richwps = RichWPSClientSession.getInstance();
+
+        List<String> wpsurls = this.wps.getLoggedServices();
+        for (String serverid : wpsurls) {
+            this.richwps.disconnect(serverid);
+            this.wps.disconnect(serverid);
         }
-        //TODO
     }
 
     /**
-     * Connects the provider to a WPS-server.
+     * * Disconnects a connected sevices.
      *
-     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsurl serverid of WebProcessingService.
      * @throws java.lang.Exception
      */
     @Override
     public void disconnect(String wpsurl) throws Exception {
         try {
             this.wps = WPSClientSession.getInstance();
+            this.richwps = RichWPSClientSession.getInstance();
+            this.richwps.disconnect(wpsurl);
             this.wps.disconnect(wpsurl);
         } catch (Exception e) {
             de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#disconnect\n Unable to connect, " + e.getLocalizedMessage());
@@ -120,8 +123,8 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Connects the provider to a WPS-server with WPS-T functionality.
      *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param richwpsurl endpoint of transactional interface.
+     * @param wpsurl wpsurl of WebProcessingService.
+     * @param richwpsurl richwpsurl of transactional interface.
      * @throws java.lang.Exception
      */
     @Override
@@ -135,8 +138,8 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
 
         try {
-            this.wpst = RichWPSClientSession.getInstance();
-            this.wpst.connect(wpsurl, richwpsurl);
+            this.richwps = RichWPSClientSession.getInstance();
+            this.richwps.connect(wpsurl, richwpsurl);
         } catch (WPSClientException e) {
             de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
             throw new Exception("Unable to connect to service " + wpsurl + ", " + richwpsurl);
@@ -144,39 +147,13 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Disconnects the provider to a WPS-server with WPS-T functionality.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param wpsturl endpoint of transactional interface.
-     * @throws java.lang.Exception
-     */
-    @Override
-    public void disconnect(String wpsurl, String wpsturl) throws Exception {
-        try {
-            this.wps = WPSClientSession.getInstance();
-            this.wps.disconnect(wpsurl);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service.");
-        }
-
-        try {
-            this.wpst = RichWPSClientSession.getInstance();
-            this.wpst.disconnect(wpsurl);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n Unable to connect, " + e.getLocalizedMessage());
-            throw new Exception("Unable to connect to service.");
-        }
-    }
-
-    /**
      * Lists all available processes.
      *
-     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsurl serverid of WebProcessingService.
      * @return list of processes.
      */
     @Override
-    public List<String> getAvailableProcesses(String wpsurl) {
+    public List<String> wpsGetAvailableProcesses(String wpsurl) {
 
         List<String> processes = new ArrayList<>();
         try {
@@ -191,7 +168,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                     String identifier = process.getIdentifier().getStringValue();
                     processes.add(identifier);
                 } else {
-                    //de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()" + process);
+                    //de.hsos.richwps.mb.Logger.log("Debug:wpsGetAvailableProcesses()" + process);
                 }
             }
         } catch (WPSClientException e) {
@@ -205,22 +182,22 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Lists all available inputtypes.
      *
-     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsurl serverid of WebProcessingService.
      * @return list of formats..
      */
     @Override
-    public List<List<String>> getInputTypes(String wpsurl) {
+    public List<List<String>> richwpsGetInputTypes(String wpsurl) {
 
         String richwpsurl = wpsurl;
         richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
         List<List<String>> formats = new ArrayList<>();
         try {
-            this.wpst = RichWPSClientSession.getInstance();
-            this.wpst.connect(wpsurl, richwpsurl);
+            this.richwps = RichWPSClientSession.getInstance();
+            this.richwps.connect(wpsurl, richwpsurl);
             GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
             builder.setComplexTypesOnly(true);
             // request supported types
-            Object responseObject = wpst.getSupportedTypes(wpsurl, builder.build());
+            Object responseObject = richwps.getSupportedTypes(wpsurl, builder.build());
             if (responseObject instanceof SupportedTypesResponseDocument) {
                 SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
                 ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedInputTypes().getComplexTypesArray();
@@ -246,26 +223,26 @@ public class RichWPSProvider implements IRichWPSProvider {
         }
         return formats;
     }
-    
-     /**
+
+    /**
      * Lists all available inputtypes.
      *
-     * @param wpsurl endpoint of WebProcessingService.
+     * @param wpsurl serverid of WebProcessingService.
      * @return list of formats..
      */
     @Override
-    public List<List<String>> getOutputTypes(String wpsurl) {
+    public List<List<String>> richwpsGetOutputTypes(String wpsurl) {
 
         String richwpsurl = wpsurl;
         richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
         List<List<String>> formats = new ArrayList<>();
         try {
-            this.wpst = RichWPSClientSession.getInstance();
-            this.wpst.connect(wpsurl, richwpsurl);
+            this.richwps = RichWPSClientSession.getInstance();
+            this.richwps.connect(wpsurl, richwpsurl);
             GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
             builder.setComplexTypesOnly(true);
             // request supported types
-            Object responseObject = wpst.getSupportedTypes(wpsurl, builder.build());
+            Object responseObject = richwps.getSupportedTypes(wpsurl, builder.build());
             if (responseObject instanceof SupportedTypesResponseDocument) {
                 SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
                 ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedOutputTypes().getComplexTypesArray();
@@ -293,14 +270,14 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Describes a process, via wps:describeProcess()-Request. Produces
+     * Describes a process, via wps:wpsDescribeProcess()-Request. Produces
      * DescribeRequest.
      *
-     * @param request DescribeRequest with endpoint and processid.
+     * @param request DescribeRequest with serverid and processid.
      *
      */
     @Override
-    public void describeProcess(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request) {
+    public void wpsDescribeProcess(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request) {
         try {
             String wpsurl = request.getEndpoint();
             String[] processes = new String[1];
@@ -339,22 +316,22 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Describes process and its' in and outputs.
      *
-     * @param request ExecuteRequestDTO with endpoint and processid.
+     * @param request ExecuteRequestDTO with serverid and processid.
      *
      */
     @Override
-    public void describeProcess(ExecuteRequest request) {
-        this.describeProcess((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) request);
+    public void wpsDescribeProcess(ExecuteRequest request) {
+        this.wpsDescribeProcess((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) request);
     }
 
     /**
      * Describes process and its' in and outputs.
      *
-     * @param request ExecuteRequestDTO with endpoint and processid and in- and
+     * @param request ExecuteRequestDTO with serverid and processid and in- and
      * outputarguments.
      */
     @Override
-    public void executeProcess(ExecuteRequest request) {
+    public void wpsExecuteProcess(ExecuteRequest request) {
 
         String wpsurl = request.getEndpoint();
         String processid = request.getIdentifier();
@@ -390,23 +367,19 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param request DeployRequestDTO.
      * @see DeployRequest
      * @return <code>true</code> for deployment success.
-     */
-    public String showDeployRequest(DeployRequest request) {
-        TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
-
-        builder.setDeployExecutionUnit(request.getExecutionUnit());
-        builder.setDeployProcessDescription(request.toProcessDescriptionType());
-        builder.setDeploymentProfileName(request.getDeploymentprofile());
-        builder.setKeepExecutionUnit(request.isKeepExecUnit());
-        String doc = "";
-        try {
-            doc = builder.getDeploydocument().toString();
-        } catch (Exception ex) {
-            Logger.log("Debug::RichWPSProvider#showDeployRequest()\n unable to create deploy request.");
-        }
-        return doc;
+     *
+     * public String showDeployRequest(DeployRequest request) {
+     * TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
+     *
+     * builder.setDeployExecutionUnit(request.getExecutionUnit());
+     * builder.setDeployProcessDescription(request.toProcessDescriptionType());
+     * builder.setDeploymentProfileName(request.getDeploymentprofile());
+     * builder.setKeepExecutionUnit(request.isKeepExecUnit()); String doc = "";
+     * try { doc = builder.getDeploydocument().toString(); } catch (Exception
+     * ex) { Logger.log("Debug::RichWPSProvider#showDeployRequest()\n unable to
+     * create deploy request."); } return doc;
     }
-
+     */
     /**
      * Deploys a new process.
      *
@@ -414,7 +387,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @see DeployRequest
      */
     @Override
-    public void deployProcess(DeployRequest request) {
+    public void richwpsDeployProcess(DeployRequest request) {
         TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
         builder.setDeployExecutionUnit(request.getExecutionUnit());
@@ -427,10 +400,10 @@ public class RichWPSProvider implements IRichWPSProvider {
             //FIXME
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-            //this.wpst.connect(request.getEndpoint(), endp);
+            //this.richwps.connect(request.getEndpoint(), endp);
             de.hsos.richwps.mb.Logger.log("Debug:\n Deploying at " + endp);
 
-            Object response = this.wpst.deploy(endp, builder.getDeploydocument());
+            Object response = this.richwps.deploy(endp, builder.getDeploydocument());
             de.hsos.richwps.mb.Logger.log("Debug:\n" + builder.getDeploydocument());
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
@@ -455,7 +428,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return <code>true</code> for deployment success.
      */
     @Override
-    public void undeployProcess(UndeployRequest request) {
+    public void richwpsUndeployProcess(UndeployRequest request) {
 
         TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
@@ -464,8 +437,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             //FIXME
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-            //this.wpst.connect(request.getEndpoint(), endp);
-            Object response = this.wpst.undeploy(endp, builder.getUndeploydocument());
+            //this.richwps.connect(request.getEndpoint(), endp);
+            Object response = this.richwps.undeploy(endp, builder.getUndeploydocument());
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
@@ -483,7 +456,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Performs a request.
+     * Performs a wps/richwps-request.
      *
      * @param request IRequest.
      * @see IRequest
@@ -496,13 +469,13 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public void request(IRequest request) {
         if (request instanceof ExecuteRequest) {
-            this.executeProcess((ExecuteRequest) request);
+            this.wpsExecuteProcess((ExecuteRequest) request);
         } else if (request instanceof DeployRequest) {
-            this.deployProcess((DeployRequest) request);
+            this.richwpsDeployProcess((DeployRequest) request);
         } else if (request instanceof UndeployRequest) {
-            this.undeployProcess((UndeployRequest) request);
+            this.richwpsUndeployProcess((UndeployRequest) request);
         } else if (request instanceof DescribeRequest) {
-            this.describeProcess((DescribeRequest) request);
+            this.wpsDescribeProcess((DescribeRequest) request);
         }
     }
 
@@ -510,7 +483,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * Retreives and extracts the processdescription type from a given
      * WPS-server.
      *
-     * @param request ExecuteRequestDTO with endpoint and process id.
+     * @param request ExecuteRequestDTO with serverid and process id.
      * @return 52n processdescriptiontype.
      */
     private ProcessDescriptionType getProcessDescriptionType(ExecuteRequest request) {
@@ -607,7 +580,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Add processs inputs to a request.
      *
-     * @param ExecuteRequestDTO with endpoint and processid.
+     * @param ExecuteRequestDTO with serverid and processid.
      * @return ExecuteRequestDTO with list of input specifiers.
      * @see IInputSpecifier
      */
@@ -622,7 +595,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Adds processs outputs to a request.
      *
-     * @param ExecuteRequestDTO with endpoint and processid.
+     * @param ExecuteRequestDTO with serverid and processid.
      * @return ExecuteRequestDTO with list of outputs specifiers.
      * @see IOutputSpecifier
      */
@@ -715,29 +688,21 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Checks whether an URI is an (52n) WPS-Endpoint or not.
      *
-     * @param uri the given endpoint.
-     * @return true for wps endpoint, false if not.
+     * @param uri the given serverid.
+     * @return true for wps serverid, false if not.
      */
     public static boolean isWPSEndpoint(String uri) {
-        if (uri.contains(IRichWPSProvider.DEFAULT_WPS_ENDPOINT)) {
-            return true;
-        } else {
-            return false;
-        }
+        return uri.contains(IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
     }
 
     /**
      * Checks whether an URI is an (52n) WPST-Endpoint or not.
      *
-     * @param uri the given endpoint.
-     * @return true for wpst endpoint, false if not.
+     * @param uri the given serverid.
+     * @return true for richwps serverid, false if not.
      */
     public static boolean isRichWPSEndpoint(String uri) {
-        if (uri.contains(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)) {
-            return true;
-        } else {
-            return false;
-        }
+        return uri.contains(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
     }
 
     /**
@@ -747,7 +712,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @return
      */
     public static boolean checkRichWPSEndpoint(String uri) {
-        // FIXME How else can we check the endpoints existence, and readiness?
+        // FIXME How else can we check the wpsurls existence, and readiness?
         // HTTP::HEAD Operation 405 Method Not Allowed, instead of 404?
         // HTTP::GET Operation 405 Method Not Allowed, instead of 404?
         try {
@@ -771,9 +736,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             provider.connect(auri);
         } catch (Exception ex) {
-            Logger.log("Debug:\n unable to connect to " + auri);
+            Logger.log("Debug:\n unable to connect to " + auri + " " + ex);
         }
-        List<String> processes = provider.getAvailableProcesses(auri);
+        List<String> processes = provider.wpsGetAvailableProcesses(auri);
         return processes.contains(processid);
     }
 }

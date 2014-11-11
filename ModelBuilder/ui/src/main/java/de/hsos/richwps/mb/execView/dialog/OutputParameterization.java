@@ -54,7 +54,7 @@ public class OutputParameterization extends ADialogPanel {
         this.selectedProcess.setText(selectedprocess);
 
         this.outputs = new ArrayList<>();
-        this.provider.describeProcess(this.request);
+        this.provider.wpsDescribeProcess(this.request);
         this.showOutputs();
     }
 

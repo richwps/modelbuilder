@@ -52,7 +52,7 @@ public class InputParameterization extends ADialogPanel {
         String selectedprocess = this.request.getIdentifier();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
-        this.provider.describeProcess(this.request);
+        this.provider.wpsDescribeProcess(this.request);
         this.showInputs();
     }
 

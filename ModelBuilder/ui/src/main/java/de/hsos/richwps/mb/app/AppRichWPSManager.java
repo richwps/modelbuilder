@@ -176,7 +176,7 @@ public class AppRichWPSManager {
         try {
             instance.connect(wpsendpoint, richwpsendpoint);
             Logger.log("Debug:\n" + request.toString());
-            instance.deployProcess(request);
+            instance.richwpsDeployProcess(request);
 
             if (request.isException()) {
                 this.error = true;

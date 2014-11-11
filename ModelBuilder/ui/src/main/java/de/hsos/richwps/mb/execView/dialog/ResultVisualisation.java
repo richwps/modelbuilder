@@ -159,7 +159,7 @@ public class ResultVisualisation extends ADialogPanel {
         }
 
         public void run() {
-            this.provider.executeProcess(this.dto);
+            this.provider.wpsExecuteProcess(this.dto);
             this.parent.update(this.dto);
         }
     }

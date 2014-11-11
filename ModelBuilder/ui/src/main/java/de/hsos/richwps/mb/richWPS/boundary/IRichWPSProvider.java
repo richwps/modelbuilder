@@ -11,7 +11,7 @@ import java.util.List;
  * Interface to RichWPS-enabled servers.
  *
  * @author dalcacer
- * @version 0.0.3
+ * @version 0.0.4
  */
 public interface IRichWPSProvider {
 
@@ -52,41 +52,33 @@ public interface IRichWPSProvider {
     public void connect(final String wpsurl, final String richwpsurl) throws Exception;
 
     /**
-     * Disconnects the provider to a WPS-server with WPS-T functionality.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @param richwpsurl endpoint of transactional interface.
-     * @throws java.lang.Exception
-     */
-    public void disconnect(final String wpsurl, final String richwpsurl) throws Exception;
-
-    /**
      * Lists all available processes.
      *
      * @param wpsurl endpoint of WebProcessingService.
      * @return list of processes.
      */
-    public List<String> getAvailableProcesses(final String wpsurl);
+    public List<String> wpsGetAvailableProcesses(final String wpsurl);
 
-    public List<List<String>> getInputTypes(String wpsurl);
-    public List<List<String>> getOutputTypes(String wpsurl);
+    public List<List<String>> richwpsGetInputTypes(String wpsurl);
+
+    public List<List<String>> richwpsGetOutputTypes(String wpsurl);
 
     /**
-     * Describes a process, via wps:describeProcess()-Request. Produces
+     * Describes a process, via wps:wpsDescribeProcess()-Request. Produces
      * DescribeRequest.
      *
      * @param request DescribeRequest with endpoint and processid.
      *
      */
-    public void describeProcess(DescribeRequest request);
+    public void wpsDescribeProcess(DescribeRequest request);
 
     /**
-     * Describes a process, via wps:describeProcess()-Request.
+     * Describes a process, via wps:wpsDescribeProcess()-Request.
      *
      * @param request ExecuteRequest with endpoint and processid.
      *
      */
-    public void describeProcess(ExecuteRequest request);
+    public void wpsDescribeProcess(ExecuteRequest request);
 
     /**
      * Executes a process, via wps:execute()-Request.
@@ -94,7 +86,7 @@ public interface IRichWPSProvider {
      * @param request ExecuteRequest with endpoint and processid and in- and
      * outputarguments.
      */
-    public void executeProcess(ExecuteRequest request);
+    public void wpsExecuteProcess(ExecuteRequest request);
 
     /**
      * Deploys a process, via RichWPS:deploy()-Request.
@@ -102,7 +94,7 @@ public interface IRichWPSProvider {
      * @param request DeployRequest.
      * @see DeployRequest
      */
-    public void deployProcess(DeployRequest request);
+    public void richwpsDeployProcess(DeployRequest request);
 
     /**
      * Undeploys a given process, via RichWPS:undeploy()-Request.
@@ -110,7 +102,7 @@ public interface IRichWPSProvider {
      * @param request DeployRequest.
      * @see UneployRequest
      */
-    public void undeployProcess(UndeployRequest request);
+    public void richwpsUndeployProcess(UndeployRequest request);
 
     /**
      * Performs a request.

@@ -33,7 +33,7 @@ public class ProcessSelection extends ADialogPanel {
         this.wpsurl = dto.getEndpoint();
         this.provider = provider;
         try {
-            this.processes = this.provider.getAvailableProcesses(wpsurl);
+            this.processes = this.provider.wpsGetAvailableProcesses(wpsurl);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unable to load processes.");
             return;
