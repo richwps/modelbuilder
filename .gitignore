@@ -14,3 +14,4 @@ nb-configuration*.xml
 
 *.class
 ModelBuilder/ui/generated.rola
+ModelBuilder/ui/logs/ModelBuilder.log
