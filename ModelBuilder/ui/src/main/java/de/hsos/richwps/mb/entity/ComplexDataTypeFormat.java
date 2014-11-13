@@ -34,6 +34,7 @@ public class ComplexDataTypeFormat implements Serializable {
 
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
+        this.toolTipText = null;
     }
 
     public String getSchema() {
@@ -42,6 +43,7 @@ public class ComplexDataTypeFormat implements Serializable {
 
     public void setSchema(String schema) {
         this.schema = schema;
+        this.toolTipText = null;
     }
 
     public String getEncoding() {
@@ -50,6 +52,7 @@ public class ComplexDataTypeFormat implements Serializable {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
+        this.toolTipText = null;
     }
 
     public void setToolTipText(String text) {
@@ -59,11 +62,11 @@ public class ComplexDataTypeFormat implements Serializable {
     public String getToolTipText() {
         if (null == toolTipText) {
             toolTipText
-                    = "<html>MimeType: "
+                    = "<html><b>MimeType: "
                     + ComplexDataTypeFormat.getValueForViews(mimeType)
-                    + "<br/>Schema: "
+                    + "</b><br/>&nbsp;&nbsp;Schema: "
                     + ComplexDataTypeFormat.getValueForViews(schema)
-                    + "<br/>Encoding: "
+                    + "<br/>&nbsp;&nbsp;Encoding: "
                     + ComplexDataTypeFormat.getValueForViews(encoding)
                     + "</html>";
         }

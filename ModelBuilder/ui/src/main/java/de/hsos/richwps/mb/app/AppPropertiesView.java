@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.app.view.properties.PropertyComplexDataTypeFormat;
+import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
@@ -210,12 +211,12 @@ public class AppPropertiesView extends PropertiesView {
         return false;
     }
 
-    private PropertyComplexDataTypeFormat createPropertyComplexDataTypeFormat(Property property) {
-        PropertyComplexDataTypeFormat propertyComplexDataTypeFormat = null;
+    private PropertyComponentComplexDataType createPropertyComplexDataTypeFormat(Property<DataTypeDescriptionComplex> property) {
+        PropertyComponentComplexDataType propertyComplexDataTypeFormat = null;
         try {
-            propertyComplexDataTypeFormat = new PropertyComplexDataTypeFormat(app.getFrame(), app.getFormatProvider());
+            propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), app.getFormatProvider());
             propertyComplexDataTypeFormat.setProperty(property);
-
+            
         } catch (LoadDataTypesException ex) {
             app.showErrorMessage(AppConstants.FORMATS_CSV_FILE_LOAD_ERROR);
         }

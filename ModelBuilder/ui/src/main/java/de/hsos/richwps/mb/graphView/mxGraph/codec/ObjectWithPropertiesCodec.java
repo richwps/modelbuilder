@@ -73,13 +73,17 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
 
         // TODO don't add properties to already encoded ports !!!
 //            if (!(obj instanceof ProcessPort) || !ProcessPortCodec.hasBeenEncoded((ProcessPort) obj)) {
+            OwsObjectWithProperties theObject = (OwsObjectWithProperties) obj;
 
-                OwsObjectWithProperties theObject = (OwsObjectWithProperties) obj;
-
-                Element encodedProperties = (Element) enc.encode(theObject.getProperties());
-                encodedProperties.setAttribute("as", FIELD_PROPERTIES_NAME);
-                encoded.appendChild(encodedProperties);
+            Element encodedProperties = (Element) enc.encode(theObject.getProperties());
+            encodedProperties.setAttribute("as", FIELD_PROPERTIES_NAME);
+            encoded.appendChild(encodedProperties);
 //            }
+
+            // don't persist generated tool tip texts
+            Element nodeEl = (Element) node;
+            nodeEl.removeAttribute("toolTipText");
+
         }
 
         return encoded;
@@ -100,7 +104,7 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
 //            nodeEl.setAttribute(ATTRIBUTE_OBJECTNAME, name);
         }
 
-        return super.beforeEncode(enc, obj, node); //To change body of generated methods, choose Tools | Templates.
+        return super.beforeEncode(enc, obj, node);
     }
 
 }

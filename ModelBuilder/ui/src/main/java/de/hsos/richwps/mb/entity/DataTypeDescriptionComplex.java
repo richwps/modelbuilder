@@ -62,11 +62,23 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
         if (null == obj || !(obj instanceof DataTypeDescriptionComplex)) {
             return false;
         }
+        
+        DataTypeDescriptionComplex other = ((DataTypeDescriptionComplex) obj);
 
-        List<ComplexDataTypeFormat> otherFormats = ((DataTypeDescriptionComplex) obj).getFormats();
-        boolean formatsEqual = formats.containsAll(otherFormats) && otherFormats.containsAll(formats);
+        boolean formatsEqual = false;
+        List<ComplexDataTypeFormat> otherFormats = other.getFormats();
+        if(null != otherFormats && null != formats) {
+            formatsEqual = formats.containsAll(otherFormats) && otherFormats.size() == formats.size();
+        }
+        
+        // equal if: both null or both not null
+        boolean defaultFormatEqual = !(null == getDefaultFormat() ^ null == other.getDefaultFormat());
+        // if both not null: default format must also be equal
+        if(null != getDefaultFormat() && null != other.getDefaultFormat()) {
+            defaultFormatEqual = getDefaultFormat().equals(other.getDefaultFormat());
+        }
 
-        return formatsEqual;
+        return formatsEqual && defaultFormatEqual;
     }
 
     @Override

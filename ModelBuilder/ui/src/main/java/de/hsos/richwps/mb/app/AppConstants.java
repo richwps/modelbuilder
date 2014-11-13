@@ -1,9 +1,9 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Point;
 import java.io.File;
 
@@ -66,6 +66,8 @@ public class AppConstants {
     // Dialoges
     public final static String DIALOG_BTN_CLOSE = "Close";
     public final static String DIALOG_BTN_CANCEL = "Cancel";
+    public final static String DIALOG_BTN_BACK = "< Back";
+    public final static String DIALOG_BTN_NEXT = "Next >";
     public final static String DIALOG_BTN_OK = "Ok";
     public final static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
 
@@ -194,6 +196,8 @@ public class AppConstants {
     
     public final static boolean PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT = true;
     public static String PREFERENCES_TAB_SP_LOADONSTART_LABEL = "Discover processes of managed remote servers on application start";
+    
+    public static Insets DEFAULT_COMPONENT_INSETS = new Insets(0, 0, 0, 0); //new Insets(2, 2, 2, 2);
 
     public enum PREFERENCES_TAB {
 
@@ -300,7 +304,7 @@ public class AppConstants {
     public final static String UNDOMANAGER_CANT_UNDO = "Can't undo";
     public final static String UNDOMANAGER_CANT_REDO = "Can't redo";
 
-    public final static String TREE_VIEW_TITLE = null;//"Modelling Elements";
+    public final static String TREE_VIEW_TITLE = "Processes";//"Modelling Elements";
     public final static String EDITOR_DEFAULT_TITLE = "Model Editor"; //(untitled)";
 
     public final static Color SELECTION_BG_COLOR = new Color(0xb0c0e0);

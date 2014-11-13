@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.app.view.properties;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import java.awt.Color;
@@ -22,26 +23,20 @@ import javax.swing.border.EmptyBorder;
  */
 public class ComplexDataTypeFormatCellRenderer extends DefaultListCellRenderer {
 
-    protected List<ComplexDataTypeFormat> selectedFormats;
+    protected DataTypeDescriptionComplex datatypeDescription;
 
     public ComplexDataTypeFormatCellRenderer() {
     }
 
-    public ComplexDataTypeFormatCellRenderer(List<ComplexDataTypeFormat> selectedFormats) {
-        this.selectedFormats = selectedFormats;
-    }
-
-    public List<ComplexDataTypeFormat> getSelectedFormat() {
-        return selectedFormats;
-    }
-
-    public void setSelectedFormats(List<ComplexDataTypeFormat> selectedFormats) {
-        this.selectedFormats = selectedFormats;
+    public ComplexDataTypeFormatCellRenderer(DataTypeDescriptionComplex datatypeDescription) {
+        this.datatypeDescription = datatypeDescription;
     }
 
     @Override
     public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
         JLabel label = null;
+
+        ComplexDataTypeFormat cdtValue = null;
 
         // no value => empty cell
         if (null == value) {
@@ -49,15 +44,9 @@ public class ComplexDataTypeFormatCellRenderer extends DefaultListCellRenderer {
             label = new JLabelWithBackground(text);
 
             // default => show format details
-        } else if (null != value && value instanceof ComplexDataTypeFormat) {
-            ComplexDataTypeFormat cdtValue = (ComplexDataTypeFormat) value;
-            String text = "<html><b>"
-                    + ComplexDataTypeFormat.getValueForViews(cdtValue.getMimeType())
-                    + "</b><br/>&nbsp;&nbsp;Schema: "
-                    + ComplexDataTypeFormat.getValueForViews(cdtValue.getSchema())
-                    + "<br/>&nbsp;&nbsp;Encoding: "
-                    + ComplexDataTypeFormat.getValueForViews(cdtValue.getEncoding())
-                    + "</html>";
+        } else if (value instanceof ComplexDataTypeFormat) {
+            cdtValue = (ComplexDataTypeFormat) value;
+            String text = cdtValue.getToolTipText();
             label = new JLabelWithBackground(text);
 
         }
@@ -73,8 +62,16 @@ public class ComplexDataTypeFormatCellRenderer extends DefaultListCellRenderer {
                 label.setBackground(new Color(0, 0, 0, 0));
 
                 // cell with selected list item
-                boolean bothNull = (value == null && value == selectedFormats);
-                boolean notNullAndEqual = (null != selectedFormats && selectedFormats.equals(value));
+                boolean bothNull = (value == null && value == datatypeDescription);
+                boolean oneIsNull = null == value || null == datatypeDescription;
+                boolean notNullAndEqual
+                        = !oneIsNull && datatypeDescription.getFormats().contains(cdtValue);
+
+                if(notNullAndEqual && cdtValue.equals(datatypeDescription.getDefaultFormat())) {
+                    // TODO set real color
+                    label.setBackground(Color.red);
+                }
+                
                 if (bothNull || notNullAndEqual) {
                     label.setFont(label.getFont().deriveFont(Font.BOLD));
                     label.setForeground(AppConstants.SELECTION_BG_COLOR);

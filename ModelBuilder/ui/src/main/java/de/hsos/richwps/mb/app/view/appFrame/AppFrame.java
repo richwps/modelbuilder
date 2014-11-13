@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import de.hsos.richwps.mb.app.view.toolbar.AppToolbar;
+import de.hsos.richwps.mb.ui.JSplitPaneForTitledComponents;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -44,7 +45,7 @@ public class AppFrame extends JFrame {
     private ModellingPanel modellingPanel;
 
     private boolean init = false;
-    
+
     /**
      * Frame setup.
      */
@@ -54,11 +55,10 @@ public class AppFrame extends JFrame {
     }
 
     public void init(App app) {
-        if(this.init) {
+        if (this.init) {
             return;
-        }        
-        
-        
+        }
+
         this.app = app;
 
         this.actionProvider = app.getActionProvider();
@@ -78,7 +78,7 @@ public class AppFrame extends JFrame {
         // call after component is visible and has a size
         getLeftPanel().setDividerLocation(.5);
         // TODO restore divider locations from config
-        
+
         this.init = true;
     }
 
@@ -164,7 +164,7 @@ public class AppFrame extends JFrame {
      */
     private Component getMainPanel() {
         if (null == mainPanel) {
-            mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+            mainPanel = new JSplitPaneForTitledComponents(JSplitPane.HORIZONTAL_SPLIT);
             mainPanel.add(getLeftPanel(), JSplitPane.LEFT);
             mainPanel.add(getCenterPanel(), JSplitPane.RIGHT);
         }
@@ -180,7 +180,7 @@ public class AppFrame extends JFrame {
      */
     private JSplitPane getLeftPanel() {
         if (null == leftPanel) {
-            leftPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+            leftPanel = new JSplitPaneForTitledComponents(JSplitPane.VERTICAL_SPLIT);
             leftPanel.add(getMainTreeViewGui(), JSplitPane.TOP);
             leftPanel.add(getModellingSummaryView(), JSplitPane.BOTTOM);
             // expand both components on resize
@@ -199,13 +199,13 @@ public class AppFrame extends JFrame {
      */
     private Component getCenterPanel() {
         if (null == centerPanel) {
-            centerPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+            centerPanel = new JSplitPaneForTitledComponents(JSplitPane.VERTICAL_SPLIT);
             centerPanel.add(getMainModellingPanel(), JSplitPane.TOP);
             centerPanel.add(getBottomView(), JSplitPane.BOTTOM);
 
-            // disable border => there is already another surrounding splitpane/border
+            // remove border => there is already another surrounding splitpane/border
             centerPanel.setBorder(null);
-
+            
             // only expand the graph panel on resize
             centerPanel.setResizeWeight(1);
         }
@@ -227,14 +227,14 @@ public class AppFrame extends JFrame {
 
             this.mainModellingPanel = new JPanel(modellingLayout);
             this.mainModellingPanel.add(new JLabel(""), MODELLING_CARDS.DISABLED.name());
-            this.mainModellingPanel.add(modellingPanel, MODELLING_CARDS.ENABLED.name());
+            this.mainModellingPanel.add(new TitledComponent("Modelling", modellingPanel), MODELLING_CARDS.ENABLED.name());
         }
 
         return mainModellingPanel;
     }
 
     public void setModellingEnabled(boolean enabled) {
-        
+
         MODELLING_CARDS card = MODELLING_CARDS.DISABLED;
         if (enabled) {
             card = MODELLING_CARDS.ENABLED;

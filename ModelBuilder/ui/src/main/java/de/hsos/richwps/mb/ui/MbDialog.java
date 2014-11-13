@@ -14,6 +14,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
@@ -37,15 +38,17 @@ public class MbDialog extends JDialog {
     public final static int BTN_ID_CLOSE = 1;
     public final static int BTN_ID_OK = 1 << 1;
     public final static int BTN_ID_CANCEL = 1 << 2;
+    public final static int BTN_ID_BACK = 1 << 3;
+    public final static int BTN_ID_NEXT = 1 << 4;
 
     /**
      * Holds instances of the dialog buttons ("ok", "cancel" etc).
      */
-    private JButton[] dialogButtons = new JButton[3];
+    private JButton[] dialogButtons = new JButton[5];
 
     protected Window parent;
 
-    private JPanel contentPane = new JPanel();
+    private final JPanel contentPane = new JPanel();
 
     private static Insets borderInsets = new Insets(2, 2, 2, 2);
 
@@ -77,53 +80,80 @@ public class MbDialog extends JDialog {
         return contentPane;
     }
 
-    private void createDialogButtons(int buttons) {
+    protected void createDialogButtons(int buttons) {
         buttonPanel = null;
         JButton okButton = null;
         JButton cancelButton = null;
         JButton closeButton = null;
+        JButton backButton = null;
+        JButton nextButton = null;
+
         double[][] size;
 
-        // create desired button panel
-        if ((buttons & BTN_ID_CLOSE) > 0) {
-            buttonPanel = new JPanel();
+        int numButtons = UiHelper.countIntsOneBits(buttons);
 
-            size = new double[][]{
-                {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
-                {TableLayout.PREFERRED}
-            };
-            buttonPanel.setLayout(new TableLayout(size));
+        double[] sizeX = new double[numButtons + 1]; // number of buttons + spacing
+        Arrays.fill(sizeX, TableLayout.PREFERRED);
+        sizeX[0] = TableLayout.FILL;
+
+        size = new double[][]{
+            sizeX,
+            {TableLayout.PREFERRED}
+        };
+
+        // Button's X constraint
+        int btnX = 1;
+
+        buttonPanel = new JPanel();
+        buttonPanel.setLayout(new TableLayout(size));
+
+        // just a close button => center it
+        if ((buttons & BTN_ID_CLOSE) == BTN_ID_CLOSE) {
+
             closeButton = new JButton(AppConstants.DIALOG_BTN_CLOSE);
-            buttonPanel.add(closeButton, "1 0");
+
+            if (numButtons == 1) {
+                buttonPanel = new JPanel();
+
+                size = new double[][]{
+                    {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.FILL},
+                    {TableLayout.PREFERRED}
+                };
+                buttonPanel.setLayout(new TableLayout(size));
+            }
+
+            buttonPanel.add(closeButton, btnX + " 0");
+            setDialogButton(BTN_ID_CLOSE, closeButton);
+            btnX++;
         }
 
-        if ((buttons & (BTN_ID_CANCEL | BTN_ID_OK)) > 0) {
-            buttonPanel = new JPanel();
-
-            size = new double[][]{
-                {TableLayout.FILL, TableLayout.PREFERRED, TableLayout.PREFERRED},
-                {TableLayout.PREFERRED}
-            };
-            buttonPanel.setLayout(new TableLayout(size));
-
+        if ((buttons & BTN_ID_CANCEL) == BTN_ID_CANCEL) {
             cancelButton = new JButton(AppConstants.DIALOG_BTN_CANCEL);
-            okButton = new JButton(AppConstants.DIALOG_BTN_OK);
-
-            buttonPanel.add(cancelButton, "1 0");
-            buttonPanel.add(okButton, "2 0");
+            buttonPanel.add(cancelButton, btnX + " 0");
+            setDialogButton(BTN_ID_CANCEL, cancelButton);
+            btnX++;
         }
 
-        if (null != okButton) {
+        if ((buttons & BTN_ID_BACK) == BTN_ID_BACK) {
+            backButton = new JButton(AppConstants.DIALOG_BTN_BACK);
+            buttonPanel.add(backButton, btnX + " 0");
+            setDialogButton(BTN_ID_BACK, backButton);
+            btnX++;
+        }
+
+        if ((buttons & BTN_ID_NEXT) == BTN_ID_NEXT) {
+            nextButton = new JButton(AppConstants.DIALOG_BTN_NEXT);
+            buttonPanel.add(nextButton, btnX + " 0");
+            setDialogButton(BTN_ID_NEXT, nextButton);
+            btnX++;
+        }
+
+        if ((buttons & BTN_ID_OK) == BTN_ID_OK) {
+            okButton = new JButton(AppConstants.DIALOG_BTN_OK);
+            buttonPanel.add(okButton, btnX + " 0");
             setDialogButton(BTN_ID_OK, okButton);
             okButton.setFont(okButton.getFont().deriveFont(Font.BOLD));
-        }
-
-        if (null != closeButton) {
-            setDialogButton(BTN_ID_CLOSE, closeButton);
-        }
-
-        if (null != cancelButton) {
-            setDialogButton(BTN_ID_CANCEL, cancelButton);
+            btnX++;
         }
 
         if (null != buttonPanel) {
@@ -222,7 +252,11 @@ public class MbDialog extends JDialog {
      * Can be implemented by subbers to respond to dialog button actions.
      */
     protected void handleDialogButton(int buttonId) {
-        dispose();
+        if (isTheDialogButton(buttonId, BTN_ID_CLOSE)
+                || isTheDialogButton(buttonId, BTN_ID_CANCEL)
+                || isTheDialogButton(buttonId, BTN_ID_OK)) {
+            dispose();
+        }
     }
 
     protected boolean isTheDialogButton(int questionableButtonId, int desiredButtonId) {

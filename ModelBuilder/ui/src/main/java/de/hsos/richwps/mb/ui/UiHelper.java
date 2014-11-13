@@ -165,6 +165,26 @@ public class UiHelper {
     }
 
     /**
+     * Return the number of bits which are set to 1.
+     * Beware of the two's complement and the sign bit.
+     *
+     * @param theInt
+     * @return
+     */
+    public static int countIntsOneBits(int theInt) {
+        int count = 0;
+
+        for (int i = 0; i < 32; i++) {
+            if ((0x1 & theInt) > 0) {
+                count++;
+            }
+            theInt = theInt >> 1;
+        }
+        
+        return count;
+    }
+
+    /**
      * True if OS is 32 bit.
      */
     public static boolean is32BitVM = System.getProperty("os.arch").contains("x86");
@@ -197,9 +217,9 @@ public class UiHelper {
 
     public static Color deriveColor(Color original, int rgbOffset) {
         int r = Math.max(0, Math.min(255, original.getRed() + rgbOffset));
-        int g = Math.max(0, Math.min(255, original.getGreen()+ rgbOffset));
-        int b = Math.max(0, Math.min(255, original.getBlue()+ rgbOffset));
-        
+        int g = Math.max(0, Math.min(255, original.getGreen() + rgbOffset));
+        int b = Math.max(0, Math.min(255, original.getBlue() + rgbOffset));
+
         return new Color(r, g, b, original.getAlpha());
     }
 }

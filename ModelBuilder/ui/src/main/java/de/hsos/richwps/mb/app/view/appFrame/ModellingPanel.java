@@ -3,8 +3,8 @@ package de.hsos.richwps.mb.app.view.appFrame;
 import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import de.hsos.richwps.mb.app.view.toolbar.ModellingToolbar;
+import de.hsos.richwps.mb.ui.JSplitPaneForTitledComponents;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Component;
 import javax.swing.JPanel;
@@ -87,7 +87,7 @@ public class ModellingPanel extends JPanel {
     private Component getMainPanel() {
 
         if (null == mainPanel) {
-            mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+            mainPanel = new JSplitPaneForTitledComponents(JSplitPane.HORIZONTAL_SPLIT);
             mainPanel.add(getGraphViewGui(), JSplitPane.LEFT);
             mainPanel.add(getPropertiesView(), JSplitPane.RIGHT);
             // only expand the center panel on resize
@@ -98,9 +98,9 @@ public class ModellingPanel extends JPanel {
         return mainPanel;
     }
 
-    private TitledComponent getGraphViewGui() {
+    TitledComponent getGraphViewGui() {
         if (null == graphViewGui) {
-            graphViewGui = new TitledComponent(AppConstants.EDITOR_DEFAULT_TITLE, app.getGraphViewGui());
+            graphViewGui = new TitledComponent(AppConstants.EDITOR_DEFAULT_TITLE, app.getGraphViewGui(), 0);
 
             // Add proxy layer with minimum z index (=on top).
             graphViewGui.add(app.getGraphDndProxy(), "0 1");
@@ -109,6 +109,10 @@ public class ModellingPanel extends JPanel {
         }
 
         return graphViewGui;
+    }
+    
+    public void setGraphViewTitleVisible(boolean visible) {
+        getGraphViewGui().setTitle(null);
     }
 
 }
