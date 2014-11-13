@@ -2,12 +2,13 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import java.io.Serializable;
 
 /**
  *
  * @author caduevel
  */
-public class InputBoundingBoxDataArgument implements IInputArgument{
+public class InputBoundingBoxDataArgument implements IInputArgument, Serializable{
 
     private InputBoundingBoxDataSpecifier specifier;
 

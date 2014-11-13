@@ -535,9 +535,11 @@ public class App {
                         JOptionPane.ERROR_MESSAGE);
                 String msg = "The requested process " + identifier + " was not found"
                         + " on " + auri;
+                Logger.log("Debug:\n"+msg);
                 JOptionPane.showMessageDialog(this.frame, msg);
                 AppEventService appservice = AppEventService.getInstance();
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+                return;
             }
         }
 

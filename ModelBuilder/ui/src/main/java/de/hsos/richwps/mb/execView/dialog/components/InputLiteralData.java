@@ -1,11 +1,13 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import javax.swing.border.TitledBorder;
 
 /**
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class InputLiteralData extends javax.swing.JPanel {
 
@@ -27,7 +29,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         String defaultvalue = this.specifier.getDefaultvalue();
         //FIXME
         this.id = theidentifier;
-        //        this.identifier.setText(theidentifier+ "("+datatype+"):");
+        //this.identifier.setText(theidentifier+ "("+datatype+"):");
 
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
@@ -45,7 +47,44 @@ public class InputLiteralData extends javax.swing.JPanel {
         this.type.setText(datatype);
         this.value.setText(defaultvalue);
     }
+    
+    /**
+     *
+     * @param specifier
+     * @param argument
+     */
+    public InputLiteralData(InputLiteralDataSpecifier specifier,InputLiteralDataArgument argument) {
+        initComponents();
+        this.specifier = specifier;
+        String theidentifier = specifier.getIdentifier();
+        String theabstract = specifier.getAbstract();
+        String thetitel = specifier.getTitle();
+        String datatype = this.specifier.getType();
+        String defaultvalue = this.specifier.getDefaultvalue();
+        //FIXME
+        this.id = theidentifier;
+        //this.identifier.setText(theidentifier+ "("+datatype+"):");
 
+        this.abstractValue.setText(theabstract);
+        this.titleValue.setText(thetitel);
+
+        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
+        if (this.specifier.getMinOccur() == 0) {
+            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory=false;
+        } else {
+            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory=true;
+        }
+        this.occurs.setText(occurstxt);
+
+        this.type.setText(datatype);
+        this.value.setText(argument.getValue());
+    }
+
+    public void setText(String content){
+        this.value.setText(content);
+    }
     /**
      *
      * @return

@@ -2,12 +2,13 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import java.io.Serializable;
 
 /**
  *
  * @author dalcacer
  */
-public class InputComplexDataArgument implements IInputArgument {
+public class InputComplexDataArgument implements IInputArgument, Serializable {
 
     private InputComplexDataSpecifier specifier;
 
@@ -95,22 +96,7 @@ public class InputComplexDataArgument implements IInputArgument {
         this.specifier = specifier;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getUrl() {
-        return url;
-    }
-
-    /**
-     *
-     * @param url
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
+  
     /**
      *
      * @return

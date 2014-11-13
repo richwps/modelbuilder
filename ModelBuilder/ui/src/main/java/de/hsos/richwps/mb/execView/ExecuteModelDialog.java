@@ -15,9 +15,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
- * A dialog that displays five consecutive panels for serverselection,
- * processselection, inputparameterisation, outputparameterisation and
- * resultvisualisation.
+ * A dialog that displays three consecutive panels for inputparameterisation,
+ * outputparameterisation and resultvisualisation.
  *
  * @author dalcacer
  * @version 0.0.2
@@ -33,34 +32,40 @@ public class ExecuteModelDialog extends MbDialog {
     private ExecuteRequest request;
 
     /**
-     * Creates new form execViewDialog, starting with the inputparamerization.
+     * Creates new form ExecuteModelDialog, starting with the
+     * inputparamerization.
+     * @param parent
+     * @param modal* 
+     * @param serverid
+     * @param processid
+     * 
      */
-    public ExecuteModelDialog(java.awt.Frame parent, boolean modal, String wpsurl,
-            String processid) {
-        super(parent, "Execute");
-
+    public ExecuteModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
+            final String processid) {
+        super(parent, "Execute model");
+        this.currentPanel = null;
         this.request = new ExecuteRequest();
-        request.setEndpoint(wpsurl);
-        request.setIdentifier(processid);
+        this.request.setEndpoint(serverid);
+        this.request.setIdentifier(processid);
         this.provider = new RichWPSProvider();
         try {
+            this.provider.disconnect();
             this.provider.connect(request.getEndpoint());
         } catch (Exception ex) {
-               String msg = "Unable to connect to selected WebProcessingService.";
+            String msg = "Unable to connect to selected WebProcessingService.";
             JOptionPane.showMessageDialog(this, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
             Logger.log("Debug:\n " + ex);
             return;
         }
-         
+
         this.remotes = new ArrayList();
-        this.remotes.add(wpsurl);
+        this.remotes.add(serverid);
         this.initComponents();
         this.showParameterizeInputsPanel(false);
     }
 
-  
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
@@ -69,11 +74,11 @@ public class ExecuteModelDialog extends MbDialog {
         this.nextButton.setVisible(true);
 
         this.inputspanel = new InputParameterization(this.provider, this.request);
-        if(isBackAction){
-            
+        if (this.currentPanel != null) {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
         }
+
         this.add(this.inputspanel);
         this.pack();
         this.currentPanel = inputspanel;
@@ -84,7 +89,7 @@ public class ExecuteModelDialog extends MbDialog {
      */
     private void showParameterizeOutputsPanel(boolean isBackAction) {
         if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
+            if (!this.currentPanel.isValid()) {
                 return;
             }
         }
@@ -106,7 +111,7 @@ public class ExecuteModelDialog extends MbDialog {
 
     private void showResultPanel(boolean isBackAction) {
         if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
+            if (!this.currentPanel.isValid()) {
                 return;
             }
         }

@@ -11,7 +11,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Objects;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -24,9 +24,8 @@ import net.opengis.wps.x100.OutputDescriptionType;
  * @author dalcacer
  * @see DescribeRequest
  */
-public class ExecuteRequest extends DescribeRequest implements IRequest {
+public class ExecuteRequest extends DescribeRequest implements IRequest, Serializable {
 
-    
     /**
      * List of actual process inputs before execution.
      */
@@ -40,7 +39,6 @@ public class ExecuteRequest extends DescribeRequest implements IRequest {
      */
     private HashMap<String, Object> results;
 
-    
     /**
      * Constructs a new ExecuteRequest.
      */
@@ -112,11 +110,11 @@ public class ExecuteRequest extends DescribeRequest implements IRequest {
     }
 
     @Override
-    public void flushException(){
-        this.wasException=false;
-        this.exception="";
+    public void flushException() {
+        this.wasException = false;
+        this.exception = "";
     }
-    
+
     /**
      * Adds an input specification to the list of available inputs.
      *
@@ -257,5 +255,13 @@ public class ExecuteRequest extends DescribeRequest implements IRequest {
     @Override
     public String toString() {
         return "RequestExecute{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", processversion=" + processversion + ", availableinputs=" + availableinputs + ", availableoutputs=" + availableoutputs + ", actualinputs=" + actualinputs + ", actualoutputs=" + actualoutputs + ", results=" + results + ", wasException=" + wasException + ", exception=" + exception + '}';
+    }
+
+    @Override
+    public boolean isLoaded() {
+        if ((this.actualinputs.isEmpty()) && (this.actualoutputs.isEmpty())) {
+            return false;
+        }
+        return true;
     }
 }

@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 /**
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class SeverSelection extends ADialogPanel {
 

@@ -2,12 +2,13 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import java.io.Serializable;
 
 /**
  *
  * @author dalcacer
  */
-public class OutputLiteralDataArgument implements IOutputArgument {
+public class OutputLiteralDataArgument implements IOutputArgument, Serializable {
 
     private OutputLiteralDataSpecifier specifier;
 

@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import javax.swing.border.TitledBorder;
 import net.opengis.wps.x100.ComplexDataCombinationsType;
@@ -68,6 +69,61 @@ public class InputComplexData extends javax.swing.JPanel {
             this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
+    }
+    
+    
+    /**
+     * Creates new form ComplexInput
+     *
+     * @param specifier the specifier of the complexinputdata.
+     */
+    public InputComplexData(final InputComplexDataSpecifier specifier, InputComplexDataArgument argument) {
+        initComponents();
+        this.specifier = specifier;
+
+        String theidentifier = specifier.getIdentifier();
+        String theabstract = specifier.getAbstract();
+        String thetitel = specifier.getTitle();
+
+        this.selectType.removeAllItems();
+
+        for (java.util.List type : specifier.getTypes()) {
+
+            String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
+            String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
+            String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
+            String line = "";
+
+            if (specifier.isDefaultType(type)) {
+                line = "<html><b>" + amimetype + "<br/>Schema: " + aschema
+                        + "<br/>Encoding: " + aencoding + "</b></html>";
+                this.selectType.addItem(line);
+                this.selectType.setSelectedItem(line);
+            } else {
+                line = "<html>" + amimetype + "<br/>Schema: " + aschema
+                        + "<br/>Encoding: " + aencoding + "</html>";
+                this.selectType.addItem(line);
+            }
+
+        }
+
+        //FIXME
+        this.id = theidentifier;
+        //this.identifier.setText(theidentifier);
+
+        this.titleValue.setText(thetitel);
+        this.abstractValue.setText(theabstract);
+        String occurstxt = "Min: " + this.specifier.getMinOccur()
+                + " Max: " + this.specifier.getMaxOccur();
+        if (this.specifier.getMinOccur() == 0) {
+            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory = false;
+        } else {
+            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory = true;
+        }
+        this.occurs.setText(occurstxt);
+        this.value.setText(argument.getURL());;
     }
 
     /**

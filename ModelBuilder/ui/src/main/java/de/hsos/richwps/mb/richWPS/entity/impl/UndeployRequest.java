@@ -38,6 +38,7 @@ public class UndeployRequest implements IRequest {
 
     /**
      * Constructs a new Undeploy-Request..
+     * @param serverid
      * @param endpoint
      * @param identifier 
      */
@@ -129,6 +130,11 @@ public class UndeployRequest implements IRequest {
 
     @Override
     public List<IOutputSpecifier> getOutputs() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isLoaded() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

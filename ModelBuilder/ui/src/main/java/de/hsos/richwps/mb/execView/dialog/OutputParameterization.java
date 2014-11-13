@@ -21,8 +21,10 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 
 /**
+ * Dialog for ouput parameterisation.
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class OutputParameterization extends ADialogPanel {
 
@@ -31,37 +33,41 @@ public class OutputParameterization extends ADialogPanel {
     private ExecuteRequest request;
 
     /**
-     * Creates new form ExecutePanel
+     * Creates new form OutputParameterization.
      */
     public OutputParameterization() {
         initComponents();
     }
 
     /**
-     * Creates new form ExecutePanel
+     * Creates new form OutputParameterization
      *
      * @param provider
-     * @param dto
+     * @param request
      */
-    public OutputParameterization(final RichWPSProvider provider, ExecuteRequest dto) {
+    public OutputParameterization(final RichWPSProvider provider, ExecuteRequest request) {
         this.provider = provider;
-        this.request = dto;
+        this.request = request;
         initComponents();
 
-        String selectedserver = this.request.getEndpoint();
-        String selectedprocess = this.request.getIdentifier();
+        final String selectedserver = this.request.getEndpoint();
+        final String selectedprocess = this.request.getIdentifier();
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
 
         this.outputs = new ArrayList<>();
-        this.provider.wpsDescribeProcess(this.request);
-        this.showOutputs();
+        //update only if necessary 
+        if (!request.isLoaded()) {
+            this.provider.wpsDescribeProcess(this.request);
+        }
+        this.createOutputPanels();
     }
 
-    private void showOutputs() {
+    private void createOutputPanels() {
 
         if (this.request.getOutputs().isEmpty()) {
-            JOptionPane optionPane = new JOptionPane("Unable to load outputs.", JOptionPane.WARNING_MESSAGE);
+            JOptionPane optionPane = new JOptionPane("Unable to load outputs from"
+                    + "process description.", JOptionPane.WARNING_MESSAGE);
             optionPane.setVisible(true);
             return;
         }
@@ -71,8 +77,7 @@ public class OutputParameterization extends ADialogPanel {
                 this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
             } else if (specifier instanceof OutputComplexDataSpecifier) {
                 this.outputs.add(new OutputComplexData((OutputComplexDataSpecifier) specifier));
-            } //TODO test BoundingBox
-            else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
+            } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
                 this.outputs.add(new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier));
             }
         }
@@ -101,17 +106,17 @@ public class OutputParameterization extends ADialogPanel {
     }
 
     /**
-     *
+     * Transcodes the outputs panel-wise into an executerequest actualoutputs.
      */
     @Override
     public void updateRequest() {
         HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
 
         for (JPanel panel : this.outputs) {
+
             if (panel instanceof OutputComplexData) {
 
                 OutputComplexData pan = (OutputComplexData) panel;
-
                 if (pan.isSelected()) {
                     OutputComplexDataSpecifier specifier = pan.getSpecifier();
                     OutputComplexDataArgument argument = new OutputComplexDataArgument(specifier);
@@ -148,8 +153,6 @@ public class OutputParameterization extends ADialogPanel {
                 }
 
             }
-            //FIXME BoundingBox
-            //FIXME BoundingBox
         }
         this.request.setOutputArguments(theoutputs);
     }
@@ -167,6 +170,7 @@ public class OutputParameterization extends ADialogPanel {
      *
      * @return
      */
+    @Override
     public boolean isValidInput() {
         boolean someThingSelected = false;
         for (JPanel panel : this.outputs) {

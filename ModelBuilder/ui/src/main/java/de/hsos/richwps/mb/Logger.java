@@ -18,7 +18,7 @@ public class Logger {
 
     private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(Logger.class.getName());
     private static FileHandler handler;
-    static org.apache.log4j.Logger log4j = org.apache.log4j.Logger.getLogger("Logger");
+    static org.apache.log4j.Logger log4j = org.apache.log4j.Logger.getLogger(Logger.class.getName());
 
     /**
      * Uses Object.toString() for output to System.err. Prepends time
@@ -44,4 +44,6 @@ public class Logger {
         log4j.info(oString);
         log.info(oString);
     }
+    
+    
 }

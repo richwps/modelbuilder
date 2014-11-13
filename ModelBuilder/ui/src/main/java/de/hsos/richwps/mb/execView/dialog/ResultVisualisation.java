@@ -22,6 +22,7 @@ import layout.TableLayout;
 /**
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class ResultVisualisation extends ADialogPanel {
 
@@ -32,21 +33,20 @@ public class ResultVisualisation extends ADialogPanel {
     /**
      *
      * @param provider
-     * @param dto
+     * @param request
      */
-    public ResultVisualisation(RichWPSProvider provider, ExecuteRequest dto) {
+    public ResultVisualisation(RichWPSProvider provider, ExecuteRequest request) {
         this.provider = provider;
-        this.request = dto;
+        this.request = request;
         this.renderers = new ArrayList<>();
         initComponents();
-        this.selectedProcess.setText(dto.getIdentifier());
-        this.selectedServer.setText(dto.getEndpoint());
+        this.selectedProcess.setText(request.getIdentifier());
+        this.selectedServer.setText(request.getEndpoint());
         ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
         this.loadingLabel.setIcon(ico);
     }
 
     /**
-     *
      */
     public void executeProcess() {
         this.jScrollPane1.setVisible(false);
@@ -56,17 +56,17 @@ public class ResultVisualisation extends ADialogPanel {
         mt.start();
     }
 
-    private void update(ExecuteRequest dto) {
-        this.request = dto;
+    private void update(ExecuteRequest request) {
+        this.request = request;
         if (this.request.isException()) {
-            renderException(dto);
+            renderException(request);
         } else {
-            this.renderResults(dto);
+            this.renderResults(request);
         }
     }
 
-    private void renderResults(ExecuteRequest dto) {
-        this.request = dto;
+    private void renderResults(ExecuteRequest request) {
+        this.request = request;
         HashMap results = this.request.getResults();
         HashMap arguments = this.request.getOutputArguments();
         java.util.Set keys = results.keySet();
@@ -123,7 +123,7 @@ public class ResultVisualisation extends ADialogPanel {
         g.ipady = 5;
         g.insets = new Insets(5, 5, 5, 5);
         g.gridwidth = 2;
-        
+
         this.add(r, g);
         this.loadingLabel.setVisible(false);
     }
@@ -148,19 +148,19 @@ public class ResultVisualisation extends ADialogPanel {
 
     private class ExecuteThread extends Thread {
 
-        private ExecuteRequest dto;
+        private ExecuteRequest request;
         private RichWPSProvider provider;
         private ResultVisualisation parent;
 
-        public ExecuteThread(ResultVisualisation parent, ExecuteRequest dto, RichWPSProvider provider) {
+        public ExecuteThread(ResultVisualisation parent, ExecuteRequest request, RichWPSProvider provider) {
             this.parent = parent;
-            this.dto = dto;
+            this.request = request;
             this.provider = provider;
         }
 
         public void run() {
-            this.provider.wpsExecuteProcess(this.dto);
-            this.parent.update(this.dto);
+            this.provider.request(this.request);
+            this.parent.update(this.request);
         }
     }
 

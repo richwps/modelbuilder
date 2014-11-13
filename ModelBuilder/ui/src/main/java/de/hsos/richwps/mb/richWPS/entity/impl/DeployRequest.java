@@ -16,6 +16,7 @@ import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
  * wpst:deploy()-Request with this object.
  *
  * @author dalcacer
+ * @verson 0.0.1s
  */
 public class DeployRequest implements IRequest {
 
@@ -481,5 +482,10 @@ public class DeployRequest implements IRequest {
     @Override
     public String toString() {
         return "DeployRequestDTO{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", title=" + title + ", processversion=" + processversion + ", inputs=" + inputs + ", outputs=" + outputs + ", executionUnit=" + executionUnit + ", deploymentprofile=" + deploymentprofile + ", theabstract=" + theabstract + ", keepExecUnit=" + keepExecUnit + '}';
+    }
+
+    @Override
+    public boolean isLoaded() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

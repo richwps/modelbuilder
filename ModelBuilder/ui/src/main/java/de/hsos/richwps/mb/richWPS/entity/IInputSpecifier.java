@@ -1,12 +1,13 @@
 package de.hsos.richwps.mb.richWPS.entity;
 
+import java.io.Serializable;
 import net.opengis.wps.x100.InputDescriptionType;
 
 /**
  *
  * @author dalcacer
  */
-public interface IInputSpecifier {
+public interface IInputSpecifier extends Serializable{
     
     /**
      *

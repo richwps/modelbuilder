@@ -21,6 +21,7 @@ import net.opengis.wps.x100.OutputDescriptionType;
  * prepare a wps:execute()-Request with the according ExecuteRequest-object.
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class DescribeRequest implements IRequest {
 
@@ -319,6 +320,11 @@ public class DescribeRequest implements IRequest {
     @Override
     public void flushResults() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean isLoaded() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

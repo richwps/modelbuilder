@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import java.util.List;
 import javax.swing.InputVerifier;
@@ -14,37 +15,37 @@ import javax.swing.border.TitledBorder;
  * @author caduevel
  */
 public class InputBoundingBoxData extends javax.swing.JPanel {
+
     public class CoordinateVerifier extends InputVerifier {
 
         @Override
         public boolean verify(JComponent input) {
-      
-           String text = null;
 
-           if (input instanceof JTextField) {
-             text = ((JTextField) input).getText();
-           }
+            String text = null;
 
-           try {
-              Double.parseDouble(text);
-           } catch (NumberFormatException e) {
-              return false;
-           }
+            if (input instanceof JTextField) {
+                text = ((JTextField) input).getText();
+            }
 
-           return true;
+            try {
+                Double.parseDouble(text);
+            } catch (NumberFormatException e) {
+                return false;
+            }
+
+            return true;
         }
 
         @Override
         public boolean shouldYieldFocus(JComponent input) {
-           boolean valid = verify(input);
-           if (!valid) {
-               JOptionPane.showMessageDialog(null, "Invalid value.");
-           }
+            boolean valid = verify(input);
+            if (!valid) {
+                JOptionPane.showMessageDialog(null, "Invalid value.");
+            }
 
-           return valid;
-       }
+            return valid;
+        }
     }
-    
 
     /**
      * id For input-identification in InputParameterization.
@@ -64,13 +65,13 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
      */
     public InputBoundingBoxData(final InputBoundingBoxDataSpecifier specifier) {
         initComponents();
-        
+
         InputVerifier verifier = new CoordinateVerifier();
         this.lowerCornerXCoords.setInputVerifier(verifier);
         this.lowerCornerYCoords.setInputVerifier(verifier);
         this.upperCornerXCoords.setInputVerifier(verifier);
         this.upperCornerYCoords.setInputVerifier(verifier);
-        
+
         this.specifier = specifier;
         String theidentifier = specifier.getIdentifier();
         String theabstract = specifier.getAbstract();
@@ -117,6 +118,71 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
 
     /**
      *
+     * @param specifier
+     */
+    public InputBoundingBoxData(final InputBoundingBoxDataSpecifier specifier, InputBoundingBoxDataArgument argument) {
+        initComponents();
+
+        InputVerifier verifier = new CoordinateVerifier();
+        this.lowerCornerXCoords.setInputVerifier(verifier);
+        this.lowerCornerYCoords.setInputVerifier(verifier);
+        this.upperCornerXCoords.setInputVerifier(verifier);
+        this.upperCornerYCoords.setInputVerifier(verifier);
+
+        this.specifier = specifier;
+        String theidentifier = specifier.getIdentifier();
+        String theabstract = specifier.getAbstract();
+        String thetitel = specifier.getTitle();
+        String defaultvalue = this.specifier.getDefaultCRS();
+
+        this.id = theidentifier;
+
+        this.abstractValue.setText(theabstract);
+        this.titleValue.setText(thetitel);
+
+        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: "
+                + this.specifier.getMaxOccur();
+        if (this.specifier.getMinOccur() == 0) {
+            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory = false;
+        } else {
+            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory = true;
+        }
+        this.occurs.setText(occurstxt);
+
+        this.selectType.removeAllItems();
+
+        List<String> suppCRS = specifier.getSupportedCRS();
+        String defaultCRS = specifier.getDefaultCRS();
+
+        //Fill combobox, select defaultCRS
+        boolean defaultInSupported = false;
+        for (String type : suppCRS) {
+            if (type != null && !type.equals("")) {
+                this.selectType.addItem(type);
+                if (type.equals(defaultCRS)) {
+                    defaultInSupported = true;
+                    this.selectType.setSelectedItem(type);
+                }
+            }
+        }
+        if (!defaultInSupported) {
+            this.selectType.addItem(defaultCRS);
+            this.selectType.setSelectedItem(defaultCRS);
+        }
+        String coords = argument.getValue();
+        String[] split = coords.split(",");
+        String lower[] = split[0].split(" ");
+        String upper[] = split[1].split(" ");
+        this.lowerCornerXCoords.setText(lower[0]);
+        this.lowerCornerYCoords.setText(lower[1]);
+        this.upperCornerXCoords.setText(upper[0]);
+        this.upperCornerYCoords.setText(upper[1]);
+    }
+
+    /**
+     *
      * @return
      */
     public InputBoundingBoxDataSpecifier getSpecifier() {
@@ -129,7 +195,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
      */
     public String getText() {
         String text;
-        text  = this.lowerCornerXCoords.getText() + " ";
+        text = this.lowerCornerXCoords.getText() + " ";
         text += this.lowerCornerYCoords.getText() + ",";
         text += this.upperCornerXCoords.getText() + " ";
         text += this.upperCornerYCoords.getText();
