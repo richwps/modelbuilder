@@ -2,6 +2,10 @@ package de.hsos.richwps.mb;
 
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.SimpleLayout;
 
 /**
  * Simple output to System.err. Used for development issues (no need for a
@@ -11,9 +15,10 @@ import java.util.logging.Level;
  * @deprecated just for dev!!
  */
 public class Logger {
-    
+
     private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(Logger.class.getName());
     private static FileHandler handler;
+    static org.apache.log4j.Logger log4j = org.apache.log4j.Logger.getLogger("Logger");
 
     /**
      * Uses Object.toString() for output to System.err. Prepends time
@@ -25,12 +30,18 @@ public class Logger {
         String oString = (null == o) ? "null" : o.toString();
         String micro = (new Long(System.nanoTime())).toString();
         System.err.println(micro.substring(0, 6) + ": " + oString);
-        
-        /*try{
-            handler = new FileHandler("modelbuilder.log", true);
-        }catch(Exception ex){
-        //nop.
+
+        try {
+            PatternLayout layout = new PatternLayout("%d %p (%t) [%c] - %m%n");
+            ConsoleAppender consoleAppender = new ConsoleAppender(layout);
+            log4j.addAppender(consoleAppender);
+            FileAppender fileAppender = new FileAppender(layout, "logs/ModelBuilder.log", false);
+            log4j.addAppender(fileAppender);
+            // ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF:
+            log4j.setLevel(org.apache.log4j.Level.ALL);
+        } catch (Exception e) {
         }
-        log.info(oString);*/
+        log4j.info(oString);
+        log.info(oString);
     }
 }
