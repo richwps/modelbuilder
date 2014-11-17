@@ -27,24 +27,14 @@ public class PropertyTextField extends AbstractPropertyComponent<Component, Stri
         textField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                updatePropertyValue();
+                setValue(textField.getText());
             }
         });
-    }
-
-    public void updatePropertyValue() {
-        property.setValue(textField.getText());
     }
 
     @Override
     public String getValue() {
         return textField.getText();
-    }
-
-    @Override
-    public void setValue(String value) {
-        this.textField.setText(value);
-        this.property.setValue(value);
     }
 
     @Override

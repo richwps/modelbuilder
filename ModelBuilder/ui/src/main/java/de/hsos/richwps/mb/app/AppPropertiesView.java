@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -9,10 +10,14 @@ import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
+import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
+import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.IPropertyChangedByUIListener;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
-import javax.swing.JOptionPane;
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -148,6 +153,19 @@ public class AppPropertiesView extends PropertiesView {
 //        }
 //        return oldValue;
 //    }
+    private List<Property> propertiesListeningTo = new LinkedList<>();
+//    private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
+    private final IPropertyChangedByUIListener propertyUIChangeListener = new IPropertyChangedByUIListener() {
+        @Override
+        public void propertyChanged(Property property, Property propertyBeforeChange) {
+            UndoablePropertyChangeAction changeAction = new UndoablePropertyChangeAction(property, propertyBeforeChange);
+            app.getUndoManager().addEdit(new AppUndoableEdit(this, changeAction, "change property value"));
+            
+            Logger.log("prop change: " + property.getValue() + ", propBefore: "+ propertyBeforeChange.getValue());
+        }
+
+    };
+
     @Override
     protected AbstractPropertyComponent getComponentFor(Property property) {
         AbstractPropertyComponent component;
@@ -158,9 +176,15 @@ public class AppPropertiesView extends PropertiesView {
         } else {
 
             component = super.getComponentFor(property);
-            // TODO add property change listener (undo manager etc.)
-        }
 
+        }
+            // TODO add property change listener (undo manager etc.)
+
+        // TODO check if listeners have to be removed after changing the components/card
+        component.addPropertyChangedByUIListener(propertyUIChangeListener);
+
+//        property.addChangeListener(propertyChangeListener);
+//        propertiesListeningTo.add(property);
         return component;
     }
 
@@ -216,7 +240,7 @@ public class AppPropertiesView extends PropertiesView {
         try {
             propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), app.getFormatProvider());
             propertyComplexDataTypeFormat.setProperty(property);
-            
+
         } catch (LoadDataTypesException ex) {
             app.showErrorMessage(AppConstants.FORMATS_CSV_FILE_LOAD_ERROR);
         }

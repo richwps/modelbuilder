@@ -51,19 +51,25 @@ public class AppUndoManager extends MbUndoManager {
                     case EDIT_UNDONE:
                     case EDIT_REDONE:
                         appEdit = (AppUndoableEdit) edit;
-                        editAction = (mxUndoableEdit) appEdit.getAction();
 
-                        model = app.getGraphView().getGraph().getModel();
+                        if (appEdit.getAction() instanceof mxUndoableEdit) {
+                            editAction = (mxUndoableEdit) appEdit.getAction();
 
-                        editCell = ((mxChildChange) editAction.getChanges().get(0)).getChild();
-                        editCellParent = model.getParent(editCell);
+                            model = app.getGraphView().getGraph().getModel();
 
-                        if (null == editCellParent) {
-                            app.getSubTreeView().removeNode(model.getValue(editCell));
-                        } else {
-                            app.getSubTreeView().addNode(model.getValue(editCell));
+                            editCell = ((mxChildChange) editAction.getChanges().get(0)).getChild();
+                            editCellParent = model.getParent(editCell);
+
+                            if (null == editCellParent) {
+                                app.getSubTreeView().removeNode(model.getValue(editCell));
+                            } else {
+                                app.getSubTreeView().addNode(model.getValue(editCell));
+                            }
                         }
+                        
+                        break;
 
+                    default:
                         break;
                 }
 

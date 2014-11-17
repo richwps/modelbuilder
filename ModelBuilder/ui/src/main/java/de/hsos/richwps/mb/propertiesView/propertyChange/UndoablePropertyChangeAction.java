@@ -1,53 +1,45 @@
 package de.hsos.richwps.mb.propertiesView.propertyChange;
 
-import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
-import java.util.LinkedList;
-import java.util.List;
+import de.hsos.richwps.mb.properties.Property;
 
 /**
- * Undoable action for property value changes.
+ * Undoable action for property value changes. Undo and redo are done by
+ * toggeling between the new and old property value.
  *
  * @author dziegenh
  */
 public class UndoablePropertyChangeAction {
+    
+    protected Property property;
+    protected Property propertyWithOldValue;
+    
+    private boolean isSwitched = false;
 
-    private AbstractPropertyComponent component;
-
-    private PropertyChangeEvent event;
-
-    private Object oldValue;
-
-    private Object newValue;
-
-    public UndoablePropertyChangeAction(AbstractPropertyComponent component, PropertyChangeEvent event, Object oldValue) {
-        this.component = component;
-        this.event = event;
-        this.oldValue = oldValue;
-        this.newValue = event.getNewValue();
+    public UndoablePropertyChangeAction(Property property, Property propertyWithOldValue) {
+        this.property = property;
+        this.propertyWithOldValue = propertyWithOldValue;
     }
 
     public void undo() {
-        component.setValue(oldValue);
-        event = new PropertyChangeEvent(event.getSourceCard(), event.getProperty(), event.getSourceObject(), oldValue);
-        firePropertyChange();
+        if (!isSwitched) {
+            this.switchEventPropertyValues();
+        }
     }
 
     public void redo() {
-        component.setValue(newValue);
-        event = new PropertyChangeEvent(event.getSourceCard(), event.getProperty(), event.getSourceObject(), newValue);
-        firePropertyChange();
-    }
-
-    public void addChangeListener(PropertyChangeListener listener) {
-        listeners.add(listener);
-    }
-
-    private List<PropertyChangeListener> listeners = new LinkedList<>();
-
-    private void firePropertyChange() {
-        for (PropertyChangeListener listener : listeners) {
-            listener.propertyChange(event);
+        if (isSwitched) {
+            switchEventPropertyValues();
         }
+    }
+
+    private void switchEventPropertyValues() {
+        // switch values
+        Object tmpValue = property.getValue();
+        property.setValue(propertyWithOldValue.getValue());
+        propertyWithOldValue.setValue(tmpValue);
+        
+        // toggle switch flag
+        isSwitched = !isSwitched;
     }
 
 }

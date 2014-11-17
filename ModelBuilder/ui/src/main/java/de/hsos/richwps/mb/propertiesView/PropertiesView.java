@@ -3,8 +3,6 @@ package de.hsos.richwps.mb.propertiesView;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
-import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeListener;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyDropdown;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
@@ -18,7 +16,6 @@ import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -60,8 +57,6 @@ public class PropertiesView extends TitledComponent {
         }
     }
 
-    private LinkedList<PropertyChangeListener> propertyChangeListeners;
-
     public PropertiesView(Window parentWindow, String title) {
         super(title, new JPanel());
 
@@ -75,22 +70,6 @@ public class PropertiesView extends TitledComponent {
         contentPanel.add(getVoidCard(), CARD.NO_SELECTION.name());
         contentPanel.add(getMultiProcessesCard(), CARD.PROCESS_MULTI_SELECTION.name());
         contentPanel.add(propertiesCard, CARD.OBJECT_WITH_PROPERTIES.name());
-
-        propertyChangeListeners = new LinkedList<>();
-    }
-
-    public boolean addPropertyChangeListener(PropertyChangeListener listener) {
-        return propertyChangeListeners.add(listener);
-    }
-
-    void firePropertyChangeEvent(CARD sourceCard, String property, Object oldValue, Object newValue) {
-        firePropertyChangeEvent(new PropertyChangeEvent(sourceCard, property, oldValue, newValue));
-    }
-
-    void firePropertyChangeEvent(PropertyChangeEvent propertyChangeEvent) {
-        for (PropertyChangeListener listener : propertyChangeListeners) {
-            listener.propertyChange(propertyChangeEvent);
-        }
     }
 
     public void showCard(CARD card) {
@@ -192,6 +171,12 @@ public class PropertiesView extends TitledComponent {
         return contentPanel;
     }
 
+    /**
+     * Creates default components for various component types.
+     *
+     * @param property
+     * @return
+     */
     protected AbstractPropertyComponent getComponentFor(Property property) {
         if (property.getComponentType().equals(Property.COMPONENT_TYPE_DROPDOWN)) {
             return new PropertyDropdown(property);

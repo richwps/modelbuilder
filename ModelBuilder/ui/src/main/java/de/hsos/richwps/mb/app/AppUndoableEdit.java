@@ -7,6 +7,7 @@ import javax.swing.undo.CannotUndoException;
 
 /**
  * Edits which can be undone/redone via the AppUndoManager.
+ * Expected actions are mxUndoableEdit and UndoablePropertyChangeAction.
  *
  * @author dziegenh
  */

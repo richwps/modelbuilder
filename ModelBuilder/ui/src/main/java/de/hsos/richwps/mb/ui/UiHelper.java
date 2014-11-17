@@ -17,6 +17,23 @@ import java.awt.Window;
 public class UiHelper {
 
     /**
+     * Return true if both objects are null or if object 1 equals object 2.
+     *
+     * @param o1
+     * @param o2
+     * @return
+     */
+    public static boolean equalOrBothNull(Object o1, Object o2) {
+        boolean equal = (null == o1 && null == o2);
+        
+        if (null != o1 && null != o2) {
+            equal = o1.equals(o2);
+        }
+
+        return equal;
+    }
+
+    /**
      * Gets the maximal screen height and the total screen width, assuming that
      * multiple monitors are aligned horizontally.
      *
@@ -165,8 +182,8 @@ public class UiHelper {
     }
 
     /**
-     * Return the number of bits which are set to 1.
-     * Beware of the two's complement and the sign bit.
+     * Return the number of bits which are set to 1. Beware of the two's
+     * complement and the sign bit.
      *
      * @param theInt
      * @return
@@ -180,7 +197,7 @@ public class UiHelper {
             }
             theInt = theInt >> 1;
         }
-        
+
         return count;
     }
 

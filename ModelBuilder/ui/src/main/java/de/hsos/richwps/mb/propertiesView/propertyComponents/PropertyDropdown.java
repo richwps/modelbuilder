@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.IPropertyChangeListener;
 import de.hsos.richwps.mb.properties.Property;
 import java.awt.event.ActionEvent;
@@ -43,7 +42,8 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         component.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                property.setValue(component.getSelectedItem());
+//                property.setValue(component.getSelectedItem());
+                setValue((E) component.getSelectedItem());
             }
         });
 
@@ -69,10 +69,10 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         return component.getModel().getElementAt(component.getSelectedIndex());
     }
 
-    @Override
-    public void setValue(E value) {
-        component.setSelectedItem(value);
-    }
+//    @Override
+//    public void setValue(E value) {
+//        component.setSelectedItem(value);
+//    }
 
     @Override
     public JComboBox<E> getComponent() {

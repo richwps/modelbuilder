@@ -40,18 +40,12 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
     }
 
     private void setDatatypeDescription(DataTypeDescriptionComplex dataTypeDescription) {
-        property.setValue(dataTypeDescription);
+        setValue(dataTypeDescription);
     }
 
     @Override
     public DataTypeDescriptionComplex getValue() {
         return property.getValue();
-    }
-
-    @Override
-    public void setValue(DataTypeDescriptionComplex value) {
-//        component.setDatatypeDescription(formats);
-        property.setValue(value);
     }
 
     @Override

@@ -133,8 +133,7 @@ public class App {
         return null != file && file.exists();
     }
 
-    void setChangesSaved(boolean changesSaved
-    ) {
+    void setChangesSaved(boolean changesSaved) {
         if (currentModelFileExists()) {
             this.changesSaved = changesSaved;
             getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(!changesSaved);
