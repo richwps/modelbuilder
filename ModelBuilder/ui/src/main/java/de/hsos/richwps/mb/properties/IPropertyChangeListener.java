@@ -11,5 +11,5 @@ public interface IPropertyChangeListener {
         POSSIBLE_VALUES_CHANGED
     };
     
-    public void propertyChanged(PropertyChangeType changeType);
+    public void propertyChanged(Object source, PropertyChangeType changeType);
 }

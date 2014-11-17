@@ -26,7 +26,7 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         // update items when the property's possible values changed
         property.addChangeListener(new IPropertyChangeListener() {
             @Override
-            public void propertyChanged(IPropertyChangeListener.PropertyChangeType changeType) {
+            public void propertyChanged(Object source, IPropertyChangeListener.PropertyChangeType changeType) {
                 switch (changeType) {
                     case POSSIBLE_VALUES_CHANGED:
                         component.removeAllItems();
@@ -69,19 +69,9 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         return component.getModel().getElementAt(component.getSelectedIndex());
     }
 
-//    @Override
-//    public void setValue(E value) {
-//        component.setSelectedItem(value);
-//    }
-
     @Override
     public JComboBox<E> getComponent() {
         return component;
-    }
-
-    @Override
-    public void setEditable(boolean editable) {
-        component.setEditable(editable);
     }
 
     public void setItems(E[] items) {
@@ -92,4 +82,14 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         }
     }
 
+    @Override
+    public void setProperty(Property<E> property) {
+        // not allowed
+    }
+
+    @Override
+    protected void propertyValueChanged() {
+        getComponent().setSelectedItem(property.getValue());
+    }
+    
 }

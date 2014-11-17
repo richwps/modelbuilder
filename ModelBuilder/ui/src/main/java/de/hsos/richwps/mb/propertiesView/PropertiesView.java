@@ -83,6 +83,10 @@ public class PropertiesView extends TitledComponent {
         invalidate();
         updateUI();
     }
+    
+    public IObjectWithProperties getCurrentObjectWithProperties() {
+        return propertiesCard.objectWithProperties;
+    }
 
     public void setObjectsWithProperties(List<? extends IObjectWithProperties> objects) {
         if (1 == objects.size()) {

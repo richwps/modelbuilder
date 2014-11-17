@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.propertiesView.propertyChange;
 
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 
 /**
@@ -14,12 +15,18 @@ public class UndoablePropertyChangeAction {
     protected Property propertyWithOldValue;
     
     private boolean isSwitched = false;
+    private final IObjectWithProperties parentObject;
 
-    public UndoablePropertyChangeAction(Property property, Property propertyWithOldValue) {
+    public UndoablePropertyChangeAction(Property property, Property propertyWithOldValue, IObjectWithProperties parentObject) {
         this.property = property;
         this.propertyWithOldValue = propertyWithOldValue;
+        this.parentObject = parentObject;
     }
 
+    public IObjectWithProperties getParentObject() {
+        return parentObject;
+    }
+    
     public void undo() {
         if (!isSwitched) {
             this.switchEventPropertyValues();

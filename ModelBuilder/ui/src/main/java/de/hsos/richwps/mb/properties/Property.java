@@ -75,8 +75,11 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     }
 
     public void setValue(E value) {
+        this.setValue(value, null);
+    }
+    public void setValue(E value, Object source) {
         this.value = value;
-        firePropertyChanged(PropertyChangeType.VALUE_CHANGED);
+        firePropertyChanged(source, PropertyChangeType.VALUE_CHANGED);
     }
 
     public String getComponentType() {
@@ -127,7 +130,8 @@ public class Property<E> implements IObjectWithProperties, Serializable {
 
     public void setPossibleValues(Collection<E> values) {
         this.possibleValues = values;
-        firePropertyChanged(PropertyChangeType.POSSIBLE_VALUES_CHANGED);
+        // TODO add source object if necessary
+        firePropertyChanged(null, PropertyChangeType.POSSIBLE_VALUES_CHANGED);
     }
 
     public Collection<E> getPossibleValues() {
@@ -142,9 +146,9 @@ public class Property<E> implements IObjectWithProperties, Serializable {
         changeListeners.remove(listner);
     }
 
-    public void firePropertyChanged(PropertyChangeType changeType) {
+    public void firePropertyChanged(Object source, PropertyChangeType changeType) {
         for (IPropertyChangeListener listener : changeListeners) {
-            listener.propertyChanged(changeType);
+            listener.propertyChanged(source, changeType);
         }
     }
 

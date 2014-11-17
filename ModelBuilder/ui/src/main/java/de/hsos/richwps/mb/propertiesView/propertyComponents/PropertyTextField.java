@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.ui.MultilineLabel;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -48,9 +49,19 @@ public class PropertyTextField extends AbstractPropertyComponent<Component, Stri
     }
 
     @Override
-    public void setEditable(boolean editable) {
-        this.textField.setEditable(editable);
-        property.setEditable(editable);
+    public boolean equals(Object obj) {
+        if (null == obj || !(obj instanceof PropertyTextField)) {
+            return false;
+        }
+
+        PropertyTextField other = (PropertyTextField) obj;
+        return UiHelper.equalOrBothNull(other.property, property)
+                && UiHelper.equalOrBothNull(other.textField, textField);
+    }
+
+    @Override
+    protected void propertyValueChanged() {
+        this.textField.setText(property.getValue());
     }
 
 }

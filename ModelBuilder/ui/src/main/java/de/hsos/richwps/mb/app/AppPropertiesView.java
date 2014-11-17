@@ -50,118 +50,19 @@ public class AppPropertiesView extends PropertiesView {
                 }
             }
         });
-
-        // TODO refactor / implement new property change mechanism with the new properties layer !!
-        // listen to property changes and add them to the UndoManager
-//        addPropertyChangeListener(new PropertyChangeListener() {
-//            @Override
-//            public void propertyChange(final PropertyChangeEvent event) {
-//                final Object oldValue = setPropertyValue(event);
-//
-//                boolean bothNull = (null == event.getNewValue()) && (null == oldValue);
-//                boolean valuesEqual = null != event.getNewValue() && event.getNewValue().equals(oldValue);
-//                valuesEqual |= null != oldValue && oldValue.equals(event.getNewValue());
-//
-//                if (!bothNull && !valuesEqual) {
-//
-//                    // get the component which represents the property in order to update it on undo/redo
-//                    AbstractPropertyComponent component = getPropertyComponent(event.getSourceCard(), event.getProperty());
-//                    UndoablePropertyChangeAction undoAction = new UndoablePropertyChangeAction(component, event, oldValue);
-//
-//                    // set property value when action is undone or redone
-//                    undoAction.addChangeListener(new PropertyChangeListener() {
-//                        @Override
-//                        public void propertyChange(PropertyChangeEvent event) {
-//                            setPropertyValue(event);
-//                            // select source object in graph. this also triggers an update of the properties view.
-//                            getGraphView().selectCellByValue(event.getSourceObject());
-//                        }
-//                    });
-//
-//                    // Add undo action to undomanager
-//                    String propertyName = UiHelper.createStringForViews(event.getProperty());
-//                    String cardName = event.getSourceCard().toString();
-//                    String undoTitle = String.format(AppConstants.PROPERTIES_PROPERTY_EDIT, propertyName, cardName);
-//                    getApp().getUndoManager().addEdit(new AppUndoableEdit(this, undoAction, undoTitle));
-//                }
-//            }
-//        });
     }
 
-    /**
-     * @TODO refactor / implement new property change mechanism with the new
-     * properties layer !!
-     *
-     * Sets the (new) property value to the property source object.
-     *
-     * @param event
-     * @return
-     */
-//    private Object setPropertyValue(PropertyChangeEvent event) {
-    //
-//        Object oldValue = null;
-//
-//        switch (event.getSourceCard()) {
-//            case NO_SELECTION:
-//                break;
-//
-//            case MODEL:
-//                // TODO move String to config or new properties model
-//                if (event.getProperty().equals("name")) {
-//                    oldValue = getGraphView().getGraphName();
-//                    getGraphView().setGraphName((String) event.getNewValue());
-//                }
-//                break;
-//
-//            case PROCESS_SINGLE_SELECTION:
-//                break;
-//            case PROCESS_MULTI_SELECTION:
-//                break;
-//
-//            case GLOBAL_PORT:
-//                Object newValue = event.getNewValue();
-//                if ((null != event.getSourceObject()
-//                        && event.getSourceObject() instanceof ProcessPort)) {
-//
-//                    ProcessPort port = (ProcessPort) event.getSourceObject();
-//
-//                    switch (event.getProperty()) {
-//                        case AbstractPortCard.PORT_TITLE:
-//                            oldValue = port.getOwsTitle();
-//                            port.setOwsTitle((String) newValue);
-//                            break;
-//                        case AbstractPortCard.PORT_ABSTRACT:
-//                            oldValue = port.getOwsAbstract();
-//                            port.setOwsAbstract((String) newValue);
-//                            break;
-//                        case AbstractPortCard.PORT_IDENTIFIER:
-//                            oldValue = port.getOwsIdentifier();
-//                            port.setOwsIdentifier((String) newValue);
-//                            break;
-//                        case AbstractPortCard.PORT_DATATYPE_FORMAT:
-//                            oldValue = port.getDataTypeDescription();
-//                            if (null != oldValue) {
-//                                oldValue = ((DataTypeDescriptionComplex) oldValue).getFormat();
-//                            }
-//                            port.setDataTypeDescription(new DataTypeDescriptionComplex((ComplexDataTypeFormat) newValue));
-//                    }
-//                }
-//                break;
-//
-//            default:
-//            // nothing
-//        }
-//        return oldValue;
-//    }
     private List<Property> propertiesListeningTo = new LinkedList<>();
-//    private final IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
+
     private final IPropertyChangedByUIListener propertyUIChangeListener = new IPropertyChangedByUIListener() {
         @Override
         public void propertyChanged(Property property, Property propertyBeforeChange) {
-            UndoablePropertyChangeAction changeAction = new UndoablePropertyChangeAction(property, propertyBeforeChange);
+            UndoablePropertyChangeAction changeAction = new UndoablePropertyChangeAction(
+                    property,
+                    propertyBeforeChange,
+                    getCurrentObjectWithProperties());
+
             app.getUndoManager().addEdit(new AppUndoableEdit(this, changeAction, "change property value"));
-            
-            Logger.log("prop change: " + property.getValue() + ", propBefore: "+ propertyBeforeChange.getValue());
         }
 
     };
@@ -178,13 +79,10 @@ public class AppPropertiesView extends PropertiesView {
             component = super.getComponentFor(property);
 
         }
-            // TODO add property change listener (undo manager etc.)
 
         // TODO check if listeners have to be removed after changing the components/card
         component.addPropertyChangedByUIListener(propertyUIChangeListener);
 
-//        property.addChangeListener(propertyChangeListener);
-//        propertiesListeningTo.add(property);
         return component;
     }
 

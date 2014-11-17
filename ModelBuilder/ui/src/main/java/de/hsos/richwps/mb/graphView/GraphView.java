@@ -181,9 +181,9 @@ public class GraphView extends JPanel {
      * @param value
      */
     public void selectCellByValue(Object value) {
-        if (value instanceof GraphModel) {
+//        if (value instanceof GraphModel) {
             getGraph().clearSelection();
-        } else {
+//        } else {
             Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
             for (Object cell : cells) {
                 Object cellValue = getGraph().getGraphModel().getValue(cell);
@@ -191,7 +191,7 @@ public class GraphView extends JPanel {
                     getGraph().setSelectionCell(cell);
                 }
             }
-        }
+//        }
     }
 
     // constants for model element change listener

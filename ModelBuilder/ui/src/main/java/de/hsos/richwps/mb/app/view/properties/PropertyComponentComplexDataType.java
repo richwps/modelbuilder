@@ -53,8 +53,7 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
         return component;
     }
 
-    @Override
-    public void setEditable(boolean editable) {
+    protected void setEditable(boolean editable) {
         component.setEditable(editable);
         property.setEditable(editable);
     }
@@ -64,6 +63,11 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
         super.setProperty(property);
         component.setDatatypeDescription(property.getValue());
         setEditable(property.isEditable());
+    }
+
+    @Override
+    protected void propertyValueChanged() {
+        component.setDatatypeDescription(property.getValue());
     }
 
 }

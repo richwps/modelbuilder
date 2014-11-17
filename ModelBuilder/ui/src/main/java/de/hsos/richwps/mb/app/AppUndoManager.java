@@ -5,6 +5,8 @@ import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import javax.swing.undo.UndoableEdit;
 
@@ -65,8 +67,16 @@ public class AppUndoManager extends MbUndoManager {
                             } else {
                                 app.getSubTreeView().addNode(model.getValue(editCell));
                             }
+
+                        } else if (appEdit.getAction() instanceof UndoablePropertyChangeAction) {
+
+                            // select the property's parent object in GraphView & PropertiesView
+                            UndoablePropertyChangeAction changeAction = (UndoablePropertyChangeAction) appEdit.getAction();
+                            IObjectWithProperties parentObject = changeAction.getParentObject();
+                            app.getPropertiesView().setObjectWithProperties(parentObject);
+                            app.getGraphView().selectCellByValue(parentObject);
                         }
-                        
+
                         break;
 
                     default:
