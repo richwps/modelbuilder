@@ -118,7 +118,8 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doNewModel() {
-        if (confirmDiscardChanges()) {
+        if (confirmDiscardChanges(AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE)) {
+            
             String remote = app.askRemote();
 
             // cancel if no remote is available
@@ -147,7 +148,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doLoadModel() {
-        if (confirmDiscardChanges()) {
+        if (confirmDiscardChanges(AppConstants.CONFIRM_LOAD_MODEL, AppConstants.CONFIRM_LOAD_MODEL_TITLE)) {
 
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
@@ -348,7 +349,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doOpenLastFile() {
-        if (confirmDiscardChanges()) {
+        if (confirmDiscardChanges(AppConstants.CONFIRM_LOAD_MODEL, AppConstants.CONFIRM_LOAD_MODEL_TITLE)) {
             String filename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
             loadModelFromFile(filename);
         }
@@ -361,12 +362,11 @@ public class AppActionHandler implements IAppActionHandler {
         }
     }
 
-    private boolean confirmDiscardChanges() {
+    private boolean confirmDiscardChanges(String text, String title) {
         if (!app.areChangesSaved()) {
             int choice = JOptionPane.showConfirmDialog(
                     app.getFrame(),
-                    AppConstants.CONFIRM_LOAD_MODEL,
-                    AppConstants.CONFIRM_LOAD_MODEL_TITLE,
+                    text, title,
                     JOptionPane.YES_NO_OPTION);
             return (choice == JOptionPane.YES_OPTION);
         }

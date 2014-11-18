@@ -44,14 +44,12 @@ public class GraphSetup {
     static String STYLENAME_LOCAL_INPUT = "LOCAL_INPUT";
     static String STYLENAME_LOCAL_OUTPUT = "LOCAL_OUTPUT";
 
-    public static String STYLENAME_SELECTION_PROXY = "SELECTION";
-
     // (auto-) Layout
     static final int LAYOUT_COMPONENT_GAP = 50;
     static final int LAYOUT_CELL_GAP = 20;
 
     public final static String STYLE_SHAPE = "GRAPH_EDGE";
-    private static float SELECTION_BORDER_WIDTH = 1.5f;
+    private static final float SELECTION_BORDER_WIDTH = 1.5f;
 
     public final static Color GRAPH_BG_COLOR = Color.WHITE;
     public final static Color GRAPH_EDGE_SHIFTED_COLOR = new Color(240, 240, 250);
@@ -145,7 +143,7 @@ public class GraphSetup {
         graph.setStylesheet(stylesheet);
 
         // PROCESS STYLE
-        Hashtable<String, Object> processStyle = new Hashtable<String, Object>();
+        Hashtable<String, Object> processStyle = new Hashtable<>();
         processStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
         processStyle.put(mxConstants.STYLE_OPACITY, 80);
         processStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
@@ -191,20 +189,6 @@ public class GraphSetup {
         portStyle = (Hashtable<String, Object>) portStyle.clone();
         portStyle.put(mxConstants.STYLE_FILLCOLOR, "#"+localOutputBgColor);
         stylesheet.putCellStyle(STYLENAME_LOCAL_OUTPUT, portStyle);
-
-        // SELECTION PROXY STYLE
-        Hashtable<String, Object> selectionProxyStyle = new Hashtable<>();
-        selectionProxyStyle.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_RECTANGLE);
-        selectionProxyStyle.put(mxConstants.STYLE_OPACITY, 50);
-        selectionProxyStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
-        selectionProxyStyle.put(mxConstants.STYLE_FILLCOLOR, "#" + UiHelper.colorToHex(AppConstants.SELECTION_BG_COLOR));
-        selectionProxyStyle.put(mxConstants.STYLE_STROKECOLOR, "#" + UiHelper.colorToHex(AppConstants.SELECTION_BG_COLOR.darker()));
-        selectionProxyStyle.put(mxConstants.STYLE_DASHED, "1");
-        selectionProxyStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
-        selectionProxyStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
-        selectionProxyStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#" + UiHelper.colorToHex(AppConstants.SELECTION_BG_COLOR.brighter()));
-        selectionProxyStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
-        stylesheet.putCellStyle(STYLENAME_SELECTION_PROXY, selectionProxyStyle);
 
         return graph;
     }

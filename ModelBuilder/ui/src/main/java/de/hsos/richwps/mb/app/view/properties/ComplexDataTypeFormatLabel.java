@@ -395,13 +395,19 @@ public class ComplexDataTypeFormatLabel extends JPanel implements Serializable {
                 sb.append("<html>");
 
                 if (formats1.size() > 1) {
-                    sb.append("<i>").append(formats1.size()).append(" formats supported. Default:</i><br>");
+                    sb.append("<i>").append(formats1.size()).append(" formats supported. Default:</i>");
                 }
 
                 // add detailed default format data
                 if (dataTypeDescription.getDefaultFormat() != null) {
+                    if (formats1.size() > 1) {
+                        sb.append("<br>");
+                    }
                     sb.append(dataTypeDescription.getDefaultFormat().getToolTipText().replaceAll("<html>", "").replaceAll("</html>", "<br>"));
+                } else {
+                    sb.append("<b style='color:red;'> none</b>");
                 }
+
                 sb.append("</html>");
 
                 formatLabel.setText(sb.toString());
