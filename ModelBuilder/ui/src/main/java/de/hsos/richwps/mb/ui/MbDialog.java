@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.ui;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Container;
@@ -260,7 +261,7 @@ public class MbDialog extends JDialog {
     }
 
     protected boolean isTheDialogButton(int questionableButtonId, int desiredButtonId) {
-        return (questionableButtonId & desiredButtonId) > 1;
+        return (questionableButtonId & desiredButtonId) > 0;
     }
 
 }
