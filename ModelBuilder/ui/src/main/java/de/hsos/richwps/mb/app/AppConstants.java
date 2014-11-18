@@ -147,7 +147,7 @@ public class AppConstants {
     /**
      * Number of visible characters of the "recent file" path.
      */
-    public static final int RECENT_FILE_VISIBLE_WIDTH = 50;
+    public static final int RECENT_FILE_VISIBLE_WIDTH = 70;
 
     /**
      * Title of deploy dialog.
@@ -198,6 +198,11 @@ public class AppConstants {
     public static String PREFERENCES_TAB_SP_LOADONSTART_LABEL = "Discover processes of managed remote servers on application start";
     
     public static Insets DEFAULT_COMPONENT_INSETS = new Insets(0, 0, 0, 0); //new Insets(2, 2, 2, 2);
+  
+    /** 
+     * For action "open recently used file"
+     */
+    public static String CAPTION_RECENTLY_USED = "Recently used: ";
 
     public enum PREFERENCES_TAB {
 
@@ -372,6 +377,17 @@ public class AppConstants {
     public final static String ICON_EDIT_KEY = "richwps_icon_edit";
     public final static String ICON_ADD_KEY = "richwps_icon_add";
     public final static String ICON_DELETE_KEY = "richwps_icon_delete";
+    
+    /**
+     * large icons directory/path
+     */
+    public final static String LARGE_ICON_DIR = "64";
+    
+    /**
+     * Prefix for icon keys to build up keys of large icons
+     */
+    public final static String LARGE_ICON_PREFIX = "large_";
+    
     // Images
     public final static String ICON_ABOUTIMAGE_KEY = "richwps_image_about";
     public final static String ICON_MBLOGO_KEY = "rwps_image_mblogo";

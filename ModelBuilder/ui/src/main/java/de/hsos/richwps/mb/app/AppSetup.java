@@ -196,6 +196,7 @@ public class AppSetup {
      */
     public static void loadIcons() {
         String iconDir = AppConstants.RES_ICONS_DIR + File.separator;
+        String largeIconDir = iconDir + AppConstants.LARGE_ICON_DIR + File.separator;
 
         // App Icon
         UIManager.put(AppConstants.ICON_MBLOGO_KEY, new ImageIcon(iconDir + "mb_logo.png", "mb logo image"));
@@ -206,7 +207,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_SAVE_KEY, new ImageIcon(iconDir + "document-save-5.png", "save icon"));
         UIManager.put(AppConstants.ICON_SAVEAS_KEY, new ImageIcon(iconDir + "document-save-as-4.png", "save as icon"));
         UIManager.put(AppConstants.ICON_PREFERENCES_KEY, new ImageIcon(iconDir + "system-settings.png", "prefs icon"));
-        UIManager.put(AppConstants.ICON_EXIT_KEY, new ImageIcon(iconDir + "dialog-close-2.png", "exit icon"));
+        UIManager.put(AppConstants.ICON_EXIT_KEY, new ImageIcon(iconDir + "application-exit-2.png", "exit icon"));
 
         // Edit Menu Icons
         UIManager.put(AppConstants.ICON_UNDO_KEY, new ImageIcon(iconDir + "arrow-undo.png", "undo icon"));
@@ -239,6 +240,14 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_DELETE_KEY, new ImageIcon(iconDir + "edit-delete-7.png", "delete icon"));
 
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
+        
+        // large icons
+        UIManager.put(getLargeIconKey(AppConstants.ICON_NEW_KEY), new ImageIcon(largeIconDir + "document-new-6.png", "largeicon new"));
+        UIManager.put(getLargeIconKey(AppConstants.ICON_OPEN_KEY), new ImageIcon(largeIconDir + "document-open-4.png", "largeicon open"));
+    }
+    
+    private static String getLargeIconKey(String iconKey) {
+        return AppConstants.LARGE_ICON_PREFIX + iconKey;
     }
 
 }

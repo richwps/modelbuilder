@@ -226,7 +226,7 @@ public class AppFrame extends JFrame {
             modellingPanel = new ModellingPanel();
 
             this.mainModellingPanel = new JPanel(modellingLayout);
-            this.mainModellingPanel.add(new JLabel(""), MODELLING_CARDS.DISABLED.name());
+            this.mainModellingPanel.add(new DefaultMainPanel(actionProvider), MODELLING_CARDS.DISABLED.name());
             this.mainModellingPanel.add(new TitledComponent("Modelling", modellingPanel), MODELLING_CARDS.ENABLED.name());
         }
 
