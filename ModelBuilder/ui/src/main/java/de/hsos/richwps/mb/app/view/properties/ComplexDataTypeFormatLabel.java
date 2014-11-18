@@ -74,7 +74,12 @@ class SelectFormatFrame extends MbDialog {
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        updateButtonStatus(datatypeDescription.getDefaultFormat());
+        if (null == datatypeDescription) {
+            updateButtonStatus();
+        } else {
+            updateButtonStatus(datatypeDescription.getDefaultFormat());
+        }
+
     }
 
     private void updateButtonStatus() {
@@ -302,7 +307,6 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                 selectFormatFrame.addWindowListener(new WindowAdapter() {
                     @Override
                     public void windowClosed(WindowEvent e) {
-//                        List<ComplexDataTypeFormat> selectedFormats = selectFormatFrame.getSelectedFormats();
                         DataTypeDescriptionComplex exportDatatype = selectFormatFrame.getExportDatatype();
 
                         // null indicates the selection was cancelled
@@ -391,7 +395,7 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                 // add detailed default format data
                 sb.append(dataTypeDescription.getDefaultFormat().getToolTipText().replaceAll("<html>", "").replaceAll("</html>", "<br>"));
                 sb.append("</html>");
-                
+
                 formatLabel.setText(sb.toString());
             }
         }
