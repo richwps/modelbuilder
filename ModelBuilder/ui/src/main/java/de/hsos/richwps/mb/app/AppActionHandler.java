@@ -118,13 +118,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doNewModel() {
-        boolean doNew = true;
-        if (!app.areChangesSaved()) {
-            int choice = JOptionPane.showConfirmDialog(app.getFrame(), AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE, JOptionPane.YES_NO_OPTION);
-            doNew = choice == JOptionPane.YES_OPTION;
-        }
-
-        if (doNew) {
+        if (confirmDiscardChanges()) {
             String remote = app.askRemote();
 
             // cancel if no remote is available
@@ -153,17 +147,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doLoadModel() {
-        boolean doLoad = true;
-        if (!app.areChangesSaved()) {
-            int choice = JOptionPane.showConfirmDialog(
-                    app.getFrame(),
-                    AppConstants.CONFIRM_LOAD_MODEL,
-                    AppConstants.CONFIRM_LOAD_MODEL_TITLE,
-                    JOptionPane.YES_NO_OPTION);
-            doLoad = choice == JOptionPane.YES_OPTION;
-        }
-
-        if (doLoad) {
+        if (confirmDiscardChanges()) {
 
             JFileChooser fc = new JFileChooser();
             fc.setFileFilter(new FileNameExtensionFilter("XML-Files", "xml"));
@@ -299,7 +283,6 @@ public class AppActionHandler implements IAppActionHandler {
                 app.getFrame().setGraphViewTitle(filename);
                 app.setChangesSaved(true);
 
-//                app.getFrame().setGraphViewTitle(getGraphView().getCurrentGraphName());
             } catch (Exception ex) {
                 handleSaveModelFailedException(ex);
                 app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
@@ -320,8 +303,8 @@ public class AppActionHandler implements IAppActionHandler {
         sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
         AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
     }
-    
-     private void doPreview() {
+
+    private void doPreview() {
         app.preview();
     }
 
@@ -365,8 +348,10 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doOpenLastFile() {
-        String filename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
-        loadModelFromFile(filename);
+        if (confirmDiscardChanges()) {
+            String filename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
+            loadModelFromFile(filename);
+        }
     }
 
     private void rememberLastModelFile(String filename) {
@@ -374,5 +359,18 @@ public class AppActionHandler implements IAppActionHandler {
             AppConfig.getConfig().put(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), filename);
             app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE).setName(filename);
         }
+    }
+
+    private boolean confirmDiscardChanges() {
+        if (!app.areChangesSaved()) {
+            int choice = JOptionPane.showConfirmDialog(
+                    app.getFrame(),
+                    AppConstants.CONFIRM_LOAD_MODEL,
+                    AppConstants.CONFIRM_LOAD_MODEL_TITLE,
+                    JOptionPane.YES_NO_OPTION);
+            return (choice == JOptionPane.YES_OPTION);
+        }
+
+        return true;
     }
 }
