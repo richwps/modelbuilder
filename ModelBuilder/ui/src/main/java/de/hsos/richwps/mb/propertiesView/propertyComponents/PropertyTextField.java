@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Component;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.io.Serializable;
 import javax.swing.JTextField;
 
 /**
@@ -18,8 +19,12 @@ public class PropertyTextField extends AbstractPropertyComponent<Component, Stri
     /**
      * Textfield for user input (only for editable properties).
      */
-    private final JTextField textField = new JTextField();
+    private final transient JTextField textField = new JTextField();
 
+    public PropertyTextField() {
+        super();
+    }
+    
     public PropertyTextField(Property<String> property) {
         super(property);
         this.textField.setText(property.getValue());

@@ -19,6 +19,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JButton;
@@ -273,7 +274,7 @@ class SelectFormatFrame extends MbDialog {
  *
  * @author dziegenh
  */
-public class ComplexDataTypeFormatLabel extends JPanel {
+public class ComplexDataTypeFormatLabel extends JPanel implements Serializable {
 
     private final JButton editButton;
     private final JLabel formatLabel;
@@ -283,12 +284,17 @@ public class ComplexDataTypeFormatLabel extends JPanel {
     private List<IDataTypeDescriptionChangeListener> selectionListeners;
     private DataTypeDescriptionComplex dataTypeDescription;
 
+    public ComplexDataTypeFormatLabel() {
+        this.editButton = null;
+        this.formatLabel = null;
+    }
+
     public ComplexDataTypeFormatLabel(final Window parent, List<ComplexDataTypeFormat> formats) {
         super();
 
         this.formats = formats;
 
-        formatLabel = new JLabel(""); //new MultilineLabel("");
+        formatLabel = new JLabel("");
         formatLabel.setBorder(new EmptyBorder(PropertyCardsConfig.labelInsets));
 
         editButton = new JButton(UIManager.getIcon(AppConstants.ICON_EDIT_KEY));
@@ -393,7 +399,9 @@ public class ComplexDataTypeFormatLabel extends JPanel {
                 }
 
                 // add detailed default format data
-                sb.append(dataTypeDescription.getDefaultFormat().getToolTipText().replaceAll("<html>", "").replaceAll("</html>", "<br>"));
+                if (dataTypeDescription.getDefaultFormat() != null) {
+                    sb.append(dataTypeDescription.getDefaultFormat().getToolTipText().replaceAll("<html>", "").replaceAll("</html>", "<br>"));
+                }
                 sb.append("</html>");
 
                 formatLabel.setText(sb.toString());

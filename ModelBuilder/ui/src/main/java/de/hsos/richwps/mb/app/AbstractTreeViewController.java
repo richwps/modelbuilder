@@ -1,10 +1,10 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.graphView.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -25,7 +25,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public abstract class AbstractTreeViewController {
 
-    protected App app;
+    protected final App app;
     private TreeView treeView;
     private GraphDropTargetAdapter dropTargetAdapter;
 
@@ -56,7 +56,7 @@ public abstract class AbstractTreeViewController {
 
     TreeView getTreeView() {
         if (null == treeView) {
-            this.treeView = AppTreeFactory.createTree(app.getGraphView(), app.getProcessProvider(), app.getProcessMetricProvider());
+            this.treeView = AppTreeFactory.createTree(app.getGraphView(), app.getProcessProvider());
             ToolTipManager.sharedInstance().registerComponent(this.treeView.getGui());
         }
 
@@ -76,10 +76,11 @@ public abstract class AbstractTreeViewController {
                     if (null != dropTargetAdapter) {
                         return;
                     }
-                    dropTargetAdapter = new GraphDropTargetAdapter(getProcessProvider(), getGraphView(), app.getProcessMetricProvider(), getGraphDndProxy());
+                    getGraphDndProxy().setVisible(true);
+                    dropTargetAdapter = new GraphDropTargetAdapter(app, getGraphDndProxy());
                     dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
                     dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
-                    getGraphDndProxy().setVisible(true);
+                                        
 
                 } catch (TooManyListenersException ex) {
                     java.util.logging.Logger.getLogger(App.class
@@ -87,7 +88,7 @@ public abstract class AbstractTreeViewController {
                 }
             }
         });
-
+        
         // deactivate graph drop target when dragging ends
         DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceAdapter() {
             @Override

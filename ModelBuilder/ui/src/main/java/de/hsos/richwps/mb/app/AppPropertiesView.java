@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -10,7 +9,6 @@ import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
-import de.hsos.richwps.mb.propertiesView.propertyChange.PropertyChangeEvent;
 import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.IPropertyChangedByUIListener;
@@ -150,7 +148,4 @@ public class AppPropertiesView extends PropertiesView {
         return app.getGraphView();
     }
 
-    private App getApp() {
-        return this.app;
-    }
 }

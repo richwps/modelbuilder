@@ -35,7 +35,7 @@ public class GraphSetup {
     public static final int fontSize = 15;
     public static final int spacing = 4;
 
-    final static int CELLS_VERTICAL_OFFSET = 100;
+    public final static int CELLS_VERTICAL_OFFSET = 100;
 
     static String STYLENAME_GLOBAL_INPUT = "GLOBAL_INPUT";
     static String STYLENAME_GLOBAL_OUTPUT = "GLOBAL_OUTPUT";

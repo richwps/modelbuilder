@@ -15,7 +15,7 @@ import javax.swing.JComboBox;
  */
 public class PropertyDropdown<E extends Object> extends AbstractPropertyComponent<JComboBox<E>, E> {
 
-    private final JComboBox<E> component;
+    private final transient JComboBox<E> component;
 
     public PropertyDropdown(final Property property) {
         super(property);
@@ -55,7 +55,7 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
         if (property.getValue() != null) {
             component.setSelectedItem(property.getValue());
         } else {
-            
+
             // no property value: set it to the first possible item if available
             Collection<E> possibleValues = property.getPossibleValues();
             if (null != possibleValues) {
@@ -91,5 +91,5 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
     protected void propertyValueChanged() {
         getComponent().setSelectedItem(property.getValue());
     }
-    
+
 }

@@ -29,13 +29,11 @@ class TreeViewMouseAdapter extends MouseAdapter {
     private GraphView graphView;
     private TreeView treeView;
     private ProcessProvider processProvider;
-    private final ProcessMetricProvider processMetricProvider;
-
-    TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider, ProcessMetricProvider processMetricProvider) {
+    
+    TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider) {
         this.graphView = graphView;
         this.treeView = treeView;
         this.processProvider = processProvider;
-        this.processMetricProvider = processMetricProvider;
     }
 
     private ProcessProvider getProcessProvider() {
@@ -80,14 +78,14 @@ class TreeViewMouseAdapter extends MouseAdapter {
  */
 class AppTreeFactory {
 
-    static TreeView createTree(GraphView graphView, final ProcessProvider processProvider, final ProcessMetricProvider processMetricProvider) {
+    static TreeView createTree(GraphView graphView, final ProcessProvider processProvider) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
 
         // Java 1.7 Bugfix: add dummy node - otherwise the tree doesn't work?!
         root.add(new DefaultMutableTreeNode(""));
 
         TreeView treeView = new TreeView(root, processProvider);
-        treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider, processMetricProvider));
+        treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider));
         treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
         DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
         cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);

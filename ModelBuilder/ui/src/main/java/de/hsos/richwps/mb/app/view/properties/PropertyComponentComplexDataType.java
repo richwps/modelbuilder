@@ -20,11 +20,12 @@ import java.util.List;
  */
 public class PropertyComponentComplexDataType extends AbstractPropertyComponent<ComplexDataTypeFormatLabel, DataTypeDescriptionComplex> {
 
-    ComplexDataTypeFormatLabel component;
+    private ComplexDataTypeFormatLabel component;
 
     public static String PROPERTY_NAME = "Complex datatype format";
     public static String COMPONENT_TYPE = "Complex datatype format";
 
+    
     public PropertyComponentComplexDataType(final Window parent, FormatProvider formatProvider) throws LoadDataTypesException {
         super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE));
 

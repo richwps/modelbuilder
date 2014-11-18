@@ -437,7 +437,7 @@ public class GraphView extends JPanel {
      *
      * @param cells to selected.
      */
-    void setCellsSelected(Object[] cells) {
+    public void setCellsSelected(Object[] cells) {
         getGraph().clearSelection();
         getGraph().setSelectionCells(cells);
     }

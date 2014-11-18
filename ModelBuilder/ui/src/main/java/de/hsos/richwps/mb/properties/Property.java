@@ -24,7 +24,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     private boolean editable;
     private Collection<E> possibleValues;
 
-    private Collection<IPropertyChangeListener> changeListeners;
+    private transient Collection<IPropertyChangeListener> changeListeners;
     private boolean isTransient = false;
 
     public Property() {

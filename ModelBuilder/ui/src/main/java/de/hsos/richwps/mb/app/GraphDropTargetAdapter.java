@@ -1,18 +1,18 @@
-package de.hsos.richwps.mb.graphView;
+package de.hsos.richwps.mb.app;
 
 import com.mxgraph.model.mxCell;
-import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientException;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.graphView.GraphSetup;
+import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.properties.Property;
-import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.treeView.TransferableProcessEntity;
 import de.hsos.richwps.mb.treeView.TransferableProcessPort;
 import de.hsos.richwps.mb.treeView.TransferableTreeNodes;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -21,8 +21,6 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Adapter for performing drop actions depending on the transferred object(s).
@@ -31,17 +29,18 @@ import java.util.logging.Logger;
  */
 public class GraphDropTargetAdapter extends DropTargetAdapter {
 
-    private GraphView graphView;
+//    private GraphView graphView;
     private DropTarget dropTarget;
-    private ProcessProvider processProvider;
+
+    private App app;
 
     private List<mxCell> createdNodes;
-    private ProcessMetricProvider processMetricProvider;
 
-    public GraphDropTargetAdapter(ProcessProvider processProvider, GraphView graphView, ProcessMetricProvider processMetricProvider, Component c) {
-        this.graphView = graphView;
-        this.processProvider = processProvider;
-        this.processMetricProvider = processMetricProvider;
+    public GraphDropTargetAdapter(App app, Component c) {
+
+        this.app = app;
+
+//        this.graphView = app.getGraphView();
         dropTarget = new DropTarget(c, DnDConstants.ACTION_COPY, this, true, null);
     }
 
@@ -58,6 +57,8 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
     @Override
     public void drop(DropTargetDropEvent dtde) {
         Transferable transferable = dtde.getTransferable();
+
+        app.getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         createdNodes = new LinkedList<mxCell>();
 
@@ -85,7 +86,8 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             // ignore
         }
 
-        graphView.setCellsSelected(createdNodes.toArray());
+        app.getFrame().setCursor(Cursor.getDefaultCursor());
+        app.getGraphView().setCellsSelected(createdNodes.toArray());
     }
 
     /**
@@ -97,6 +99,8 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
      * @return
      */
     protected boolean createNodesFromTransferObject(Object o, Point location) {
+
+        GraphView graphView = app.getGraphView();
 
         location.x = (int) Math.floor(location.x / AppConstants.GRAPH_GRID_SIZE) * AppConstants.GRAPH_GRID_SIZE;
         location.y = (int) Math.floor(location.y / AppConstants.GRAPH_GRID_SIZE) * AppConstants.GRAPH_GRID_SIZE;
@@ -111,7 +115,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             // try to update ProcessEntity using SemanticProxy
             String server = processEntity.getServer();
             String identifier = processEntity.getOwsIdentifier();
-            ProcessEntity spProcess = processProvider.getFullyLoadedProcessEntity(server, identifier);
+            ProcessEntity spProcess = app.getProcessProvider().getFullyLoadedProcessEntity(server, identifier);
             if (null != spProcess) {
                 processEntity = spProcess;
             }
@@ -135,7 +139,6 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             return true;
         }
 
-        // can't handle given object
         if (null != node) {
             createdNodes.add(node);
             return true;

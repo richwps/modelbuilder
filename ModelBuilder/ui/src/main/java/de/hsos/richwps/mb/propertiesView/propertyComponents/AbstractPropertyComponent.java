@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.IPropertyChangeListener;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -18,9 +17,9 @@ public abstract class AbstractPropertyComponent<C extends Component, E> implemen
 
     protected Property<E> property;
 
-    protected List<IPropertyChangedByUIListener> propertyUIChangeListeners;
+    protected transient List<IPropertyChangedByUIListener> propertyUIChangeListeners;
 
-    protected IPropertyChangeListener changeListener = new IPropertyChangeListener() {
+    protected transient IPropertyChangeListener changeListener = new IPropertyChangeListener() {
 
         @Override
         public void propertyChanged(Object source, IPropertyChangeListener.PropertyChangeType changeType) {
