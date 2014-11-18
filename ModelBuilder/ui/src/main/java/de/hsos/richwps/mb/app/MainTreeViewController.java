@@ -97,6 +97,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 String url = getSpUrlFromConfig();
 
                 boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(url);
+                int receivedServers = 0;
 
                 if (connected || processProvider.connect(url)) {
                     for (WpsServer server : processProvider.getAllServerWithProcesses()) {
@@ -110,7 +111,12 @@ public class MainTreeViewController extends AbstractTreeViewController {
                             serverNode.add(new DefaultMutableTreeNode(process));
                         }
                         processesNode.add(serverNode);
+                        receivedServers++;
                     }
+                }
+
+                if (!connected) {
+                    AppEventService.getInstance().fireAppEvent("Received " + receivedServers + " servers from '" + url + "'.", processProvider);
                 }
 
             } catch (Exception ex) {

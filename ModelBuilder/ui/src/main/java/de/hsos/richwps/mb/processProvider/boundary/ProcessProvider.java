@@ -102,6 +102,7 @@ public class ProcessProvider {
     public void clear() {
         if (null != spClient) {
             spClient.clearCache();
+            this.net = null;
         }
     }
 
@@ -219,9 +220,6 @@ public class ProcessProvider {
             AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, this);
         }
 
-        // TODO replace String with formatable AppConstant
-        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
-
         return servers;
     }
 
@@ -261,7 +259,7 @@ public class ProcessProvider {
         }
 
         // TODO replace String with formatable AppConstant
-        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
+//        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
 
         return servers;
     }
