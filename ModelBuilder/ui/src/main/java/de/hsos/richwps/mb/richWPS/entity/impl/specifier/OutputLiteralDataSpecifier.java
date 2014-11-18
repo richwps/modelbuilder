@@ -14,10 +14,12 @@ import org.n52.wps.io.data.binding.literal.LiteralStringBinding;
  */
 public class OutputLiteralDataSpecifier implements IOutputSpecifier {
 
-    private OutputDescriptionType description;
     private String identifier;
+
     private String theabstract;
+
     private String title;
+
     private String typereference;
 
     /**
@@ -32,12 +34,14 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
 
     /**
      * Constructs an OutputLiteralDataSpecifier.
+     *
      * @param identifier
      * @param theabstract
      * @param title
-     * @param type 
+     * @param type
      */
-    public OutputLiteralDataSpecifier(String identifier, String theabstract, String title, String type) {
+    public OutputLiteralDataSpecifier(String identifier, String theabstract,
+            String title, String type) {
         this.identifier = identifier;
         this.theabstract = theabstract;
         this.title = title;
@@ -49,7 +53,6 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
      * @param description
      */
     public OutputLiteralDataSpecifier(OutputDescriptionType description) {
-        this.description = description;
         this.identifier = description.getIdentifier().getStringValue();
         if (description.getAbstract() != null) {
             this.theabstract = description.getAbstract().getStringValue();
@@ -155,8 +158,6 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
      */
     @Override
     public OutputDescriptionType toOutputDescription() {
-
-        
         OutputDescriptionTypeBuilder ogctype = new OutputDescriptionTypeBuilder(identifier, title);
         ogctype.setAbstract(this.theabstract);
         ogctype.addNewLiteralOutput(this.typereference);

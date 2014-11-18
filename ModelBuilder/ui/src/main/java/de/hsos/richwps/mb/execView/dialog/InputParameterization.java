@@ -115,9 +115,9 @@ public class InputParameterization extends ADialogPanel {
             }
         }
 
-        this.jScrollPane1.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
-
-        this.jScrollPane1.setAlignmentY(javax.swing.JScrollPane.TOP_ALIGNMENT);
+        this.inputsPanelScrollPane.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
+        this.inputsPanelScrollPane.setAlignmentY(javax.swing.JScrollPane.TOP_ALIGNMENT);
+        this.inputsPanelScrollPane.getVerticalScrollBar().setValue(0);
 
         JPanel inputsPanel = new JPanel();
 
@@ -144,7 +144,7 @@ public class InputParameterization extends ADialogPanel {
             i++;
         }
 
-        this.jScrollPane1.setViewportView(inputsPanel);
+        this.inputsPanelScrollPane.setViewportView(inputsPanel);
     }
 
     /**
@@ -286,7 +286,7 @@ public class InputParameterization extends ADialogPanel {
 
         selectedServer = new javax.swing.JLabel();
         selectedProcess = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        inputsPanelScrollPane = new javax.swing.JScrollPane();
         selectedServerLabel = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
 
@@ -313,11 +313,11 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedProcess, gridBagConstraints);
 
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(610, 600));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
+        inputsPanelScrollPane.setBorder(null);
+        inputsPanelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        inputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        inputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 600));
+        inputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -325,7 +325,7 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jScrollPane1, gridBagConstraints);
+        add(inputsPanelScrollPane, gridBagConstraints);
 
         selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedServerLabel.setLabelFor(selectedServer);
@@ -354,7 +354,7 @@ public class InputParameterization extends ADialogPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane inputsPanelScrollPane;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;

@@ -14,10 +14,11 @@ import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManagerFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -112,7 +113,7 @@ public class ExecuteDialog extends MbDialog {
             JOptionPane.showMessageDialog(this, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log("Debug:ExecuteDialog#showProcessSelection():\n " + ex);
+            Logger.log(this.getClass(), "showProcessSelection()", ex);
             return;
         }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.request);
@@ -243,6 +244,7 @@ public class ExecuteDialog extends MbDialog {
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         loadButton.setText("Load request");
+        loadButton.setToolTipText("Load request from template. (EXPERIMENTAL)");
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadButtonActionPerformed(evt);
@@ -251,7 +253,7 @@ public class ExecuteDialog extends MbDialog {
         navpanel.add(loadButton);
 
         saveButton.setText("Save request");
-        saveButton.setToolTipText("Save request as template-.");
+        saveButton.setToolTipText("Save request as template. (EXPERIMENTAL)");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveButtonActionPerformed(evt);
@@ -310,8 +312,9 @@ public class ExecuteDialog extends MbDialog {
         if (provider != null) {
             try {
                 provider.disconnect();
+                this.request = new ExecuteRequest();
             } catch (Exception ex) {
-                Logger.log("Debug:ExecuteDialog#abortButtonActionPerformed():\n " + ex);
+                Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
 
@@ -333,7 +336,7 @@ public class ExecuteDialog extends MbDialog {
 
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
         JFileChooser chooser = new JFileChooser();
-        javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Requests", "req");
+        javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Execute Requests (*.req)", "req");
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -347,19 +350,19 @@ public class ExecuteDialog extends MbDialog {
                     this.request.flushException();
                     this.request.flushResults();
                 }
-                FileOutputStream fileOut
-                        = new FileOutputStream(f.getAbsolutePath());
-                ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                out.writeObject(this.request);
 
-                out.close();
-                fileOut.close();
-            } catch (IOException ex) {
+                FileOutputStream fout = new FileOutputStream(f);
+                ObjectOutputStream oos = new ObjectOutputStream(fout);
+                oos.writeObject(this.request);
+                oos.close();;
+                fout.close();
+
+            } catch (Exception ex) {
                 String msg = "Unable to persist Execute request.";
                 JOptionPane.showMessageDialog(this, msg);
                 AppEventService appservice = AppEventService.getInstance();
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-                Logger.log("Debug:ExecuteDialog#saveButtonActionPerformed():\n " + ex);
+                Logger.log(this.getClass(), "saveButtonActionPerformed()", ex);
             }
         }
 
@@ -367,28 +370,26 @@ public class ExecuteDialog extends MbDialog {
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadButtonActionPerformed
         JFileChooser chooser = new JFileChooser();
-        javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Requests", "req");
+        javax.swing.filechooser.FileFilter filter = new FileNameExtensionFilter("Execute Requests (*.req)", "req");
         chooser.setFileFilter(filter);
         int returnVal = chooser.showOpenDialog(parent);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             java.io.File f = chooser.getSelectedFile();
 
             try {
-                FileInputStream f_in = new FileInputStream(f.getAbsolutePath());
-                ObjectInputStream obj_in = new ObjectInputStream(f_in);
-                Object obj = obj_in.readObject();
-                if (obj instanceof ExecuteRequest) {
-                    this.request = (ExecuteRequest) obj;
-                    this.showParameterizeInputsPanel(false, false);
-                }
-                obj_in.close();
-                f_in.close();
-            } catch (IOException | ClassNotFoundException ex) {
+                FileInputStream streamIn = new FileInputStream(f);
+                ObjectInputStream objectinputstream = new ObjectInputStream(streamIn);
+                this.request = (ExecuteRequest) objectinputstream.readObject();
+                objectinputstream.close();
+                streamIn.close();
+                this.showParameterizeInputsPanel(false, false);
+
+            } catch (Exception ex) {
                 String msg = "Unable to open execute request.";
                 JOptionPane.showMessageDialog(this, msg);
                 AppEventService appservice = AppEventService.getInstance();
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-                Logger.log("Debug:ExecuteDialog#loadButtonActionPerformed():\n " + ex);
+                Logger.log(this.getClass(), "loadButtonActionPerformed()", ex);
             }
         }
     }//GEN-LAST:event_loadButtonActionPerformed

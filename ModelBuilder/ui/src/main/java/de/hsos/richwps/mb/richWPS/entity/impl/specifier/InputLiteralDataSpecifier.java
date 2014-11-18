@@ -95,7 +95,7 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
     public void setMaxOccur(int maxOccur) {
         this.maxOccur = maxOccur;
     }
-    
+
     /**
      *
      * @return
@@ -189,7 +189,7 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         InputDescriptionTypeBuilder desc;
         desc = new InputDescriptionTypeBuilder(this.identifier, this.title, BigInteger.valueOf(this.minOccur), BigInteger.valueOf(this.maxOccur));
         desc.setAbstract(this.theabstract);
-        
+
         desc.addNewLiteralData(this.typeReference, this.defaultvalue);
         return desc.getIdt();
     }
@@ -253,9 +253,5 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
     public String toString() {
         return "InputLiteralDataSpecifier{" + "identifier=" + identifier + ", typeReference=" + typeReference + ", title=" + title + ", theabstract=" + theabstract + ", defaultvalue=" + defaultvalue + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + '}';
     }
-    
-    
-    
-    
 
 }

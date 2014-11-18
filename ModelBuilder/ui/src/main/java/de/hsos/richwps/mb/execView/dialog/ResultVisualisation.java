@@ -44,19 +44,22 @@ public class ResultVisualisation extends ADialogPanel {
         this.selectedServer.setText(request.getEndpoint());
         ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
         this.loadingLabel.setIcon(ico);
+        this.loadingLabel.setText("Preparing statement.");
     }
 
     /**
      */
     public void executeProcess() {
-        this.jScrollPane1.setVisible(false);
+        this.resultPane.setVisible(false);
         this.loadingLabel.setVisible(true);
 
         ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
         mt.start();
+        this.loadingLabel.setText("Sending and processing statement.");
     }
 
     private void update(ExecuteRequest request) {
+        this.loadingLabel.setText("Processing results.");
         this.request = request;
         if (this.request.isException()) {
             renderException(request);
@@ -105,15 +108,15 @@ public class ResultVisualisation extends ADialogPanel {
             i++;
         }
 
-        this.jScrollPane1.setViewportView(outputsPanel);
-        this.jScrollPane1.setVisible(true);
+        this.resultPane.setViewportView(outputsPanel);
+        this.resultPane.setVisible(true);
         this.loadingLabel.setVisible(false);
     }
 
-    private void renderException(ExecuteRequest dto) {
-        this.request = dto;
-        ExceptionRenderer r = new ExceptionRenderer("", dto.getException());
-        this.remove(this.jScrollPane1);
+    private void renderException(ExecuteRequest request) {
+        this.request = request;
+        ExceptionRenderer r = new ExceptionRenderer("", request.getException());
+        this.remove(this.resultPane);
         GridBagConstraints g = new GridBagConstraints();
         g.gridx = 0;
         g.gridy = 3;
@@ -175,7 +178,7 @@ public class ResultVisualisation extends ADialogPanel {
         java.awt.GridBagConstraints gridBagConstraints;
 
         loadingLabel = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        resultPane = new javax.swing.JScrollPane();
         selectedProcess = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
         selectedServer = new javax.swing.JLabel();
@@ -196,11 +199,11 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
 
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setViewportBorder(javax.swing.BorderFactory.createTitledBorder("Outputs:"));
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(610, 600));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(610, 600));
+        resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        resultPane.setViewportBorder(javax.swing.BorderFactory.createTitledBorder("Outputs:"));
+        resultPane.setMinimumSize(new java.awt.Dimension(610, 600));
+        resultPane.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -209,7 +212,7 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jScrollPane1, gridBagConstraints);
+        add(resultPane, gridBagConstraints);
 
         selectedProcess.setText("jLabel2");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -256,8 +259,8 @@ public class ResultVisualisation extends ADialogPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel loadingLabel;
+    private javax.swing.JScrollPane resultPane;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;

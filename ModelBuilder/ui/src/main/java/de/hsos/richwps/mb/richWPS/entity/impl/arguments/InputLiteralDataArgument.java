@@ -2,13 +2,12 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import java.io.Serializable;
 
 /**
  *
  * @author dalcacer
  */
-public class InputLiteralDataArgument implements IInputArgument, Serializable{
+public class InputLiteralDataArgument implements IInputArgument {
 
     private InputLiteralDataSpecifier specifier;
     private String value;
@@ -47,4 +46,5 @@ public class InputLiteralDataArgument implements IInputArgument, Serializable{
     public String getIdentifier() {
         return this.specifier.getIdentifier();
     }
+
 }

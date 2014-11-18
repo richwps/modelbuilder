@@ -2,23 +2,27 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import java.io.Serializable;
 
 /**
  *
  * @author dalcacer
  */
-public class InputComplexDataArgument implements IInputArgument, Serializable {
+public class InputComplexDataArgument implements IInputArgument {
 
     private InputComplexDataSpecifier specifier;
 
     private boolean asReference = false;
+
     private String url = "";
+
     private Object value;
+
     private Class valuedesc;
+
     private String schema;
+
     private String encoding;
-    
+
     /**
      * The selected mimetype.
      */
@@ -63,21 +67,21 @@ public class InputComplexDataArgument implements IInputArgument, Serializable {
     public void setAsReference(boolean val) {
         this.asReference = val;
     }
-    
+
     /**
      *
      * @return
      */
-    public String getURL(){
+    public String getURL() {
         return this.url;
     }
-    
+
     /**
      *
      * @param url
      */
-    public void setURL(String url){
-        this.url=url;
+    public void setURL(String url) {
+        this.url = url;
     }
 
     /**
@@ -96,7 +100,6 @@ public class InputComplexDataArgument implements IInputArgument, Serializable {
         this.specifier = specifier;
     }
 
-  
     /**
      *
      * @return
@@ -176,6 +179,5 @@ public class InputComplexDataArgument implements IInputArgument, Serializable {
     public void setMimetype(String mimetype) {
         this.mimetype = mimetype;
     }
-    
-    
+
 }

@@ -34,11 +34,13 @@ public class ExecuteModelDialog extends MbDialog {
     /**
      * Creates new form ExecuteModelDialog, starting with the
      * inputparamerization.
+     *
      * @param parent
-     * @param modal* 
+     * @param modal
+     *
      * @param serverid
      * @param processid
-     * 
+     *
      */
     public ExecuteModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
             final String processid) {
@@ -56,7 +58,7 @@ public class ExecuteModelDialog extends MbDialog {
             JOptionPane.showMessageDialog(this, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log("Debug:\n " + ex);
+            Logger.log(this.getClass(), "ExecuteModelDialog()", ex);
             return;
         }
 
@@ -199,12 +201,13 @@ public class ExecuteModelDialog extends MbDialog {
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
         this.showParameterizeInputsPanel(false);     //Reset
 
-        //Make sure the client cache is emptied.
+        //make sure the client cache is emptied.
         if (provider != null) {
             try {
                 provider.disconnect();
+                this.request = new ExecuteRequest();
             } catch (Exception ex) {
-                Logger.log("Debug:\n " + ex);
+                Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
 

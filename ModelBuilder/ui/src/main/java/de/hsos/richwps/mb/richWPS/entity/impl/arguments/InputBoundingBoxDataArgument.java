@@ -2,13 +2,12 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
-import java.io.Serializable;
 
 /**
  *
  * @author caduevel
  */
-public class InputBoundingBoxDataArgument implements IInputArgument, Serializable{
+public class InputBoundingBoxDataArgument implements IInputArgument {
 
     private InputBoundingBoxDataSpecifier specifier;
 
@@ -19,6 +18,7 @@ public class InputBoundingBoxDataArgument implements IInputArgument, Serializabl
     /**
      * Reference to definition of the CRS used by the coordinates.
      */
+
     private String crsType;
 
     /**
@@ -40,7 +40,7 @@ public class InputBoundingBoxDataArgument implements IInputArgument, Serializabl
             final InputBoundingBoxDataSpecifier specifier, String value) {
         this.specifier = specifier;
         this.value = value;
-        this.crsType= "";
+        this.crsType = "";
     }
 
     /**
@@ -53,8 +53,8 @@ public class InputBoundingBoxDataArgument implements IInputArgument, Serializabl
 
     /**
      *
-     * @return Unambiguous identifier or name of a process, input, or
-     * output, unique for this server.
+     * @return Unambiguous identifier or name of a process, input, or output,
+     * unique for this server.
      */
     public String getIdentifier() {
         return this.specifier.getIdentifier();
@@ -86,10 +86,11 @@ public class InputBoundingBoxDataArgument implements IInputArgument, Serializabl
 
     /**
      *
-     * @param crsType Reference to definition of the CRS used by the 
+     * @param crsType Reference to definition of the CRS used by the
      * coordinates.
      */
     public void setCrsType(String crsType) {
         this.crsType = crsType;
     }
+
 }

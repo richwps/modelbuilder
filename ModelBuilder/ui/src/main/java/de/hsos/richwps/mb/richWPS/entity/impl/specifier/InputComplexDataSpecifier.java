@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
+
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -18,16 +19,12 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  */
 public class InputComplexDataSpecifier implements IInputSpecifier {
 
-    private InputDescriptionType description;
-    private SupportedComplexDataInputType ogctype;
-
     private String identifier;
     private String title;
     private String theabstract;
     private int minOccur = 0;
     private int maxOccur = 0;
     private int maximumMegabytes = 0;
-
     private List<String> defaulttype;
     private List<List> types;
 
@@ -64,9 +61,8 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
      *
      * @param description 52n InputDescriptionType.
      */
-    public InputComplexDataSpecifier(InputDescriptionType description) {
-        this.description = description;
-        this.ogctype = description.getComplexData();
+    public InputComplexDataSpecifier(final InputDescriptionType description) {
+        SupportedComplexDataInputType ogctype = description.getComplexData();
 
         this.identifier = description.getIdentifier().getStringValue();
         if (description.getAbstract() != null) {
@@ -76,13 +72,13 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         }
         this.title = description.getTitle().getStringValue();
 
-        if (this.ogctype != null) {
-            if (this.ogctype.getMaximumMegabytes() != null) {
-                this.maximumMegabytes = this.ogctype.getMaximumMegabytes().intValue();
+        if (ogctype != null) {
+            if (ogctype.getMaximumMegabytes() != null) {
+                this.maximumMegabytes = ogctype.getMaximumMegabytes().intValue();
             }
 
         }
-        ComplexDataCombinationsType subtypes = this.ogctype.getSupported();
+        ComplexDataCombinationsType subtypes = ogctype.getSupported();
         if (subtypes != null) {
             ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
@@ -95,7 +91,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
                 this.types.add(atype);
             }
         }
-        net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = this.ogctype.getDefault();
+        net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = ogctype.getDefault();
         ComplexDataDescriptionType thetype = thedefaulttype.getFormat();
         this.defaulttype = new ArrayList();
         defaulttype.add(thetype.getMimeType());
@@ -175,14 +171,6 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
      */
     public boolean isDefaultType(List type) {
         return type.equals(defaulttype);
-    }
-
-    /**
-     *
-     * @param type
-     */
-    public void setType(SupportedComplexDataInputType type) {
-        this.ogctype = type;
     }
 
     /**

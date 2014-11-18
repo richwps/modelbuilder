@@ -7,7 +7,7 @@ import net.opengis.wps.x100.InputDescriptionType;
  *
  * @author dalcacer
  */
-public interface IInputSpecifier extends Serializable{
+public interface IInputSpecifier extends Serializable { 
     
     /**
      *

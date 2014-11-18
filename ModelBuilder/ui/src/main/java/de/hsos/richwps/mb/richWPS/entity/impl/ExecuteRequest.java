@@ -26,6 +26,7 @@ import net.opengis.wps.x100.OutputDescriptionType;
  */
 public class ExecuteRequest extends DescribeRequest implements IRequest, Serializable {
 
+    static final long serialVersionUID = 42L;
     /**
      * List of actual process inputs before execution.
      */
@@ -120,6 +121,7 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @param description
      */
+    @Override
     public void addInput(final InputDescriptionType description) {
         if (description.getComplexData() != null) {
             IInputSpecifier aninput = new InputComplexDataSpecifier(description);
@@ -138,6 +140,7 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @param description
      */
+    @Override
     public void addOutput(final OutputDescriptionType description) {
         if (description.getComplexOutput() != null) {
             IOutputSpecifier anoutput = new OutputComplexDataSpecifier(description);

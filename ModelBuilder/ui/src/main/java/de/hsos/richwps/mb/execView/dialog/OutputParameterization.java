@@ -102,11 +102,14 @@ public class OutputParameterization extends ADialogPanel {
             i++;
         }
 
+        this.outputsPanelScrollPane.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
+        this.outputsPanelScrollPane.setAlignmentY(javax.swing.JScrollPane.TOP_ALIGNMENT);
+        this.outputsPanelScrollPane.getVerticalScrollBar().setValue(0);
         this.outputsPanelScrollPane.setViewportView(outputsPanel);
     }
 
     /**
-     * Transcodes the outputs panel-wise into an executerequest actualoutputs.
+     * Transcodes the outputs panel-wise into executerequest actualoutputs.
      */
     @Override
     public void updateRequest() {
@@ -151,7 +154,6 @@ public class OutputParameterization extends ADialogPanel {
                     OutputBoundingBoxDataArgument argument = new OutputBoundingBoxDataArgument(specifier);
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
-
             }
         }
         this.request.setOutputArguments(theoutputs);
@@ -194,7 +196,7 @@ public class OutputParameterization extends ADialogPanel {
         }
 
         if (!someThingSelected) {
-            JOptionPane.showMessageDialog(this, "Please select an output.");
+            JOptionPane.showMessageDialog(this, "Please select at least one output.");
             return false;
         }
 

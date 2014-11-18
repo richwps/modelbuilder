@@ -167,7 +167,7 @@ public class AppRichWPSManager {
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.processingFailed(AppConstants.DEPLOY_DESC_FAILED);
-            Logger.log("Debug:\n" + ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
             return;
         }
 
@@ -175,7 +175,7 @@ public class AppRichWPSManager {
         RichWPSProvider instance = new RichWPSProvider();
         try {
             instance.connect(wpsendpoint, richwpsendpoint);
-            Logger.log("Debug:\n" + request.toString());
+            Logger.log(this.getClass(), "deploy()", request.toString());
             instance.richwpsDeployProcess(request);
 
             if (request.isException()) {
@@ -184,7 +184,7 @@ public class AppRichWPSManager {
                 String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n"
                         + request.getException();
                 JOptionPane.showMessageDialog(null, msg);
-                Logger.log("Debug:\n" + request.getException());
+                Logger.log(this.getClass(), "deploy()", request.getException());
                 return;
             }
 
@@ -194,7 +194,8 @@ public class AppRichWPSManager {
         } catch (Exception ex) {
             this.error = true;
             this.deploymentFailed("An error occured while deployment.");
-            Logger.log("Debug:\n" + ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
+            return;
         }
         try {
             instance.disconnect();
@@ -240,6 +241,7 @@ public class AppRichWPSManager {
                         + " " + auri + ". " + ex.getLocalizedMessage();
                 AppEventService appservice = AppEventService.getInstance();
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+                return;
             }
         } else {
             this.error = true;
@@ -247,6 +249,7 @@ public class AppRichWPSManager {
                     + " on " + auri;
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            return;
         }
     }
 
@@ -266,8 +269,8 @@ public class AppRichWPSManager {
             } catch (Exception e) {
                 this.error = true;
                 this.processingFailed(AppConstants.TMP_FILE_FAILED);
-                de.hsos.richwps.mb.Logger.log("Debug::AppDeployManager::generateROLA()\n "
-                        + AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
+                Logger.log(this.getClass(), "generateRola()", 
+                        AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
             }
 
@@ -282,7 +285,7 @@ public class AppRichWPSManager {
             } catch (IOException ex) {
                 this.error = true;
                 this.processingFailed("");
-                Logger.log("Debug:\n" + ex.getLocalizedMessage());
+                Logger.log(this.getClass(), "generateRola()", ex.getLocalizedMessage());
             }
             return content;
 
@@ -290,7 +293,7 @@ public class AppRichWPSManager {
             this.error = true;
             this.processingFailed("Unable to create underlying workflow"
                     + " description (ROLA).");
-            Logger.log("Debug:\n" + ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "generateRola()", ex.getLocalizedMessage());
         }
         return null;
     }
@@ -385,7 +388,7 @@ public class AppRichWPSManager {
                     this.error = true;
                     this.processingFailed("Definition of supported types/default type for input "
                             + complexSpecifier.getIdentifier() + " is invalid.");
-                    Logger.log("Debug:\n" + ex.getLocalizedMessage());
+                    Logger.log(this.getClass(), "createInputPortSpecifier()",  ex.getLocalizedMessage());
                 }
 
                 specifier = complexSpecifier;
@@ -460,7 +463,7 @@ public class AppRichWPSManager {
                     this.error = true;
                     this.processingFailed("Definition of supported types/default type for output "
                             + complexSpecifier.getIdentifier() + " is invalid.");
-                    Logger.log("Debug:\n" + ex.getLocalizedMessage());
+                    Logger.log(this.getClass(), "createOutputPortSpecifier()",  ex.getLocalizedMessage());
                 }
 
                 specifier = complexSpecifier;

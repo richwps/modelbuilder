@@ -6,6 +6,7 @@ import java.io.Serializable;
  *
  * @author dalcacer
  */
-public interface IInputArgument extends Serializable{
+public interface IInputArgument extends Serializable {
+    
     
 }

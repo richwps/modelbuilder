@@ -20,24 +20,19 @@ import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -321,7 +316,7 @@ public class App {
      */
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
-        
+
         // MB Actions
         getActionProvider().getAction(APP_ACTIONS.SAVE_MODEL_AS).setEnabled(getGraphView().isEnabled());
 
@@ -331,8 +326,10 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(!graphIsEmpty);
-        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
-        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
+        //FIXME in v.2.2
+        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);//!graphIsEmpty);
+        //FIXME in v.2.2
+        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(false);  //!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(!graphIsEmpty);
     }
 
@@ -406,23 +403,21 @@ public class App {
      */
     void preview() {
         AppRichWPSManager manager = new AppRichWPSManager(this);
-        String rola = manager.preview();
+        final String rola = manager.preview();
 
         if (manager.isError()) {
             JOptionPane.showMessageDialog(frame,
                     AppConstants.DEPLOY_ERROR_DIALOG_MSG,
                     AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
-            //TODO get error?
         } else {
-            javax.swing.JTextArea textArea = new javax.swing.JTextArea(rola);
-            javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+            final javax.swing.JTextArea textArea = new javax.swing.JTextArea(rola);
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
+            final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
             scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
             JOptionPane.showMessageDialog(frame, scrollPane);
         }
-        //new AppRichWPSManager(this).deploy();
     }
 
     /**
@@ -436,9 +431,7 @@ public class App {
                     AppConstants.DEPLOY_ERROR_DIALOG_MSG,
                     AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
-            //TODO get error?
         }
-        //new AppRichWPSManager(this).deploy();
     }
 
     /**
@@ -447,12 +440,11 @@ public class App {
     void undeploy() {
         AppRichWPSManager manager = new AppRichWPSManager(this);
         manager.undeploy();
-         if (manager.isError()) {
+        if (manager.isError()) {
             JOptionPane.showMessageDialog(frame,
                     AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
                     AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
-            //TODO get error?
         }
     }
 
@@ -534,7 +526,7 @@ public class App {
                         JOptionPane.ERROR_MESSAGE);
                 String msg = "The requested process " + identifier + " was not found"
                         + " on " + auri;
-                Logger.log("Debug:\n"+msg);
+                Logger.log("Debug:\n" + msg);
                 JOptionPane.showMessageDialog(this.frame, msg);
                 AppEventService appservice = AppEventService.getInstance();
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);

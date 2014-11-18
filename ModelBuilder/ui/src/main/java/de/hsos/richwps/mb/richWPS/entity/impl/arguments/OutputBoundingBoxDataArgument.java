@@ -2,13 +2,12 @@ package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
-import java.io.Serializable;
 
 /**
  *
  * @author caduevel
  */
-public class OutputBoundingBoxDataArgument implements IOutputArgument, Serializable {
+public class OutputBoundingBoxDataArgument implements IOutputArgument {
 
     private OutputBoundingBoxDataSpecifier specifier;
 

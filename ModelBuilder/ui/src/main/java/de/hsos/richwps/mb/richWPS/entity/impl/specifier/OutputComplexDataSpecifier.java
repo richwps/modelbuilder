@@ -1,7 +1,8 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
+
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import net.opengis.wps.x100.ComplexDataCombinationType;
@@ -17,8 +18,9 @@ import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
  */
 public class OutputComplexDataSpecifier implements IOutputSpecifier {
 
-    private OutputDescriptionType description;
+    
     private String identifier;
+    
     private String theabstract;
     private String title;
     private List<List> types;
@@ -48,8 +50,8 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         this.identifier = "";
         this.theabstract = "";
         this.title = "";
-        this.types = new ArrayList<>();
-        this.defaulttype = new ArrayList<>();
+        this.types = new LinkedList<>();
+        this.defaulttype = new LinkedList<>();
     }
 
     /**
@@ -57,9 +59,8 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
      * @param description
      */
     public OutputComplexDataSpecifier(OutputDescriptionType description) {
-        this.description = description;
 
-        types = new ArrayList<>();
+        types = new LinkedList<>();
         type = description.getComplexOutput();
         this.identifier = description.getIdentifier().getStringValue();
 
@@ -70,12 +71,12 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         }
         this.title = description.getTitle().getStringValue();
         ComplexDataCombinationsType subtypes = type.getSupported();
-        
+
         if (subtypes != null) {
             ComplexDataDescriptionType[] subtypes_ = subtypes.getFormatArray();
 
             for (ComplexDataDescriptionType thetype : subtypes_) {
-                List<String> atype = new ArrayList<>();
+                List<String> atype = new LinkedList<>();
                 atype.add(thetype.getMimeType());
                 atype.add(thetype.getSchema());
                 atype.add(thetype.getEncoding());
@@ -84,7 +85,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         }
         net.opengis.wps.x100.ComplexDataCombinationType thedefaulttype = this.type.getDefault();
         ComplexDataDescriptionType thetype = thedefaulttype.getFormat();
-        this.defaulttype = new ArrayList();
+        this.defaulttype = new LinkedList();
         defaulttype.add(thetype.getMimeType());
         defaulttype.add(thetype.getSchema());
         defaulttype.add(thetype.getEncoding());
@@ -116,22 +117,6 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     @Override
     public String getTitle() {
         return this.title;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public OutputDescriptionType getDescription() {
-        return description;
-    }
-
-    /**
-     *
-     * @param description
-     */
-    public void setDescription(OutputDescriptionType description) {
-        this.description = description;
     }
 
     /**

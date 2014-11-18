@@ -9,7 +9,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpec
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -23,7 +24,7 @@ import net.opengis.wps.x100.OutputDescriptionType;
  * @author dalcacer
  * @version 0.0.1
  */
-public class DescribeRequest implements IRequest {
+public class DescribeRequest implements IRequest, Serializable {
 
     /**
      * The endpoint to call or discover.
@@ -76,8 +77,8 @@ public class DescribeRequest implements IRequest {
         this.endpoint = new String();
         this.identifier = new String();
         this.processversion = new String();
-        this.availableinputs = new ArrayList<>();
-        this.availableoutputs = new ArrayList<>();
+        this.availableinputs = new LinkedList<>();
+        this.availableoutputs = new LinkedList<>();
         this.serverid = new String();
     }
 

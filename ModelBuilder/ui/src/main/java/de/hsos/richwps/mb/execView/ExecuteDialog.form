@@ -36,6 +36,7 @@
         <Component class="javax.swing.JButton" name="loadButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Load request"/>
+            <Property name="toolTipText" type="java.lang.String" value="Load request from template. (EXPERIMENTAL)"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadButtonActionPerformed"/>
@@ -44,7 +45,7 @@
         <Component class="javax.swing.JButton" name="saveButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Save request"/>
-            <Property name="toolTipText" type="java.lang.String" value="Save request as template-."/>
+            <Property name="toolTipText" type="java.lang.String" value="Save request as template. (EXPERIMENTAL)"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveButtonActionPerformed"/>

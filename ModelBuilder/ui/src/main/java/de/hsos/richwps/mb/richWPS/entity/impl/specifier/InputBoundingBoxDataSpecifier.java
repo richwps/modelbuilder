@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
+
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -17,22 +18,22 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  * @author caduevel
  */
 public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
+
     /**
-     * Unambiguous identifier or name of a process, input, or
-     * output, unique for this server.
+     * Unambiguous identifier or name of a process, input, or output, unique for
+     * this server.
      */
     private String identifier;
 
     /**
-     * Title of a process, input, or output, normally available for
-     * display to a human.
+     * Title of a process, input, or output, normally available for display to a
+     * human.
      */
     private String title;
 
     /**
-     * Text of the abstract.abstractText Brief narrative
-     * description of a process, input, or output, normally available for
-     * display to a human.
+     * Text of the abstract.abstractText Brief narrative description of a
+     * process, input, or output, normally available for display to a human.
      */
     private String theabstract;
 
@@ -41,15 +42,13 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
      */
     private String defaultCRS;
 
-     /**
-     * Minimum number of times that values for this parameter
-     * are required.
+    /**
+     * Minimum number of times that values for this parameter are required.
      */
     private int minOccur = 0;
 
     /**
-     * maxOccurs Maximum number of times that this parameter may be
-     * present.
+     * maxOccurs Maximum number of times that this parameter may be present.
      */
     private int maxOccur = 0;
 
@@ -182,7 +181,7 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
      * @param defaultCRS Default Reference to one coordinate reference system.
      */
     public void setDefaultCRS(String defaultCRS) {
-        if(this.supportedCRS.isEmpty()) {
+        if (this.supportedCRS.isEmpty()) {
             this.supportedCRS.add(defaultCRS);
         }
 
@@ -204,7 +203,6 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
     public void setSupportedCRS(List<String> supportedCRS) {
         this.supportedCRS = supportedCRS;
     }
-
 
     /**
      * Returns an InputDescription with the added BoundingBox Object.

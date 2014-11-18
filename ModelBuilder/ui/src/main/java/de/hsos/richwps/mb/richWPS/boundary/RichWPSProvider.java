@@ -16,7 +16,6 @@ import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import net.opengis.ows.x11.ExceptionReportDocument;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.ComplexTypesType;
@@ -79,13 +80,13 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
+            Logger.log(this.getClass(), "connect()", "Unable to connect, " + e);
             throw new Exception("Unable to connect to service " + wpsurl);
         }
     }
 
     /**
-     * Disconnects all connected sevices.
+     * Disconnects all connected services.
      *
      * @throws java.lang.Exception
      */
@@ -96,13 +97,18 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         List<String> wpsurls = this.wps.getLoggedServices();
         for (String serverid : wpsurls) {
-            this.richwps.disconnect(serverid);
-            this.wps.disconnect(serverid);
+
+            try {
+                this.richwps.disconnect(serverid);
+                this.wps.disconnect(serverid);
+            } catch (Exception e) {
+                //nop
+            }
         }
     }
 
     /**
-     * * Disconnects a connected sevices.
+     * * Disconnects a connected services.
      *
      * @param wpsurl serverid of WebProcessingService.
      * @throws java.lang.Exception
@@ -115,7 +121,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.richwps.disconnect(wpsurl);
             this.wps.disconnect(wpsurl);
         } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#disconnect\n Unable to connect, " + e.getLocalizedMessage());
+            Logger.log(this.getClass(), "disconnect()", e.getLocalizedMessage());
             throw new Exception("Unable to disconnect from service " + wpsurl);
         }
     }
@@ -123,9 +129,9 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Connects the provider to a WPS-server with WPS-T functionality.
      *
-     * @param wpsurl wpsurl of WebProcessingService.
-     * @param richwpsurl richwpsurl of transactional interface.
-     * @throws java.lang.Exception
+     * @param wpsurl wpsurl of WebProcessingService (used as unique serverid).
+     * @param richwpsurl richwpsurl of RichWPS Service.
+     * @throws java.lang.Exception when unable to connect to service.
      */
     @Override
     public void connect(String wpsurl, String richwpsurl) throws Exception {
@@ -133,7 +139,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
+            Logger.log(this.getClass(), "connect()", e.getLocalizedMessage());
             throw new Exception("Unable to connect to service " + wpsurl + ", " + richwpsurl);
         }
 
@@ -141,7 +147,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.richwps = RichWPSClientSession.getInstance();
             this.richwps.connect(wpsurl, richwpsurl);
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug::RichWPSProvider#connect\n Unable to connect, " + e.getLocalizedMessage());
+            Logger.log(this.getClass(), "connect()", e.getLocalizedMessage());
             throw new Exception("Unable to connect to service " + wpsurl + ", " + richwpsurl);
         }
     }
@@ -172,9 +178,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 }
             }
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()#WPSClientException:\n " + e);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()#Exception:\n " + e);
+            Logger.log(this.getClass(), "wpsGetAvailableProcesses()", e);
         }
         return processes;
     }
@@ -190,7 +194,7 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         String richwpsurl = wpsurl;
         richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
-        List<List<String>> formats = new ArrayList<>();
+        List<List<String>> formats = new LinkedList<>();
         try {
             this.richwps = RichWPSClientSession.getInstance();
             this.richwps.connect(wpsurl, richwpsurl);
@@ -204,7 +208,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 for (ComplexTypesType type : types) {
                     ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
                     for (ComplexDataDescriptionType atype : schonwiedertsypes) {
-                        List<String> aformat = new ArrayList<>();
+                        List<String> aformat = new LinkedList<>();
                         aformat.add(atype.getMimeType());
                         aformat.add(atype.getSchema());
                         aformat.add(atype.getEncoding());
@@ -214,12 +218,10 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
             if (responseObject instanceof ExceptionReportDocument) {
                 ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
-                de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + response.toString());
+                Logger.log(this.getClass(), "richwpsGetInputTypes()", response.toString());
             }
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + e);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#Exception:\n " + e);
+            Logger.log(this.getClass(), "richwpsGetInputTypes()", e);
         }
         return formats;
     }
@@ -235,7 +237,7 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         String richwpsurl = wpsurl;
         richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
-        List<List<String>> formats = new ArrayList<>();
+        List<List<String>> formats = new LinkedList<>();
         try {
             this.richwps = RichWPSClientSession.getInstance();
             this.richwps.connect(wpsurl, richwpsurl);
@@ -249,7 +251,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 for (ComplexTypesType type : types) {
                     ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
                     for (ComplexDataDescriptionType atype : schonwiedertsypes) {
-                        List<String> aformat = new ArrayList<>();
+                        List<String> aformat = new LinkedList<>();
                         aformat.add(atype.getMimeType());
                         aformat.add(atype.getSchema());
                         aformat.add(atype.getEncoding());
@@ -259,12 +261,10 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
             if (responseObject instanceof ExceptionReportDocument) {
                 ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
-                de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + response.toString());
+                Logger.log(this.getClass(), "richwpsGetOutputTypes()", response.toString());
             }
         } catch (WPSClientException e) {
-            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#WPSClientException:\n " + e);
-        } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:getInputTypes()#Exception:\n " + e);
+            Logger.log(this.getClass(), "richwpsGetOutputTypes()", e);
         }
         return formats;
     }
@@ -309,7 +309,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
 
         } catch (WPSClientException ex) {
-            de.hsos.richwps.mb.Logger.log("Debug:\n " + ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "wpsDescribeProcess()", ex);
         }
     }
 
@@ -351,11 +351,11 @@ public class RichWPSProvider implements IRichWPSProvider {
             execute = executeBuilder.getExecute();
             execute.getExecute().setService("WPS");
 
-            de.hsos.richwps.mb.Logger.log("Debug:wpsExecuteProcess\n Execute String: " + execute.toString());
+            Logger.log(this.getClass(), "wpsExecuteProcess()", execute.toString());
             WPSClientSession wpsClient = WPSClientSession.getInstance();
             responseObject = wpsClient.execute(severid, execute);
         } catch (Exception e) {
-            de.hsos.richwps.mb.Logger.log("Debug:wpsExecuteProcess()\n Something went wrong, executing the process " + processid + ", " + e);
+            Logger.log(this.getClass(), "wpsExecuteProcess()", processid + ", " + e);
         }
 
         this.execAnalyseResponse(execute, description, responseObject, request);
@@ -377,8 +377,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * builder.setKeepExecutionUnit(request.isKeepExecUnit()); String doc = "";
      * try { doc = builder.getDeploydocument().toString(); } catch (Exception
      * ex) { Logger.log("Debug::RichWPSProvider#showDeployRequest()\n unable to
-     * create deploy request."); } return doc;
-    }
+     * create deploy request."); } return doc; }
      */
     /**
      * Deploys a new process.
@@ -401,22 +400,22 @@ public class RichWPSProvider implements IRichWPSProvider {
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
             //this.richwps.connect(request.getEndpoint(), endp);
-            de.hsos.richwps.mb.Logger.log("Debug:richwpsDeployProcess()\n Deploying at " + endp);
+            Logger.log(this.getClass(), "richwpsDeployProcess()", endp);
 
             Object response = this.richwps.deploy(endp, builder.getDeploydocument());
-            de.hsos.richwps.mb.Logger.log("Debug:richwpsDeployProcess()\n" + builder.getDeploydocument());
+            Logger.log(this.getClass(), "richwpsDeployProcess()", builder.getDeploydocument());
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
             } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
                 net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
             } else {
-                de.hsos.richwps.mb.Logger.log("Debug:richwpsDeployProcess()\n Unknown reponse" + response);
-                de.hsos.richwps.mb.Logger.log("Debug:richwpsDeployProcess()\n" + response.getClass());
+                Logger.log(this.getClass(), "richwpsDeployProcess()", "Unknown reponse" + response);
+                Logger.log(this.getClass(), "richwpsDeployProcess()", response.getClass());
             }
         } catch (WPSClientException ex) {
-            de.hsos.richwps.mb.Logger.log("Debug:richwpsDeployProcess()\n Unable to create "
-                    + "deploymentdocument. " + ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "richwpsDeployProcess()", "Unable to create "
+                    + "deploymentdocument. " + ex);
         }
     }
 
@@ -444,14 +443,14 @@ public class RichWPSProvider implements IRichWPSProvider {
                 request.addException(exception.getExceptionReport().toString());
             } else if (response instanceof net.opengis.wps.x100.impl.UndeployProcessResponseDocumentImpl) {
                 net.opengis.wps.x100.impl.UndeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.UndeployProcessResponseDocumentImpl) response;
-                de.hsos.richwps.mb.Logger.log("Debug:richwpsUndeployProcess()\n" + deplok.getStringValue());
+                Logger.log(this.getClass(), "richwpsUndeployProcess()", deplok.getStringValue());
             } else {
-                de.hsos.richwps.mb.Logger.log("Debug:richwpsUndeployProcess()\n Unknown reponse" + response);
-                de.hsos.richwps.mb.Logger.log("Debug:richwpsUndeployProcess()\n" + response.getClass());
+                Logger.log(this.getClass(), "richwpsUndeployProcess()", "Unknown reponse" + response);
+                Logger.log(this.getClass(), "richwpsUndeployProcess()", response.getClass());
             }
         } catch (WPSClientException ex) {
-            de.hsos.richwps.mb.Logger.log("Debug:richwpsUndeployProcess()\n Unable to create "
-                    + "deploymentdocument." + ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "richwpsUndeployProcess()", "Unable to create "
+                    + "deploymentdocument." + ex);
         }
     }
 
