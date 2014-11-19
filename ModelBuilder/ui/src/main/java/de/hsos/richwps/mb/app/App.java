@@ -30,7 +30,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -39,6 +41,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import layout.TableLayout;
+import org.apache.commons.collections.ListUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * ModelBuilder entry point. Creates and connects all components.
@@ -448,11 +452,12 @@ public class App {
     }
 
     /**
-     * Shotws stored WPS-uris, so one can be selected.
+     * Shows stored WPS-uris, so one can be selected.
      *
      * @return selected WPS server.
      */
     String askRemote() {
+
         String[] remotes_arr = processProvider.getAllServers();
 
         if (null == remotes_arr || remotes_arr.length < 1) {
@@ -500,9 +505,9 @@ public class App {
      */
     void showExecute() {
         if (null == execAnyDialog) {
-            //TODO change datasource.
-            List<String> remotes = (List) processProvider.getAllServersFromSemanticProxy();
-            execAnyDialog = new ExecuteDialog(getFrame(), false, remotes);
+            String[] remotes_arr = processProvider.getAllServers();
+            List aslist = new ArrayList<String>(Arrays.asList(remotes_arr));
+            execAnyDialog = new ExecuteDialog(getFrame(), false, aslist);
         }
 
         execAnyDialog.setVisible(true);
