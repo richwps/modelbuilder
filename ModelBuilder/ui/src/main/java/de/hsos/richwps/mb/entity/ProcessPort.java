@@ -15,6 +15,9 @@ public class ProcessPort extends OwsObjectWithProperties {
     public static String TOOLTIP_STYLE_OUTPUT = "";
 
     public static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
+    public static String PROPERTY_KEY_MINOCCURS = "Min occurs";
+    public static String PROPERTY_KEY_MAXOCCURS = "Max occurs";
+    public static String PROPERTY_KEY_MAXMB = "Max MB";
 
     public static String COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX = "Datatype description complex";
     public static String COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL = "Datatype description literal";
@@ -39,11 +42,53 @@ public class ProcessPort extends OwsObjectWithProperties {
         this.datatype = processPortDatatype;
 
         createProperties("");
-
-        // Property for datatype description
-        Property descriptionProperty = new Property<>(PROPERTY_KEY_DATATYPEDESCRIPTION, (IDataTypeDescription) null, global);
-        owsGroup.addObject(descriptionProperty);
         updateDescriptionProperty(processPortDatatype);
+    }
+
+    @Override
+    protected void createProperties(String owsIdentifier) {
+        super.createProperties(owsIdentifier);
+
+        boolean hasMinMaxOccurs = false;
+        boolean hasMaxMb = false;
+
+        // create missing properties if necessary
+        
+        if (!owsGroup.hasProperty(PROPERTY_KEY_DATATYPEDESCRIPTION)) {
+            Property descriptionProperty = new Property<>(PROPERTY_KEY_DATATYPEDESCRIPTION, (IDataTypeDescription) null, global);
+            owsGroup.addObject(descriptionProperty);
+            updateDescriptionProperty(datatype);
+        }
+
+        if (isGlobalInput()) {
+            hasMinMaxOccurs = true;
+
+            if (!owsGroup.hasProperty(PROPERTY_KEY_MINOCCURS)) {
+                owsGroup.addObject(new Property<Integer>(PROPERTY_KEY_MINOCCURS, Property.COMPONENT_TYPE_INTEGER, null));
+            }
+
+            if (!owsGroup.hasProperty(PROPERTY_KEY_MAXOCCURS)) {
+                owsGroup.addObject(new Property<Integer>(PROPERTY_KEY_MAXOCCURS, Property.COMPONENT_TYPE_INTEGER, null));
+            }
+
+            if (ProcessPortDatatype.COMPLEX.equals(this.datatype)) {
+                hasMaxMb = true;
+
+                if (!owsGroup.hasProperty(PROPERTY_KEY_MAXMB)) {
+                    owsGroup.addObject(new Property<Integer>(PROPERTY_KEY_MAXMB, Property.COMPONENT_TYPE_INTEGER, null));
+                }
+            }
+        }
+
+        // remove eventually existing properties if they do not apply to this port
+        if (!hasMinMaxOccurs) {
+            owsGroup.removeProperty(PROPERTY_KEY_MINOCCURS);
+            owsGroup.removeProperty(PROPERTY_KEY_MAXOCCURS);
+        }
+
+        if (!hasMaxMb) {
+            owsGroup.removeProperty(PROPERTY_KEY_MAXMB);
+        }
     }
 
     public IDataTypeDescription getDataTypeDescription() {
@@ -74,6 +119,7 @@ public class ProcessPort extends OwsObjectWithProperties {
     public void setGlobal(boolean global) {
         this.global = global;
 
+        createProperties(getOwsIdentifier());
         for (Property property : owsGroup.getProperties()) {
             if (null != property) {
                 property.setEditable(global);
@@ -90,6 +136,7 @@ public class ProcessPort extends OwsObjectWithProperties {
 
     public void setFlowInput(boolean isInput) {
         flowInput = isInput;
+        createProperties(getOwsIdentifier());
     }
 
     /**
@@ -130,6 +177,7 @@ public class ProcessPort extends OwsObjectWithProperties {
 
     public void setFlowOutput(boolean isOutput) {
         flowInput = !isOutput;
+        createProperties(getOwsIdentifier());
     }
 
     /**
@@ -139,8 +187,8 @@ public class ProcessPort extends OwsObjectWithProperties {
      * @param isOutput
      */
     public void setGlobalOutput(boolean isOutput) {
-        setGlobal(true);
         this.flowInput = isOutput;
+        setGlobal(true);
     }
 
     /**
@@ -150,8 +198,8 @@ public class ProcessPort extends OwsObjectWithProperties {
      * @param isInput
      */
     public void setGlobalInput(boolean isInput) {
-        setGlobal(true);
         this.flowInput = !isInput;
+        setGlobal(true);
     }
 
     /**
@@ -166,6 +214,7 @@ public class ProcessPort extends OwsObjectWithProperties {
         }
 
         this.datatype = datatype;
+        createProperties(getOwsIdentifier());
         updateDescriptionProperty(datatype);
     }
 
@@ -247,6 +296,9 @@ public class ProcessPort extends OwsObjectWithProperties {
 
         clone.flowInput = flowInput;
         clone.toolTipText = null; // indicate lazy init.
+
+        // creates missing properties etc.
+        clone.setGlobal(global);
 
         return clone;
     }

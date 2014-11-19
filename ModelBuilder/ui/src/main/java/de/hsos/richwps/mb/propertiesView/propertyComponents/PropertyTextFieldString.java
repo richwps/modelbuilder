@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -14,50 +13,33 @@ import javax.swing.JTextField;
  *
  * @author dziegenh
  */
-public abstract class PropertyTextField<E extends Object> extends AbstractPropertyComponent<Component, E> {
+public class PropertyTextFieldString extends AbstractPropertyComponent<Component, String> {
 
     /**
      * Textfield for user input (only for editable properties).
      */
     private final transient JTextField textField = new JTextField();
 
-    public PropertyTextField() {
+    public PropertyTextFieldString() {
         super();
     }
-
-    public PropertyTextField(Property<E> property) {
+    
+    public PropertyTextFieldString(Property<String> property) {
         super(property);
-
-        this.textField.setText(valueToString());
+        this.textField.setText(property.getValue());
         this.textField.setEditable(property.isEditable());
 
         textField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                setValue(parseValue(textField.getText()));
-                
-                Logger.log("set textfield content to " + valueToString());
-                
-                textField.setText(valueToString());
+                setValue(textField.getText());
             }
         });
     }
 
-    private String valueToString() {
-        String valueText = " ";
-        if (null != property.getValue()) {
-            valueText = property.getValue().toString();
-        }
-
-        return valueText;
-    }
-
-    protected abstract E parseValue(String value);
-
     @Override
-    public E getValue() {
-        // Textfield content must be parsed by implementers.
-        return parseValue(this.textField.getText());
+    public String getValue() {
+        return textField.getText();
     }
 
     @Override
@@ -65,25 +47,25 @@ public abstract class PropertyTextField<E extends Object> extends AbstractProper
         if (property.isEditable()) {
             return this.textField;
         } else {
-            return new MultilineLabel(valueToString());
+            return new MultilineLabel(property.getValue());
         }
 
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (null == obj || !(obj instanceof PropertyTextField)) {
+        if (null == obj || !(obj instanceof PropertyTextFieldString)) {
             return false;
         }
 
-        PropertyTextField other = (PropertyTextField) obj;
+        PropertyTextFieldString other = (PropertyTextFieldString) obj;
         return UiHelper.equalOrBothNull(other.property, property)
                 && UiHelper.equalOrBothNull(other.textField, textField);
     }
 
     @Override
     protected void propertyValueChanged() {
-        this.textField.setText(property.getValue().toString());
+        this.textField.setText(property.getValue());
     }
 
 }

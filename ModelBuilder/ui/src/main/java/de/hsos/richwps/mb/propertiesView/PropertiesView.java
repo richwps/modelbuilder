@@ -5,7 +5,8 @@ import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyDropdown;
-import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldInteger;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldString;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -83,7 +84,7 @@ public class PropertiesView extends TitledComponent {
         invalidate();
         updateUI();
     }
-    
+
     public IObjectWithProperties getCurrentObjectWithProperties() {
         return propertiesCard.objectWithProperties;
     }
@@ -117,7 +118,7 @@ public class PropertiesView extends TitledComponent {
 
     private void setupPropertyFields(final CARD card, final IObjectWithProperties property) {
 
-        if (property instanceof PropertyTextField) {
+        if (property instanceof PropertyTextFieldString) {
             final AbstractPropertyComponent propertyComponent = (AbstractPropertyComponent) property;
 
             // listen to changes
@@ -182,11 +183,14 @@ public class PropertiesView extends TitledComponent {
      * @return
      */
     protected AbstractPropertyComponent getComponentFor(Property property) {
-        if (property.getComponentType().equals(Property.COMPONENT_TYPE_DROPDOWN)) {
-            return new PropertyDropdown(property);
+        switch (property.getComponentType()) {
+            case Property.COMPONENT_TYPE_DROPDOWN:
+                return new PropertyDropdown(property);
+            case Property.COMPONENT_TYPE_INTEGER:
+                return new PropertyTextFieldInteger(property);
         }
 
-        return new PropertyTextField(property);
+        return new PropertyTextFieldString(property);
     }
 
     /**

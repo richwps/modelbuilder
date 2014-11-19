@@ -33,7 +33,15 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
     public E getPropertyObject(String propertyName) {
         return propertyObjects.get(propertyName);
     }
+    
+    public boolean hasProperty(String propertyName) {
+        return propertyObjects.containsKey(propertyName);
+    }
 
+    public void removeProperty(String propertyName) {
+        propertyObjects.remove(propertyName);
+    }
+    
     public void addObject(E object) {
         if (null == object) {
             throw new IllegalArgumentException("Trying to add a null object.");
@@ -57,6 +65,7 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
         return propertyObjects.values();
     }
 
+    @Override
     public void setPropertiesObjectName(String propertiesObjectName) {
         this.propertiesObjectName = propertiesObjectName;
     }

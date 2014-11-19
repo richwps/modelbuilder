@@ -260,7 +260,6 @@ public class ProcessProvider {
 
         // TODO replace String with formatable AppConstant
 //        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
-
         return servers;
     }
 
@@ -353,15 +352,17 @@ public class ProcessProvider {
 
     private void addProcessMetrics(ProcessEntity process) {
 
-        // get metric properties group
-        String server = process.getServer();
-        String identifier = process.getOwsIdentifier();
-        PropertyGroup processMetric = processMetricProvider.getProcessMetric(server, identifier);
-
-        // add metric properties group to the process
-        String metricPropertyName = processMetric.getPropertiesObjectName();
-        processMetric.setIsTransient(true);
-        process.setProperty(metricPropertyName, processMetric);
+        // TODO re-enable process metrics when monitor client is faster !!! (currently THE bottleneck!)
+        
+//        // get metric properties group
+//        String server = process.getServer();
+//        String identifier = process.getOwsIdentifier();
+//        PropertyGroup processMetric = processMetricProvider.getProcessMetric(server, identifier);
+//
+//        // add metric properties group to the process
+//        String metricPropertyName = processMetric.getPropertiesObjectName();
+//        processMetric.setIsTransient(true);
+//        process.setProperty(metricPropertyName, processMetric);
     }
 
 }

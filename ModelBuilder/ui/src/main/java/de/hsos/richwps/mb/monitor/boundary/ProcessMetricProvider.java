@@ -1,9 +1,9 @@
 package de.hsos.richwps.mb.monitor.boundary;
 
-import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientException;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientImpl;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessMetric;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -24,7 +24,7 @@ public class ProcessMetricProvider {
     private final HashMap<String, String> translations;
 
     private String mainPropertyGroupName = "monitor data";
-    
+
     public ProcessMetricProvider(String url) throws MalformedURLException {
         client = new WpsMonitorClientImpl(new URL(url));
         translations = new HashMap<>();
@@ -33,7 +33,7 @@ public class ProcessMetricProvider {
     public void setMainPropertyGroupName(String mainPropertyGroupName) {
         this.mainPropertyGroupName = mainPropertyGroupName;
     }
-    
+
     /**
      * Receives metric values from the monitor client for the given process and
      * creates representing property groups.
@@ -49,31 +49,32 @@ public class ProcessMetricProvider {
         groups.setPropertiesObjectName(this.mainPropertyGroupName);
 
         try {
-        WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
-        
-        // add metrics sub groups
-        for (Map.Entry<String, WpsProcessMetric> aMetric : wpsProcess.getMetrics().entrySet()) {
-            PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(translateMonitorKey(aMetric.getKey()));
+            WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
 
-            // add metric values to sub group as properties
-            for (Map.Entry<String, Number> aMetricValue : aMetric.getValue().getData().entrySet()) {
-                
-                // create property
-                String propertyName = translateMonitorKey(aMetricValue.getKey());
-                String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
-                String propertyValue = aMetricValue.getValue().toString();
-                Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
+            // add metrics sub groups
+            for (Map.Entry<String, WpsProcessMetric> aMetric : wpsProcess.getMetrics().entrySet()) {
+                PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(translateMonitorKey(aMetric.getKey()));
 
-                subGroup.addObject(property);
+                // add metric values to sub group as properties
+                for (Map.Entry<String, Number> aMetricValue : aMetric.getValue().getData().entrySet()) {
+
+                    // create property
+                    String propertyName = translateMonitorKey(aMetricValue.getKey());
+                    String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
+                    String propertyValue = aMetricValue.getValue().toString();
+                    Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
+
+                    subGroup.addObject(property);
+                }
+
+                groups.addObject(subGroup);
             }
-
-            groups.addObject(subGroup);
-        }
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             // ignore as usually thrown if process is not monitored;
             // the empty group indicates non-monitored processes.
+            Logger.log("monitor client exception: " + ex);
         }
-        
+
         return groups;
     }
 

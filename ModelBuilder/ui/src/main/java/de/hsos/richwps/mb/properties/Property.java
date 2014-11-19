@@ -13,6 +13,7 @@ import java.util.LinkedList;
 public class Property<E> implements IObjectWithProperties, Serializable {
 
     public final static String COMPONENT_TYPE_TEXTFIELD = "TEXTFIELD";
+    public final static String COMPONENT_TYPE_INTEGER = "INTEGER";
     public final static String COMPONENT_TYPE_DROPDOWN = "DROPDOWN";
 
     private String propertiesObjectName;
