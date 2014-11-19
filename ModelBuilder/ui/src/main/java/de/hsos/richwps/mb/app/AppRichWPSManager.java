@@ -213,7 +213,7 @@ public class AppRichWPSManager {
         final GraphModel model = this.graph.getGraphModel();
         final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        
+
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             String wpsendpoint = "";
             String wpstendpoint = "";
@@ -235,6 +235,8 @@ public class AppRichWPSManager {
                 } catch (Exception ex) {
                     //nop
                 }
+                AppEventService service = AppEventService.getInstance();
+                service.fireAppEvent("Process undeployed.", AppConstants.INFOTAB_ID_SERVER);
             } catch (Exception ex) {
                 this.error = true;
                 String msg = "An error occured while undeploying  " + identifier + " from"
@@ -269,7 +271,7 @@ public class AppRichWPSManager {
             } catch (Exception e) {
                 this.error = true;
                 this.processingFailed(AppConstants.TMP_FILE_FAILED);
-                Logger.log(this.getClass(), "generateRola()", 
+                Logger.log(this.getClass(), "generateRola()",
                         AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
             }
@@ -388,7 +390,7 @@ public class AppRichWPSManager {
                     this.error = true;
                     this.processingFailed("Definition of supported types/default type for input "
                             + complexSpecifier.getIdentifier() + " is invalid.");
-                    Logger.log(this.getClass(), "createInputPortSpecifier()",  ex.getLocalizedMessage());
+                    Logger.log(this.getClass(), "createInputPortSpecifier()", ex.getLocalizedMessage());
                 }
 
                 specifier = complexSpecifier;
@@ -463,7 +465,7 @@ public class AppRichWPSManager {
                     this.error = true;
                     this.processingFailed("Definition of supported types/default type for output "
                             + complexSpecifier.getIdentifier() + " is invalid.");
-                    Logger.log(this.getClass(), "createOutputPortSpecifier()",  ex.getLocalizedMessage());
+                    Logger.log(this.getClass(), "createOutputPortSpecifier()", ex.getLocalizedMessage());
                 }
 
                 specifier = complexSpecifier;

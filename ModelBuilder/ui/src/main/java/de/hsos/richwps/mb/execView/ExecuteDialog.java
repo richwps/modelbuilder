@@ -17,8 +17,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManagerFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -307,7 +305,7 @@ public class ExecuteDialog extends MbDialog {
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
-        this.showServerSelection(false); //reset
+        
         //make sure the client cache is emptied.
         if (provider != null) {
             try {
@@ -317,7 +315,7 @@ public class ExecuteDialog extends MbDialog {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
-
+        this.showServerSelection(false); //reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed

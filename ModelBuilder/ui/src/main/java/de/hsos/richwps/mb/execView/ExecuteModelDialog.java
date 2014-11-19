@@ -199,7 +199,7 @@ public class ExecuteModelDialog extends MbDialog {
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
-        this.showParameterizeInputsPanel(false);     //Reset
+
 
         //make sure the client cache is emptied.
         if (provider != null) {
@@ -211,6 +211,7 @@ public class ExecuteModelDialog extends MbDialog {
             }
         }
 
+        //this.showParameterizeInputsPanel(false);     //Reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed

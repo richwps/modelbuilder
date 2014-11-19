@@ -45,6 +45,7 @@ public class ResultVisualisation extends ADialogPanel {
         ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
         this.loadingLabel.setIcon(ico);
         this.loadingLabel.setText("Preparing statement.");
+        this.resultPane.setVisible(false);
     }
 
     /**
@@ -55,7 +56,7 @@ public class ResultVisualisation extends ADialogPanel {
 
         ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
         mt.start();
-        this.loadingLabel.setText("Sending and processing statement.");
+        this.loadingLabel.setText("Sending and processing statement.\n This might take some time, depending on the remote process.");
     }
 
     private void update(ExecuteRequest request) {
@@ -161,6 +162,7 @@ public class ResultVisualisation extends ADialogPanel {
             this.provider = provider;
         }
 
+        @Override
         public void run() {
             this.provider.request(this.request);
             this.parent.update(this.request);
@@ -199,9 +201,10 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
 
+        resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Outputs"));
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        resultPane.setViewportBorder(javax.swing.BorderFactory.createTitledBorder("Outputs:"));
+        resultPane.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         resultPane.setMinimumSize(new java.awt.Dimension(610, 600));
         resultPane.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -220,7 +223,7 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedProcess, gridBagConstraints);
 
@@ -229,9 +232,9 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipadx = 20;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedProcessLabel, gridBagConstraints);
 
@@ -241,7 +244,7 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedServer, gridBagConstraints);
 
@@ -250,9 +253,9 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipadx = 20;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectedServerLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents

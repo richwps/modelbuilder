@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.dsl;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.*;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
@@ -42,12 +41,12 @@ public class Exporter {
     /**
      * A structure to trace allready established bindings.
      */
-    private ArrayList<Binding> bindings;
+    private List<Binding> bindings;
 
     /**
      * A structure to trace allready established exectes.
      */
-    private ArrayList<Binding> executes;
+    private List<Execute> executes;
 
     /**
      * The workflow.
@@ -99,7 +98,6 @@ public class Exporter {
                 //local/remote identification based on given hostname.
                 String baseuria = url.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
-                //Logger.log("Debug:\n comparing "+baseuria+" with "+baseurib);
                 boolean isLocalBinding = baseuria.equals(baseurib);
                 this.handleProcessCell(cell, isLocalBinding);
 
@@ -119,7 +117,7 @@ public class Exporter {
      * reference map.
      *
      * @param input
-     * @param ws Worksequence to write to
+     * @param ws workflow to write to
      * @throws Exception
      */
     private void handleInputCell(mxICell input) throws Exception {
@@ -152,7 +150,7 @@ public class Exporter {
          Assignment assignment = new Assignment(variable, inputReference);
          // Save variable to variable reference map
          this.variables.put(source.getOwsIdentifier(), variable);
-         // Write assignment to Worksequence
+         // Write assignment to workflow
          Logger.log("Debug::Exporter#defineInput()\n Assignment: " + assignment.toNotation());
          ws.add(assignment);
          */
@@ -262,7 +260,7 @@ public class Exporter {
      * wps:process:inputs.
      *
      * @param outgoing List of ingoing transitions.
-     * @param execute According execute statement/process.
+     * @param execute according execute statement/process.
      * @throws Exception ROLA-exception in case the input is malformed.
      */
     private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
@@ -304,7 +302,7 @@ public class Exporter {
      * variables or globally available outputs.
      *
      * @param outgoing List of outgoing transitions.
-     * @param execute According execute statement/process.
+     * @param execute according execute statement/process.
      * @throws Exception ROLA-exception in case the output is malformed.
      */
     private void handleOutgoingProcessCellTransitions(Object[] outgoing, Execute execute) throws Exception {

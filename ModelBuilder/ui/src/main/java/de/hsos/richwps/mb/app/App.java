@@ -330,10 +330,11 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(!graphIsEmpty);
         //FIXME in v.2.2
-        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);//!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);  //!graphIsEmpty);
         //FIXME in v.2.2
-        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(false);  //!graphIsEmpty);
-        getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(false);     //!graphIsEmpty);
+        //FIXME in v.2.2
+        getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(false);  //!graphIsEmpty);
     }
 
     protected PropertiesView getPropertiesView() {
@@ -517,7 +518,7 @@ public class App {
      * Shows an dialog to execute the currently opened model.
      */
     void showExecuteModel() {
-        if (null == execDialog) {
+        //if (null == execDialog) {
             final GraphModel model = this.getGraphView().getGraph().getGraphModel();
             final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
             final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
@@ -536,7 +537,7 @@ public class App {
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
                 return;
             }
-        }
+        //}
 
         execDialog.setVisible(true);
     }
