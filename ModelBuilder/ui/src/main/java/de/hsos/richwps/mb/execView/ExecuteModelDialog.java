@@ -91,7 +91,7 @@ public class ExecuteModelDialog extends MbDialog {
      */
     private void showParameterizeOutputsPanel(boolean isBackAction) {
         if (!isBackAction) {
-            if (!this.currentPanel.isValid()) {
+            if (!this.currentPanel.isValidInput()) {
                 return;
             }
         }
@@ -113,7 +113,7 @@ public class ExecuteModelDialog extends MbDialog {
 
     private void showResultPanel(boolean isBackAction) {
         if (!isBackAction) {
-            if (!this.currentPanel.isValid()) {
+            if (!this.currentPanel.isValidInput()) {
                 return;
             }
         }
