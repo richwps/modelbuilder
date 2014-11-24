@@ -49,4 +49,6 @@ public interface IObjectWithProperties {
      */
     public void setProperty(String propertyName, IObjectWithProperties property);
 
+    public abstract IObjectWithProperties clone();
+    
 }

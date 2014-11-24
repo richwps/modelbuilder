@@ -1,9 +1,12 @@
 package de.hsos.richwps.mb.properties;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.IPropertyChangeListener.PropertyChangeType;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.exception.CloneFailedException;
 
 /**
  * A property is identified by its name and (component) type and has a value.
@@ -78,6 +81,7 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     public void setValue(E value) {
         this.setValue(value, null);
     }
+
     public void setValue(E value, Object source) {
         this.value = value;
         firePropertyChanged(source, PropertyChangeType.VALUE_CHANGED);
@@ -170,19 +174,36 @@ public class Property<E> implements IObjectWithProperties, Serializable {
     public void addPossibleValue(E value) {
         possibleValues.add(value);
     }
-    
+
     public Property<E> clone() {
         Property<E> clone = new Property<>(propertiesObjectName);
-        clone.setValue(value);
+
+        // try to clone value
+        E cloneValue = null;
+        if (null != value) {
+            try {
+                cloneValue = ObjectUtils.clone(value);
+            } catch (CloneFailedException ex) {
+                // ignore; don't use clone
+                Logger.log("Cloning value of type " + value.getClass().getSimpleName() + " failed! ");
+            }
+
+            // couldn't clone: copy value
+            if (null == cloneValue) {
+                cloneValue = value;
+            }
+        }
+
+        clone.setValue(cloneValue);
         clone.setEditable(editable);
         clone.setIsTransient(isTransient);
         clone.setComponentType(componentType);
 
-        for(E pVal : possibleValues) {
+        for (E pVal : possibleValues) {
             clone.addPossibleValue(pVal);
         }
-        
+
         return clone;
     }
-    
+
 }

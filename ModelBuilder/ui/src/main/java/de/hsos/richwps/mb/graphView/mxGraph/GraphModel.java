@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.graphView.mxGraph;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
@@ -174,9 +175,13 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         return false;
     }
 
-    public GraphModel clone() throws CloneNotSupportedException {
+    public GraphModel clone() {
         GraphModel clone = new GraphModel();
-        clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
+        try {
+            clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
+        } catch (CloneNotSupportedException ex) {
+            Logger.log(ex);
+        }
 
         for (PropertyGroup pGroup : this.propertyGroups) {
             clone.propertyGroups.add((PropertyGroup) pGroup.clone());

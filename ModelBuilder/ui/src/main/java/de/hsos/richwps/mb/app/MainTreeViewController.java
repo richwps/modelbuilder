@@ -5,6 +5,7 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
@@ -250,6 +251,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
                 pp.setOwsAbstract(literal.getAbstract());
+                pp.setDataTypeDescription(new DataTypeDescriptionLiteral(literal.getDefaultvalue()));
                 pe.addInputPort(pp);
             } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
                 //TODO

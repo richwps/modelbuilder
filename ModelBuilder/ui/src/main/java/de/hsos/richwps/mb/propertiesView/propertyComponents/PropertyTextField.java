@@ -35,9 +35,6 @@ public abstract class PropertyTextField<E extends Object> extends AbstractProper
             @Override
             public void focusLost(FocusEvent e) {
                 setValue(parseValue(textField.getText()));
-                
-                Logger.log("set textfield content to " + valueToString());
-                
                 textField.setText(valueToString());
             }
         });

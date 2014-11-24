@@ -40,10 +40,14 @@ public abstract class AbstractPropertyComponent<C extends Component, E> implemen
         property.addChangeListener(changeListener);
     }
 
-    public void addPropertyChangedByUIListener(IPropertyChangedByUIListener listner) {
-        getPropertyUIChangeListerners().add(listner);
+    public void addPropertyChangedByUIListener(IPropertyChangedByUIListener listener) {
+        getPropertyUIChangeListerners().add(listener);
     }
 
+    public void removePropertyChangedByUIListener(IPropertyChangedByUIListener listener) {
+        getPropertyUIChangeListerners().remove(listener);
+    }
+    
     protected List<IPropertyChangedByUIListener> getPropertyUIChangeListerners() {
         if (null == propertyUIChangeListeners) {
             propertyUIChangeListeners = new LinkedList<>();

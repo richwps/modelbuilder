@@ -41,7 +41,7 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
     public ProcessPortCodec(Object template, String[] exclude, String[] idrefs, Map<String, String> mapping) {
         super(template, exclude, idrefs, mapping);
     }
-
+    
     @Override
     protected void decodeAttribute(mxCodec dec, Node attr, Object obj) {
 
@@ -96,8 +96,6 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
                 } else {
                     port = (ProcessPort) obj;
 
-//                    Element nodeEl = (Element) node;
-//                    port.set
                     port.setToolTipText(null);
                     decodedPorts.put(id, port);
                 }

@@ -1,23 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 
 /**
+ * Base class for OWS entities (Processes, Ports). Necessary (or at least
+ * helpful) for encoding/decoding using the specific mxCodecs.
  *
  * @author dziegenh
  */
-public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObject, Serializable {
+public abstract class OwsObjectWithProperties implements IObjectWithProperties, IOwsObject, Serializable {
 
     public static String PROPERTIES_KEY_IDENTIFIER = "Identifier";
     public static String PROPERTIES_KEY_TITLE = "Title";
@@ -29,7 +24,6 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
 
     protected String toolTipText;
 
-//    protected HashMap<String, Property> properties = new HashMap<>();
     public OwsObjectWithProperties(String owsIdentifier) {
         createProperties(owsIdentifier);
     }
@@ -96,10 +90,12 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
 
     protected OwsObjectWithProperties cloneInto(OwsObjectWithProperties clone) {
         for (Property property : owsGroup.getProperties()) {
-            clone.setProperty(property.getPropertiesObjectName(), (IObjectWithProperties) property.clone());
+            IObjectWithProperties propertyClone = (IObjectWithProperties) property.clone();
+            clone.setProperty(property.getPropertiesObjectName(), propertyClone);
         }
 
-        clone.setToolTipText(toolTipText);
+        // indicate lazy init
+        clone.setToolTipText(null);
 
         return clone;
     }
@@ -115,10 +111,19 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
     }
 
     protected void createProperties(String owsIdentifier) {
-        owsGroup = new PropertyGroup(OWS_PROPERTY_GROUP_NAME);
-        owsGroup.addObject(new Property<>(PROPERTIES_KEY_IDENTIFIER, Property.COMPONENT_TYPE_TEXTFIELD, owsIdentifier));
-        owsGroup.addObject(new Property<>(PROPERTIES_KEY_TITLE, Property.COMPONENT_TYPE_TEXTFIELD, ""));
-        owsGroup.addObject(new Property<>(PROPERTIES_KEY_ABSTRACT, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        if (null == owsGroup) {
+            owsGroup = new PropertyGroup(OWS_PROPERTY_GROUP_NAME);
+        }
+
+        if (!owsGroup.hasProperty(PROPERTIES_KEY_IDENTIFIER)) {
+            owsGroup.addObject(new Property<>(PROPERTIES_KEY_IDENTIFIER, Property.COMPONENT_TYPE_TEXTFIELD, owsIdentifier));
+        }
+        if (!owsGroup.hasProperty(PROPERTIES_KEY_TITLE)) {
+            owsGroup.addObject(new Property<>(PROPERTIES_KEY_TITLE, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        }
+        if (!owsGroup.hasProperty(PROPERTIES_KEY_ABSTRACT)) {
+            owsGroup.addObject(new Property<>(PROPERTIES_KEY_ABSTRACT, Property.COMPONENT_TYPE_TEXTFIELD, ""));
+        }
     }
 
     @Override
@@ -153,6 +158,12 @@ public class OwsObjectWithProperties implements IObjectWithProperties, IOwsObjec
         }
 
         return property.getValue();
+    }
+
+    public abstract IObjectWithProperties clone();
+
+    public static String getValueForViews(String value) {
+        return (null == value || value.isEmpty()) ? "-" : value.trim();
     }
 
 }

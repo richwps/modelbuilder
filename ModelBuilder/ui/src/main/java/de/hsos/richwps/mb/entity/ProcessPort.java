@@ -80,7 +80,8 @@ public class ProcessPort extends OwsObjectWithProperties {
             }
         }
 
-        // remove eventually existing properties if they do not apply to this port
+        // remove eventually existing properties if they do not apply to this port+
+        
         if (!hasMinMaxOccurs) {
             owsGroup.removeProperty(PROPERTY_KEY_MINOCCURS);
             owsGroup.removeProperty(PROPERTY_KEY_MAXOCCURS);
@@ -263,7 +264,8 @@ public class ProcessPort extends OwsObjectWithProperties {
                 return "";
             }
 
-// TODO update capacity after refactoring!
+            // TODO update capacity after refactoring! #48
+            
             // length of vars + 4 characters for datatype + size of "<html></html>" tags + size of "<b></b>" tags + size of "<i></i>" tags + size of "<br>" tags
             int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 1 + 13 + 7 + 7 + 8; // TODO add size of port texts!
             StringBuilder sb = new StringBuilder(sbCapacity);

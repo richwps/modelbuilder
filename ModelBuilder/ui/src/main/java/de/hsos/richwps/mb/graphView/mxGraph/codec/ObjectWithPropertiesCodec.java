@@ -1,20 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
-import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Encoding and decoding of objects with properties.
@@ -34,35 +27,36 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
         super(template, exclude, idrefs, mapping);
     }
 
+    /**
+     * Decodes the properties and adds them to the current object. Other child
+     * nodes are delegated to the super class.
+     *
+     * @param dec
+     * @param child
+     * @param obj
+     */
     @Override
-    public Node beforeDecode(mxCodec dec, Node node, Object obj) {
-//        NodeList arrays = ((Element) node).getElementsByTagName("Array");
-        NodeList childNodes = ((Element) node).getChildNodes();
+    protected void decodeChild(mxCodec dec, Node child, Object obj) {
 
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            if (childNodes.item(i) instanceof Element) {
-                Element item = (Element) childNodes.item(i);
+        Element item = (Element) child;
 
-                if (item.getNodeName().equals("Array") && item.getAttribute("as").equals(FIELD_PROPERTIES_NAME)) {
-                    List decodedProperties = (List) dec.decode(item);
-                    for (Object decodedProperty : decodedProperties) {
-                        if (null != obj && (obj instanceof IObjectWithProperties) && (decodedProperty instanceof IObjectWithProperties)) {
-                            IObjectWithProperties property = (IObjectWithProperties) decodedProperty;
-                            IObjectWithProperties objectWithProperties = ((IObjectWithProperties) obj);
+        if (item.getNodeName().equals("Array") && item.getAttribute("as").equals(FIELD_PROPERTIES_NAME)) {
+            List decodedProperties = (List) dec.decode(item);
+            for (Object decodedProperty : decodedProperties) {
+                if (null != obj && (obj instanceof IObjectWithProperties) && (decodedProperty instanceof IObjectWithProperties)) {
+                    IObjectWithProperties property = (IObjectWithProperties) decodedProperty;
+                    IObjectWithProperties objectWithProperties = ((IObjectWithProperties) obj);
 
-//                            objectWithProperties.setPropertiesObjectName(item.getAttribute(ATTRIBUTE_OBJECTNAME));
-                            // set property to the current object
-                            objectWithProperties.setProperty(property.getPropertiesObjectName(), property);
+                    // set property to the current object
+                    objectWithProperties.setProperty(property.getPropertiesObjectName(), property);
 
-                        }
-                    }
-
-                    node.removeChild(item);
                 }
             }
+
+            return;
         }
 
-        return super.beforeDecode(dec, node, obj);
+        super.decodeChild(dec, child, obj);
     }
 
     @Override
@@ -71,14 +65,12 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
 
         if (obj instanceof OwsObjectWithProperties) {
 
-        // TODO don't add properties to already encoded ports !!!
-//            if (!(obj instanceof ProcessPort) || !ProcessPortCodec.hasBeenEncoded((ProcessPort) obj)) {
+            // TODO don't add properties to already encoded ports !!!
             OwsObjectWithProperties theObject = (OwsObjectWithProperties) obj;
 
             Element encodedProperties = (Element) enc.encode(theObject.getProperties());
             encodedProperties.setAttribute("as", FIELD_PROPERTIES_NAME);
             encoded.appendChild(encodedProperties);
-//            }
 
             // don't persist generated tool tip texts
             Element nodeEl = (Element) node;
@@ -91,7 +83,7 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
 
     @Override
     public Object beforeEncode(mxCodec enc, Object obj, Node node) {
-        // save object name as attribute
+        // TODO save object name as attribute?
         if (obj instanceof IObjectWithProperties) {
 //            IObjectWithProperties objectWithProperties = (IObjectWithProperties) obj;
 
@@ -105,6 +97,10 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
         }
 
         return super.beforeEncode(enc, obj, node);
+    }
+
+    public static String getValueForViews(String value) {
+        return (null == value || value.isEmpty()) ? "-" : value.trim();
     }
 
 }

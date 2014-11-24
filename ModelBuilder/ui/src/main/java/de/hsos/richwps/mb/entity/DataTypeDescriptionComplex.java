@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.entity;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -9,11 +10,9 @@ import java.util.Objects;
 /**
  * Datatype description for complex datatypes.
  *
- * @TODO add mutliple formats and set default format.
- *
  * @author dziegenh
  */
-public class DataTypeDescriptionComplex implements IDataTypeDescription, Serializable {
+public class DataTypeDescriptionComplex implements IDataTypeDescription, Serializable, Cloneable {
 
     private List<ComplexDataTypeFormat> formats;
 
@@ -62,19 +61,19 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
         if (null == obj || !(obj instanceof DataTypeDescriptionComplex)) {
             return false;
         }
-        
+
         DataTypeDescriptionComplex other = ((DataTypeDescriptionComplex) obj);
 
         boolean formatsEqual = false;
         List<ComplexDataTypeFormat> otherFormats = other.getFormats();
-        if(null != otherFormats && null != formats) {
+        if (null != otherFormats && null != formats) {
             formatsEqual = formats.containsAll(otherFormats) && otherFormats.size() == formats.size();
         }
-        
+
         // equal if: both null or both not null
         boolean defaultFormatEqual = !(null == getDefaultFormat() ^ null == other.getDefaultFormat());
         // if both not null: default format must also be equal
-        if(null != getDefaultFormat() && null != other.getDefaultFormat()) {
+        if (null != getDefaultFormat() && null != other.getDefaultFormat()) {
             defaultFormatEqual = getDefaultFormat().equals(other.getDefaultFormat());
         }
 
@@ -86,6 +85,24 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
         int hash = 3;
         hash = 53 * hash + Objects.hashCode(this.formats);
         return hash;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        DataTypeDescriptionComplex clone = new DataTypeDescriptionComplex();
+
+        for (ComplexDataTypeFormat aFormat : formats) {
+            clone.formats.add(aFormat);
+        }
+        
+        try {
+            clone.setDefaultFormat(defaultFormat);
+        } catch (IllegalDefaultFormatException ex) {
+            // ignore; just log
+            Logger.log(ex);
+        }
+        
+        return clone;
     }
 
 }

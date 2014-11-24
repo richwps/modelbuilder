@@ -1,11 +1,13 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
+import de.hsos.richwps.mb.app.view.properties.PropertyComponentLiteralDataType;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
@@ -50,7 +52,10 @@ public class AppPropertiesView extends PropertiesView {
         });
     }
 
-    private List<Property> propertiesListeningTo = new LinkedList<>();
+    /**
+     * The property components whose changes are observed.
+     */
+    private List<AbstractPropertyComponent> propertyComponentsListeningTo = new LinkedList<>();
 
     private final IPropertyChangedByUIListener propertyUIChangeListener = new IPropertyChangedByUIListener() {
         @Override
@@ -65,6 +70,22 @@ public class AppPropertiesView extends PropertiesView {
 
     };
 
+    /**
+     * Sets the object whose properties are to be shown. Removes change listener
+     * of currently shown property component.
+     *
+     * @param object
+     */
+    @Override
+    public void setObjectWithProperties(IObjectWithProperties object) {
+        for (AbstractPropertyComponent component : propertyComponentsListeningTo) {
+            component.removePropertyChangedByUIListener(propertyUIChangeListener);
+        }
+        propertyComponentsListeningTo.clear();
+
+        super.setObjectWithProperties(object);
+    }
+
     @Override
     protected AbstractPropertyComponent getComponentFor(Property property) {
         AbstractPropertyComponent component;
@@ -72,14 +93,17 @@ public class AppPropertiesView extends PropertiesView {
         if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX)) {
             component = createPropertyComplexDataTypeFormat(property);
 
+        } else if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL)) {
+            component = new PropertyComponentLiteralDataType(property);
+
         } else {
 
             component = super.getComponentFor(property);
 
         }
 
-        // TODO check if listeners have to be removed after changing the components/card
         component.addPropertyChangedByUIListener(propertyUIChangeListener);
+        propertyComponentsListeningTo.add(component);
 
         return component;
     }

@@ -1,10 +1,12 @@
 package de.hsos.richwps.mb.properties;
 
+import de.hsos.richwps.mb.Logger;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * A group of objects with properties.
@@ -33,7 +35,7 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
     public E getPropertyObject(String propertyName) {
         return propertyObjects.get(propertyName);
     }
-    
+
     public boolean hasProperty(String propertyName) {
         return propertyObjects.containsKey(propertyName);
     }
@@ -41,7 +43,7 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
     public void removeProperty(String propertyName) {
         propertyObjects.remove(propertyName);
     }
-    
+
     public void addObject(E object) {
         if (null == object) {
             throw new IllegalArgumentException("Trying to add a null object.");
@@ -83,15 +85,21 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
     public void setIsTransient(boolean isTransient) {
         this.isTransient = isTransient;
     }
-    
+
     public PropertyGroup<E> clone() {
         PropertyGroup<E> clone = new PropertyGroup<>(propertiesObjectName);
         clone.setIsTransient(isTransient);
-        
-        for(Entry<String, E> pEntry : this.propertyObjects.entrySet()) {
-            clone.setProperty(pEntry.getKey(), pEntry.getValue());
+
+        for (Entry<String, E> pEntry : this.propertyObjects.entrySet()) {
+            
+            E value = pEntry.getValue();
+            if (null != value) {
+                value = (E) value.clone();
+            }
+
+            clone.setProperty(pEntry.getKey(), value);
         }
-        
+
         return clone;
     }
 

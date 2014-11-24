@@ -161,6 +161,10 @@ public class ProcessEntity extends OwsObjectWithProperties {
     public String getToolTipText() {
         if (null == toolTipText) {
 
+            String owsTitle = OwsObjectWithProperties.getValueForViews(getOwsTitle());
+            String owsIdentifier = OwsObjectWithProperties.getValueForViews(getOwsIdentifier());
+            String owsAbstract = OwsObjectWithProperties.getValueForViews(getOwsAbstract());
+            
             // prepare input port TTTs
             List<String> inPortTexts = new LinkedList<>();
             int portTextsLength = 0;
@@ -187,12 +191,12 @@ public class ProcessEntity extends OwsObjectWithProperties {
                 portTextsLength += portTtt.length() + 4;
             }
 
-// @TODO calculate new capacity after the refactoring!
+// @TODO calculate new capacity after the refactoring! (maybe also use template strings / format() for an easy way to get the tags' length)
             // length of vars + length of port texts + size of "<html></html>" tags + size of "<b></b>" tags + size of "<hr>" tags + size of "<br>" tags
-            int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + portTextsLength + 13 + 7 + 4 + 8;
+            int sbCapacity = owsTitle.length() + owsIdentifier.length() + owsAbstract.length() + portTextsLength + 13 + 7 + 4 + 8;
 
             StringBuilder sb = new StringBuilder(sbCapacity);
-            sb.append("<html><body style='").append(ProcessEntity.toolTipCssForMainContainer).append("'><b>").append(getOwsTitle()).append("</b><br>").append(getOwsIdentifier()).append("<br><i>").append(getOwsAbstract()).append("</i>");
+            sb.append("<html><body style='").append(ProcessEntity.toolTipCssForMainContainer).append("'><b>").append(owsTitle).append("</b><br>").append(owsIdentifier).append("<br><i>").append(owsAbstract).append("</i>");
 
             // add port TTTs if available
             if (!inPortTexts.isEmpty() && !outPortTexts.isEmpty()) {

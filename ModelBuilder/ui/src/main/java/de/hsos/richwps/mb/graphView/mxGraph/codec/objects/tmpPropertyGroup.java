@@ -60,4 +60,10 @@ public class tmpPropertyGroup implements IObjectWithProperties {
         // ignore, name is not necessary
     }
 
+    @Override
+    public IObjectWithProperties clone() {
+        // ignore
+        return this;
+    }
+
 }
