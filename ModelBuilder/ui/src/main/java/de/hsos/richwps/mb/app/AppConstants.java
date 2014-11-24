@@ -62,7 +62,6 @@ public class AppConstants {
     public final static String SEMANTICPROXY_RECEIVE_ERROR = "An error occured while receiving from SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
 
-    
     // Dialoges
     public final static String DIALOG_BTN_CLOSE = "Close";
     public final static String DIALOG_BTN_CANCEL = "Cancel";
@@ -77,13 +76,13 @@ public class AppConstants {
     public final static Point PREFERENCES_DIALOG_LOCATION = new Point(200, 150);
     public final static String PREFERENCES_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
     public final static String PREFERENCES_DIALOG_BTN_OK = DIALOG_BTN_OK;
-    
+
     //Select Remote Dialog
     public final static String SELECTREMOTE_DIALOG_TITLE = "Sever selection";
     public final static String SELECTREMOTE_DIALOG_MSG = "Please select a RichWPS server to work with.";
     public final static String SELECTREMOTE_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
     public final static String SELECTREMOTE_DIALOG_BTN_OK = DIALOG_BTN_OK;
-    
+
     //Add Remote Dialog
     public final static String MANAGEREMOTES_DIALOG_TITLE = "Manage remote servers";
     public final static String MANAGEREMOTES_DIALOG_MSG = "Please enter a WPS server to work with.";
@@ -91,23 +90,22 @@ public class AppConstants {
     //Deployerror Dialog
     public final static String DEPLOY_ERROR_DIALOG_TITLE = "Error while deployment";
     public final static String DEPLOY_ERROR_DIALOG_MSG = "An error occured while deployment. See logs for further information.";
-    public final static String DEPLOY_ID_MISSING ="Insufficient model information. Identifier is missing.";
-    public final static String DEPLOY_TITLE_MISSING ="Insufficient model information. Title is missing.";
-    public final static String DEPLOY_VERSION_MISSING ="Insufficient model information. Version is missing.";
-    public final static String DEPLOY_ROLA_FAILED ="Unable to create underlying workflow description (ROLA) based on model.";
+    public final static String DEPLOY_ID_MISSING = "Insufficient model information. Identifier is missing.";
+    public final static String DEPLOY_TITLE_MISSING = "Insufficient model information. Title is missing.";
+    public final static String DEPLOY_VERSION_MISSING = "Insufficient model information. Version is missing.";
+    public final static String DEPLOY_ROLA_FAILED = "Unable to create underlying workflow description (ROLA) based on model.";
     public final static String DEPLOY_DESC_FAILED = "Unable to create WPS:ProcessDescription based on model.";
     public final static String DEPLOY_CONNECT_FAILED = "Unable to connect to selected WPS-T server.";
     public final static String DEPLOY_SERVERSIDE_ERROR = "An error occured while deployment. A serverside error has been invoked.";
-    
+
     //Undeployerror Dialog
     public final static String UNDEPLOY_ERROR_DIALOG_TITLE = "Error while undeployment";
     public final static String UNDEPLOY_ERROR_DIALOG_MSG = "An error occured while undeployment. See logs for further information.";
-    
+
     //Execute/Undeployerror Dialog
     public final static String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
     public final static String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
 
-    
     // About Dialog
     /**
      * Title of the about dialog.
@@ -173,12 +171,12 @@ public class AppConstants {
     /**
      * The CSS which is used for input port html containers in ToolTipTexts.
      */
-    static String TOOLTIP_CSS_FOR_INPUTS = "background:#" +INPUT_PORT_COLOR_STRING+ ";" + TOOLTIP_CSS_FOR_PORTS;
+    static String TOOLTIP_CSS_FOR_INPUTS = "background:#" + INPUT_PORT_COLOR_STRING + ";" + TOOLTIP_CSS_FOR_PORTS;
 
     /**
      * The CSS which is used for input port html containers in ToolTipTexts.
      */
-    static String TOOLTIP_CSS_FOR_OUTPUTS = "background:#" +OUTPUT_PORT_COLOR_STRING+ ";" + TOOLTIP_CSS_FOR_PORTS;
+    static String TOOLTIP_CSS_FOR_OUTPUTS = "background:#" + OUTPUT_PORT_COLOR_STRING + ";" + TOOLTIP_CSS_FOR_PORTS;
 
     final static String TOOLTIP_BG_COLOR_HEX_STRING = "FAFAFA";
     final static Color TOOLTIP_BG_COLOR = new Color(Integer.parseInt(TOOLTIP_BG_COLOR_HEX_STRING, 16));
@@ -186,20 +184,19 @@ public class AppConstants {
     /**
      * The CSS which is used for the main html container in ToolTipTexts.
      */
-    static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "color:#000000;background:#" +TOOLTIP_BG_COLOR_HEX_STRING+ ";border:0;margin:0;";
+    static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "color:#000000;background:#" + TOOLTIP_BG_COLOR_HEX_STRING + ";border:0;margin:0;";
     public static final String FORMATS_CSV_FILE = "formats.csv";
-    
+
     static String REMOTES_NOT_AVAILABLE_ERROR_MSG = "No remote server available!"
             + System.lineSeparator()
             + "Please check the SemanticProxy preferences or add a remote server using the 'Manage Remotes' dialog.";
-    
-    
+
     public final static boolean PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT = true;
     public static String PREFERENCES_TAB_SP_LOADONSTART_LABEL = "Discover processes of managed remote servers on application start";
-    
+
     public static Insets DEFAULT_COMPONENT_INSETS = new Insets(0, 0, 0, 0); //new Insets(2, 2, 2, 2);
-  
-    /** 
+
+    /**
      * For action "open recently used file"
      */
     public static String CAPTION_RECENTLY_USED = "Recently used: ";
@@ -255,6 +252,7 @@ public class AppConstants {
         {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout"},
         {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy"},
         {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy"},
+        {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process"},
         {AppActionProvider.APP_ACTIONS.PREVIEW_ROLA.name(), "Preview ROLA"},
         {AppActionProvider.APP_ACTIONS.RELOAD_PROCESSES.name(), "Reload processes"},
         {AppActionProvider.APP_ACTIONS.MANAGE_REMOTES.name(), "Manage remotes"},
@@ -332,7 +330,7 @@ public class AppConstants {
     public final static String CONFIRM_EXIT_TITLE = "Exit";
     public final static String CONFIRM_OVERWRITE_FILE_TITLE = "File already exists";
     public final static String CONFIRM_OVERWRITE_FILE = "Overwrite the selected file?";
-    
+
     public final static String LOAD_MODEL_FAILED = "An error occured while loading the model.";
     public final static String SAVE_MODEL_FAILED = "An error occured while saving the model.";
     public final static String TMP_FILE_FAILED = "An error occured while create temproary files.";
@@ -366,28 +364,29 @@ public class AppConstants {
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
     public final static String ICON_PREVIEW_KEY = "rwps_icon_preview";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
+    public final static String ICON_UNDEPLOY_ANY_KEY = "rwps_icon_undeploy_any";
     public final static String ICON_UNDEPLOY_KEY = "rwps_icon_undeploy";
     public final static String ICON_EXECUTE_ANY_KEY = "richwps_icon_executeany";
     public final static String ICON_EXECUTE_KEY = "richwps_icon_execute";
     public final static String ICON_PROFILE_KEY = "richwps_icon_profile";
     public final static String ICON_TEST_KEY = "richwps_icon_debug";
-    
+
     public final static String ICON_ABOUT_KEY = "richwps_icon_about";
     public final static String ICON_LOADING_STATUS_KEY = "richwps_icon_loading";
     public final static String ICON_EDIT_KEY = "richwps_icon_edit";
     public final static String ICON_ADD_KEY = "richwps_icon_add";
     public final static String ICON_DELETE_KEY = "richwps_icon_delete";
-    
+
     /**
      * large icons directory/path
      */
     public final static String LARGE_ICON_DIR = "64";
-    
+
     /**
      * Prefix for icon keys to build up keys of large icons
      */
     public final static String LARGE_ICON_PREFIX = "large_";
-    
+
     // Images
     public final static String ICON_ABOUTIMAGE_KEY = "richwps_image_about";
     public final static String ICON_MBLOGO_KEY = "rwps_image_mblogo";
@@ -420,9 +419,9 @@ public class AppConstants {
     static String[][] MONITOR_KEY_TRANSLATIONS = {
         {"response_metric", MONITOR_TRANSLATION_RESPONCE_METRIC}
     };
-    
+
     final static Color MONITOR_DATA_BG_COLOR = new Color(0xfccfcf);
 
-public final static String EXCEPTION_ILLEGAL_DEFAULT_FORMAT = "The given default format is not a supported format.";
-    
+    public final static String EXCEPTION_ILLEGAL_DEFAULT_FORMAT = "The given default format is not a supported format.";
+
 }

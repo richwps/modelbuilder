@@ -221,6 +221,7 @@ public class AppSetup {
         // (unsorted Icons)
         UIManager.put(AppConstants.ICON_PREVIEW_KEY, new ImageIcon(iconDir + "layer-novisible.png", "preview icon"));
         UIManager.put(AppConstants.ICON_DEPLOY_KEY, new ImageIcon(iconDir + "server-add.png", "deploy icon"));
+        UIManager.put(AppConstants.ICON_UNDEPLOY_ANY_KEY, new ImageIcon(iconDir + "archive-remove.png", "undeploy any icon"));
         UIManager.put(AppConstants.ICON_UNDEPLOY_KEY, new ImageIcon(iconDir + "server-delete.png", "undeploy icon"));
         UIManager.put(AppConstants.ICON_EXECUTE_ANY_KEY, new ImageIcon(iconDir + "arrow-right-3.png", "execute icon"));
         UIManager.put(AppConstants.ICON_EXECUTE_KEY, new ImageIcon(iconDir + "server-go.png", "execute icon"));
@@ -240,12 +241,12 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_DELETE_KEY, new ImageIcon(iconDir + "edit-delete-7.png", "delete icon"));
 
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
-        
+
         // large icons
         UIManager.put(getLargeIconKey(AppConstants.ICON_NEW_KEY), new ImageIcon(largeIconDir + "document-new-6.png", "largeicon new"));
         UIManager.put(getLargeIconKey(AppConstants.ICON_OPEN_KEY), new ImageIcon(largeIconDir + "document-open-4.png", "largeicon open"));
     }
-    
+
     private static String getLargeIconKey(String iconKey) {
         return AppConstants.LARGE_ICON_PREFIX + iconKey;
     }

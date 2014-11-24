@@ -74,6 +74,9 @@ public class AppActionHandler implements IAppActionHandler {
             case UNDEPLOY:
                 doUnDeploy();
                 break;
+            case UNDEPLOY_ANY:
+                doUnDeploy();
+                break;
             case UNDO:
                 doUndo();
                 break;

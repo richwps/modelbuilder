@@ -31,6 +31,7 @@ public class AppActionProvider {
         PREVIEW_ROLA,
         DEPLOY,
         UNDEPLOY,
+        UNDEPLOY_ANY,
         //
         RELOAD_PROCESSES,
         MANAGE_REMOTES,
