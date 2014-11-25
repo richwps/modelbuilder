@@ -35,6 +35,7 @@ import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -45,6 +46,7 @@ import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.ComplexTypesType;
 import net.opengis.wps.x100.SupportedTypesResponseDocument;
 import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
+import org.n52.wps.client.richwps.TestProcessRequestBuilder;
 
 /**
  * Interface to RichWPS enabled servers.
@@ -420,6 +422,58 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
+     * Deploys a new process.
+     *
+     * @param request DeployRequestDTO.
+     * @see DeployRequest
+     */
+    @Override
+    public void richwpsTestProcess(TestRequest request) {
+        TestProcessRequestBuilder builder = new TestProcessRequestBuilder();
+        /*
+        
+        
+
+         builder.setTestExecutionUnit(request.getExecutionUnit());
+         builder.setTestProcessDescription(request.toProcessDescriptionType());
+         builder.setTestProfileName(request.getDeploymentprofile());
+
+         HashMap theinputs = request.getInputArguments();
+         HashMap theoutputs = request.getOutputArguments();
+        
+         ProcessDescriptionType description = this.getProcessDescriptionType(request);
+         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
+
+         this.execSetInputs(builder, theinputs);
+         this.execSetOutputs(builder, theoutputs);
+        
+        
+         try {
+
+         //FIXME
+         String endp = request.getEndpoint();
+         endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+         //this.richwps.connect(request.getEndpoint(), endp);
+         Logger.log(this.getClass(), "richwpsDeployProcess()", endp);
+
+         Object response = this.richwps.deploy(endp, builder.getTestdocument());
+         Logger.log(this.getClass(), "richwpsDeployProcess()", builder.getDeploydocument());
+         if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
+         net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
+         request.addException(exception.getExceptionReport().toString());
+         } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
+         net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
+         } else {
+         Logger.log(this.getClass(), "richwpsDeployProcess()", "Unknown reponse" + response);
+         Logger.log(this.getClass(), "richwpsDeployProcess()", response.getClass());
+         }
+         } catch (WPSClientException ex) {
+         Logger.log(this.getClass(), "richwpsDeployProcess()", "Unable to create "
+         + "deploymentdocument. " + ex);
+         }*/
+    }
+
+    /**
      * Undeploys a given process.
      *
      * @param request DeployRequestDTO.
@@ -475,6 +529,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.richwpsUndeployProcess((UndeployRequest) request);
         } else if (request instanceof DescribeRequest) {
             this.wpsDescribeProcess((DescribeRequest) request);
+        } else if (request instanceof TestRequest) {
+            this.richwpsTestProcess((TestRequest) request);
         }
     }
 
@@ -682,6 +738,83 @@ public class RichWPSProvider implements IRichWPSProvider {
                 executeBuilder.addOutput(key);
             }
         }
+    }
+
+    /**
+     * Sets given inputs to execute-request.
+     *
+     * @param builder 52n executebuilder.
+     * @param theinputs list of inputs (InputArguments) that should be set.
+     * @see IInputArgument
+     */
+    private void testSetInputs(TestProcessRequestBuilder builder, HashMap theinputs) {
+
+        /*        java.util.Set<String> keys = theinputs.keySet();
+
+         for (String key : keys) {
+         Object o = theinputs.get(key);
+         if (o instanceof InputLiteralDataArgument) {
+         String value = ((InputLiteralDataArgument) o).getValue();
+         builder.addLiteralData(key, value);
+         } else if (o instanceof InputComplexDataArgument) {
+         InputComplexDataArgument param = (InputComplexDataArgument) o;
+         String url = param.getURL();
+         String mimetype = param.getMimeType();
+         String encoding = param.getEncoding();
+         String schema = param.getSchema();
+         builder.addComplexDataReference(key, url, schema, encoding, mimetype);
+         } else if (o instanceof InputBoundingBoxDataArgument) {
+         InputBoundingBoxDataArgument param;
+         param = (InputBoundingBoxDataArgument) o;
+         final String crs = param.getCrsType();
+         String[] split = param.getValue().split(",");
+         for (String s : split) {
+         System.out.println(s);
+         }
+         BigInteger dimension = BigInteger.valueOf(split.length);
+         String[] lower = split[0].split(" ");
+         String[] upper = split[1].split(" ");
+         //FIXME Correct values                
+         builder.addBoundingBoxData(key, crs, dimension, Arrays.asList(lower), Arrays.asList(upper));
+         }
+         }*/
+    }
+
+    /**
+     * Sets requested outputs to execute-request.
+     *
+     * @param builder 52n executebuilder.
+     * @param theinputs list of outputs (OutputArgument) that should be set.
+     * @see IOutputArgument
+     */
+    private void testSetOutputs(TestProcessRequestBuilder builder, HashMap theoutputs) {
+        /*java.util.Set<String> keys = theoutputs.keySet();
+
+         for (String key : keys) {
+         Object o = theoutputs.get(key);
+
+         if (o instanceof OutputLiteralDataArgument) {
+         builder.addOutput(key);
+         } else if (o instanceof OutputComplexDataArgument) {
+         OutputComplexDataArgument param = (OutputComplexDataArgument) o;
+         builder.addOutput(key);
+         boolean asReference = param.isAsReference();
+         String mimetype = param.getMimetype();
+         String encoding = param.getEncoding();
+         String schema = param.getSchema();
+
+         if (asReference) {
+         builder.setAsReference(key, true);
+         }
+
+         builder.setMimeTypeForOutput(mimetype, key);
+         builder.setEncodingForOutput(encoding, key);
+         builder.setSchemaForOutput(schema, key);
+         } else if (o instanceof OutputBoundingBoxDataArgument) {
+         //FIXME BoundingBox
+         builder.addOutput(key);
+         }
+         }*/
     }
 
     /**

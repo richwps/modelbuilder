@@ -4,6 +4,7 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import java.util.List;
 
@@ -96,6 +97,11 @@ public interface IRichWPSProvider {
      */
     public void richwpsDeployProcess(DeployRequest request);
 
+    /**
+     * 
+     * @param request 
+     */
+    public void richwpsTestProcess(TestRequest request);
     /**
      * Undeploys a given process, via RichWPS:undeploy()-Request.
      *

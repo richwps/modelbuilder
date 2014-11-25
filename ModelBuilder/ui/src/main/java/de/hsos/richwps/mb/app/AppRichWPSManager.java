@@ -33,7 +33,6 @@ import javax.swing.JOptionPane;
  * @author dziegenh
  * @author dalcacer
  * @version 0.0.4
- * @TODO Refactor source.
  */
 public class AppRichWPSManager {
 
@@ -64,7 +63,6 @@ public class AppRichWPSManager {
 
     /**
      * Performs the deployment.
-     * @param script
      */
     public String preview() {
 

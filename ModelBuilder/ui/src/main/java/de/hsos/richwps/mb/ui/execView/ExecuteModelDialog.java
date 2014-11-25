@@ -1,12 +1,12 @@
-package de.hsos.richwps.mb.execView;
+package de.hsos.richwps.mb.ui.execView;
 
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.execView.dialog.ADialogPanel;
-import de.hsos.richwps.mb.execView.dialog.InputParameterization;
-import de.hsos.richwps.mb.execView.dialog.OutputParameterization;
-import de.hsos.richwps.mb.execView.dialog.ResultVisualisation;
+import de.hsos.richwps.mb.ui.execView.dialog.ADialogPanel;
+import de.hsos.richwps.mb.ui.execView.dialog.InputParameterization;
+import de.hsos.richwps.mb.ui.execView.dialog.OutputParameterization;
+import de.hsos.richwps.mb.ui.execView.dialog.ResultVisualisation;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;

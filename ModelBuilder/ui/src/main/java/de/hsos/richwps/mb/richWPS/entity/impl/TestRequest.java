@@ -6,19 +6,15 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
 
 /**
- * Represents a DeployRequest. The RichWPSProvider is able to perform a
- * wpst:deploy()-Request with this object.
  *
  * @author dalcacer
- * @verson 0.0.1s
  */
-public class DeployRequest implements IRequest {
+public class TestRequest extends ExecuteRequest implements IRequest {
 
     /**
      * The wps-t endpoint to call.
@@ -85,9 +81,10 @@ public class DeployRequest implements IRequest {
     protected String serverid = "";
 
     /**
-     * Constructs a new DeployRequest
+     * Constructs a new TestRequest
      */
-    public DeployRequest() {
+    public TestRequest() {
+        super();
         this.endpoint = "";
         this.identifier = "";
         this.title = "";
@@ -109,34 +106,9 @@ public class DeployRequest implements IRequest {
      * @param processversion
      * @param deploymentprofile
      */
-    public DeployRequest(final String serverid, final String endpoint, final String identifier,
+    public TestRequest(final String serverid, final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {
         this.serverid = serverid;
-        this.endpoint = endpoint;
-        this.identifier = identifier;
-        this.title = title;
-        this.processversion = processversion;
-        this.deploymentprofile = deploymentprofile;
-
-        this.executionUnit = "";
-        this.inputs = new ArrayList<>();
-        this.outputs = new ArrayList<>();
-        this.theabstract = "";
-        this.keepExecUnit = false;
-    }
-
-    /**
-     * Constructs a new DeployRequest.
-     *
-     * @param endpoint
-     * @param identifier
-     * @param title
-     * @param processversion
-     * @param deploymentprofile
-     * @deprecated
-     */
-    public DeployRequest(final String endpoint, final String identifier,
-            final String title, final String processversion, final String deploymentprofile) {
         this.endpoint = endpoint;
         this.identifier = identifier;
         this.title = title;
@@ -409,83 +381,5 @@ public class DeployRequest implements IRequest {
         }
 
         return description.getPdt();
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.endpoint);
-        hash = 59 * hash + Objects.hashCode(this.identifier);
-        hash = 59 * hash + Objects.hashCode(this.title);
-        hash = 59 * hash + Objects.hashCode(this.processversion);
-        hash = 59 * hash + Objects.hashCode(this.inputs);
-        hash = 59 * hash + Objects.hashCode(this.outputs);
-        hash = 59 * hash + Objects.hashCode(this.executionUnit);
-        hash = 59 * hash + Objects.hashCode(this.deploymentprofile);
-        hash = 59 * hash + Objects.hashCode(this.theabstract);
-        hash = 59 * hash + Objects.hashCode(this.keepExecUnit);
-        return hash;
-    }
-
-    /**
-     *
-     * @param obj
-     * @return
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DeployRequest other = (DeployRequest) obj;
-        if (!Objects.equals(this.identifier, other.identifier)) {
-            return false;
-        }
-        if (!Objects.equals(this.title, other.title)) {
-            return false;
-        }
-        if (!Objects.equals(this.processversion, other.processversion)) {
-            return false;
-        }
-        if (!Objects.equals(this.inputs, other.inputs)) {
-            return false;
-        }
-        if (!Objects.equals(this.outputs, other.outputs)) {
-            return false;
-        }
-        if (!Objects.equals(this.executionUnit, other.executionUnit)) {
-            return false;
-        }
-        if (!Objects.equals(this.deploymentprofile, other.deploymentprofile)) {
-            return false;
-        }
-        if (!Objects.equals(this.theabstract, other.theabstract)) {
-            return false;
-        }
-        if (this.keepExecUnit != other.keepExecUnit) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String toString() {
-        return "DeployRequestDTO{" + "endpoint=" + endpoint + ", identifier=" + identifier + ", title=" + title + ", processversion=" + processversion + ", inputs=" + inputs + ", outputs=" + outputs + ", executionUnit=" + executionUnit + ", deploymentprofile=" + deploymentprofile + ", theabstract=" + theabstract + ", keepExecUnit=" + keepExecUnit + '}';
-    }
-
-    @Override
-    public boolean isLoaded() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

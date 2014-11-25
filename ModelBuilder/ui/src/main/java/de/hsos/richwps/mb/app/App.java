@@ -10,8 +10,8 @@ import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.execView.ExecuteDialog;
-import de.hsos.richwps.mb.execView.ExecuteModelDialog;
+import de.hsos.richwps.mb.ui.execView.ExecuteDialog;
+import de.hsos.richwps.mb.ui.execView.ExecuteModelDialog;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
@@ -23,6 +23,7 @@ import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.undeplView.UndeployDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,7 +33,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -41,8 +41,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import layout.TableLayout;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * ModelBuilder entry point. Creates and connects all components.
@@ -77,6 +75,7 @@ public class App {
     private AppPreferencesDialog preferencesDialog;
     private ExecuteDialog execAnyDialog;
     private ExecuteModelDialog execDialog;
+    private UndeployDialog undeployAnyDialog;
 
     private boolean changesSaved = false;
     private FormatProvider formatProvider;
@@ -512,6 +511,19 @@ public class App {
         }
 
         execAnyDialog.setVisible(true);
+    }
+    
+     /**
+     * Shows an dialog to execute a given process on any connected server.
+     */
+    void showUndeploy() {
+        if (null == undeployAnyDialog) {
+            String[] remotes_arr = processProvider.getAllServers();
+            List aslist = new ArrayList<String>(Arrays.asList(remotes_arr));
+            undeployAnyDialog = new UndeployDialog(getFrame(), false, aslist);
+        }
+
+        undeployAnyDialog.setVisible(true);
     }
 
     /**

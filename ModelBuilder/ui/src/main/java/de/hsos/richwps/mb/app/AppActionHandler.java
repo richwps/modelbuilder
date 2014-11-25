@@ -75,7 +75,7 @@ public class AppActionHandler implements IAppActionHandler {
                 doUnDeploy();
                 break;
             case UNDEPLOY_ANY:
-                doUnDeploy();
+                doUnDeployAny();
                 break;
             case UNDO:
                 doUndo();
@@ -318,6 +318,10 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doUnDeploy() {
         app.undeploy();
+    }
+    
+      private void doUnDeployAny() {
+        app.showUndeploy();
     }
 
     private void doShowManageRemotes() {

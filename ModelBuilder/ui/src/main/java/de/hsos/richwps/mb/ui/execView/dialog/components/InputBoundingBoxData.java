@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.execView.dialog.components;
+package de.hsos.richwps.mb.ui.execView.dialog.components;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
@@ -442,7 +442,6 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(valueLabel3, gridBagConstraints);
-        valueLabel3.getAccessibleContext().setAccessibleName("UpperCorner Coordinates X:");
 
         valueLabel4.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel4.setLabelFor(upperCornerYCoords);

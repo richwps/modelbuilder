@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.execView.dialog.components.renderer;
+package de.hsos.richwps.mb.ui.execView.dialog.components.renderer;
 
 import java.awt.Desktop;
 import java.awt.Toolkit;

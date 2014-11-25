@@ -1,8 +1,8 @@
-package de.hsos.richwps.mb.execView.dialog;
+package de.hsos.richwps.mb.ui.execView.dialog;
 
-import de.hsos.richwps.mb.execView.dialog.components.OutputBoundingBoxData;
-import de.hsos.richwps.mb.execView.dialog.components.OutputComplexData;
-import de.hsos.richwps.mb.execView.dialog.components.OutputLiteralData;
+import de.hsos.richwps.mb.ui.execView.dialog.components.OutputBoundingBoxData;
+import de.hsos.richwps.mb.ui.execView.dialog.components.OutputComplexData;
+import de.hsos.richwps.mb.ui.execView.dialog.components.OutputLiteralData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;

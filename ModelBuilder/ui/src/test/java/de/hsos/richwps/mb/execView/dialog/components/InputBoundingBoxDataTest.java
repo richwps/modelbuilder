@@ -5,6 +5,7 @@
  */
 package de.hsos.richwps.mb.execView.dialog.components;
 
+import de.hsos.richwps.mb.ui.execView.dialog.components.InputBoundingBoxData;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import org.junit.After;
 import org.junit.AfterClass;

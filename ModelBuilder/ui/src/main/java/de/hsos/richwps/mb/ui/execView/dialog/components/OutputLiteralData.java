@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.execView.dialog.components;
+package de.hsos.richwps.mb.ui.execView.dialog.components;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import javax.swing.border.TitledBorder;

@@ -1,9 +1,9 @@
-package de.hsos.richwps.mb.execView.dialog;
+package de.hsos.richwps.mb.ui.execView.dialog;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.execView.dialog.components.renderer.ExceptionRenderer;
-import de.hsos.richwps.mb.execView.dialog.components.renderer.LiteralResultRenderer;
-import de.hsos.richwps.mb.execView.dialog.components.renderer.URIResultRenderer;
+import de.hsos.richwps.mb.ui.execView.dialog.components.renderer.ExceptionRenderer;
+import de.hsos.richwps.mb.ui.execView.dialog.components.renderer.LiteralResultRenderer;
+import de.hsos.richwps.mb.ui.execView.dialog.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
