@@ -1,13 +1,9 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.properties.Property;
-import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -76,9 +72,9 @@ class TreeViewMouseAdapter extends MouseAdapter {
  *
  * @author dziegenh
  */
-class AppTreeFactory {
+public class AppTreeFactory {
 
-    static TreeView createTree(GraphView graphView, final ProcessProvider processProvider) {
+    public static TreeView createTree(GraphView graphView, final ProcessProvider processProvider) {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(AppConstants.TREE_ROOT_NAME);
 
         // Java 1.7 Bugfix: add dummy node - otherwise the tree doesn't work?!

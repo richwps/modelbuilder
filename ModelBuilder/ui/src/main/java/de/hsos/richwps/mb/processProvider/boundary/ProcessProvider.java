@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.processProvider.boundary;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
@@ -10,7 +11,9 @@ import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.mb.properties.Property;
-import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.sp.client.BadRequestException;
+import de.hsos.richwps.sp.client.CommunicationException;
+import de.hsos.richwps.sp.client.InternalSPException;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.Vocabulary;
@@ -20,10 +23,12 @@ import de.hsos.richwps.sp.client.ows.gettypes.Network;
 import de.hsos.richwps.sp.client.ows.gettypes.Output;
 import de.hsos.richwps.sp.client.ows.gettypes.Process;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.prefs.Preferences;
 
 /**
@@ -202,7 +207,6 @@ public class ProcessProvider {
                             ProcessEntity processEntity = new ProcessEntity(wps.getEndpoint(), process.getIdentifier());
                             processEntity.setOwsAbstract(process.getAbstract());
                             processEntity.setOwsTitle(process.getTitle());
-
                             server.addProcess(processEntity);
                         }
 
@@ -258,8 +262,6 @@ public class ProcessProvider {
             AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, this);
         }
 
-        // TODO replace String with formatable AppConstant
-//        AppEventService.getInstance().fireAppEvent("Received " + servers.size() + " servers from '" + url + "'.", this);
         return servers;
     }
 
@@ -353,7 +355,6 @@ public class ProcessProvider {
     private void addProcessMetrics(ProcessEntity process) {
 
         // TODO re-enable process metrics when monitor client is faster !!! (currently THE bottleneck!)
-        
 //        // get metric properties group
 //        String server = process.getServer();
 //        String identifier = process.getOwsIdentifier();
@@ -363,6 +364,33 @@ public class ProcessProvider {
 //        String metricPropertyName = processMetric.getPropertiesObjectName();
 //        processMetric.setIsTransient(true);
 //        process.setProperty(metricPropertyName, processMetric);
+    }
+
+    public List<ProcessEntity> getProcessesByKeyword(String query) {
+        List<ProcessEntity> processes = new LinkedList<>();
+
+        Process[] searchResult = new Process[] {};
+        
+        try {
+            searchResult = spClient.searchProcessByKeyword(query);
+        } catch (Exception ex) {
+            Logger.log("Error searching process at SP: " + ex);
+        }
+
+        for (Process aProcess : searchResult) {
+            try {
+                // TODO create ONE converter "SpProcess -> ProcessEntity"
+                ProcessEntity processEntity = new ProcessEntity(null, aProcess.getIdentifier());
+                processEntity.setOwsAbstract(aProcess.getAbstract());
+                processEntity.setOwsTitle(aProcess.getTitle());
+                processes.add(processEntity);
+
+            } catch (RDFException ex) {
+                Logger.log("Error receiving process from SP: " + ex);
+            }
+        }
+
+        return processes;
     }
 
 }

@@ -200,7 +200,7 @@ public class AppConstants {
      * For action "open recently used file"
      */
     public static String CAPTION_RECENTLY_USED = "Recently used: ";
-
+    
     public enum PREFERENCES_TAB {
 
         PROCESSSOURCES,

@@ -21,6 +21,7 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JFrame;
 
 /**
  * Adapter for performing drop actions depending on the transferred object(s).
@@ -29,19 +30,19 @@ import java.util.List;
  */
 public class GraphDropTargetAdapter extends DropTargetAdapter {
 
-//    private GraphView graphView;
     private DropTarget dropTarget;
 
-    private App app;
-
     private List<mxCell> createdNodes;
+    private final ProcessProvider processProvider;
+    private final JFrame parent;
+    private final GraphView graphView;
 
-    public GraphDropTargetAdapter(App app, Component c) {
-
-        this.app = app;
-
-//        this.graphView = app.getGraphView();
-        dropTarget = new DropTarget(c, DnDConstants.ACTION_COPY, this, true, null);
+    public GraphDropTargetAdapter(JFrame parent, ProcessProvider processProvider, GraphView graphView, Component graphDndProxy) {
+        this.parent = parent;
+        this.processProvider = processProvider;
+        this.graphView = graphView;
+        
+        dropTarget = new DropTarget(graphDndProxy, DnDConstants.ACTION_COPY, this, true, null);
     }
 
     public DropTarget getDropTarget() {
@@ -58,7 +59,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
     public void drop(DropTargetDropEvent dtde) {
         Transferable transferable = dtde.getTransferable();
 
-        app.getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        parent.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         createdNodes = new LinkedList<mxCell>();
 
@@ -86,8 +87,8 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             // ignore
         }
 
-        app.getFrame().setCursor(Cursor.getDefaultCursor());
-        app.getGraphView().setCellsSelected(createdNodes.toArray());
+        parent.setCursor(Cursor.getDefaultCursor());
+        graphView.setCellsSelected(createdNodes.toArray());
     }
 
     /**
@@ -99,8 +100,6 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
      * @return
      */
     protected boolean createNodesFromTransferObject(Object o, Point location) {
-
-        GraphView graphView = app.getGraphView();
 
         location.x = (int) Math.floor(location.x / AppConstants.GRAPH_GRID_SIZE) * AppConstants.GRAPH_GRID_SIZE;
         location.y = (int) Math.floor(location.y / AppConstants.GRAPH_GRID_SIZE) * AppConstants.GRAPH_GRID_SIZE;
@@ -115,7 +114,7 @@ public class GraphDropTargetAdapter extends DropTargetAdapter {
             // try to update ProcessEntity using SemanticProxy
             String server = processEntity.getServer();
             String identifier = processEntity.getOwsIdentifier();
-            ProcessEntity spProcess = app.getProcessProvider().getFullyLoadedProcessEntity(server, identifier);
+            ProcessEntity spProcess = processProvider.getFullyLoadedProcessEntity(server, identifier);
             if (null != spProcess) {
                 processEntity = spProcess;
             }

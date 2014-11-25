@@ -1,10 +1,12 @@
-package de.hsos.richwps.mb.app;
+package de.hsos.richwps.mb.app.view.semanticProxy;
 
+import de.hsos.richwps.mb.app.App;
+import de.hsos.richwps.mb.app.AppTreeFactory;
+import de.hsos.richwps.mb.app.GraphDropTargetAdapter;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
@@ -13,6 +15,7 @@ import java.awt.dnd.DragSourceAdapter;
 import java.awt.dnd.DragSourceDropEvent;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
+import javax.swing.JFrame;
 import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
@@ -25,12 +28,23 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public abstract class AbstractTreeViewController {
 
-    protected final App app;
+//    protected final App app;
     private TreeView treeView;
+    
     private GraphDropTargetAdapter dropTargetAdapter;
+    
+    private final GraphView graphView;
+    private final ProcessProvider processProvider;
+    private final Component graphDndProxy;
+    private final TransferHandler processTransferHandler;
+    private final JFrame parent;
 
-    public AbstractTreeViewController(App app) {
-        this.app = app;
+    public AbstractTreeViewController(SemanticProxyInteractionComponents components) {
+        this.graphView = components.graphView;
+        this.processProvider = components.processProvider;
+        this.graphDndProxy = components.graphDndProxy;
+        this.processTransferHandler = components.processTransferHandler;
+        this.parent = components.parent;
     }
 
     /**
@@ -39,34 +53,38 @@ public abstract class AbstractTreeViewController {
     abstract void fillTree();
 
     protected ProcessProvider getProcessProvider() {
-        return app.getProcessProvider();
+        return this.processProvider;
     }
 
     protected GraphView getGraphView() {
-        return app.getGraphView();
+        return this.graphView;
     }
 
     protected Component getGraphDndProxy() {
-        return app.getGraphDndProxy();
+        return this.graphDndProxy;
     }
 
     protected TransferHandler getProcessTransferHandler() {
-        return app.getProcessTransferHandler();
+        return this.processTransferHandler;
     }
 
-    TreeView getTreeView() {
+    public TreeView getTreeView() {
         if (null == treeView) {
-            this.treeView = AppTreeFactory.createTree(app.getGraphView(), app.getProcessProvider());
+            this.treeView = AppTreeFactory.createTree(getGraphView(), getProcessProvider());
             ToolTipManager.sharedInstance().registerComponent(this.treeView.getGui());
         }
 
         return this.treeView;
     }
 
+    protected JFrame getParent() {
+        return parent;
+    }
+    
     /**
      * Initialises drag-and-drop mechanism for TreeView nodes.
      */
-    void initDnd() {
+    public void initDnd() {
         JTree tree = getTreeView().getGui();
 
         DragSource.getDefaultDragSource().createDefaultDragGestureRecognizer(tree, DnDConstants.ACTION_COPY_OR_MOVE, new DragGestureListener() {
@@ -77,7 +95,7 @@ public abstract class AbstractTreeViewController {
                         return;
                     }
                     getGraphDndProxy().setVisible(true);
-                    dropTargetAdapter = new GraphDropTargetAdapter(app, getGraphDndProxy());
+                    dropTargetAdapter = new GraphDropTargetAdapter(getParent(), getProcessProvider(), getGraphView(), getGraphDndProxy());
                     dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
                     dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
                                         

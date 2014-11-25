@@ -1,10 +1,16 @@
-package de.hsos.richwps.mb.app;
+package de.hsos.richwps.mb.app.view.semanticProxy;
 
 import com.mxgraph.model.mxCell;
+import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.HashMap;
+import javax.swing.JFrame;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -18,8 +24,8 @@ public class SubTreeViewController extends AbstractTreeViewController {
     private final Color enabledBgColor;
     private  Color disabledBgColor;
 
-    public SubTreeViewController(App app) {
-        super(app);
+    public SubTreeViewController(SemanticProxyInteractionComponents components) {
+        super(components);
         
         this.enabledBgColor = UIManager.getColor("Tree.background");
         
@@ -31,16 +37,16 @@ public class SubTreeViewController extends AbstractTreeViewController {
     private HashMap<Object, Integer> nodeCount = new HashMap<>();
 
     @Override
-    void fillTree() {
+    public void fillTree() {
         DefaultMutableTreeNode root = getRoot();
         if (root.getChildCount() > 0) {
             root.removeAllChildren();
         }
 
-        if (app.getGraphView().isEnabled()) {
+        if (getGraphView().isEnabled()) {
             getTreeView().getGui().setBackground(enabledBgColor);
             
-            for (mxCell cell : app.getGraphView().getProcessCells()) {
+            for (mxCell cell : getGraphView().getProcessCells()) {
                 if (cell.getValue() instanceof ProcessEntity) {
                     addNode(cell.getValue());
                 }
@@ -52,7 +58,7 @@ public class SubTreeViewController extends AbstractTreeViewController {
         updateUI();
     }
 
-    void addNode(Object userObject) {
+    public void addNode(Object userObject) {
         DefaultMutableTreeNode root = getRoot();
 
         if (null == root) {
@@ -74,7 +80,7 @@ public class SubTreeViewController extends AbstractTreeViewController {
         updateUI();
     }
 
-    void removeNode(Object nodeValue) {
+    public void removeNode(Object nodeValue) {
         DefaultMutableTreeNode root = getRoot();
 
         if (null == root) {

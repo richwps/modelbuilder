@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import layout.TableLayout;

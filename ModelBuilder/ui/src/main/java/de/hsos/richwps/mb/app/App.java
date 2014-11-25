@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.app.view.semanticProxy.MainTreeViewController;
+import de.hsos.richwps.mb.app.view.semanticProxy.SubTreeViewController;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.actions.AppAbstractAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
@@ -8,6 +10,8 @@ import de.hsos.richwps.mb.app.view.AboutDialog;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
+import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionComponents;
+import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.ui.execView.ExecuteDialog;
@@ -22,7 +26,6 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
-import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.undeplView.UndeployDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
@@ -202,7 +205,7 @@ public class App {
      */
     SubTreeViewController getSubTreeView() {
         if (null == subTreeView) {
-            subTreeView = new SubTreeViewController(this);
+            subTreeView = new SubTreeViewController(createSemanticProxyInteractionComponents());
         }
 
         return subTreeView;
@@ -215,8 +218,11 @@ public class App {
      */
     public JPanel getSubTreeViewGui() {
         if (null == subTreeViewPanel) {
-            JTree tree = getSubTreeView().getTreeView().getGui();
-            subTreeViewPanel = new TitledComponent(AppConstants.SUB_TREEVIEW_TITLE, tree);
+//            JTree tree = getSubTreeView().getTreeView().getGui();
+//            subTreeViewPanel = new TitledComponent(AppConstants.SUB_TREEVIEW_TITLE, tree);
+            
+            subTreeViewPanel = new SementicProxySearch(createSemanticProxyInteractionComponents());
+            
         }
         return subTreeViewPanel;
     }
@@ -227,12 +233,22 @@ public class App {
 
     private MainTreeViewController getMainTreeView() {
         if (null == mainTreeView) {
-            mainTreeView = new MainTreeViewController(this);
+            mainTreeView = new MainTreeViewController(getPreferencesDialog(), createSemanticProxyInteractionComponents());
         }
 
         return mainTreeView;
     }
 
+    private SemanticProxyInteractionComponents createSemanticProxyInteractionComponents() {
+        return new SemanticProxyInteractionComponents(
+                getFrame(), 
+                getGraphView(), 
+                getProcessProvider(), 
+                getGraphDndProxy(), 
+                getProcessTransferHandler()
+        );
+    }
+    
     /**
      * The MainTree panel containg the MainTree + toolbar swing components.
      *

@@ -1,6 +1,9 @@
-package de.hsos.richwps.mb.app;
+package de.hsos.richwps.mb.app.view.semanticProxy;
 
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.app.AppConfig;
+import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
@@ -10,6 +13,7 @@ import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
@@ -23,11 +27,14 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
@@ -44,13 +51,13 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     private HashMap<String, MutableTreeNode> remoteNodes = new HashMap<>();
 
-    public MainTreeViewController(final App app) {
-        super(app);
+    public MainTreeViewController(AppPreferencesDialog preferencesDialog, SemanticProxyInteractionComponents components) {
+        super(components);
 
         processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
 
         // handle changes of the SP url config
-        app.getPreferencesDialog().addWindowListener(new WindowAdapter() {
+        preferencesDialog.addWindowListener(new WindowAdapter() {
 
             private boolean urlHasChanged() {
                 ProcessProvider processProvider = getProcessProvider();
@@ -83,7 +90,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         fillTree(true);
     }
 
-    void fillTree(boolean clearCache) {
+    public void fillTree(boolean clearCache) {
 
         ProcessProvider processProvider = getProcessProvider();
 
@@ -102,7 +109,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
                 if (connected || processProvider.connect(url)) {
                     for (WpsServer server : processProvider.getAllServerWithProcesses()) {
-                        // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
                         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server.getEndpoint());
 
                         for (ProcessEntity process : server.getProcesses()) {
@@ -296,7 +302,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
         }
     }
 
-    void setRemotes(String[] remotes) {
+    public void setRemotes(String[] remotes) {
         this.setRemotes(remotes, false);
     }
 
