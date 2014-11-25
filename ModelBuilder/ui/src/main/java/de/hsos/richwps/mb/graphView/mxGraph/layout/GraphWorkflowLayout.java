@@ -153,17 +153,21 @@ public class GraphWorkflowLayout extends mxGraphLayout {
         for (Object portCell : g.getGlobalInputPortCells()) {
             mxCell cell = (mxCell) portCell;
 
-            xReferenceCell = null;
+            // check if the input cell belongs to the layoutComponent
+            if (null != layoutComponent.getCellInfo(portCell)) {
 
-            // get x position of connected reference port cell
-            Object[] edges = mxGraphModel.getOutgoingEdges(model, portCell);
-            if (edges.length > 0 && edges[0] instanceof GraphEdge) {
-                GraphEdge gEdge = (GraphEdge) edges[0];
-                xReferenceCell = gEdge.getTargetPortCell();
+                xReferenceCell = null;
+
+                // get x position of connected reference port cell
+                Object[] edges = mxGraphModel.getOutgoingEdges(model, portCell);
+                if (edges.length > 0 && edges[0] instanceof GraphEdge) {
+                    GraphEdge gEdge = (GraphEdge) edges[0];
+                    xReferenceCell = gEdge.getTargetPortCell();
+                }
+
+                // set new x position
+                setCellCenteredToReference(cell, xReferenceCell, layoutComponent);
             }
-
-            // set new x position
-            setCellCenteredToReference(cell, xReferenceCell, layoutComponent);
         }
 
     }
@@ -175,19 +179,22 @@ public class GraphWorkflowLayout extends mxGraphLayout {
         for (Object portCell : g.getGlobalOutputPortCells()) {
             mxCell cell = (mxCell) portCell;
 
-            xReferenceCell = null;
+            // check if the input cell belongs to the layoutComponent
+            if (null != layoutComponent.getCellInfo(portCell)) {
 
-            // get x position of connected reference port cell
-            Object[] edges = mxGraphModel.getIncomingEdges(model, portCell);
-            if (edges.length > 0 && edges[0] instanceof GraphEdge) {
-                GraphEdge gEdge = (GraphEdge) edges[0];
-                xReferenceCell = gEdge.getSourcePortCell();
+                xReferenceCell = null;
+
+                // get x position of connected reference port cell
+                Object[] edges = mxGraphModel.getIncomingEdges(model, portCell);
+                if (edges.length > 0 && edges[0] instanceof GraphEdge) {
+                    GraphEdge gEdge = (GraphEdge) edges[0];
+                    xReferenceCell = gEdge.getSourcePortCell();
+                }
+
+                // set new x position
+                setCellCenteredToReference(cell, xReferenceCell, layoutComponent);
             }
-
-            // set new x position
-            setCellCenteredToReference(cell, xReferenceCell, layoutComponent);
         }
-
     }
 
     void setCellCenteredToReference(mxCell cell, mxCell referenceCell, GraphLayoutComponent layoutComponent) {
