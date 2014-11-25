@@ -13,7 +13,7 @@ import org.apache.commons.lang3.exception.CloneFailedException;
  *
  * @author dziegenh
  */
-public class Property<E> implements IObjectWithProperties, Serializable {
+public class Property<E> implements IObjectWithProperties, Serializable, Cloneable {
 
     public final static String COMPONENT_TYPE_TEXTFIELD = "TEXTFIELD";
     public final static String COMPONENT_TYPE_INTEGER = "INTEGER";
@@ -182,15 +182,11 @@ public class Property<E> implements IObjectWithProperties, Serializable {
         E cloneValue = null;
         if (null != value) {
             try {
-                cloneValue = ObjectUtils.clone(value);
+                cloneValue = ObjectUtils.cloneIfPossible(value);
+                Logger.log(cloneValue);
             } catch (CloneFailedException ex) {
                 // ignore; don't use clone
                 Logger.log("Cloning value of type " + value.getClass().getSimpleName() + " failed! ");
-            }
-
-            // couldn't clone: copy value
-            if (null == cloneValue) {
-                cloneValue = value;
             }
         }
 
