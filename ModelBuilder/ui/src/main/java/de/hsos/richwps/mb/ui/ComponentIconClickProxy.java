@@ -36,7 +36,7 @@ public class ComponentIconClickProxy implements Icon {
         this.component = component;
 
         // delegates the mouse event if a click occured inside the icon bounds
-        component.addMouseListener(new MouseAdapter() {
+        component.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 fireMouseEventIfInsideIcon(EVENT_TYPE.CLICKED, e);

@@ -7,6 +7,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import layout.TableLayout;
 
@@ -42,9 +43,14 @@ public class SementicProxySearch extends JPanel {
         startSearch.setToolTipText("Search for keyword at SemanticProxy"); // TODO move to app constants
         startSearch.addActionListener(actionListener);
 
+        // wrap button in toolbar to use it's styling
+        JToolBar startSearchWrapper = new JToolBar();
+        startSearchWrapper.setFloatable(false);
+        startSearchWrapper.add(startSearch);
+        
         setLayout(new TableLayout(new double[][]{{TableLayout.FILL, TableLayout.PREFERRED}, {TableLayout.PREFERRED, TableLayout.FILL}}));
         add(searchInput, "0 0");
-        add(startSearch, "1 0");
+        add(startSearchWrapper, "1 0");
         add(tabs, "0 1 1 1");
     }
 

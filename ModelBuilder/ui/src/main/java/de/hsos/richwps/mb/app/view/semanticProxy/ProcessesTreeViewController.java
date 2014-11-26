@@ -1,12 +1,8 @@
 package de.hsos.richwps.mb.app.view.semanticProxy;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
-import de.hsos.richwps.mb.graphView.GraphView;
-import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import java.awt.Component;
+import java.util.HashMap;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -35,19 +31,22 @@ public class ProcessesTreeViewController extends AbstractTreeViewController {
 
         getRoot().removeAllChildren();
 
-        // TODO create map serverId->serverNode and sort processes into the nodes:
-        // [root]
-        //  +--- server 1
-        //        +--- process 1
-        //        +--- process 2
-        //  +--- server 2
-        //        +--- process 3
-        //        +--- process 4
+        HashMap<String, DefaultMutableTreeNode> serverNodes = new HashMap<>();
+        DefaultMutableTreeNode serverNode = null;
+
         for (ProcessEntity aProcess : processes) {
-            getRoot().add(new DefaultMutableTreeNode(aProcess));
+            String aProcessServer = aProcess.getServer();
+
+            serverNode = serverNodes.get(aProcessServer);
+            if (null == serverNode) {
+                serverNode = new DefaultMutableTreeNode(aProcessServer);
+                serverNodes.put(aProcessServer, serverNode);
+                getRoot().add(serverNode);
+            }
+            serverNode.add(new DefaultMutableTreeNode(aProcess));
         }
 
         updateUI();
     }
-    
+
 }

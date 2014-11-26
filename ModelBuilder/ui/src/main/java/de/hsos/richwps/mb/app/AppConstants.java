@@ -380,6 +380,7 @@ public class AppConstants {
     public final static String ICON_ADD_KEY = "richwps_icon_add";
     public final static String ICON_DELETE_KEY = "richwps_icon_delete";
     public final static String ICON_CLOSE_KEY = "richwps_icon_close";
+    public final static String ICON_CLOSE_INACTIVE_KEY = "richwps_icon_close_inactive";
     public final static String ICON_SEARCH_KEY = "richwps_icon_search";
 
     /**

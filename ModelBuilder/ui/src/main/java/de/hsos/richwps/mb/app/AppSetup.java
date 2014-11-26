@@ -243,6 +243,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_ADD_KEY, new ImageIcon(iconDir + "list-add-6.png", "add icon"));
         UIManager.put(AppConstants.ICON_DELETE_KEY, new ImageIcon(iconDir + "edit-delete-7.png", "delete icon"));
         UIManager.put(AppConstants.ICON_CLOSE_KEY, new ImageIcon(iconDir + "window-close-3.png", "close icon"));
+        UIManager.put(AppConstants.ICON_CLOSE_INACTIVE_KEY, new ImageIcon(iconDir + "window-close-3_inactive.png", "close inactive icon"));
         UIManager.put(AppConstants.ICON_SEARCH_KEY, new ImageIcon(iconDir + "system-search-6.png", "search icon"));
 
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
