@@ -97,13 +97,15 @@ public class AppGraphView extends GraphView {
                     return;
                 }
 
-                switch (changeType) {
-                    case ADDED:
-                        getApp().getSubTreeView().addNode(element);
-                        break;
-                    case REMOVED:
-                        getApp().getSubTreeView().removeNode(element);
-                        break;
+                if (getApp().hasSubTreeView()) {
+                    switch (changeType) {
+                        case ADDED:
+                            getApp().getSubTreeView().addNode(element);
+                            break;
+                        case REMOVED:
+                            getApp().getSubTreeView().removeNode(element);
+                            break;
+                    }
                 }
             }
         });
@@ -164,12 +166,12 @@ public class AppGraphView extends GraphView {
         Property foundProperty = null;
 
         for (IObjectWithProperties p : modelProperties) {
-            
+
             // property found
             if (p instanceof Property && p.getPropertiesObjectName().equals(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT)) {
                 foundProperty = (Property) p;
-                
-            // current property is a propertygroup -> recursive search
+
+                // current property is a propertygroup -> recursive search
             } else if (p instanceof PropertyGroup) {
                 Property subProperty = getModelEndpointProperty(p.getProperties());
                 if (null != subProperty) {

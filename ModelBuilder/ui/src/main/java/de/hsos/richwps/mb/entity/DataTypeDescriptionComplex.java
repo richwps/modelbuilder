@@ -99,7 +99,7 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
             clone.setDefaultFormat(defaultFormat);
         } catch (IllegalDefaultFormatException ex) {
             // ignore; just log
-            Logger.log(ex);
+            Logger.log("DataTypeDescriptionComplex: IllegalDefaultFormat " + ex);
         }
         
         return clone;

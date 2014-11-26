@@ -36,7 +36,6 @@ public class InfoTabs extends JTabbedPane {
         addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 setTabStatus(getSelectedIndex(), true);
-//                setForegroundAt(getSelectedIndex(), DEFAULT_FG_COLOR);
             }
         });
     }

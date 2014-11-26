@@ -128,19 +128,12 @@ public class ProcessProvider {
             try {
                 if (server.equals(wps.getEndpoint())) {
 
-                    for (de.hsos.richwps.sp.client.ows.gettypes.Process spProcess : wps.getProcesses()) {
+                    for (Process spProcess : wps.getProcesses()) {
 
                         if (spProcess.getIdentifier().equals(identifier)) {
-                            // Map process properties
-                            process = new ProcessEntity(server, spProcess.getIdentifier());
-                            process.setOwsAbstract(spProcess.getAbstract());
-                            process.setOwsTitle(spProcess.getTitle());
-
-                            String versionKey = ProcessEntity.PROPERTIES_KEY_VERSION;
-                            String versionType = Property.COMPONENT_TYPE_TEXTFIELD;
-                            String versionValue = spProcess.getProcessVersion();
-                            Property versionProperty = new Property(versionKey, versionType, versionValue);
-                            process.setProperty(versionKey, versionProperty);
+                            
+                            // Map process attributes
+                            process = createProcessEntity(spProcess);
 
                             // Map input ports
                             try {
@@ -204,9 +197,7 @@ public class ProcessProvider {
                     try {
                         WpsServer server = new WpsServer(wps.getEndpoint());
                         for (Process process : wps.getProcesses()) {
-                            ProcessEntity processEntity = new ProcessEntity(wps.getEndpoint(), process.getIdentifier());
-                            processEntity.setOwsAbstract(process.getAbstract());
-                            processEntity.setOwsTitle(process.getTitle());
+                            ProcessEntity processEntity = createProcessEntity(process);
                             server.addProcess(processEntity);
                         }
 
@@ -366,11 +357,26 @@ public class ProcessProvider {
 //        process.setProperty(metricPropertyName, processMetric);
     }
 
+    static ProcessEntity createProcessEntity(Process spProcess) throws Exception {
+        ProcessEntity processEntity = new ProcessEntity(spProcess.getWPS().getEndpoint(), spProcess.getIdentifier());
+        processEntity.setOwsAbstract(spProcess.getAbstract());
+        processEntity.setOwsTitle(spProcess.getTitle());
+
+        // add version as property
+        String versionKey = ProcessEntity.PROPERTIES_KEY_VERSION;
+        String versionType = Property.COMPONENT_TYPE_TEXTFIELD;
+        String versionValue = spProcess.getProcessVersion();
+        Property versionProperty = new Property(versionKey, versionType, versionValue);
+        processEntity.setProperty(versionKey, versionProperty);
+
+        return processEntity;
+    }
+
     public List<ProcessEntity> getProcessesByKeyword(String query) {
         List<ProcessEntity> processes = new LinkedList<>();
 
-        Process[] searchResult = new Process[] {};
-        
+        Process[] searchResult = new Process[]{};
+
         try {
             searchResult = spClient.searchProcessByKeyword(query);
         } catch (Exception ex) {
@@ -379,13 +385,10 @@ public class ProcessProvider {
 
         for (Process aProcess : searchResult) {
             try {
-                // TODO create ONE converter "SpProcess -> ProcessEntity"
-                ProcessEntity processEntity = new ProcessEntity(null, aProcess.getIdentifier());
-                processEntity.setOwsAbstract(aProcess.getAbstract());
-                processEntity.setOwsTitle(aProcess.getTitle());
+                ProcessEntity processEntity = createProcessEntity(aProcess);
                 processes.add(processEntity);
 
-            } catch (RDFException ex) {
+            } catch (Exception ex) {
                 Logger.log("Error receiving process from SP: " + ex);
             }
         }

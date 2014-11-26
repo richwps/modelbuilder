@@ -62,10 +62,12 @@ public class AppUndoManager extends MbUndoManager {
                             editCell = ((mxChildChange) editAction.getChanges().get(0)).getChild();
                             editCellParent = model.getParent(editCell);
 
-                            if (null == editCellParent) {
-                                app.getSubTreeView().removeNode(model.getValue(editCell));
-                            } else {
-                                app.getSubTreeView().addNode(model.getValue(editCell));
+                            if (app.hasSubTreeView()) {
+                                if (null == editCellParent) {
+                                    app.getSubTreeView().removeNode(model.getValue(editCell));
+                                } else {
+                                    app.getSubTreeView().addNode(model.getValue(editCell));
+                                }
                             }
 
                         } else if (appEdit.getAction() instanceof UndoablePropertyChangeAction) {

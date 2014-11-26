@@ -28,8 +28,8 @@ public class TitledComponent extends JPanel {
     public static int DEFAULT_TITLE_HEIGHT = 24;
     private boolean foldable;
     private boolean isFolded = false;
-    private LabelIconClickAdapter icon;
-    private LabelIconClickAdapter clickAdapter;
+    private ComponentIconClickProxy icon;
+    private ComponentIconClickProxy clickAdapter;
     private int titleHeight;
 
     /**
@@ -80,7 +80,7 @@ public class TitledComponent extends JPanel {
             // initialize folding icon
             if (foldable) {
                 Icon icon = UIManager.getIcon("Tree.expandedIcon");
-                clickAdapter = new LabelIconClickAdapter(componentTitle, icon);
+                clickAdapter = new ComponentIconClickProxy(componentTitle, icon);
                 componentTitle.setIcon(clickAdapter);
                 clickAdapter.addMouseListener(new MouseAdapter() {
                     @Override

@@ -183,7 +183,6 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         if (null != value) {
             try {
                 cloneValue = ObjectUtils.cloneIfPossible(value);
-                Logger.log(cloneValue);
             } catch (CloneFailedException ex) {
                 // ignore; don't use clone
                 Logger.log("Cloning value of type " + value.getClass().getSimpleName() + " failed! ");

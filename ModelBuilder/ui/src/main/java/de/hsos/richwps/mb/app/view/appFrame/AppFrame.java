@@ -122,7 +122,7 @@ public class AppFrame extends JFrame {
     private Component getModellingSummaryView() {
         // TODO mock
         if (null == serviceSummaryView) {
-            serviceSummaryView = app.getSubTreeViewGui();
+            serviceSummaryView = app.getSemanticProxySearchGui();
         }
 
         return serviceSummaryView;

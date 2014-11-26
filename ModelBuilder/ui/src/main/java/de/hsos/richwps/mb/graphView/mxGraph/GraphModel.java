@@ -180,7 +180,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         try {
             clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
         } catch (CloneNotSupportedException ex) {
-            Logger.log(ex);
+            Logger.log("GraphModel: clone not supported!! " + ex);
         }
 
         for (PropertyGroup pGroup : this.propertyGroups) {

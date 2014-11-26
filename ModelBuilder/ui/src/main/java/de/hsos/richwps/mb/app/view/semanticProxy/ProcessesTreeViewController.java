@@ -19,6 +19,7 @@ public class ProcessesTreeViewController extends AbstractTreeViewController {
 
     public ProcessesTreeViewController(SemanticProxyInteractionComponents components) {
         super(components);
+        getTreeView().getGui().setBorder(null);
     }
 
     public void setProcesses(List<ProcessEntity> processes) {
@@ -48,5 +49,5 @@ public class ProcessesTreeViewController extends AbstractTreeViewController {
 
         updateUI();
     }
-
+    
 }

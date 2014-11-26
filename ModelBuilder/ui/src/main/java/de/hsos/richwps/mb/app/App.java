@@ -26,6 +26,7 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.undeplView.UndeployDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
@@ -83,6 +84,7 @@ public class App {
     private boolean changesSaved = false;
     private FormatProvider formatProvider;
     private ProcessMetricProvider processMetricProvider;
+    private SementicProxySearch semanticProxySearch;
 
     /**
      * ModelBuilder entry point. Creates and connects all components.
@@ -182,7 +184,14 @@ public class App {
 
     void initDragAndDrop() {
         getMainTreeView().initDnd();
-        getSubTreeView().initDnd();
+
+        if (hasSubTreeView()) {
+            getSubTreeView().initDnd();
+        }
+    }
+
+    boolean hasSubTreeView() {
+        return AppConstants.ENABLE_SUB_TREE_VIEW;
     }
 
     /**
@@ -200,6 +209,7 @@ public class App {
 
     /**
      * Gets the SubTreeView's controller for currently used modelling elements.
+     * (currently not used).
      *
      * @return
      */
@@ -218,17 +228,34 @@ public class App {
      */
     public JPanel getSubTreeViewGui() {
         if (null == subTreeViewPanel) {
-//            JTree tree = getSubTreeView().getTreeView().getGui();
-//            subTreeViewPanel = new TitledComponent(AppConstants.SUB_TREEVIEW_TITLE, tree);
-            
-            subTreeViewPanel = new SementicProxySearch(createSemanticProxyInteractionComponents());
-            
+            JTree tree = getSubTreeView().getTreeView().getGui();
+            subTreeViewPanel = new TitledComponent(AppConstants.SUB_TREEVIEW_TITLE, tree);
         }
         return subTreeViewPanel;
     }
 
+    /**
+     * The SubTree panel containg the SubTree swing component.
+     *
+     * @return
+     */
+    public JPanel getSemanticProxySearchGui() {
+        return getSemanticProxySearch();
+    }
+
+    SementicProxySearch getSemanticProxySearch() {
+        if (null == semanticProxySearch) {
+            semanticProxySearch = new SementicProxySearch(createSemanticProxyInteractionComponents());
+
+        }
+
+        return semanticProxySearch;
+    }
+
     public void fillSubTree() {
-        getSubTreeView().fillTree();
+        if (hasSubTreeView()) {
+            getSubTreeView().fillTree();
+        }
     }
 
     private MainTreeViewController getMainTreeView() {
@@ -241,14 +268,14 @@ public class App {
 
     private SemanticProxyInteractionComponents createSemanticProxyInteractionComponents() {
         return new SemanticProxyInteractionComponents(
-                getFrame(), 
-                getGraphView(), 
-                getProcessProvider(), 
-                getGraphDndProxy(), 
+                getFrame(),
+                getGraphView(),
+                getProcessProvider(),
+                getGraphDndProxy(),
                 getProcessTransferHandler()
         );
     }
-    
+
     /**
      * The MainTree panel containg the MainTree + toolbar swing components.
      *
@@ -319,10 +346,14 @@ public class App {
         getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
 
-        getSubTreeView().fillTree();
+        if (hasSubTreeView()) {
+            getSubTreeView().fillTree();
+        }
 
         updateGraphDependentActions();
         updateModelPropertiesView();
+
+        getSemanticProxySearch().setAppHasModel(true);
 
         getFrame().init(this);
         getFrame().setModellingEnabled(true);
@@ -528,8 +559,8 @@ public class App {
 
         execAnyDialog.setVisible(true);
     }
-    
-     /**
+
+    /**
      * Shows an dialog to execute a given process on any connected server.
      */
     void showUndeploy() {
@@ -547,24 +578,24 @@ public class App {
      */
     void showExecuteModel() {
         //if (null == execDialog) {
-            final GraphModel model = this.getGraphView().getGraph().getGraphModel();
-            final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-            final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-            if (RichWPSProvider.hasProcess(auri, identifier)) {
-                execDialog = new ExecuteModelDialog(getFrame(), false, auri, identifier);
-            } else {
-                JOptionPane.showMessageDialog(frame,
-                        AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
-                        AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
-                        JOptionPane.ERROR_MESSAGE);
-                String msg = "The requested process " + identifier + " was not found"
-                        + " on " + auri;
-                Logger.log("Debug:\n" + msg);
-                JOptionPane.showMessageDialog(this.frame, msg);
-                AppEventService appservice = AppEventService.getInstance();
-                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-                return;
-            }
+        final GraphModel model = this.getGraphView().getGraph().getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        if (RichWPSProvider.hasProcess(auri, identifier)) {
+            execDialog = new ExecuteModelDialog(getFrame(), false, auri, identifier);
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
+                    AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+            String msg = "The requested process " + identifier + " was not found"
+                    + " on " + auri;
+            Logger.log("Debug:\n" + msg);
+            JOptionPane.showMessageDialog(this.frame, msg);
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            return;
+        }
         //}
 
         execDialog.setVisible(true);
