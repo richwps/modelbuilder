@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.ui.undeplView;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.ui.undeplView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.ui.undeplView.dialog.ProcessSelection;
 import de.hsos.richwps.mb.ui.undeplView.dialog.SeverSelection;
@@ -16,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -35,10 +37,14 @@ public class UndeployDialog extends MbDialog {
     private ProcessSelection processesselectionpanel;
     private List<String> serverids;
     private RichWPSProvider provider;
-    /**Describe-Request for discovery.*/
+    /**
+     * Describe-Request for discovery.
+     */
     private DescribeRequest desc_request;
-    /**Undeploy-Request for performing undeploy-operation.*/
-    private UndeployRequest undeply_request;
+    /**
+     * Undeploy-Request for performing undeploy-operation.
+     */
+    private UndeployRequest undeploy_request;
 
     /**
      * Creates new form execViewDialog, starting with the first dialog
@@ -74,7 +80,7 @@ public class UndeployDialog extends MbDialog {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
         }
-
+        this.nextButton.setText("Next");
         this.add(this.serverselectionpanel);
         this.pack();
         this.currentPanel = serverselectionpanel;
@@ -95,7 +101,7 @@ public class UndeployDialog extends MbDialog {
 
         this.backButton.setVisible(true);
         this.nextButton.setVisible(true);
-        
+
         //refresh the request
         this.currentPanel.updateRequest();
         this.desc_request = this.currentPanel.getRequest();
@@ -111,6 +117,7 @@ public class UndeployDialog extends MbDialog {
             return;
         }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.desc_request);
+        this.nextButton.setText("Undeploy");
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.processesselectionpanel);
@@ -118,7 +125,48 @@ public class UndeployDialog extends MbDialog {
         this.currentPanel = processesselectionpanel;
     }
 
-   
+    /**
+     * Switches from serverselectionpanel to processselectionpanel.
+     *
+     * @param isBackAction indicator if a backaction is performed.
+     */
+    private void performUndeploy() {
+        try {
+            //refresh the request
+            this.currentPanel.updateRequest();
+            this.desc_request = this.currentPanel.getRequest();
+            String endp = desc_request.getServerId();
+            endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+            Logger.log(endp);
+            Logger.log(desc_request.getServerId());
+            Logger.log(desc_request.getIdentifier());
+            this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
+            this.provider.connect(this.desc_request.getServerId(), endp);
+            this.provider.richwpsUndeployProcess(undeploy_request);
+            if (undeploy_request.isException()) {
+                AppEventService.getInstance().fireAppEvent("Undeployment failed",
+                        AppConstants.INFOTAB_ID_SERVER);
+            } else {
+                AppEventService.getInstance().fireAppEvent("Undeployment succeeded",
+                        AppConstants.INFOTAB_ID_SERVER);
+                //make sure the client cache is emptied.
+                if (provider != null) {
+                    try {
+                        provider.disconnect();
+                        this.desc_request = new DescribeRequest();
+                    } catch (Exception ex) {
+                        Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
+                    }
+                }
+                this.showServerSelection(false); //reset
+                this.setVisible(false);
+                this.dispose();
+            }
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(UndeployDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -175,12 +223,12 @@ public class UndeployDialog extends MbDialog {
         if (this.currentPanel == this.serverselectionpanel) {
             this.showProcessSelection(false);
         } else if (this.currentPanel == this.processesselectionpanel) {
-            //nop
-        } 
+            this.performUndeploy();
+        }
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
-        
+
         //make sure the client cache is emptied.
         if (provider != null) {
             try {

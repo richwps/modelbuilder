@@ -429,25 +429,19 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public void richwpsTestProcess(TestRequest request) {
-        TestProcessRequestBuilder builder = new TestProcessRequestBuilder();
+        TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
+
+        builder.setTestExecutionUnit(request.getExecutionUnit());
+        builder.setTestProcessDescription(request.toProcessDescriptionType());
+        builder.setTestDeploymentProfileName(request.getDeploymentprofile());
+
+        HashMap theinputs = request.getInputArguments();
+        HashMap theoutputs = request.getOutputArguments();
+
+        
+        this.testSetInputs(builder, theinputs);
+        this.testSetOutputs(builder, theoutputs);
         /*
-        
-        
-
-         builder.setTestExecutionUnit(request.getExecutionUnit());
-         builder.setTestProcessDescription(request.toProcessDescriptionType());
-         builder.setTestProfileName(request.getDeploymentprofile());
-
-         HashMap theinputs = request.getInputArguments();
-         HashMap theoutputs = request.getOutputArguments();
-        
-         ProcessDescriptionType description = this.getProcessDescriptionType(request);
-         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
-
-         this.execSetInputs(builder, theinputs);
-         this.execSetOutputs(builder, theoutputs);
-        
-        
          try {
 
          //FIXME
@@ -470,7 +464,7 @@ public class RichWPSProvider implements IRichWPSProvider {
          } catch (WPSClientException ex) {
          Logger.log(this.getClass(), "richwpsDeployProcess()", "Unable to create "
          + "deploymentdocument. " + ex);
-         }*/
+         }  */
     }
 
     /**
@@ -492,6 +486,10 @@ public class RichWPSProvider implements IRichWPSProvider {
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
             //this.richwps.connect(request.getEndpoint(), endp);
             Object response = this.richwps.undeploy(endp, builder.getUndeploydocument());
+            if (response == null) {
+                Logger.log(this.getClass(), "richwpsUndeployProcess()", "No response");
+                return;
+            }
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
@@ -749,35 +747,35 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     private void testSetInputs(TestProcessRequestBuilder builder, HashMap theinputs) {
 
-        /*        java.util.Set<String> keys = theinputs.keySet();
+        java.util.Set<String> keys = theinputs.keySet();
 
-         for (String key : keys) {
-         Object o = theinputs.get(key);
-         if (o instanceof InputLiteralDataArgument) {
-         String value = ((InputLiteralDataArgument) o).getValue();
-         builder.addLiteralData(key, value);
-         } else if (o instanceof InputComplexDataArgument) {
-         InputComplexDataArgument param = (InputComplexDataArgument) o;
-         String url = param.getURL();
-         String mimetype = param.getMimeType();
-         String encoding = param.getEncoding();
-         String schema = param.getSchema();
-         builder.addComplexDataReference(key, url, schema, encoding, mimetype);
-         } else if (o instanceof InputBoundingBoxDataArgument) {
-         InputBoundingBoxDataArgument param;
-         param = (InputBoundingBoxDataArgument) o;
-         final String crs = param.getCrsType();
-         String[] split = param.getValue().split(",");
-         for (String s : split) {
-         System.out.println(s);
-         }
-         BigInteger dimension = BigInteger.valueOf(split.length);
-         String[] lower = split[0].split(" ");
-         String[] upper = split[1].split(" ");
-         //FIXME Correct values                
-         builder.addBoundingBoxData(key, crs, dimension, Arrays.asList(lower), Arrays.asList(upper));
-         }
-         }*/
+        for (String key : keys) {
+            Object o = theinputs.get(key);
+            if (o instanceof InputLiteralDataArgument) {
+                String value = ((InputLiteralDataArgument) o).getValue();
+                builder.addLiteralData(key, value);
+            } else if (o instanceof InputComplexDataArgument) {
+                InputComplexDataArgument param = (InputComplexDataArgument) o;
+                String url = param.getURL();
+                String mimetype = param.getMimeType();
+                String encoding = param.getEncoding();
+                String schema = param.getSchema();
+                builder.addComplexDataReference(key, url, schema, encoding, mimetype);
+            } else if (o instanceof InputBoundingBoxDataArgument) {
+                InputBoundingBoxDataArgument param;
+                param = (InputBoundingBoxDataArgument) o;
+                final String crs = param.getCrsType();
+                String[] split = param.getValue().split(",");
+                for (String s : split) {
+                    System.out.println(s);
+                }
+                BigInteger dimension = BigInteger.valueOf(split.length);
+                String[] lower = split[0].split(" ");
+                String[] upper = split[1].split(" ");
+                //FIXME Correct values                
+                builder.addBoundingBoxData(key, crs, dimension, Arrays.asList(lower), Arrays.asList(upper));
+            }
+        }
     }
 
     /**
