@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Exports a graph to DSL notation.
@@ -337,5 +338,11 @@ public class Exporter {
 
     private String getUniqueIdentifier(String rawIdentifier) {
         return GraphHandler.getUniqueIdentifier(rawIdentifier);
+    }
+    
+    
+    public String[] getVariables(){
+       String[] strings = this.variables.keySet().toArray(new String[this.variables.size()]);
+       return strings;
     }
 }

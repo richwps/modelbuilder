@@ -27,6 +27,8 @@ import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.testView.TestModelDialog;
+
 import de.hsos.richwps.mb.ui.undeplView.UndeployDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
@@ -80,6 +82,7 @@ public class App {
     private ExecuteDialog execAnyDialog;
     private ExecuteModelDialog execDialog;
     private UndeployDialog undeployAnyDialog;
+    private TestModelDialog testDialog;
 
     private boolean changesSaved = false;
     private FormatProvider formatProvider;
@@ -377,8 +380,7 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(!graphIsEmpty);
         //FIXME in v.2.2
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);  //!graphIsEmpty);
-        //FIXME in v.2.2
-        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(false);     //!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
         //FIXME in v.2.2
         getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(false);  //!graphIsEmpty);
     }
@@ -446,56 +448,6 @@ public class App {
 
     public void updateModelPropertiesView() {
         getPropertiesView().setObjectWithProperties(getGraphView().getGraph().getGraphModel());
-    }
-
-    /**
-     * Previews the opend model.
-     */
-    void preview() {
-        AppRichWPSManager manager = new AppRichWPSManager(this);
-        final String rola = manager.preview();
-
-        if (manager.isError()) {
-            JOptionPane.showMessageDialog(frame,
-                    AppConstants.DEPLOY_ERROR_DIALOG_MSG,
-                    AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
-                    JOptionPane.ERROR_MESSAGE);
-        } else {
-            final javax.swing.JTextArea textArea = new javax.swing.JTextArea(rola);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
-            scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
-            JOptionPane.showMessageDialog(frame, scrollPane);
-        }
-    }
-
-    /**
-     * Deploys the opend model.
-     */
-    void deploy() {
-        AppRichWPSManager manager = new AppRichWPSManager(this);
-        manager.deploy();
-        if (manager.isError()) {
-            JOptionPane.showMessageDialog(frame,
-                    AppConstants.DEPLOY_ERROR_DIALOG_MSG,
-                    AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    /**
-     * Undeploys the opend model.
-     */
-    void undeploy() {
-        AppRichWPSManager manager = new AppRichWPSManager(this);
-        manager.undeploy();
-        if (manager.isError()) {
-            JOptionPane.showMessageDialog(frame,
-                    AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
-                    AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
-                    JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**
@@ -574,6 +526,56 @@ public class App {
     }
 
     /**
+     * Previews the opend model.
+     */
+    void preview() {
+        AppRichWPSManager manager = new AppRichWPSManager(this);
+        final String rola = manager.getROLA();
+
+        if (manager.isError()) {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.DEPLOY_ERROR_DIALOG_MSG,
+                    AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            final javax.swing.JTextArea textArea = new javax.swing.JTextArea(rola);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+            scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+            JOptionPane.showMessageDialog(frame, scrollPane);
+        }
+    }
+
+    /**
+     * Deploys the opend model.
+     */
+    void deploy() {
+        AppRichWPSManager manager = new AppRichWPSManager(this);
+        manager.deploy();
+        if (manager.isError()) {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.DEPLOY_ERROR_DIALOG_MSG,
+                    AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Undeploys the opend model.
+     */
+    void undeploy() {
+        AppRichWPSManager manager = new AppRichWPSManager(this);
+        manager.undeploy();
+        if (manager.isError()) {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.UNDEPLOY_ERROR_DIALOG_MSG,
+                    AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
      * Shows an dialog to execute the currently opened model.
      */
     void showExecuteModel() {
@@ -599,6 +601,35 @@ public class App {
         //}
 
         execDialog.setVisible(true);
+    }
+
+    /**
+     * Shows an dialog to execute the currently opened model.
+     */
+    void showTestModel() {
+        //if (null == execDialog) {
+        final GraphModel model = this.getGraphView().getGraph().getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        if (RichWPSProvider.hasProcess(auri, identifier)) {
+                        AppRichWPSManager manager = new AppRichWPSManager(this);
+            testDialog = new TestModelDialog(getFrame(), false, auri, identifier, manager);
+        } else {
+            JOptionPane.showMessageDialog(frame,
+                    AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
+                    AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+            String msg = "The requested process " + identifier + " was not found"
+                    + " on " + auri;
+            Logger.log("Debug:\n" + msg);
+            JOptionPane.showMessageDialog(this.frame, msg);
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            return;
+        }
+        //}
+
+        testDialog.setVisible(true);
     }
 
     void showAbout() {

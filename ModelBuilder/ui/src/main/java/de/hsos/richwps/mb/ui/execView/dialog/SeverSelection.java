@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.ui.execView.dialog;
 
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
@@ -31,9 +32,9 @@ public class SeverSelection extends ADialogPanel {
      * @param wpsurls
      * @param dto
      */
-    public SeverSelection(List<String> wpsurls, ExecuteRequest dto) {
+    public SeverSelection(List<String> wpsurls, IRequest request) {
         this.remotes = wpsurls;
-        this.request = dto;
+        this.request = (ExecuteRequest) request;
         this.initComponents();
         this.init();
     }

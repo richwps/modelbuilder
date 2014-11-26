@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.ui.execView.dialog;
+package de.hsos.richwps.mb.ui.testView.dialog;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.execView.dialog.components.renderer.ExceptionRenderer;
@@ -6,8 +6,7 @@ import de.hsos.richwps.mb.ui.execView.dialog.components.renderer.LiteralResultRe
 import de.hsos.richwps.mb.ui.execView.dialog.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import java.awt.GridBagConstraints;
@@ -29,16 +28,16 @@ public class ResultVisualisation extends ADialogPanel {
 
     private List<JPanel> renderers;
     private RichWPSProvider provider;
-    private ExecuteRequest request;
+    private TestRequest request;
 
     /**
      *
      * @param provider
      * @param request
      */
-    public ResultVisualisation(RichWPSProvider provider, IRequest request) {
+    public ResultVisualisation(RichWPSProvider provider, TestRequest request) {
         this.provider = provider;
-        this.request = (ExecuteRequest) request;
+        this.request = request;
         this.renderers = new ArrayList<>();
         initComponents();
         this.selectedProcess.setText(request.getIdentifier());
@@ -60,7 +59,7 @@ public class ResultVisualisation extends ADialogPanel {
         this.loadingLabel.setText("Sending and processing statement.\n This might take some time, depending on the remote process.");
     }
 
-    private void update(ExecuteRequest request) {
+    private void update(TestRequest request) {
         this.loadingLabel.setText("Processing results.");
         this.request = request;
         if (this.request.isException()) {
@@ -70,7 +69,7 @@ public class ResultVisualisation extends ADialogPanel {
         }
     }
 
-    private void renderResults(ExecuteRequest request) {
+    private void renderResults(TestRequest request) {
         this.request = request;
         HashMap results = this.request.getResults();
         HashMap arguments = this.request.getOutputArguments();
@@ -115,7 +114,7 @@ public class ResultVisualisation extends ADialogPanel {
         this.loadingLabel.setVisible(false);
     }
 
-    private void renderException(ExecuteRequest request) {
+    private void renderException(TestRequest request) {
         this.request = request;
         ExceptionRenderer r = new ExceptionRenderer("", request.getException());
         this.remove(this.resultPane);
@@ -146,18 +145,18 @@ public class ResultVisualisation extends ADialogPanel {
      * @return
      */
     @Override
-    public ExecuteRequest getRequest() {
+    public TestRequest getRequest() {
         //nop
         return this.request;
     }
 
     private class ExecuteThread extends Thread {
 
-        private ExecuteRequest request;
+        private TestRequest request;
         private RichWPSProvider provider;
         private ResultVisualisation parent;
 
-        public ExecuteThread(ResultVisualisation parent, ExecuteRequest request, RichWPSProvider provider) {
+        public ExecuteThread(ResultVisualisation parent, TestRequest request, RichWPSProvider provider) {
             this.parent = parent;
             this.request = request;
             this.provider = provider;

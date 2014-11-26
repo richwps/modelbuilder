@@ -1,14 +1,12 @@
-package de.hsos.richwps.mb.ui.execView.dialog;
+package de.hsos.richwps.mb.ui.testView.dialog;
 
-import de.hsos.richwps.mb.ui.execView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.ui.execView.dialog.components.InputBoundingBoxData;
 import de.hsos.richwps.mb.ui.execView.dialog.components.InputLiteralData;
 import de.hsos.richwps.mb.ui.execView.dialog.components.InputComplexData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
@@ -40,7 +38,7 @@ public class InputParameterization extends ADialogPanel {
     /**
      * Request that should be executed.
      */
-    private ExecuteRequest request;
+    private TestRequest request;
 
     /**
      * Creates new form ExecutePanel
@@ -55,9 +53,9 @@ public class InputParameterization extends ADialogPanel {
      * @param provider
      * @param request
      */
-    public InputParameterization(final RichWPSProvider provider, IRequest request) {
+    public InputParameterization(final RichWPSProvider provider, TestRequest request) {
         this.provider = provider;
-        this.request = (ExecuteRequest) request;
+        this.request = request;
         initComponents();
         this.inputpanels = new ArrayList<>();
         final String selectedserver = this.request.getEndpoint();
@@ -231,7 +229,7 @@ public class InputParameterization extends ADialogPanel {
      *
      * @return
      */
-    public ExecuteRequest getRequest() {
+    public TestRequest getRequest() {
         return this.request;
     }
 

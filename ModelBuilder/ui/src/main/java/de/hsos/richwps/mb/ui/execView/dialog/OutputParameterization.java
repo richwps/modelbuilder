@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.ui.execView.dialog;
 
+import de.hsos.richwps.mb.ui.execView.dialog.ADialogPanel;
 import de.hsos.richwps.mb.ui.execView.dialog.components.OutputBoundingBoxData;
 import de.hsos.richwps.mb.ui.execView.dialog.components.OutputComplexData;
 import de.hsos.richwps.mb.ui.execView.dialog.components.OutputLiteralData;
@@ -8,6 +9,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifi
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
@@ -45,9 +47,9 @@ public class OutputParameterization extends ADialogPanel {
      * @param provider
      * @param request
      */
-    public OutputParameterization(final RichWPSProvider provider, ExecuteRequest request) {
+    public OutputParameterization(final RichWPSProvider provider, IRequest request) {
         this.provider = provider;
-        this.request = request;
+        this.request = (ExecuteRequest) request;
         initComponents();
 
         final String selectedserver = this.request.getEndpoint();

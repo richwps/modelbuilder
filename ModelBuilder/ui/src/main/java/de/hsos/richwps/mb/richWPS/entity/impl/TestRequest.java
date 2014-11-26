@@ -79,6 +79,8 @@ public class TestRequest extends ExecuteRequest implements IRequest {
      * The corresponding serverid (wps-endpoint).
      */
     protected String serverid = "";
+    
+    protected List<String> variables;
 
     /**
      * Constructs a new TestRequest
@@ -93,6 +95,7 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         this.deploymentprofile = "";
         this.inputs = new ArrayList<>();
         this.outputs = new ArrayList<>();
+        this.variables = new ArrayList<>();
         this.theabstract = "";
         this.keepExecUnit = false;
     }
@@ -118,6 +121,7 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         this.executionUnit = "";
         this.inputs = new ArrayList<>();
         this.outputs = new ArrayList<>();
+        this.variables = new ArrayList<>();
         this.theabstract = "";
         this.keepExecUnit = false;
     }
@@ -357,6 +361,20 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         //TODO nothing to flush, yet.
     }
 
+    
+      /**
+     * Adds an output specification to the list of available outputs.
+     *
+     * @param identifier.
+     */
+    public void addVariable(String identifier){
+        this.variables.add(identifier);
+    }
+    
+    public List<String> getVariables(){
+        return this.variables;
+    }
+    
     /**
      *
      * @return

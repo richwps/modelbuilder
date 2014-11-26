@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.ui.execView.dialog;
 
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -28,9 +29,9 @@ public class ProcessSelection extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public ProcessSelection(RichWPSProvider provider, ExecuteRequest dto) {
-        this.request = dto;
-        this.wpsurl = dto.getEndpoint();
+    public ProcessSelection(RichWPSProvider provider, IRequest request) {
+        this.request = (ExecuteRequest) request;
+        this.wpsurl = this.request.getEndpoint();
         this.provider = provider;
         try {
             this.processes = this.provider.wpsGetAvailableProcesses(wpsurl);

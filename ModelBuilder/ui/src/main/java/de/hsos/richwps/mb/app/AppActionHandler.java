@@ -110,7 +110,7 @@ public class AppActionHandler implements IAppActionHandler {
                 //TODO
                 break;
             case TEST:
-                //TODO
+                doTestModel();
                 break;
             case ABOUT:
                 doAbout();
@@ -350,6 +350,11 @@ public class AppActionHandler implements IAppActionHandler {
     private void doExecuteModel() {
         app.showExecuteModel();
     }
+    
+      private void doTestModel() {
+        app.showTestModel();
+    }
+
 
     private void doAbout() {
         app.showAbout();

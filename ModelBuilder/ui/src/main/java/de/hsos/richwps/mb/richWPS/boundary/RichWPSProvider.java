@@ -436,35 +436,34 @@ public class RichWPSProvider implements IRichWPSProvider {
         builder.setTestDeploymentProfileName(request.getDeploymentprofile());
 
         HashMap theinputs = request.getInputArguments();
-        HashMap theoutputs = request.getOutputArguments();
-
-        
         this.testSetInputs(builder, theinputs);
-        this.testSetOutputs(builder, theoutputs);
-        /*
-         try {
 
-         //FIXME
-         String endp = request.getEndpoint();
-         endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-         //this.richwps.connect(request.getEndpoint(), endp);
-         Logger.log(this.getClass(), "richwpsDeployProcess()", endp);
+        for (String variable : request.getVariables()) {
+            builder.addOutput(variable);
+        }
 
-         Object response = this.richwps.deploy(endp, builder.getTestdocument());
-         Logger.log(this.getClass(), "richwpsDeployProcess()", builder.getDeploydocument());
-         if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
-         net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
-         request.addException(exception.getExceptionReport().toString());
-         } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
-         net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
-         } else {
-         Logger.log(this.getClass(), "richwpsDeployProcess()", "Unknown reponse" + response);
-         Logger.log(this.getClass(), "richwpsDeployProcess()", response.getClass());
-         }
-         } catch (WPSClientException ex) {
-         Logger.log(this.getClass(), "richwpsDeployProcess()", "Unable to create "
-         + "deploymentdocument. " + ex);
-         }  */
+        try {
+            //FIXME
+            String endp = request.getEndpoint();
+            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+            //this.richwps.connect(request.getEndpoint(), endp);
+            Logger.log(this.getClass(), "richwpsTestProcess()", endp);
+
+            Object response = this.richwps.test(endp, builder.getTestdocument());
+
+            if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
+                net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
+                request.addException(exception.getExceptionReport().toString());
+            } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
+                net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
+            } else {
+                Logger.log(this.getClass(), "richwpsTestProcess()", "Unknown reponse" + response);
+                Logger.log(this.getClass(), "richwpsTestProcess()", response.getClass());
+            }
+        } catch (WPSClientException ex) {
+            Logger.log(this.getClass(), "richwpsTestProcess()", "Unable to create "
+                    + "deploymentdocument. " + ex);
+        }
     }
 
     /**

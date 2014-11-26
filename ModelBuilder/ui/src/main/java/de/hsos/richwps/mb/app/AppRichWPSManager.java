@@ -3,6 +3,8 @@ package de.hsos.richwps.mb.app;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.dsl.Exporter;
+import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
+import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.IDataTypeDescription;
@@ -25,6 +27,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
 /**
@@ -49,6 +54,7 @@ public class AppRichWPSManager {
      * Indicates deployment error.
      */
     private boolean error = false;
+    private Exporter exporter;
 
     /**
      * Constructs a new AppDeployManager.
@@ -56,15 +62,25 @@ public class AppRichWPSManager {
      * @param app the overall app.
      */
     public AppRichWPSManager(App app) {
-        this.app = app;
-        this.graph = app.getGraphView().getGraph();
-        this.error = false;
+        try {
+            this.app = app;
+            this.graph = app.getGraphView().getGraph();
+            this.error = false;
+            this.exporter = new Exporter(this.graph);
+        } catch (NoIdentifierException ex) {
+            java.util.logging.Logger.getLogger(AppRichWPSManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IdentifierDuplicatedException ex) {
+            java.util.logging.Logger.getLogger(AppRichWPSManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
-     * Performs the deployment.
+     * Previews the ROLA.
+     *
+     * @return rola script.
      */
-    public String preview() {
+    //TODO split in two prepareROLA. getROLA
+    public String getROLA() {
 
         //load information from model.
         final GraphModel model = this.graph.getGraphModel();
@@ -96,6 +112,10 @@ public class AppRichWPSManager {
             return "";
         }
         return rola;
+    }
+
+    public String[] getVariables() {
+        return exporter.getVariables();
     }
 
     /**
@@ -275,7 +295,6 @@ public class AppRichWPSManager {
                 return "";
             }
 
-            Exporter exporter = new Exporter((this.graph));
             exporter.export(f.getAbsolutePath());
 
             String content = null;

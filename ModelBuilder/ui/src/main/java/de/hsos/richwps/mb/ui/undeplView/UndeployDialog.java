@@ -9,18 +9,11 @@ import de.hsos.richwps.mb.ui.undeplView.dialog.ProcessSelection;
 import de.hsos.richwps.mb.ui.undeplView.dialog.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.logging.Level;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * A dialog that displays five consecutive panels for serverselection,
@@ -137,9 +130,6 @@ public class UndeployDialog extends MbDialog {
             this.desc_request = this.currentPanel.getRequest();
             String endp = desc_request.getServerId();
             endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-            Logger.log(endp);
-            Logger.log(desc_request.getServerId());
-            Logger.log(desc_request.getIdentifier());
             this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
             this.provider.connect(this.desc_request.getServerId(), endp);
             this.provider.richwpsUndeployProcess(undeploy_request);
