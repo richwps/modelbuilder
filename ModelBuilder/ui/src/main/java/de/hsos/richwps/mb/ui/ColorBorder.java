@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Insets;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -24,6 +25,10 @@ public class ColorBorder extends EmptyBorder {
         leftColor = color;
         bottomColor = color;
         rightColor = color;
+    }
+
+    public ColorBorder(Color color, Insets insets) {
+        this(color, insets.top, insets.left, insets.bottom, insets.right);
     }
 
     @Override
