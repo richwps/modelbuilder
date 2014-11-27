@@ -27,8 +27,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
@@ -357,8 +355,10 @@ public class AppRichWPSManager {
                 if (literalSpecifier.getTitle().equals("")) {
                     literalSpecifier.setTitle(literalSpecifier.getIdentifier());
                 }
-                literalSpecifier.setMinOccur(0);
-                literalSpecifier.setMaxOccur(1);
+                Integer max = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
+                Integer min = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
+                literalSpecifier.setMinOccur(min);
+                literalSpecifier.setMaxOccur(max);
                 literalSpecifier.setType(("xs:string"));
                 literalSpecifier.setDefaultvalue("");
                 specifier = literalSpecifier;
@@ -373,9 +373,12 @@ public class AppRichWPSManager {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
                 //FIXME
-                complexSpecifier.setMinOccur(0);
-                complexSpecifier.setMaxOccur(1);
-                complexSpecifier.setMaximumMegabytes(50);
+                max = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
+                min = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
+                complexSpecifier.setMinOccur(min);
+                complexSpecifier.setMaxOccur(max);
+                Integer mb = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
+                complexSpecifier.setMaximumMegabytes(mb);
                 try {
                     List<List> supportedTypes = new ArrayList<>();
                     List<String> supportedType = new ArrayList<>();
