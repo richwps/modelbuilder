@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
@@ -16,26 +15,7 @@ import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
  */
 public class TestRequest extends ExecuteRequest implements IRequest {
 
-    /**
-     * The wps-t endpoint to call.
-     */
-    protected String endpoint;
-
-    /**
-     * The id of the process which shall be deployed.
-     */
-    protected String identifier;
-
-    /**
-     * The title of the process.
-     */
-    protected String title;
-
-    /**
-     * The processversion.
-     */
-    protected String processversion;
-
+   
     /**
      * List of available process inputs and their specification/types.
      */
@@ -55,30 +35,13 @@ public class TestRequest extends ExecuteRequest implements IRequest {
      */
     protected String deploymentprofile;
 
-    /**
-     * The processes' abstract.
-     */
-    protected String theabstract;
-
+    
     /**
      * A flag that indicates if the execution unit should be stored when
      * wps:undeploy() is called.
      */
     private boolean keepExecUnit;
 
-    /**
-     * Exception instead of result.
-     */
-    protected boolean wasException = false;
-    /**
-     * Exception text.
-     */
-    protected String exception = "";
-
-    /**
-     * The corresponding serverid (wps-endpoint).
-     */
-    protected String serverid = "";
     
     protected List<String> variables;
 
@@ -101,13 +64,14 @@ public class TestRequest extends ExecuteRequest implements IRequest {
     }
 
     /**
-     * Constructs a new DeployRequest.
+     * Constructs a new TestRequest.
      *
-     * @param endpoint
-     * @param identifier
-     * @param title
-     * @param processversion
-     * @param deploymentprofile
+     * @param serverid serverid used to identify the remote.
+     * @param endpoint actual endpoint (may differ from serverid).
+     * @param identifier the process identifier.
+     * @param title the process stitle.
+     * @param processversion the process version.
+     * @param deploymentprofile the deploymentprofile (ROLA).
      */
     public TestRequest(final String serverid, final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {
@@ -124,137 +88,6 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         this.variables = new ArrayList<>();
         this.theabstract = "";
         this.keepExecUnit = false;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String getEndpoint() {
-        return endpoint;
-    }
-
-    /**
-     *
-     * @param endpoint
-     */
-    public void setEndpoint(String endpoint) {
-        this.endpoint = endpoint;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String getServerId() {
-        //TODO assumption :(
-        if (this.serverid.length() == 0) {
-            String uri = this.endpoint;
-            uri = uri.replace(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
-            return uri;
-        }
-        return serverid;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    /**
-     *
-     * @param identifier
-     */
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     *
-     * @param title
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getProcessversion() {
-        return processversion;
-    }
-
-    /**
-     *
-     * @param processversion
-     */
-    public void setProcessversion(String processversion) {
-        this.processversion = processversion;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public List<IInputSpecifier> getInputs() {
-        return inputs;
-    }
-
-    /**
-     *
-     * @param inputs
-     */
-    public void setInputs(List<IInputSpecifier> inputs) {
-        this.inputs = inputs;
-    }
-
-    /**
-     *
-     * @param specifier
-     */
-    public void addInput(IInputSpecifier specifier) {
-        this.inputs.add(specifier);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public List<IOutputSpecifier> getOutputs() {
-        return outputs;
-    }
-
-    /**
-     *
-     * @param outputs
-     */
-    public void setOutputs(List<IOutputSpecifier> outputs) {
-        this.outputs = outputs;
-    }
-
-    /**
-     *
-     * @param specifier
-     */
-    public void addOutput(IOutputSpecifier specifier) {
-        this.outputs.add(specifier);
     }
 
     /**
@@ -289,23 +122,7 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         this.deploymentprofile = deploymentprofile;
     }
 
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String getAbstract() {
-        return theabstract;
-    }
-
-    /**
-     *
-     * @param theabstract
-     */
-    public void setAbstract(String theabstract) {
-        this.theabstract = theabstract;
-    }
-
+  
     /**
      *
      * @return
@@ -361,20 +178,24 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         //TODO nothing to flush, yet.
     }
 
+    public void setVariables(List<String> variables){
+        this.variables=variables;
+    }
     
-      /**
-     * Adds an output specification to the list of available outputs.
+    /**
+     * Adds an output specification to the list of available intermediate
+     * results.
      *
      * @param identifier.
      */
-    public void addVariable(String identifier){
+    public void addVariable(String identifier) {
         this.variables.add(identifier);
     }
-    
-    public List<String> getVariables(){
+
+    public List<String> getVariables() {
         return this.variables;
     }
-    
+
     /**
      *
      * @return

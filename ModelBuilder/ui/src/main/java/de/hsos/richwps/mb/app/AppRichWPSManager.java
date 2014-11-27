@@ -33,6 +33,7 @@ import javax.swing.JOptionPane;
 /**
  * Manages script creation, processdescription creation and the deployment.
  *
+ *
  * @author dziegenh
  * @author dalcacer
  * @version 0.0.4
@@ -52,6 +53,10 @@ public class AppRichWPSManager {
      * Indicates deployment error.
      */
     private boolean error = false;
+    /**
+     * An exporters that anaylses the given graph and transforms it to a
+     * ROLA-script.
+     */
     private Exporter exporter;
 
     /**
@@ -65,9 +70,7 @@ public class AppRichWPSManager {
             this.graph = app.getGraphView().getGraph();
             this.error = false;
             this.exporter = new Exporter(this.graph);
-        } catch (NoIdentifierException ex) {
-            java.util.logging.Logger.getLogger(AppRichWPSManager.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IdentifierDuplicatedException ex) {
+        } catch (NoIdentifierException | IdentifierDuplicatedException ex) {
             java.util.logging.Logger.getLogger(AppRichWPSManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -112,9 +115,22 @@ public class AppRichWPSManager {
         return rola;
     }
 
+    /**
+     * Delivers the variables that are used within a ROLA-script.
+     * @return variables the ROLA-script variables.
+     */
     public String[] getVariables() {
         return exporter.getVariables();
     }
+    
+      /**
+     * Delivers the transitions.
+     * @return transitions 
+     */
+    public List<String> getTransitions() {
+        return exporter.getTransitions();
+    }
+
 
     /**
      * Performs the deployment.
@@ -339,7 +355,7 @@ public class AppRichWPSManager {
         }
     }
 
-    public IInputSpecifier createInputPortSpecifier(ProcessPort port) {
+    private IInputSpecifier createInputPortSpecifier(ProcessPort port) {
         if (null == port || !port.isGlobalInput()) {
             throw new IllegalArgumentException("invalid port (null or not an input)");
         }
@@ -424,7 +440,7 @@ public class AppRichWPSManager {
         return specifier;
     }
 
-    public IOutputSpecifier createOutputPortSpecifier(ProcessPort port) {
+    private IOutputSpecifier createOutputPortSpecifier(ProcessPort port) {
         if (null == port || !port.isGlobalOutput()) {
             throw new IllegalArgumentException("invalid port (null or not an output)");
         }

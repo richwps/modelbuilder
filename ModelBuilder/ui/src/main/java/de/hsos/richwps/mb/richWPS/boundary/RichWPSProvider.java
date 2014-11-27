@@ -518,7 +518,9 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public void request(IRequest request) {
-        if (request instanceof ExecuteRequest) {
+        if (request instanceof TestRequest) {   //first to check!
+            this.richwpsTestProcess((TestRequest) request);
+        } else if (request instanceof ExecuteRequest) {
             this.wpsExecuteProcess((ExecuteRequest) request);
         } else if (request instanceof DeployRequest) {
             this.richwpsDeployProcess((DeployRequest) request);
@@ -526,8 +528,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             this.richwpsUndeployProcess((UndeployRequest) request);
         } else if (request instanceof DescribeRequest) {
             this.wpsDescribeProcess((DescribeRequest) request);
-        } else if (request instanceof TestRequest) {
-            this.richwpsTestProcess((TestRequest) request);
         }
     }
 

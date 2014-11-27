@@ -6,7 +6,6 @@ import de.hsos.richwps.mb.app.AppRichWPSManager;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.ui.testView.dialog.*;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import java.util.ArrayList;
@@ -29,6 +28,7 @@ public class TestModelDialog extends MbDialog {
     private List<String> remotes;
     private RichWPSProvider provider;
     private TestRequest request;
+    private List<String> transitions;
 
     /**
      * Creates new form ExecuteModelDialog, starting with the
@@ -39,6 +39,7 @@ public class TestModelDialog extends MbDialog {
      *
      * @param serverid
      * @param processid
+     * @param manager manager to access graph and exporter.
      *
      */
     public TestModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
@@ -51,9 +52,9 @@ public class TestModelDialog extends MbDialog {
         this.provider = new RichWPSProvider();
         this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
         this.request.setExecutionUnit(manager.getROLA());
+        this.transitions=manager.getTransitions();
         for (String var : manager.getVariables()) {
             this.request.addVariable("var."+var);
-            Logger.log(this.getClass(), "TestModelDialog()", "var."+var);
         }
 
         try {
@@ -64,7 +65,7 @@ public class TestModelDialog extends MbDialog {
             JOptionPane.showMessageDialog(this, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log(this.getClass(), "ExecuteModelDialog()", ex);
+            Logger.log(this.getClass(), "TestModelDialog()", ex);
             return;
         }
 
@@ -108,7 +109,7 @@ public class TestModelDialog extends MbDialog {
         this.currentPanel.updateRequest();
         this.request = this.currentPanel.getRequest();
 
-        this.outputsspanel = new OutputSelection(this.provider, this.request);
+        this.outputsspanel = new OutputSelection(this.provider, this.request, this.transitions);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.outputsspanel);
@@ -141,7 +142,7 @@ public class TestModelDialog extends MbDialog {
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);
 
-        this.resultpanel.executeProcess();
+        this.resultpanel.testProcess();
     }
 
     /**

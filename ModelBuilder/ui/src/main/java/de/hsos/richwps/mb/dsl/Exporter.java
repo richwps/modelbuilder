@@ -33,6 +33,7 @@ public class Exporter {
      * variables.
      */
     protected Map<String, Reference> variables;
+    protected List<String> transitions;
     /**
      * * Extended version of the (JGraphX) mxGraph.
      */
@@ -57,6 +58,8 @@ public class Exporter {
      * Constructs a new Exporter.
      *
      * @param graph the exported graph.
+     * @throws de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException
+     * @throws de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException
      */
     public Exporter(Graph graph) throws NoIdentifierException, IdentifierDuplicatedException {
 
@@ -67,6 +70,7 @@ public class Exporter {
         this.variables = new HashMap<>();
         this.bindings = new ArrayList<>();
         this.executes = new ArrayList<>();
+        this.transitions = new ArrayList<>();
         this.workflow = new Workflow();
     }
 
@@ -77,12 +81,9 @@ public class Exporter {
      * @throws Exception
      */
     public void export(String path) throws Exception {
-        
-        String identifier = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        String title = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
-        String version = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
-        String url = (String)  this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        
+
+        String url = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+
         Writer writer = new Writer();
 
         createUniqueIdentifiers(graph.getAllFlowOutputPorts());
@@ -113,8 +114,8 @@ public class Exporter {
     }
 
     /**
-     * Defines one global input, assigns inputs to variables in the
-     * reference map.
+     * Defines one global input, assigns inputs to variables in the reference
+     * map.
      *
      * @param input
      * @param ws workflow to write to
@@ -264,7 +265,6 @@ public class Exporter {
      * @throws Exception ROLA-exception in case the input is malformed.
      */
     private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
-        //Handle ingoing transitions. Map variables to wps:process:inputs.
 
         for (Object in : incoming) {
             //For each transition.
@@ -277,11 +277,11 @@ public class Exporter {
                 execute.addInput(inref, target.getOwsIdentifier());
             } else {
                 // Read variable from reference map
-                
+
                 VarReference variable = null;
-                String unique_src ="";
+                String unique_src = "";
                 unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
-                
+
                 // lookup variable
                 if (this.variables.containsKey(unique_src)) {
                     //variable allready declared, lets re-use it.
@@ -291,6 +291,8 @@ public class Exporter {
                     variable = new VarReference(unique_src);
                     this.variables.put(unique_src, variable);
                 }
+
+                transitions.add("ingoing into  " + edge.getTarget().getValue() + " from " + edge.getSource().getValue());
                 String owsin = this.getOwsIdentifier(target.getOwsIdentifier());
                 execute.addInput(variable, owsin);
             }
@@ -323,6 +325,7 @@ public class Exporter {
                     vars.add(unique_src);
                     execute.addOutput(owsout, variable);
                 }
+                transitions.add("outgoing from " + edge.getSource().getValue() + " to " + edge.getTarget().getValue());
             }
         }
     }
@@ -338,10 +341,13 @@ public class Exporter {
     private String getUniqueIdentifier(String rawIdentifier) {
         return GraphHandler.getUniqueIdentifier(rawIdentifier);
     }
-    
-    
-    public String[] getVariables(){
-       String[] strings = this.variables.keySet().toArray(new String[this.variables.size()]);
-       return strings;
+
+    public String[] getVariables() {
+        String[] strings = this.variables.keySet().toArray(new String[this.variables.size()]);
+        return strings;
+    }
+
+    public List<String> getTransitions() {
+        return this.transitions;
     }
 }

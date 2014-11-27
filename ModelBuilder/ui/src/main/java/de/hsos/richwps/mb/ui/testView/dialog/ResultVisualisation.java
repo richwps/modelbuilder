@@ -50,11 +50,11 @@ public class ResultVisualisation extends ADialogPanel {
 
     /**
      */
-    public void executeProcess() {
+    public void testProcess() {
         this.resultPane.setVisible(false);
         this.loadingLabel.setVisible(true);
 
-        ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
+        TestThread mt = new TestThread(this, this.request, this.provider);
         mt.start();
         this.loadingLabel.setText("Sending and processing statement.\n This might take some time, depending on the remote process.");
     }
@@ -150,13 +150,13 @@ public class ResultVisualisation extends ADialogPanel {
         return this.request;
     }
 
-    private class ExecuteThread extends Thread {
+    private class TestThread extends Thread {
 
         private TestRequest request;
         private RichWPSProvider provider;
         private ResultVisualisation parent;
 
-        public ExecuteThread(ResultVisualisation parent, TestRequest request, RichWPSProvider provider) {
+        public TestThread(ResultVisualisation parent, TestRequest request, RichWPSProvider provider) {
             this.parent = parent;
             this.request = request;
             this.provider = provider;

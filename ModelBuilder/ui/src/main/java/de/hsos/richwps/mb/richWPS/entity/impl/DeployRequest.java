@@ -103,11 +103,12 @@ public class DeployRequest implements IRequest {
     /**
      * Constructs a new DeployRequest.
      *
-     * @param endpoint
-     * @param identifier
-     * @param title
-     * @param processversion
-     * @param deploymentprofile
+     * @param serverid serverid used to identify the remote.
+     * @param endpoint actual endpoint (may differ from serverid).
+     * @param identifier the process identifier.
+     * @param title the process stitle.
+     * @param processversion the process version.
+     * @param deploymentprofile the deploymentprofile (ROLA).
      */
     public DeployRequest(final String serverid, final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {

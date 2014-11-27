@@ -1,8 +1,9 @@
 package de.hsos.richwps.mb.ui.testView.dialog;
 
-import de.hsos.richwps.mb.ui.execView.dialog.components.InputBoundingBoxData;
-import de.hsos.richwps.mb.ui.execView.dialog.components.InputLiteralData;
-import de.hsos.richwps.mb.ui.execView.dialog.components.InputComplexData;
+import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.ui.testView.dialog.components.InputBoundingBoxData;
+import de.hsos.richwps.mb.ui.testView.dialog.components.InputLiteralData;
+import de.hsos.richwps.mb.ui.testView.dialog.components.InputComplexData;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -56,6 +57,7 @@ public class InputParameterization extends ADialogPanel {
     public InputParameterization(final RichWPSProvider provider, TestRequest request) {
         this.provider = provider;
         this.request = request;
+        Logger.log(request);
         initComponents();
         this.inputpanels = new ArrayList<>();
         final String selectedserver = this.request.getEndpoint();
