@@ -66,6 +66,10 @@ public class AppActionProvider {
                         iconKey = configValues[2];
                     }
 
+                    if (actionConfigs.containsKey(anAction)) {
+                        Logger.log(this.getClass().getSimpleName() + " WARNING overwritting action config values for '" + anAction.name() + "'");
+                    }
+
                     actionConfigs.put(anAction, new AppActionConfig(caption, iconKey));
                 }
             }
