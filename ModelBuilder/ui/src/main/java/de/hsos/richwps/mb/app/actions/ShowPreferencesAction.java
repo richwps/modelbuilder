@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
  *
  * @author dziegenh
  */
-public class ShowPreferencesAction extends AppAbstractAction {
+public class ShowPreferencesAction extends AppAction {
 
     private AppConstants.PREFERENCES_TAB tabToShow = null;
 

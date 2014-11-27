@@ -2,7 +2,7 @@ package de.hsos.richwps.mb.app.view.menu;
 
 import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.app.actions.AppAbstractAction;
+import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -59,7 +59,7 @@ public class AppMenuBar extends JMenuBar {
         return "";
     }
 
-    private JMenuItem createAndAddMenuItem(JMenu menu, final AppActionProvider.APP_ACTIONS item, AppAbstractAction action) {
+    private JMenuItem createAndAddMenuItem(JMenu menu, final AppActionProvider.APP_ACTIONS item, AppAction action) {
         JMenuItem menuItem = new JMenuItem(getMenuItemCaption(item));
         menuItem.setAction(action);
         menu.add(menuItem);
@@ -86,7 +86,7 @@ public class AppMenuBar extends JMenuBar {
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.LOAD_MODEL);
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SAVE_MODEL);
         createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS);
-        AppAbstractAction openRecentAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
+        AppAction openRecentAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
         if (openRecentAction.isEnabled()) {
             mFile.addSeparator();
             createAndAddMenuItem(mFile, AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE, openRecentAction);

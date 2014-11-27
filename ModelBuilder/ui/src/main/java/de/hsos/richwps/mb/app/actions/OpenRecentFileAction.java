@@ -8,10 +8,10 @@ import de.hsos.richwps.mb.ui.UiHelper;
  *
  * @author dziegenh
  */
-public class OpenRecentFileAction extends AppAbstractAction {
+public class OpenRecentFileAction extends AppAction {
 
     public OpenRecentFileAction(IAppActionHandler actionHandler) {
-        super(actionHandler, AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE, null);
+        super(actionHandler, AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE, "");
     }
 
     @Override

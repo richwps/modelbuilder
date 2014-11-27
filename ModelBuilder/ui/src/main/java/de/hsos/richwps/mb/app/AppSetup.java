@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.app.actions.AppAbstractAction;
+import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.app.view.AppSplashScreen;
@@ -124,7 +124,7 @@ public class AppSetup {
         // Load last used filename
         String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
         File lastFile = new File(lastFilename);
-        AppAbstractAction recentFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
+        AppAction recentFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
         recentFileAction.setEnabled(lastFile.exists());
         if (lastFile.exists()) {
             recentFileAction.setName(lastFilename);

@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
  *
  * @author dziegenh
  */
-public class ShowErrorMsgAction extends AppAbstractAction {
+public class ShowErrorMsgAction extends AppAction {
 
     public ShowErrorMsgAction(IAppActionHandler actionHandler) {
         super(actionHandler, AppActionProvider.APP_ACTIONS.SHOW_ERROR_MSG, AppConstants.ICON_MBLOGO_KEY);

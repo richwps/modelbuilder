@@ -200,10 +200,9 @@ public class AppConstants {
      * For action "open recently used file"
      */
     public static String CAPTION_RECENTLY_USED = "Recently used: ";
-    
-    
+
     static boolean ENABLE_SUB_TREE_VIEW = false;
-    
+
     public enum PREFERENCES_TAB {
 
         PROCESSSOURCES,
@@ -241,30 +240,30 @@ public class AppConstants {
         {INFOTAB_ID_SERVER, "RichWPS-Server"},};
 
     /**
-     * the keys refer to MenuBar enum.
+     * Sets a visible String caption and an icon for the app actions.
      */
-    public static final String[][] MENU_ITEM_CAPTIONS = new String[][]{
-        {AppActionProvider.APP_ACTIONS.NEW_MODEL.name(), "New"},
-        {AppActionProvider.APP_ACTIONS.LOAD_MODEL.name(), "Open"},
-        {AppActionProvider.APP_ACTIONS.SAVE_MODEL.name(), "Save"},
-        {AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS.name(), "Save as"},
+    public static final String[][] ACTIONS_CONFIG = new String[][]{
+        {AppActionProvider.APP_ACTIONS.NEW_MODEL.name(), "New", AppConstants.ICON_NEW_KEY}, // Action for creating a new model.
+        {AppActionProvider.APP_ACTIONS.LOAD_MODEL.name(), "Open", AppConstants.ICON_OPEN_KEY}, // Action for showing the "open model file" dialog.
+        {AppActionProvider.APP_ACTIONS.SAVE_MODEL.name(), "Save", AppConstants.ICON_SAVE_KEY}, // Action for saving the current model file.
+        {AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS.name(), "Save as", AppConstants.ICON_SAVEAS_KEY}, //  Action for showing the "save as" dialog.
         {AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES.name(), "Configuration"},
-        {AppActionProvider.APP_ACTIONS.EXIT_APP.name(), "Exit"},
-        {AppActionProvider.APP_ACTIONS.UNDO.name(), "Undo"},
-        {AppActionProvider.APP_ACTIONS.REDO.name(), "Redo"},
-        {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout"},
-        {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy"},
-        {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy"},
-        {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process"},
-        {AppActionProvider.APP_ACTIONS.PREVIEW_ROLA.name(), "Preview ROLA"},
-        {AppActionProvider.APP_ACTIONS.RELOAD_PROCESSES.name(), "Reload processes"},
-        {AppActionProvider.APP_ACTIONS.MANAGE_REMOTES.name(), "Manage remotes"},
-        {AppActionProvider.APP_ACTIONS.PUBLISH.name(), "Publish model at SemanticProxy"},
-        {AppActionProvider.APP_ACTIONS.EXECUTE.name(), "Execute this process"},
-        {AppActionProvider.APP_ACTIONS.EXECUTE_ANY.name(), "Execute a process"},
-        {AppActionProvider.APP_ACTIONS.PROFILE.name(), "Profile this process"},
-        {AppActionProvider.APP_ACTIONS.TEST.name(), "Test this process"},
-        {AppActionProvider.APP_ACTIONS.ABOUT.name(), "About"},};
+        {AppActionProvider.APP_ACTIONS.EXIT_APP.name(), "Exit", AppConstants.ICON_EXIT_KEY}, // Action for exiting the ModelBuilder.
+        {AppActionProvider.APP_ACTIONS.UNDO.name(), "Undo", AppConstants.ICON_UNDO_KEY}, //  Undo action for the UndoManager.
+        {AppActionProvider.APP_ACTIONS.REDO.name(), "Redo", AppConstants.ICON_REDO_KEY}, // Redo action for the UndoManager.
+        {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout", AppConstants.ICON_LAYOUT_KEY}, // Action for layouting the graph.
+        {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy", AppConstants.ICON_DEPLOY_KEY}, // Action for starting the deployment.
+        {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy", AppConstants.ICON_UNDEPLOY_KEY}, //  Action for starting the undeployment.
+        {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process", AppConstants.ICON_UNDEPLOY_ANY_KEY},
+        {AppActionProvider.APP_ACTIONS.PREVIEW_ROLA.name(), "Preview ROLA", AppConstants.ICON_PREVIEW_KEY},
+        {AppActionProvider.APP_ACTIONS.RELOAD_PROCESSES.name(), "Reload processes", AppConstants.ICON_RELOAD_KEY}, // Action for reloading processes from the SP (client).
+        {AppActionProvider.APP_ACTIONS.MANAGE_REMOTES.name(), "Manage remotes", AppConstants.ICON_MANAGE_REMOTE},
+        {AppActionProvider.APP_ACTIONS.PUBLISH.name(), "Publish model at SemanticProxy", AppConstants.ICON_PUBLISH},
+        {AppActionProvider.APP_ACTIONS.EXECUTE.name(), "Execute this process", AppConstants.ICON_EXECUTE_KEY}, //  Action for opening the execute-current-model-dialog.
+        {AppActionProvider.APP_ACTIONS.EXECUTE_ANY.name(), "Execute a process", AppConstants.ICON_EXECUTE_ANY_KEY}, //  Action for opening the execute-any-dialog.
+        {AppActionProvider.APP_ACTIONS.PROFILE.name(), "Profile this process", AppConstants.ICON_PROFILE_KEY}, //  Action for opening the profile-current-model-dialog.
+        {AppActionProvider.APP_ACTIONS.TEST.name(), "Test this process", AppConstants.ICON_TEST_KEY}, //  Action for opening the test-current-model-dialog.
+        {AppActionProvider.APP_ACTIONS.ABOUT.name(), "About", AppConstants.ICON_ABOUT_KEY}}; // Action for showing the about dialog.
 
     /**
      * the keys refer to MenuBar enum.

@@ -3,7 +3,7 @@ package de.hsos.richwps.mb.app;
 import de.hsos.richwps.mb.app.view.semanticProxy.MainTreeViewController;
 import de.hsos.richwps.mb.app.view.semanticProxy.SubTreeViewController;
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.app.actions.AppAbstractAction;
+import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -404,7 +405,19 @@ public class App {
     public AppActionProvider getActionProvider() {
         if (null == actionProvider) {
             AppActionHandler actionHandler = new AppActionHandler(this);
-            actionProvider = new AppActionProvider(actionHandler);
+
+            try {
+                actionProvider = new AppActionProvider(actionHandler);
+            } catch (Exception ex) {
+                
+                // TODO move strings to app constants
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Can't create app actions. ModelBuilder will now exit.",
+                        "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                System.exit(1);
+            }
         }
 
         return actionProvider;
@@ -418,7 +431,7 @@ public class App {
      */
     public static String getActionItemCaption(APP_ACTIONS item) {
         String itemString = item.name();
-        for (String[] itemCaption : AppConstants.MENU_ITEM_CAPTIONS) {
+        for (String[] itemCaption : AppConstants.ACTIONS_CONFIG) {
             if (itemCaption[0].equals(itemString)) {
                 return itemCaption[1];
             }
@@ -612,7 +625,7 @@ public class App {
         final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
         if (RichWPSProvider.hasProcess(auri, identifier)) {
-                        AppRichWPSManager manager = new AppRichWPSManager(this);
+            AppRichWPSManager manager = new AppRichWPSManager(this);
             testDialog = new TestModelDialog(getFrame(), false, auri, identifier, manager);
         } else {
             JOptionPane.showMessageDialog(frame,
@@ -651,7 +664,7 @@ public class App {
      * @param message
      */
     void showErrorMessage(String message) {
-        AppAbstractAction action = getActionProvider().getAction(APP_ACTIONS.SHOW_ERROR_MSG);
+        AppAction action = getActionProvider().getAction(APP_ACTIONS.SHOW_ERROR_MSG);
         action.fireActionPerformed(message);
     }
 

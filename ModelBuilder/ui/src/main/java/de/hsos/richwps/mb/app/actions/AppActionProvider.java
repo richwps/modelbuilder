@@ -1,9 +1,9 @@
 package de.hsos.richwps.mb.app.actions;
 
+import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.app.AppConstants;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Creates and provides all app actions (e.g. for menu or toolbar items).
@@ -16,7 +16,6 @@ public class AppActionProvider {
     public static enum APP_ACTIONS {
 
         // FILE
-// FILE
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP,
         // EDIT
         UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
@@ -40,13 +39,37 @@ public class AppActionProvider {
         SHOW_ERROR_MSG
     }
 
-    private IAppActionHandler actionHandler;
+    private final IAppActionHandler actionHandler;
 
-    private HashMap<APP_ACTIONS, AppAbstractAction> actionInstances;
+    private HashMap<APP_ACTIONS, AppAction> actionInstances;
 
-    public AppActionProvider(IAppActionHandler actionHandler) {
+    private HashMap<APP_ACTIONS, AppActionConfig> actionConfigs;
+
+    private final String THIS_PACKAGE;
+
+    public AppActionProvider(IAppActionHandler actionHandler) throws Exception {
         this.actionHandler = actionHandler;
         this.actionInstances = new HashMap<>();
+        this.actionConfigs = new HashMap<>();
+
+        this.THIS_PACKAGE = this.getClass().getPackage().getName();
+
+        for (String[] configValues : AppConstants.ACTIONS_CONFIG) {
+            for (APP_ACTIONS anAction : APP_ACTIONS.values()) {
+                if (anAction.name().equals(configValues[0])) {
+                    String caption = "";
+                    String iconKey = "";
+                    if (configValues.length > 1) {
+                        caption = configValues[1];
+                    }
+                    if (configValues.length > 2) {
+                        iconKey = configValues[2];
+                    }
+
+                    actionConfigs.put(anAction, new AppActionConfig(caption, iconKey));
+                }
+            }
+        }
     }
 
     /**
@@ -56,27 +79,30 @@ public class AppActionProvider {
      * @param item
      * @return
      */
-    public AppAbstractAction getAction(APP_ACTIONS item) {
-        AppAbstractAction instance = actionInstances.get(item);
+    public AppAction getAction(APP_ACTIONS item) {
+        AppAction instance = actionInstances.get(item);
 
         if (null == instance) {
 
             try {
-                Class actionClass = Class.forName("de.hsos.richwps.mb.app.actions." + getActionClassName(item));
+                Class actionClass = Class.forName(this.THIS_PACKAGE + "." + getActionClassName(item));
                 for (Constructor ctor : actionClass.getDeclaredConstructors()) {
                     if (ctor.getGenericParameterTypes().length == 1) {
-                        instance = (AppAbstractAction) ctor.newInstance(new Object[]{actionHandler});
-
-                        // show error message action is just temporary and thus not saved
-                        if (!item.equals(APP_ACTIONS.SHOW_ERROR_MSG)) {
-                            actionInstances.put(item, instance);
-                        }
+                        instance = (AppAction) ctor.newInstance(new Object[]{actionHandler});
                     }
                 }
 
             } catch (Exception ex) {
-                Logger.getAnonymousLogger().log(Level.SEVERE, null, ex);
-                // ignore; returning null indicates any exception
+                // instantiate appAbstractAction using appConstant values (=AppActionConfig) (if available)
+                AppActionConfig config = actionConfigs.get(item);
+                if (null != config) {
+                    instance = new AppAction(actionHandler, item, config);
+                }
+            }
+
+            // show error message action is just temporary and thus not saved
+            if (null != instance && !item.equals(APP_ACTIONS.SHOW_ERROR_MSG)) {
+                actionInstances.put(item, instance);
             }
         }
 

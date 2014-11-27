@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.app.view.appFrame;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.app.actions.AppAbstractAction;
+import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import java.awt.Color;
@@ -72,7 +72,7 @@ public class DefaultMainPanel extends JPanel {
         add(new JLabelWithBackground(AppConstants.SELECTION_BG_COLOR), "1 2");
 
         // Recently used
-        AppAbstractAction recentAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
+        AppAction recentAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
 
         if (recentAction.isEnabled()) {
             // caption
@@ -92,7 +92,7 @@ public class DefaultMainPanel extends JPanel {
         }
     }
 
-    private JButton createFromAction(AppAbstractAction action, String smallIconKey) {
+    private JButton createFromAction(AppAction action, String smallIconKey) {
         JButton button = new JButton(action);
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
         button.setHorizontalTextPosition(SwingConstants.CENTER);

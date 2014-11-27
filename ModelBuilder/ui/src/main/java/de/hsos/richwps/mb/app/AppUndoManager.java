@@ -3,7 +3,7 @@ package de.hsos.richwps.mb.app;
 import com.mxgraph.model.mxGraphModel.mxChildChange;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxUndoableEdit;
-import de.hsos.richwps.mb.app.actions.AppAbstractAction;
+import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
@@ -31,7 +31,7 @@ public class AppUndoManager extends MbUndoManager {
                 if (canUndo()) {
                     undoName = "Undo " + getUndoPresentationName();
                 }
-                AppAbstractAction undoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO);
+                AppAction undoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO);
                 undoAction.setName(undoName);
                 undoAction.setEnabled(canUndo());
 
@@ -39,7 +39,7 @@ public class AppUndoManager extends MbUndoManager {
                 if (canRedo()) {
                     redoName = "Redo " + getRedoPresentationName();
                 }
-                AppAbstractAction redoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REDO);
+                AppAction redoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REDO);
                 redoAction.setName(redoName);
                 redoAction.setEnabled(canRedo());
 
