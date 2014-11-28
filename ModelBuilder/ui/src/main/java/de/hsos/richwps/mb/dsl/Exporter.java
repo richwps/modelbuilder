@@ -83,7 +83,7 @@ public class Exporter {
      */
     public void export(String path) throws Exception {
 
-        String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
 
         Writer writer = new Writer();
 

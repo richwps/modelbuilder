@@ -388,8 +388,8 @@ public class App {
 
     boolean currentModelIsDeployed() {
         GraphModel model = getGraphView().getGraph().getGraphModel();
-        String serverKey = GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
-        String identifierKey = GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER;
+        String serverKey = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
+        String identifierKey = GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER;
         String server = (String) model.getPropertyValue(serverKey);
         String identifier = (String) model.getPropertyValue(identifierKey);
 
@@ -604,8 +604,8 @@ public class App {
     void showExecuteModel() {
         //if (null == execDialog) {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
-        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             execDialog = new ExecuteModelDialog(getFrame(), false, auri, identifier);
             execDialog.setVisible(true);
@@ -631,8 +631,8 @@ public class App {
     void showTestModel() {
         //if (null == execDialog) {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
-        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             AppRichWPSManager manager = new AppRichWPSManager(this);
             testDialog = new TestModelDialog(getFrame(), false, manager);
