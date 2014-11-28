@@ -368,7 +368,8 @@ public class App {
      */
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
-
+        boolean modelDeployed = currentModelIsDeployed();
+        
         // MB Actions
         getActionProvider().getAction(APP_ACTIONS.SAVE_MODEL_AS).setEnabled(getGraphView().isEnabled());
 
@@ -376,13 +377,23 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.DO_LAYOUT).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PREVIEW_ROLA).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
-        getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(!graphIsEmpty);
-        getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(modelDeployed);
+        getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(modelDeployed);
         //FIXME in v.2.2
-        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);  //!graphIsEmpty);
-        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(modelDeployed);
+        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(modelDeployed);
         //FIXME in v.2.2
-        getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(false);  //!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(modelDeployed);
+    }
+
+    boolean currentModelIsDeployed() {
+        GraphModel model = getGraphView().getGraph().getGraphModel();
+        String serverKey = GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
+        String identifierKey = GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER;
+        String server = (String) model.getPropertyValue(serverKey);
+        String identifier = (String) model.getPropertyValue(identifierKey);
+
+        return RichWPSProvider.hasProcess(server, identifier);
     }
 
     protected PropertiesView getPropertiesView() {
@@ -593,8 +604,8 @@ public class App {
     void showExecuteModel() {
         //if (null == execDialog) {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
-        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             execDialog = new ExecuteModelDialog(getFrame(), false, auri, identifier);
             execDialog.setVisible(true);
@@ -620,9 +631,9 @@ public class App {
     void showTestModel() {
         //if (null == execDialog) {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
-        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        if (!RichWPSProvider.hasProcess(auri, identifier)) {
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        if (RichWPSProvider.hasProcess(auri, identifier)) {
             AppRichWPSManager manager = new AppRichWPSManager(this);
             testDialog = new TestModelDialog(getFrame(), false, manager);
             testDialog.setVisible(true);

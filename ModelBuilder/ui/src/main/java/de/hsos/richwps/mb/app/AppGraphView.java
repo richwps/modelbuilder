@@ -116,7 +116,7 @@ public class AppGraphView extends GraphView {
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
         // add property for endpoint selection
-        String propertyEndpointName = AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
+        String propertyEndpointName = GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
         String propertyEndpointType = Property.COMPONENT_TYPE_DROPDOWN;
         endpointProperty = new Property(propertyEndpointName, propertyEndpointType, null, true);
         getGraph().getGraphModel().addProperty(endpointProperty);
@@ -126,7 +126,7 @@ public class AppGraphView extends GraphView {
 
     public void newGraph(String remote) {
         Graph graph = super.newGraph();
-        String remotePropertyKey = AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
+        String remotePropertyKey = GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT;
         Property remoteProperty = new Property(remotePropertyKey, Property.COMPONENT_TYPE_TEXTFIELD, remote);
         graph.getGraphModel().addProperty(remoteProperty);
     }
@@ -168,7 +168,7 @@ public class AppGraphView extends GraphView {
         for (IObjectWithProperties p : modelProperties) {
 
             // property found
-            if (p instanceof Property && p.getPropertiesObjectName().equals(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT)) {
+            if (p instanceof Property && p.getPropertiesObjectName().equals(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT)) {
                 foundProperty = (Property) p;
 
                 // current property is a propertygroup -> recursive search

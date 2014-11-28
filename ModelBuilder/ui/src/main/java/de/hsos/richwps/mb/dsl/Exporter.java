@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -82,7 +83,7 @@ public class Exporter {
      */
     public void export(String path) throws Exception {
 
-        String url = (String) this.graph.getGraphModel().getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
 
         Writer writer = new Writer();
 

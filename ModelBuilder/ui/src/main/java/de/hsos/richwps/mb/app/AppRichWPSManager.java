@@ -87,11 +87,11 @@ public class AppRichWPSManager {
 
         //load information from model.
         final GraphModel model = this.graph.getGraphModel();
-        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        final String title = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
-        final String version = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
-        final String theabstract = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String title = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        final String version = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        final String theabstract = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
 
         //verify information
         if (identifier.isEmpty()) {
@@ -142,11 +142,11 @@ public class AppRichWPSManager {
 
         //load information from model.
         final GraphModel model = this.graph.getGraphModel();
-        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        final String title = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
-        final String version = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
-        final String theabstract = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String title = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        final String version = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        final String theabstract = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
 
         //verify information
         if (identifier.isEmpty()) {
@@ -320,8 +320,8 @@ public class AppRichWPSManager {
 
         //load information from model.
         final GraphModel model = this.graph.getGraphModel();
-        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
-        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
 
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             String wpsendpoint = "";
