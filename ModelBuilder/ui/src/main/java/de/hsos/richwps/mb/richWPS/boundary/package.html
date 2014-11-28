@@ -8,32 +8,12 @@
         <div>
             <p>Interface to bordering RichWPS servers.</p>
             <p>
-                Used to wps-/wpst-Requestss against a given RichWPS server.
-                Therefore it makes use of <b>ExecuteRequestDTO</b>
-                and <b>DeployRequestDTO</b>.
-            </p>
-            <p>
-                As the connect-Methods imply, a RichWPS server is <b>uniquely</b> 
-                identified by a wps-endpoint. A RichWPS server with transactional
-                capabilities is instantiated with both, the wps- and
-                wpst-endpoint.
+                Used to perform wps::*/-richwps::* requests.
             </p>
 
-            <p><b>ExecuteRequest</b>
-                Object that can be used to perfom an
-                wps:describeProcess()- and wps:execute()-Request.
-                Object that starts out with an endpoint and a processidentifier.
-                The RichWPSProvider can then be used to describe the remote process
-                by retreiving according IInputSpecifiers and IOutputSpecifiers.
-                Based on those descriptions IInputArguments and IOutputArguments 
-                can be set. Once set, the RichWPSProvider is able to 
-                perform an wps:execute()-Request and to obtain the resulting data.
-            </p>
-            <p><b>DeployRequest</b>
-                Object that can be used to perform an wpst:deploy()-Request.
-            </p>
-            <p><b>UndeployRequest</b>
-                Object that can be used to perform an wpst:undeploy()-Request.
+            <p>
+                See <b>de.hsos.richwps.mb.richWPS.entity.impl</b> for supported
+                requests.
             </p>
         </div>
 

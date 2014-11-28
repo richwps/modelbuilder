@@ -18,8 +18,9 @@ import net.opengis.wps.x100.OutputDescriptionType;
 
 /**
  * Represents a DescribeRequest. The RichWPSProvider is able to perform a
- * wps:describeProcess()-Request with this object. This class can be used to
- * prepare a wps:execute()-Request with the according ExecuteRequest-object.
+ * wps:describeProcess()-request with this object. This class can be used to
+ * prepare a wps:execute()-request in combination with the according
+ * ExecuteRequest-object.
  *
  * @author dalcacer
  * @version 0.0.1

@@ -36,14 +36,6 @@ public interface IRichWPSProvider {
     public void disconnect() throws Exception;
 
     /**
-     * Disconnects the provider to a WPS-server.
-     *
-     * @param wpsurl endpoint of WebProcessingService.
-     * @throws java.lang.Exception
-     */
-    public void disconnect(final String wpsurl) throws Exception;
-
-    /**
      * Connects the provider to a WPS-server with WPS-T functionality.
      *
      * @param wpsurl endpoint of WebProcessingService.
@@ -98,10 +90,11 @@ public interface IRichWPSProvider {
     public void richwpsDeployProcess(DeployRequest request);
 
     /**
-     * 
-     * @param request 
+     *
+     * @param request
      */
     public void richwpsTestProcess(TestRequest request);
+
     /**
      * Undeploys a given process, via RichWPS:undeploy()-Request.
      *
@@ -118,6 +111,7 @@ public interface IRichWPSProvider {
      * @see ExecuteRequest
      * @see DeployRequest
      * @see UndeployRequest
+     * @see TestRequest
      * @return <code>true</code> for deployment success.
      */
     public void request(IRequest request);

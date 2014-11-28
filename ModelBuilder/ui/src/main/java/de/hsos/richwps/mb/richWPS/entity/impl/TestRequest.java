@@ -176,11 +176,6 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         this.exception = "";
     }
 
-    @Override
-    public void flushResults() {
-        //TODO nothing to flush, yet.
-    }
-
     public void setVariables(List<String> variables) {
         this.variables = variables;
     }
