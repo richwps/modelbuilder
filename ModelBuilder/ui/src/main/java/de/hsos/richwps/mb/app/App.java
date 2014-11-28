@@ -641,7 +641,7 @@ public class App {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
         final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
-        if (RichWPSProvider.hasProcess(auri, identifier)) {
+        if (!RichWPSProvider.hasProcess(auri, identifier)) {
             AppRichWPSManager manager = new AppRichWPSManager(this);
             testDialog = new TestModelDialog(getFrame(), false, manager);
             testDialog.setVisible(true);
