@@ -41,6 +41,12 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backButtonActionPerformed"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JButton" name="previewButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Preview"/>
+            <Property name="toolTipText" type="java.lang.String" value="Preview request"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JButton" name="nextButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Next"/>
@@ -48,12 +54,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nextButtonActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="previewButton">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Preview"/>
-            <Property name="toolTipText" type="java.lang.String" value="Preview request"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="abortButton">
           <Properties>

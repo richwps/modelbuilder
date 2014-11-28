@@ -18,6 +18,7 @@ import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
 import net.opengis.wps.x100.ExecuteResponseDocument;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.TestProcessDocument;
+import net.opengis.wps.x100.TestProcessResponseDocument;
 import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.richwps.TestProcessRequestBuilder;
 
@@ -101,22 +102,22 @@ public class TestRequestHelper {
      * request.
      *
      * @param testdocument 52n execute document.
-     * @param description 52n process description.
      * @param responseObject 52n reponse object. Execute-response or exception.
-     * @param request ExecuteRequestDTO with possible inputs (IInputSpecifier)
+     * @param request TestRequest with possible inputs (IInputSpecifier)
      * and outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    private void analyseResponse(TestProcessDocument testdocument, ProcessDescriptionType description, Object responseObject, TestRequest request) {
-        URL res = this.getClass().getResource("/xml/wps_config.xml");
+    public void analyseResponse(TestProcessDocument testdocument, Object responseObject, TestRequest request) {
+        final ProcessDescriptionType description = request.toProcessDescriptionType();
+        final URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
         Logger.log(this.getClass(), "analyseResponse", "using configuration" + file);
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
         HashMap theoutputs = request.getOutputArguments();
         Logger.log(this.getClass(), "analyseResponse", responseObject.getClass());
-        if (responseObject instanceof ExecuteResponseDocument) {
-            ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
+        if (responseObject instanceof TestProcessResponseDocument) {
+            TestProcessResponseDocument response = (TestProcessResponseDocument) responseObject;
             Logger.log(this.getClass(), "analyseResponse", response.toString());
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;

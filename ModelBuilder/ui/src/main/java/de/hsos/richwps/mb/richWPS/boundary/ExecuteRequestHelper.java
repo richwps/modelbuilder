@@ -42,21 +42,21 @@ public class ExecuteRequestHelper {
      * @param execute 52n execute document.
      * @param description 52n process description.
      * @param responseObject 52n reponse object. Execute-response or exception.
-     * @param request ExecuteRequestDTO with possible inputs (IInputSpecifier)
+     * @param request ExecuteRequest with possible inputs (IInputSpecifier)
      * and outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
-    void analsysResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
-        URL res = this.getClass().getResource("/xml/wps_config.xml");
+    public void analyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
+        final URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
-        Logger.log(this.getClass(), "analsysResponse", "using configuration" + file);
+        Logger.log(this.getClass(), "analyseResponse", "using configuration" + file);
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
         HashMap theoutputs = request.getOutputArguments();
-        Logger.log(this.getClass(), "analsysResponse", responseObject.getClass());
+        Logger.log(this.getClass(), "analyseResponse", responseObject.getClass());
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
-            Logger.log(this.getClass(), "analsysResponse", response.toString());
+            Logger.log(this.getClass(), "analyseResponse", response.toString());
             try {
                 Set<String> keys = theoutputs.keySet();
                 for (String key : keys) {
@@ -70,7 +70,7 @@ public class ExecuteRequestHelper {
                             String wantedIdentifer = argument.getIdentifier();
                             if (givenIdentifier.equals(wantedIdentifer)) {
                                 value = output.getData().getLiteralData().getStringValue();
-                                Logger.log(this.getClass(), "analsysResponse", " #thevalue " + value);
+                                Logger.log(this.getClass(), "analyseResponse", " #thevalue " + value);
                             }
                         }
                         request.addResult(key, value);
@@ -84,7 +84,7 @@ public class ExecuteRequestHelper {
                             // FIXME proper analytics for different bindings.
                             // Blocked by broken commons.
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);
-                            Logger.log(this.getClass(), "analsysResponse", "the size " + binding.getPayload().size());
+                            Logger.log(this.getClass(), "analyseResponse", "the size " + binding.getPayload().size());
                         }
                     }
                 }

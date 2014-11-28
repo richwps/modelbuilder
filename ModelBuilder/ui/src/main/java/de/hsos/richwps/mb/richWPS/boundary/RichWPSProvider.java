@@ -26,6 +26,7 @@ import net.opengis.ows.x11.ExceptionReportDocument;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.ComplexTypesType;
 import net.opengis.wps.x100.SupportedTypesResponseDocument;
+import net.opengis.wps.x100.TestProcessDocument;
 import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
 import org.n52.wps.client.richwps.TestProcessRequestBuilder;
 
@@ -325,7 +326,56 @@ public class RichWPSProvider implements IRichWPSProvider {
             Logger.log(this.getClass(), "wpsExecuteProcess()", processid + ", " + e);
         }
 
-        helper.analsysResponse(execute, description, response, request);
+        helper.analyseResponse(execute, description, response, request);
+    }
+
+    /**
+     * Deploys a new process.
+     *
+     * @param request DeployRequestDTO.
+     * @see DeployRequest
+     */
+    @Override
+    public void richwpsTestProcess(TestRequest request) {
+        final TestRequestHelper helper = new TestRequestHelper();
+        TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
+        builder.setTestExecutionUnit(request.getExecutionUnit());
+        builder.setTestDeploymentProfileName(request.getDeploymentprofile());
+
+        HashMap theinputs = request.getInputArguments();
+        helper.setInputs(builder, theinputs);
+
+        HashMap theoutputs = request.getOutputArguments();
+        helper.setOutputs(builder, theoutputs);
+
+        TestProcessDocument testprocessdocument = null;
+        Object response = null;
+        try {
+            //FIXME
+            String endp = request.getEndpoint();
+            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
+
+            testprocessdocument = builder.getTestdocument();
+            response = this.richwps.test(endp, testprocessdocument);
+
+            if (response == null) {
+                Logger.log(this.getClass(), "richwpsTestProcess()", "No response");
+                return;
+            }
+            if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
+                net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
+                request.addException(exception.getExceptionReport().toString());
+            } else if (response instanceof net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl) {
+                net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl) response;
+                helper.analyseResponse(testprocessdocument, response, request);
+            } else {
+                Logger.log(this.getClass(), "richwpsTestProcess()",
+                        "Unknown reponse" + response + ", " + response.getClass());
+            }
+        } catch (WPSClientException ex) {
+            Logger.log(this.getClass(), "richwpsTestProcess()", "Unable to create "
+                    + "deploymentdocument. " + ex);
+        }
     }
 
     /**
@@ -365,51 +415,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             }
         } catch (WPSClientException ex) {
             Logger.log(this.getClass(), "richwpsDeployProcess()", "Unable to create "
-                    + "deploymentdocument. " + ex);
-        }
-    }
-
-    /**
-     * Deploys a new process.
-     *
-     * @param request DeployRequestDTO.
-     * @see DeployRequest
-     */
-    @Override
-    public void richwpsTestProcess(TestRequest request) {
-        final TestRequestHelper helper = new TestRequestHelper();
-        TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
-        builder.setTestExecutionUnit(request.getExecutionUnit());
-        builder.setTestDeploymentProfileName(request.getDeploymentprofile());
-
-        HashMap theinputs = request.getInputArguments();
-        helper.setInputs(builder, theinputs);
-
-        HashMap theoutputs = request.getOutputArguments();
-        helper.setOutputs(builder, theoutputs);
-
-        try {
-            //FIXME
-            String endp = request.getEndpoint();
-            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-
-            Object response = this.richwps.test(endp, builder.getTestdocument());
-
-            if (response == null) {
-                Logger.log(this.getClass(), "richwpsTestProcess()", "No response");
-                return;
-            }
-            if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
-                net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
-                request.addException(exception.getExceptionReport().toString());
-            } else if (response instanceof net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl) {
-                net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl) response;
-            } else {
-                Logger.log(this.getClass(), "richwpsTestProcess()",
-                        "Unknown reponse" + response + ", " + response.getClass());
-            }
-        } catch (WPSClientException ex) {
-            Logger.log(this.getClass(), "richwpsTestProcess()", "Unable to create "
                     + "deploymentdocument. " + ex);
         }
     }

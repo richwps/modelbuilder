@@ -161,8 +161,8 @@ public class TestModelDialog extends MbDialog {
 
         navpanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
-        nextButton = new javax.swing.JButton();
         previewButton = new javax.swing.JButton();
+        nextButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -177,6 +177,10 @@ public class TestModelDialog extends MbDialog {
         });
         navpanel.add(backButton);
 
+        previewButton.setText("Preview");
+        previewButton.setToolTipText("Preview request");
+        navpanel.add(previewButton);
+
         nextButton.setText("Next");
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,10 +188,6 @@ public class TestModelDialog extends MbDialog {
             }
         });
         navpanel.add(nextButton);
-
-        previewButton.setText("Preview");
-        previewButton.setToolTipText("Preview request");
-        navpanel.add(previewButton);
 
         abortButton.setText("Abort");
         abortButton.addActionListener(new java.awt.event.ActionListener() {

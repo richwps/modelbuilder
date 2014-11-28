@@ -531,7 +531,7 @@ public class App {
     void showExecute() {
         if (null == execAnyDialog) {
             String[] remotes_arr = processProvider.getAllServers();
-            List aslist = new ArrayList<String>(Arrays.asList(remotes_arr));
+            List aslist = new ArrayList<>(Arrays.asList(remotes_arr));
             execAnyDialog = new ExecuteDialog(getFrame(), false, aslist);
         }
 
@@ -544,7 +544,7 @@ public class App {
     void showUndeploy() {
         if (null == undeployAnyDialog) {
             String[] remotes_arr = processProvider.getAllServers();
-            List aslist = new ArrayList<String>(Arrays.asList(remotes_arr));
+            List aslist = new ArrayList<>(Arrays.asList(remotes_arr));
             undeployAnyDialog = new UndeployDialog(getFrame(), false, aslist);
         }
 
@@ -652,7 +652,6 @@ public class App {
              JOptionPane.ERROR_MESSAGE);*/
             String msg = "The requested process " + identifier + " is already present"
                     + " on " + auri;
-            Logger.log("Debug:\n" + msg);
             JOptionPane.showMessageDialog(this.frame, msg);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
