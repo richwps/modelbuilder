@@ -354,6 +354,7 @@ public class App {
         }
 
         updateGraphDependentActions();
+        updateDeploymentDependentActions();
         updateModelPropertiesView();
 
         getSemanticProxySearch().setAppHasModel(true);
@@ -368,8 +369,7 @@ public class App {
      */
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
-        boolean modelDeployed = currentModelIsDeployed();
-        
+
         // MB Actions
         getActionProvider().getAction(APP_ACTIONS.SAVE_MODEL_AS).setEnabled(getGraphView().isEnabled());
 
@@ -377,12 +377,15 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.DO_LAYOUT).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PREVIEW_ROLA).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
+        // TODO set status when profiling is implemented
+        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);
+    }
+
+    void updateDeploymentDependentActions() {
+        boolean modelDeployed = currentModelIsDeployed();
         getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(modelDeployed);
         getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(modelDeployed);
-        //FIXME in v.2.2
-        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(modelDeployed);
-        getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(modelDeployed);
-        //FIXME in v.2.2
         getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(modelDeployed);
     }
 
@@ -581,7 +584,10 @@ public class App {
                     AppConstants.DEPLOY_ERROR_DIALOG_MSG,
                     AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
+
         }
+
+        updateDeploymentDependentActions();
     }
 
     /**
@@ -596,6 +602,8 @@ public class App {
                     AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         }
+
+        updateDeploymentDependentActions();
     }
 
     /**
@@ -639,9 +647,9 @@ public class App {
             testDialog.setVisible(true);
         } else {
             /*JOptionPane.showMessageDialog(frame,
-                    AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
-                    AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
-                    JOptionPane.ERROR_MESSAGE);*/
+             AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
+             AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+             JOptionPane.ERROR_MESSAGE);*/
             String msg = "The requested process " + identifier + " is already present"
                     + " on " + auri;
             Logger.log("Debug:\n" + msg);
