@@ -87,4 +87,8 @@ public interface IRequest extends Serializable {
      * @return
      */
     public boolean isLoaded();
+    
+    public void setEndpoint(String end);
+    
+    public void setIdentifier(String id);
 }

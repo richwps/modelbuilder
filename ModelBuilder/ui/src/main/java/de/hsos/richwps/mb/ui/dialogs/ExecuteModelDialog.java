@@ -74,6 +74,7 @@ public class ExecuteModelDialog extends MbDialog {
     private void showParameterizeInputsPanel(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
+        this.previewButton.setVisible(false);
 
         this.inputspanel = new InputParameterization(this.provider, this.request);
         if (this.currentPanel != null) {
@@ -97,6 +98,7 @@ public class ExecuteModelDialog extends MbDialog {
         }
         this.backButton.setVisible(true);
         this.nextButton.setVisible(true);
+        this.previewButton.setVisible(true);
 
         //refresh the request
         this.currentPanel.updateRequest();
@@ -119,6 +121,7 @@ public class ExecuteModelDialog extends MbDialog {
         }
         this.backButton.setVisible(true);
         this.nextButton.setVisible(false);
+        this.previewButton.setVisible(false);
 
         //refresh the request
         this.currentPanel.updateRequest();
@@ -151,6 +154,7 @@ public class ExecuteModelDialog extends MbDialog {
         navpanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
+        previewButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -172,6 +176,9 @@ public class ExecuteModelDialog extends MbDialog {
             }
         });
         navpanel.add(nextButton);
+
+        previewButton.setText("Preview");
+        navpanel.add(previewButton);
 
         abortButton.setText("Abort");
         abortButton.addActionListener(new java.awt.event.ActionListener() {
@@ -230,5 +237,6 @@ public class ExecuteModelDialog extends MbDialog {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel navpanel;
     private javax.swing.JButton nextButton;
+    private javax.swing.JButton previewButton;
     // End of variables declaration//GEN-END:variables
 }

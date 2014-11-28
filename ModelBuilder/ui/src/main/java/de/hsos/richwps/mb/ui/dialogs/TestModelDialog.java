@@ -41,8 +41,6 @@ public class TestModelDialog extends MbDialog {
      * @param parent
      * @param modal
      *
-     * @param serverid
-     * @param processid
      * @param manager manager to access graph and exporter.
      *
      */
@@ -83,6 +81,7 @@ public class TestModelDialog extends MbDialog {
     private void showParameterizeInputsPanel(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
+        this.previewButton.setVisible(false);
 
         this.inputspanel = new InputParameterization (this.provider, this.request);
         if (this.currentPanel != null) {
@@ -105,6 +104,7 @@ public class TestModelDialog extends MbDialog {
             }
         }
         this.backButton.setVisible(true);
+        this.previewButton.setVisible(true);
         this.nextButton.setVisible(true);
 
         //refresh the request
@@ -126,8 +126,10 @@ public class TestModelDialog extends MbDialog {
                 return;
             }
         }
+        
         this.backButton.setVisible(true);
         this.nextButton.setVisible(false);
+        this.previewButton.setVisible(false);
 
         //refresh the request
         this.currentPanel.updateRequest();
@@ -160,6 +162,7 @@ public class TestModelDialog extends MbDialog {
         navpanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
+        previewButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -181,6 +184,10 @@ public class TestModelDialog extends MbDialog {
             }
         });
         navpanel.add(nextButton);
+
+        previewButton.setText("Preview");
+        previewButton.setToolTipText("Preview request");
+        navpanel.add(previewButton);
 
         abortButton.setText("Abort");
         abortButton.addActionListener(new java.awt.event.ActionListener() {
@@ -238,5 +245,6 @@ public class TestModelDialog extends MbDialog {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel navpanel;
     private javax.swing.JButton nextButton;
+    private javax.swing.JButton previewButton;
     // End of variables declaration//GEN-END:variables
 }

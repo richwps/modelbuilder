@@ -50,6 +50,23 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
         this.results = new HashMap<>();
     }
 
+    public ExecuteRequest(DescribeRequest req) {
+        super();
+        this.endpoint = req.getEndpoint();
+        this.exception = req.getException();
+        this.identifier = req.getIdentifier();
+        this.processversion = req.getProcessversion();
+        this.serverid = req.getServerId();
+        this.theabstract = req.getAbstract();
+        this.title = req.getTitle();
+        this.availableinputs = req.getInputs();
+        this.availableoutputs = req.getOutputs();
+        this.actualinputs = new HashMap<>();
+        this.actualoutputs = new HashMap<>();
+        this.results = new HashMap<>();
+
+    }
+
     /**
      *
      * @return

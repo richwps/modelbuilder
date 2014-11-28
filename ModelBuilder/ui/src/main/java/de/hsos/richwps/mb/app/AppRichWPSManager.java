@@ -211,7 +211,6 @@ public class AppRichWPSManager {
         RichWPSProvider instance = new RichWPSProvider();
         try {
             instance.connect(wpsendpoint, richwpsendpoint);
-            Logger.log(this.getClass(), "deploy()", request.toString());
             instance.richwpsDeployProcess(request);
 
             if (request.isException()) {

@@ -137,4 +137,14 @@ public class UndeployRequest implements IRequest {
     public boolean isLoaded() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public void setEndpoint(String end) {
+        this.endpoint=end;
+    }
+    
+    @Override
+    public void setIdentifier(String id){
+        this.identifier=id;
+    }
 }

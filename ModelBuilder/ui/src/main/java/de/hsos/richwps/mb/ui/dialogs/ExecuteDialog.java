@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.ui.dialogs.components.ProcessSelection;
 import de.hsos.richwps.mb.ui.dialogs.components.ResultVisualisation;
 import de.hsos.richwps.mb.ui.dialogs.components.SeverSelection;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import java.io.FileInputStream;
@@ -70,6 +71,7 @@ public class ExecuteDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.loadButton.setVisible(true);
         this.saveButton.setVisible(false);
+        this.previewButton.setVisible(false);
         this.serverselectionpanel = new SeverSelection(this.serverids, this.request);
 
         if (this.currentPanel != null) {
@@ -99,10 +101,13 @@ public class ExecuteDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.saveButton.setVisible(false);
         this.loadButton.setVisible(false);
+        this.previewButton.setVisible(false);
 
         //refresh the request
         this.currentPanel.updateRequest();
-        this.request = (ExecuteRequest) this.currentPanel.getRequest();
+        
+        DescribeRequest req = (DescribeRequest) this.currentPanel.getRequest();
+        this.request = new ExecuteRequest(req);
 
         try {
             this.provider.connect(this.request.getEndpoint());
@@ -138,10 +143,12 @@ public class ExecuteDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.saveButton.setVisible(false);
         this.loadButton.setVisible(false);
+        this.previewButton.setVisible(false);
 
         if (updateneeded) {//refresh the request
             this.currentPanel.updateRequest();
-            this.request = (ExecuteRequest) this.currentPanel.getRequest();
+            DescribeRequest req = (DescribeRequest) this.currentPanel.getRequest();
+            this.request = new ExecuteRequest(req);
         }
 
         this.inputspanel = new InputParameterization(this.provider, this.request);
@@ -168,6 +175,7 @@ public class ExecuteDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.saveButton.setVisible(true);
         this.loadButton.setVisible(false);
+        this.previewButton.setVisible(true);
 
         //refresh the request
         this.currentPanel.updateRequest();
@@ -198,6 +206,7 @@ public class ExecuteDialog extends MbDialog {
         this.saveButton.setVisible(false);
         this.nextButton.setVisible(false);
         this.loadButton.setVisible(false);
+        this.previewButton.setVisible(false);
 
         //refresh the request
         this.currentPanel.updateRequest();
@@ -234,6 +243,7 @@ public class ExecuteDialog extends MbDialog {
         loadButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         backButton = new javax.swing.JButton();
+        previewButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
@@ -241,7 +251,7 @@ public class ExecuteDialog extends MbDialog {
         setTitle("Execute");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        loadButton.setText("Load request");
+        loadButton.setText("Load");
         loadButton.setToolTipText("Load request from template. (EXPERIMENTAL)");
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -250,7 +260,7 @@ public class ExecuteDialog extends MbDialog {
         });
         navpanel.add(loadButton);
 
-        saveButton.setText("Save request");
+        saveButton.setText("Save");
         saveButton.setToolTipText("Save request as template. (EXPERIMENTAL)");
         saveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -266,6 +276,10 @@ public class ExecuteDialog extends MbDialog {
             }
         });
         navpanel.add(backButton);
+
+        previewButton.setText("Preview");
+        previewButton.setToolTipText("Preview request");
+        navpanel.add(previewButton);
 
         nextButton.setText("Next");
         nextButton.addActionListener(new java.awt.event.ActionListener() {
@@ -399,6 +413,7 @@ public class ExecuteDialog extends MbDialog {
     private javax.swing.JButton loadButton;
     private javax.swing.JPanel navpanel;
     private javax.swing.JButton nextButton;
+    private javax.swing.JButton previewButton;
     private javax.swing.JButton saveButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -96,6 +96,7 @@ public class DescribeRequest implements IRequest, Serializable {
      *
      * @param endpoint
      */
+    @Override
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }

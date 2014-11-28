@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
@@ -16,7 +17,7 @@ import javax.swing.JOptionPane;
 public class SeverSelection extends ADialogPanel {
 
     private List<String> remotes;
-    private ExecuteRequest request;
+    private IRequest request;
 
     /**
      * Creates new form SeverSelection
@@ -34,7 +35,7 @@ public class SeverSelection extends ADialogPanel {
      */
     public SeverSelection(List<String> wpsurls, IRequest request) {
         this.remotes = wpsurls;
-        this.request = (ExecuteRequest) request;
+        this.request = (DescribeRequest) request;
         this.initComponents();
         this.init();
     }
@@ -79,7 +80,7 @@ public class SeverSelection extends ADialogPanel {
      */
     @Override
     public void updateRequest() {
-        this.request = new ExecuteRequest();
+        this.request = new DescribeRequest();
         this.request.setEndpoint((String) this.serverSelectionBox.getSelectedItem());
     }
 
@@ -88,7 +89,7 @@ public class SeverSelection extends ADialogPanel {
      * @return
      */
     @Override
-    public ExecuteRequest getRequest() {
+    public IRequest getRequest() {
         return request;
     }
 
