@@ -15,7 +15,9 @@ import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
@@ -117,20 +119,21 @@ public class AppRichWPSManager {
 
     /**
      * Delivers the variables that are used within a ROLA-script.
+     *
      * @return variables the ROLA-script variables.
      */
     public String[] getVariables() {
         return exporter.getVariables();
     }
-    
-      /**
+
+    /**
      * Delivers the transitions.
-     * @return transitions 
+     *
+     * @return transitions
      */
     public List<String> getTransitions() {
         return exporter.getTransitions();
     }
-
 
     /**
      * Performs the deployment.
@@ -196,7 +199,7 @@ public class AppRichWPSManager {
         request.setExecutionUnit(rola);
 
         try {
-            this.defineInOut(request);
+            this.defineInputsOutputs(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.processingFailed(AppConstants.DEPLOY_DESC_FAILED);
@@ -235,6 +238,79 @@ public class AppRichWPSManager {
         } catch (Exception ex) {
             //nop
         }
+    }
+
+    /**
+     */
+    public TestRequest getTestRequest() {
+        //load information from model.
+        final GraphModel model = this.graph.getGraphModel();
+        final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
+        final String title = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_TITLE);
+        final String version = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_VERSION);
+        final String theabstract = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ABSTRACT);
+
+        //verify information
+        if (identifier.isEmpty()) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_ID_MISSING);
+            return null;
+        } else if (title.isEmpty()) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_TITLE_MISSING);
+            return null;
+        } else if (version.isEmpty()) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
+            return null;
+        }
+
+        String wpsendpoint = "";
+        String richwpsendpoint = "";
+        if (RichWPSProvider.isWPSEndpoint(auri)) {
+            wpsendpoint = auri;
+            richwpsendpoint = wpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
+                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
+            richwpsendpoint = auri;
+            wpsendpoint = richwpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+        }
+
+        if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
+            this.error = true;
+            this.deploymentFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
+                    + richwpsendpoint);
+            return null;
+        }
+
+        //generate rola
+        final String rola = this.generateROLA();
+        if (null == rola) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_ROLA_FAILED);
+            return null;
+        }
+
+        //generate processdescription
+        TestRequest request = new TestRequest(wpsendpoint, richwpsendpoint,
+                identifier, title, version, RichWPSProvider.deploymentProfile);
+        request.setAbstract(theabstract);
+        request.setExecutionUnit(rola);
+
+        try {
+            this.defineInputsOutputs(request);
+        } catch (GraphToRequestTransformationException ex) {
+            this.error = true;
+            this.processingFailed(AppConstants.DEPLOY_DESC_FAILED);
+            Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
+            return null;
+        }
+
+        return request;
     }
 
     /**
@@ -332,7 +408,30 @@ public class AppRichWPSManager {
         return null;
     }
 
-    private void defineInOut(DeployRequest request) throws GraphToRequestTransformationException {
+    private void defineInputsOutputs(TestRequest request) throws GraphToRequestTransformationException {
+
+        // Transform global inputs
+        for (ProcessPort port : graph.getGlobalInputPorts()) {
+            IInputSpecifier specifier = this.createInputPortSpecifier(port);
+            if (null == specifier) {
+                throw new GraphToRequestTransformationException(port);
+            }
+            request.addInput(specifier);
+        }
+
+        // Transform global outputs
+        for (ProcessPort port : graph.getGlobalOutputPorts()) {
+            IOutputSpecifier specifier = null;
+            specifier = this.createOutputPortSpecifier(port);
+
+            if (null == specifier) {
+                throw new GraphToRequestTransformationException(port);
+            }
+            request.addOutput(specifier);
+        }
+    }
+
+    private void defineInputsOutputs(DeployRequest request) throws GraphToRequestTransformationException {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
@@ -371,10 +470,10 @@ public class AppRichWPSManager {
                 if (literalSpecifier.getTitle().equals("")) {
                     literalSpecifier.setTitle(literalSpecifier.getIdentifier());
                 }
-                Integer max = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
-                Integer min = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
-                literalSpecifier.setMinOccur(min);
-                literalSpecifier.setMaxOccur(max);
+                Integer maxl = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS));
+                Integer minl = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS));
+                literalSpecifier.setMinOccur(minl);
+                literalSpecifier.setMaxOccur(maxl);
                 literalSpecifier.setType(("xs:string"));
                 literalSpecifier.setDefaultvalue("");
                 specifier = literalSpecifier;
@@ -388,12 +487,12 @@ public class AppRichWPSManager {
                 if (complexSpecifier.getTitle().equals("")) {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
-                //FIXME
-                max = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
-                min = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
-                complexSpecifier.setMinOccur(min);
-                complexSpecifier.setMaxOccur(max);
-                Integer mb = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
+                //FIXME urgently.
+                Integer maxc = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS));
+                Integer minc = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS));
+                complexSpecifier.setMinOccur(minc);
+                complexSpecifier.setMaxOccur(maxc);
+                Integer mb = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB));
                 complexSpecifier.setMaximumMegabytes(mb);
                 try {
                     List<List> supportedTypes = new ArrayList<>();

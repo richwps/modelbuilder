@@ -430,17 +430,16 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public void richwpsTestProcess(TestRequest request) {
         TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
-
+        Logger.log(this.getClass(), "richwpsTestProcess()", request.toProcessDescriptionType());
         builder.setTestExecutionUnit(request.getExecutionUnit());
-        builder.setTestProcessDescription(request.toProcessDescriptionType());
         builder.setTestDeploymentProfileName(request.getDeploymentprofile());
+        //builder.setTestProcessDescription(request.toProcessDescriptionType());
 
         HashMap theinputs = request.getInputArguments();
         this.testSetInputs(builder, theinputs);
 
-        for (String variable : request.getVariables()) {
-            builder.addOutput(variable);
-        }
+        HashMap theoutputs = request.getOutputArguments();
+        this.testSetOutputs(builder, theoutputs);
 
         try {
             //FIXME
@@ -454,8 +453,8 @@ public class RichWPSProvider implements IRichWPSProvider {
             if (response instanceof net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) {
                 net.opengis.ows.x11.impl.ExceptionReportDocumentImpl exception = (net.opengis.ows.x11.impl.ExceptionReportDocumentImpl) response;
                 request.addException(exception.getExceptionReport().toString());
-            } else if (response instanceof net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) {
-                net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl) response;
+            } else if (response instanceof net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl) {
+                net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl) response;
             } else {
                 Logger.log(this.getClass(), "richwpsTestProcess()", "Unknown reponse" + response);
                 Logger.log(this.getClass(), "richwpsTestProcess()", response.getClass());
@@ -738,7 +737,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Sets given inputs to execute-request.
+     * Sets given inputs to a test-request.
      *
      * @param builder 52n executebuilder.
      * @param theinputs list of inputs (InputArguments) that should be set.
@@ -785,33 +784,33 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @see IOutputArgument
      */
     private void testSetOutputs(TestProcessRequestBuilder builder, HashMap theoutputs) {
-        /*java.util.Set<String> keys = theoutputs.keySet();
+        java.util.Set<String> keys = theoutputs.keySet();
 
-         for (String key : keys) {
-         Object o = theoutputs.get(key);
+        for (String key : keys) {
+            Object o = theoutputs.get(key);
 
-         if (o instanceof OutputLiteralDataArgument) {
-         builder.addOutput(key);
-         } else if (o instanceof OutputComplexDataArgument) {
-         OutputComplexDataArgument param = (OutputComplexDataArgument) o;
-         builder.addOutput(key);
-         boolean asReference = param.isAsReference();
-         String mimetype = param.getMimetype();
-         String encoding = param.getEncoding();
-         String schema = param.getSchema();
+            if (o instanceof OutputLiteralDataArgument) {
+                builder.addOutput(key);
+            } else if (o instanceof OutputComplexDataArgument) {
+                OutputComplexDataArgument param = (OutputComplexDataArgument) o;
+                builder.addOutput(key);
+                boolean asReference = param.isAsReference();
+                String mimetype = param.getMimetype();
+                String encoding = param.getEncoding();
+                String schema = param.getSchema();
 
-         if (asReference) {
-         builder.setAsReference(key, true);
-         }
+                if (asReference) {
+                    builder.setAsReference(key, true);
+                }
 
-         builder.setMimeTypeForOutput(mimetype, key);
-         builder.setEncodingForOutput(encoding, key);
-         builder.setSchemaForOutput(schema, key);
-         } else if (o instanceof OutputBoundingBoxDataArgument) {
-         //FIXME BoundingBox
-         builder.addOutput(key);
-         }
-         }*/
+                builder.setMimeTypeForOutput(mimetype, key);
+                builder.setEncodingForOutput(encoding, key);
+                builder.setSchemaForOutput(schema, key);
+            } else if (o instanceof OutputBoundingBoxDataArgument) {
+                //FIXME BoundingBox
+                builder.addOutput(key);
+            }
+        }
     }
 
     /**

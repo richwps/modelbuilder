@@ -3,8 +3,15 @@ package de.hsos.richwps.mb.richWPS.entity.impl;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.util.ArrayList;
 import java.util.List;
+import net.opengis.wps.x100.InputDescriptionType;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
@@ -15,7 +22,6 @@ import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
  */
 public class TestRequest extends ExecuteRequest implements IRequest {
 
-   
     /**
      * List of available process inputs and their specification/types.
      */
@@ -35,14 +41,12 @@ public class TestRequest extends ExecuteRequest implements IRequest {
      */
     protected String deploymentprofile;
 
-    
     /**
      * A flag that indicates if the execution unit should be stored when
      * wps:undeploy() is called.
      */
     private boolean keepExecUnit;
 
-    
     protected List<String> variables;
 
     /**
@@ -122,7 +126,6 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         this.deploymentprofile = deploymentprofile;
     }
 
-  
     /**
      *
      * @return
@@ -178,10 +181,10 @@ public class TestRequest extends ExecuteRequest implements IRequest {
         //TODO nothing to flush, yet.
     }
 
-    public void setVariables(List<String> variables){
-        this.variables=variables;
+    public void setVariables(List<String> variables) {
+        this.variables = variables;
     }
-    
+
     /**
      * Adds an output specification to the list of available intermediate
      * results.
@@ -199,6 +202,58 @@ public class TestRequest extends ExecuteRequest implements IRequest {
     /**
      *
      * @return
+     */
+    @Override
+    public List<IInputSpecifier> getInputs() {
+        return inputs;
+    }
+
+    /**
+     *
+     * @param inputs
+     */
+    public void setInputs(List<IInputSpecifier> inputs) {
+        this.inputs = inputs;
+    }
+
+    /**
+     *
+     * @param specifier
+     */
+    public void addInput(IInputSpecifier specifier) {
+        this.inputs.add(specifier);
+    }
+    
+     /**
+     *
+     * @return
+     */
+    @Override
+    public List<IOutputSpecifier> getOutputs() {
+        return outputs;
+    }
+
+    /**
+     *
+     * @param outputs
+     */
+    public void setOutputs(List<IOutputSpecifier> outputs) {
+        this.outputs = outputs;
+    }
+
+    /**
+     *
+     * @param specifier
+     */
+    public void addOutput(IOutputSpecifier specifier) {
+        this.outputs.add(specifier);
+    }
+
+
+    /**
+     * Creates a processdescription, which is necessary for deployment.
+     *
+     * @return ogc:pocessdescriptiontype
      */
     public ProcessDescriptionType toProcessDescriptionType() {
         ProcessDescriptionTypeBuilder description;

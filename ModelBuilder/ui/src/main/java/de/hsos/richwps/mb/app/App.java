@@ -14,8 +14,8 @@ import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionCompone
 import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.ui.execView.ExecuteDialog;
-import de.hsos.richwps.mb.ui.execView.ExecuteModelDialog;
+import de.hsos.richwps.mb.ui.dialogs.ExecuteDialog;
+import de.hsos.richwps.mb.ui.dialogs.ExecuteModelDialog;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
@@ -27,9 +27,9 @@ import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
-import de.hsos.richwps.mb.ui.testView.TestModelDialog;
+import de.hsos.richwps.mb.ui.dialogs.TestModelDialog;
 
-import de.hsos.richwps.mb.ui.undeplView.UndeployDialog;
+import de.hsos.richwps.mb.ui.dialogs.UndeployDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
 import java.awt.Component;
@@ -40,7 +40,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -409,7 +408,7 @@ public class App {
             try {
                 actionProvider = new AppActionProvider(actionHandler);
             } catch (Exception ex) {
-                
+
                 // TODO move strings to app constants
                 JOptionPane.showMessageDialog(
                         null,
@@ -598,6 +597,7 @@ public class App {
         final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             execDialog = new ExecuteModelDialog(getFrame(), false, auri, identifier);
+            execDialog.setVisible(true);
         } else {
             JOptionPane.showMessageDialog(frame,
                     AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
@@ -605,15 +605,13 @@ public class App {
                     JOptionPane.ERROR_MESSAGE);
             String msg = "The requested process " + identifier + " was not found"
                     + " on " + auri;
-            Logger.log("Debug:\n" + msg);
-            JOptionPane.showMessageDialog(this.frame, msg);
+
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
             return;
         }
         //}
 
-        execDialog.setVisible(true);
     }
 
     /**
@@ -624,15 +622,16 @@ public class App {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
         final String auri = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(AppConstants.PROPERTIES_KEY_MODELDATA_OWS_IDENTIFIER);
-        if (RichWPSProvider.hasProcess(auri, identifier)) {
+        if (!RichWPSProvider.hasProcess(auri, identifier)) {
             AppRichWPSManager manager = new AppRichWPSManager(this);
-            testDialog = new TestModelDialog(getFrame(), false, auri, identifier, manager);
+            testDialog = new TestModelDialog(getFrame(), false, manager);
+            testDialog.setVisible(true);
         } else {
-            JOptionPane.showMessageDialog(frame,
+            /*JOptionPane.showMessageDialog(frame,
                     AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
                     AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
-                    JOptionPane.ERROR_MESSAGE);
-            String msg = "The requested process " + identifier + " was not found"
+                    JOptionPane.ERROR_MESSAGE);*/
+            String msg = "The requested process " + identifier + " is already present"
                     + " on " + auri;
             Logger.log("Debug:\n" + msg);
             JOptionPane.showMessageDialog(this.frame, msg);
@@ -641,8 +640,6 @@ public class App {
             return;
         }
         //}
-
-        testDialog.setVisible(true);
     }
 
     void showAbout() {

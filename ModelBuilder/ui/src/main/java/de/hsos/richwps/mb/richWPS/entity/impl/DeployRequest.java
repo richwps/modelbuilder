@@ -387,8 +387,9 @@ public class DeployRequest implements IRequest {
     }
 
     /**
+     * Creates a processdescription, which is necessary for deployment.
      *
-     * @return
+     * @return ogc:pocessdescriptiontype
      */
     public ProcessDescriptionType toProcessDescriptionType() {
         ProcessDescriptionTypeBuilder description;
