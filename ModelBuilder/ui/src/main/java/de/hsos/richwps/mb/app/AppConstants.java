@@ -278,7 +278,7 @@ public class AppConstants {
     public static Object TREE_ROOT_NAME = "...";
     public static Object TREE_PROCESSES_NAME = "Processes";
     public static Object TREE_DOWNLOADSERVICES_NAME = "Download Services";
-    public static Object TREE_LOCALS_NAME = "In & Outputs";
+    public static Object TREE_INTERFACEOBJECTS_NAME = "In & Outputs";   // inputs, outputs etc.
 
     // Properties View
     public final static String PROPERTIES_MULTI_ELEMENTS_SELECTION = "(multiple elements selected)";

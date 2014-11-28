@@ -13,7 +13,6 @@ import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
@@ -27,14 +26,11 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 
@@ -146,30 +142,30 @@ public class MainTreeViewController extends AbstractTreeViewController {
         }
 
         // Create and fill download services node
-        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
-        downloadServices.add(new DefaultMutableTreeNode(""));
+//        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
+//        downloadServices.add(new DefaultMutableTreeNode(""));
 
         // TODO MOCK!! Create and fill local elements node
-        DefaultMutableTreeNode local = new DefaultMutableTreeNode(AppConstants.TREE_LOCALS_NAME);
+        DefaultMutableTreeNode insAndOuts = new DefaultMutableTreeNode(AppConstants.TREE_INTERFACEOBJECTS_NAME);
         // inputs
         ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
         cIn.setGlobalOutput(false);
         lIn.setGlobalOutput(false);
-        local.add(new DefaultMutableTreeNode(cIn));
-        local.add(new DefaultMutableTreeNode(lIn));
+        insAndOuts.add(new DefaultMutableTreeNode(cIn));
+        insAndOuts.add(new DefaultMutableTreeNode(lIn));
         // Outputs
         ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
         cOut.setGlobalOutput(true);
         lOut.setGlobalOutput(true);
-        local.add(new DefaultMutableTreeNode(cOut));
-        local.add(new DefaultMutableTreeNode(lOut));
+        insAndOuts.add(new DefaultMutableTreeNode(cOut));
+        insAndOuts.add(new DefaultMutableTreeNode(lOut));
 
         // add all child nodes to root
-        root.add(local);
+        root.add(insAndOuts);
         root.add(processesNode);
-        root.add(downloadServices);
+//        root.add(downloadServices);
 
         // adds persisted remote servers
         if (clearCache) {
