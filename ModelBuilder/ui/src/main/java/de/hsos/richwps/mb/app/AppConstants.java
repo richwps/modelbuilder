@@ -272,6 +272,7 @@ public class AppConstants {
         {"FILE", "File"},
         {"EDIT", "Edit"},
         {"TOOLS", "Tools"},
+        {"MODEL", "Model"},
         {"HELP", "Help"},};
 
     // Tree View

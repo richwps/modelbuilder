@@ -141,11 +141,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
             }
         }
 
-        // Create and fill download services node
-//        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
-//        downloadServices.add(new DefaultMutableTreeNode(""));
-
-        // TODO MOCK!! Create and fill local elements node
+        // Create node with interface objects like global inputs and outputs
         DefaultMutableTreeNode insAndOuts = new DefaultMutableTreeNode(AppConstants.TREE_INTERFACEOBJECTS_NAME);
         // inputs
         ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
@@ -165,6 +161,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
         // add all child nodes to root
         root.add(insAndOuts);
         root.add(processesNode);
+        
+// download services are currently not available
+//        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
+//        downloadServices.add(new DefaultMutableTreeNode(""));
 //        root.add(downloadServices);
 
         // adds persisted remote servers

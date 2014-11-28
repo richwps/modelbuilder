@@ -15,9 +15,11 @@ import javax.swing.JMenuItem;
  */
 public class AppMenuBar extends JMenuBar {
 
+    private JMenu modelMenu;
+
     public static enum MENUS {
 
-        FILE, EDIT, TOOLS, HELP
+        FILE, EDIT, TOOLS, MODEL, HELP
     }
 
     private final AppActionProvider actionProvider;
@@ -29,6 +31,7 @@ public class AppMenuBar extends JMenuBar {
 
         add(getFileMenu());
         add(getEditMenu());
+        add(getModelMenu());
         add(getToolsMenu());
         add(getHelpMenu());
     }
@@ -103,8 +106,6 @@ public class AppMenuBar extends JMenuBar {
         createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.UNDO);
         createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.REDO);
         mEdit.addSeparator();
-        createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.DO_LAYOUT);
-        mEdit.addSeparator();
         createAndAddMenuItem(mEdit, AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES);
 
         return mEdit;
@@ -113,9 +114,38 @@ public class AppMenuBar extends JMenuBar {
     private JMenu getToolsMenu() {
         JMenu mTools = new JMenu(getMenuItemCaption(MENUS.TOOLS));
 
+        createAndAddMenuItem(mTools, AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY);
         createAndAddMenuItem(mTools, AppActionProvider.APP_ACTIONS.EXECUTE_ANY);
 
         return mTools;
+    }
+
+    private JMenu getModelMenu() {
+        if (null == modelMenu) {
+            modelMenu = new JMenu(getMenuItemCaption(MENUS.MODEL));
+
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.DO_LAYOUT);
+            modelMenu.addSeparator();
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.PREVIEW_ROLA);
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.DEPLOY);
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.UNDEPLOY);
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.EXECUTE);
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.TEST);
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.PROFILE);
+            modelMenu.addSeparator();
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.PUBLISH);
+
+        }
+        return modelMenu;
+    }
+
+    /**
+     * Sets the enabled state of model-dependent actions.
+     *
+     * @param enabled
+     */
+    public void setModelMenuEnabled(boolean enabled) {
+        getModelMenu().setEnabled(enabled);
     }
 
     @Override
