@@ -240,6 +240,8 @@ public class AppFrame extends JFrame {
         }
 
         modellingLayout.show(mainModellingPanel, card.name());
+        
+        getAppMenuBar().setModelMenuEnabled(enabled);
     }
 
     private Component getBottomView() {
@@ -299,7 +301,7 @@ public class AppFrame extends JFrame {
         return graphViewGui;
     }
 
-    public AppMenuBar getAppMenuBar() {
+    protected AppMenuBar getAppMenuBar() {
         if (null == appMenuBar) {
             appMenuBar = new AppMenuBar(actionProvider);
         }
