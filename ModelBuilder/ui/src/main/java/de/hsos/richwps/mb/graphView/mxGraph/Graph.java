@@ -14,6 +14,11 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
+import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_ABSTRACT;
+import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
+import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER;
+import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_TITLE;
+import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_VERSION;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.LinkedList;
@@ -600,6 +605,39 @@ public class Graph extends mxGraph {
 
     public int getGraphComponentsCount() {
         return mxGraphStructure.getGraphComponents(ag).length;
+    }
+
+    public ProcessEntity getRepresentingProcess() {
+        // get process data
+        String server = (String) getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        String identifier = (String) getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
+        String owsAbstract = (String) getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ABSTRACT);
+        String title = (String) getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_TITLE);
+        String version = (String) getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_VERSION);
+
+        // create process
+        ProcessEntity process = new ProcessEntity(server, identifier);
+        process.setOwsAbstract(owsAbstract);
+        process.setOwsTitle(title);
+        process.setPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION, version);
+
+        // get process ports
+        List<ProcessPort> ports = getGlobalInputPorts();
+        ports.addAll(getGlobalOutputPorts());
+
+        // add ports
+        for (ProcessPort aPort : ports) {
+            ProcessPort derived = aPort.clone();
+            derived.setGlobal(false);
+
+            if (aPort.isGlobalInput()) {
+                process.addInputPort(aPort);
+            } else if (aPort.isGlobalOutput()) {
+                process.addOutputPort(aPort);
+            }
+        }
+
+        return process;
     }
 
 }

@@ -5,6 +5,7 @@ import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;

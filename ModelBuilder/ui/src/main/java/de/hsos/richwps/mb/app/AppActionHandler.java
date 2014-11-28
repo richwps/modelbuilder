@@ -11,6 +11,8 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -90,7 +92,7 @@ public class AppActionHandler implements IAppActionHandler {
                 doShowManageRemotes();
                 break;
             case PUBLISH:
-                //TODO
+                doPublish();
                 break;
             case SHOW_ERROR_MSG:
                 JOptionPane.showMessageDialog(
@@ -122,7 +124,7 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doNewModel() {
         if (confirmDiscardChanges(AppConstants.CONFIRM_NEW_MODEL, AppConstants.CONFIRM_NEW_MODEL_TITLE)) {
-            
+
             String remote = app.askRemote();
 
             // cancel if no remote is available
@@ -319,8 +321,8 @@ public class AppActionHandler implements IAppActionHandler {
     private void doUnDeploy() {
         app.undeploy();
     }
-    
-      private void doUnDeployAny() {
+
+    private void doUnDeployAny() {
         app.showUndeploy();
     }
 
@@ -350,11 +352,10 @@ public class AppActionHandler implements IAppActionHandler {
     private void doExecuteModel() {
         app.showExecuteModel();
     }
-    
-      private void doTestModel() {
+
+    private void doTestModel() {
         app.showTestModel();
     }
-
 
     private void doAbout() {
         app.showAbout();
@@ -384,5 +385,11 @@ public class AppActionHandler implements IAppActionHandler {
         }
 
         return true;
+    }
+
+    private void doPublish() {
+        Graph graph = app.getGraphView().getGraph();
+        ProcessEntity process = graph.getRepresentingProcess();
+        app.getProcessProvider().publishProcess(process);
     }
 }

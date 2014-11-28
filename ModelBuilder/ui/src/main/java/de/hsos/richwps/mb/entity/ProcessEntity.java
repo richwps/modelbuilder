@@ -164,7 +164,7 @@ public class ProcessEntity extends OwsObjectWithProperties {
             String owsTitle = OwsObjectWithProperties.getValueForViews(getOwsTitle());
             String owsIdentifier = OwsObjectWithProperties.getValueForViews(getOwsIdentifier());
             String owsAbstract = OwsObjectWithProperties.getValueForViews(getOwsAbstract());
-            
+
             // prepare input port TTTs
             List<String> inPortTexts = new LinkedList<>();
             int portTextsLength = 0;
@@ -272,4 +272,10 @@ public class ProcessEntity extends OwsObjectWithProperties {
         this.isFullyLoaded = fullyLoaded;
     }
 
+    public void setPropertyValue(String propertyKey, Object value) {
+        Property property = this.owsGroup.getPropertyObject(propertyKey);
+        if (null != property) {
+            property.setValue(value);
+        }
+    }
 }
