@@ -1,6 +1,8 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
@@ -15,12 +17,16 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
-import net.opengis.wps.x100.ExecuteResponseDocument;
+import net.opengis.wps.x100.IntermediateOutputDataType;
+import net.opengis.wps.x100.OutputDataType;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.TestProcessDocument;
 import net.opengis.wps.x100.TestProcessResponseDocument;
+import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientConfig;
+import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.richwps.TestProcessRequestBuilder;
+import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 
 /**
  *
@@ -103,22 +109,65 @@ public class TestRequestHelper {
      *
      * @param testdocument 52n execute document.
      * @param responseObject 52n reponse object. Execute-response or exception.
-     * @param request TestRequest with possible inputs (IInputSpecifier)
-     * and outputs (IOutputSpecifier).
+     * @param request TestRequest with possible inputs (IInputSpecifier) and
+     * outputs (IOutputSpecifier).
      * @return ExecuteRequestDTO with results or exception.
      */
     public void analyseResponse(TestProcessDocument testdocument, Object responseObject, TestRequest request) {
         final ProcessDescriptionType description = request.toProcessDescriptionType();
         final URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
-        Logger.log(this.getClass(), "analyseResponse", "using configuration" + file);
+
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
         HashMap theoutputs = request.getOutputArguments();
-        Logger.log(this.getClass(), "analyseResponse", responseObject.getClass());
+
         if (responseObject instanceof TestProcessResponseDocument) {
             TestProcessResponseDocument response = (TestProcessResponseDocument) responseObject;
             Logger.log(this.getClass(), "analyseResponse", response.toString());
+
+            OutputDataType[] overalloutputs = response.getTestProcessResponse().getProcessOutputs().getOutputArray();
+            IntermediateOutputDataType[] intermediates = response.getTestProcessResponse().getIntermediateProcessOutputs().getIntermediateOutputArray();
+            Logger.log(this.getClass(), "analyseResponse", overalloutputs);
+            Logger.log(this.getClass(), "analyseResponse", intermediates);
+            for (OutputDataType o : overalloutputs) {
+
+                if (o.getData() != null) {
+                    //we might have a literaldata
+                    if (o.getData().getLiteralData() != null) {
+                        String key = o.getIdentifier().getStringValue();
+                        String value = o.getData().getLiteralData().getStringValue();
+                        request.addResult(key, value);
+                    }
+                }
+                
+                //we might have a complexdata with reference
+                    if (o.getReference() != null) {
+                        String key = o.getIdentifier().getStringValue();
+                        String value = o.getReference().getHref();
+                        request.addResult(key, value);
+                    }
+            }
+
+            for (IntermediateOutputDataType o : intermediates) {
+                if (o.getData() != null) {
+
+                    //we might have a literaldata
+                    if (o.getData().getLiteralData() != null) {
+                        String key = o.getIdentifier().getStringValue();
+                        String value = o.getData().getLiteralData().getStringValue();
+                        request.addResult(key, value);
+                    }
+                }
+                
+                //we might have a complexdata with reference
+                    if (o.getReference() != null) {
+                        String key = o.getIdentifier().getStringValue();
+                        String value = o.getReference().getHref();
+                        request.addResult(key, value);
+                    }
+            }
+
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());

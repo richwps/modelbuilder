@@ -94,18 +94,12 @@ public class TestResultVisualisation extends ADialogPanel {
         int i = 0;
         for (Object key : keys) {
             String c = "0," + i;
-            IOutputArgument argument = (IOutputArgument) arguments.get(key);
-            if (argument instanceof OutputComplexDataArgument) {
-                String uri = (String) results.get(key);
-                OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
-                String identifier = (_argument.getSpecifier()).getIdentifier();
-                URIResultRenderer pan = new URIResultRenderer(identifier, uri);
+            String value = (String) results.get(key);
+            if (value.contains("http://")) {
+                URIResultRenderer pan = new URIResultRenderer(key.toString(), value);
                 outputsPanel.add(pan, c);
-            } else if (argument instanceof OutputLiteralDataArgument) {
-                String value = (String) results.get(key);
-                OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
-                String identifier = (_argument.getSepcifier()).getIdentifier();
-                LiteralResultRenderer pan = new LiteralResultRenderer(identifier, value);
+            } else {
+                LiteralResultRenderer pan = new LiteralResultRenderer(key.toString(), value);
                 outputsPanel.add(pan, c);
             }
             i++;

@@ -44,16 +44,16 @@ public class ExecuteRequestHelper {
      * @param responseObject 52n reponse object. Execute-response or exception.
      * @param request ExecuteRequest with possible inputs (IInputSpecifier)
      * and outputs (IOutputSpecifier).
-     * @return ExecuteRequestDTO with results or exception.
+     * @return request with results or exception.
      */
     public void analyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
         final URL res = this.getClass().getResource("/xml/wps_config.xml");
         String file = res.toExternalForm().replace("file:", "");
-        Logger.log(this.getClass(), "analyseResponse", "using configuration" + file);
+        
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
         HashMap theoutputs = request.getOutputArguments();
-        Logger.log(this.getClass(), "analyseResponse", responseObject.getClass());
+        
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
             Logger.log(this.getClass(), "analyseResponse", response.toString());
@@ -66,11 +66,10 @@ public class ExecuteRequestHelper {
                         OutputDataType[] outputs = response.getExecuteResponse().getProcessOutputs().getOutputArray();
                         String value = "";
                         for (OutputDataType output : outputs) {
-                            String givenIdentifier = output.getIdentifier().getStringValue();
-                            String wantedIdentifer = argument.getIdentifier();
+                            final String givenIdentifier = output.getIdentifier().getStringValue();
+                            final String wantedIdentifer = argument.getIdentifier();
                             if (givenIdentifier.equals(wantedIdentifer)) {
                                 value = output.getData().getLiteralData().getStringValue();
-                                Logger.log(this.getClass(), "analyseResponse", " #thevalue " + value);
                             }
                         }
                         request.addResult(key, value);
