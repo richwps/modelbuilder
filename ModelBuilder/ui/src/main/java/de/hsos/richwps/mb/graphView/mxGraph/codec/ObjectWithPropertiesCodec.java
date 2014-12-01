@@ -2,8 +2,10 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.Property;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
@@ -25,6 +27,40 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
 
     public ObjectWithPropertiesCodec(Object template, String[] exclude, String[] idrefs, Map<String, String> mapping) {
         super(template, exclude, idrefs, mapping);
+    }
+
+    @Override
+    public Object decode(mxCodec dec, Node node, Object into) {
+        Object decoded = super.decode(dec, node, into);
+
+        // TODO if node is property: create property with generic type depending on component type
+        if (decoded instanceof Property) {
+            Property property = (Property) decoded;
+
+            // instantiate property depending on component type
+            if (null != property.getComponentType()) {
+                if (property.getComponentType().equals(Property.COMPONENT_TYPE_INTEGER)) {
+                    Property<Integer> intProperty = new Property<>(property.getPropertiesObjectName());
+                    intProperty.setComponentType(property.getComponentType());
+                    intProperty.setEditable(property.isEditable());
+                    intProperty.setIsTransient(property.isTransient());
+                    
+                    // TODO parse possible values from String to Integer !
+//                    intProperty.setPossibleValues(property.getPossibleValues());
+                    
+                    try {
+                        intProperty.setValue(Integer.parseInt((String) property.getValue()));
+                    } catch(NumberFormatException ex)  {
+                        // just don't use value if it can't be parsed
+                        Logger.log("Property value can't be parsed for COMPONENT_TYPE_INTEGER.");
+                    }
+                    
+                    decoded = intProperty;
+                }
+            }
+        }
+
+        return decoded;
     }
 
     /**

@@ -18,6 +18,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
+import de.hsos.richwps.mb.properties.Property;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.Hashtable;
@@ -84,6 +85,7 @@ public class GraphSetup {
         mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup()));
         
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
+        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new Property()));
         mxCodecRegistry.register(new PropertyGroupCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
 
         // style for cell selection
