@@ -486,12 +486,12 @@ public class AppRichWPSManager {
                 if (complexSpecifier.getTitle().equals("")) {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
-                //FIXME urgently.
-                Integer maxc = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS));
-                Integer minc = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS));
+                
+                Integer maxc = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
+                Integer minc = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
                 complexSpecifier.setMinOccur(minc);
                 complexSpecifier.setMaxOccur(maxc);
-                Integer mb = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB));
+                Integer mb = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
                 complexSpecifier.setMaximumMegabytes(mb);
                 try {
                     List<List> supportedTypes = new ArrayList<>();
