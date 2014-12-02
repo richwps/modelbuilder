@@ -469,8 +469,8 @@ public class AppRichWPSManager {
                 if (literalSpecifier.getTitle().equals("")) {
                     literalSpecifier.setTitle(literalSpecifier.getIdentifier());
                 }
-                Integer maxl = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS));
-                Integer minl = Integer.parseInt((String)port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS));
+                Integer maxl = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
+                Integer minl = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
                 literalSpecifier.setMinOccur(minl);
                 literalSpecifier.setMaxOccur(maxl);
                 literalSpecifier.setType(("xs:string"));
