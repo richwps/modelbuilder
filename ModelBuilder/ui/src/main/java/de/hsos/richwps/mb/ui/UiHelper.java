@@ -25,7 +25,7 @@ public class UiHelper {
      */
     public static boolean equalOrBothNull(Object o1, Object o2) {
         boolean equal = (null == o1 && null == o2);
-        
+
         if (null != o1 && null != o2) {
             equal = o1.equals(o2);
         }
@@ -239,4 +239,13 @@ public class UiHelper {
 
         return new Color(r, g, b, original.getAlpha());
     }
+
+    public static Color deriveColorWithAlpha(Color original, int alpha) {
+        return new Color(
+                original.getRed(),
+                original.getGreen(),
+                original.getBlue(),
+                alpha);
+    }
+
 }

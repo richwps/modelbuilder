@@ -64,11 +64,6 @@ public class ProcessEntity extends OwsObjectWithProperties {
         List<IObjectWithProperties> properties = new LinkedList<>();
         properties.add(owsGroup);
 
-        // add additional groups
-        for (PropertyGroup pGroup : additionalGroups.values()) {
-            properties.add(pGroup);
-        }
-
         // add inputs
         PropertyGroup inputsGroup = new PropertyGroup(PROPERTIES_KEY_INPUT_PORTS);
         inputsGroup.setIsTransient(true);
@@ -87,6 +82,11 @@ public class ProcessEntity extends OwsObjectWithProperties {
                 outputsGroup.addObject(port);
             }
             properties.add(outputsGroup);
+        }
+
+        // add additional groups
+        for (PropertyGroup pGroup : additionalGroups.values()) {
+            properties.add(pGroup);
         }
 
         return properties;

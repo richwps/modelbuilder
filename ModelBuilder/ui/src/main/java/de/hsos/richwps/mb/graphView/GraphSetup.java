@@ -19,6 +19,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.util.Hashtable;
@@ -76,19 +77,18 @@ public class GraphSetup {
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral()));
         mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
         mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
-        
-        
+
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph");
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph.codec.objects");
         mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup()));
-        
+
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
         mxCodecRegistry.register(new ObjectWithPropertiesCodec(new Property()));
         mxCodecRegistry.register(new PropertyGroupCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
 
-        // style for cell selection
+        // style for selected cells
         mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
         mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(SELECTION_BORDER_WIDTH,
                 BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 10.0f, new float[]{
@@ -99,6 +99,14 @@ public class GraphSetup {
 
         // Round edge size
         mxConstants.LINE_ARCSIZE = GRAPH_EDGE_ROUNDED_SIZE;
+
+        // selection rectangle style
+        mxSwingConstants.RUBBERBAND_BORDERCOLOR = AppConstants.SELECTION_BG_COLOR.darker();
+        mxSwingConstants.RUBBERBAND_FILLCOLOR = UiHelper.deriveColorWithAlpha(
+                UiHelper.deriveColor(
+                        AppConstants.SELECTION_BG_COLOR,
+                        40),
+                100);
     }
 
     /**
@@ -180,7 +188,7 @@ public class GraphSetup {
 //        portStyle.put(mxConstants.STYLE_OPACITY, 100);
         portStyle.put(mxConstants.STYLE_FONTCOLOR, "#000000");
 //        portStyle.put(mxConstants.STYLE_FILLCOLOR, "none");
-        portStyle.put(mxConstants.STYLE_FILLCOLOR, "#"+localInputBgColor);
+        portStyle.put(mxConstants.STYLE_FILLCOLOR, "#" + localInputBgColor);
         portStyle.put(mxConstants.STYLE_STROKECOLOR, "#000000");
         portStyle.put(mxConstants.STYLE_FONTSIZE, fontSize);
         portStyle.put(mxConstants.STYLE_FONTSTYLE, mxConstants.FONT_BOLD);
@@ -189,7 +197,7 @@ public class GraphSetup {
         stylesheet.putCellStyle(STYLENAME_LOCAL_INPUT, portStyle);
 
         portStyle = (Hashtable<String, Object>) portStyle.clone();
-        portStyle.put(mxConstants.STYLE_FILLCOLOR, "#"+localOutputBgColor);
+        portStyle.put(mxConstants.STYLE_FILLCOLOR, "#" + localOutputBgColor);
         stylesheet.putCellStyle(STYLENAME_LOCAL_OUTPUT, portStyle);
 
         return graph;

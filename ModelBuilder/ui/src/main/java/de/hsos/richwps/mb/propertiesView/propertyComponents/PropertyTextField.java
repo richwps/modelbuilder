@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.UiHelper;
