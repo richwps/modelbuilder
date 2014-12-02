@@ -10,9 +10,11 @@ import de.hsos.richwps.mb.ui.dialogs.components.ResultVisualisation;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  * A dialog that displays three consecutive panels for inputparameterisation,
@@ -44,7 +46,7 @@ public class ExecuteModelDialog extends MbDialog {
      */
     public ExecuteModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
             final String processid) {
-        super(parent, "Execute model");
+        super(parent, "Execute model", MbDialog.BTN_ID_NONE);
         this.currentPanel = null;
         this.request = new ExecuteRequest();
         this.request.setEndpoint(serverid);
@@ -158,9 +160,10 @@ public class ExecuteModelDialog extends MbDialog {
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Execute");
+        setTitle("Execute opened model");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        backButton.setMnemonic('B');
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -169,6 +172,7 @@ public class ExecuteModelDialog extends MbDialog {
         });
         navpanel.add(backButton);
 
+        nextButton.setMnemonic('N');
         nextButton.setText("Next");
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,9 +181,13 @@ public class ExecuteModelDialog extends MbDialog {
         });
         navpanel.add(nextButton);
 
+        previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
+        previewButton.setMnemonic('P');
         previewButton.setText("Preview");
         navpanel.add(previewButton);
 
+        abortButton.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abortButton.setMnemonic('A');
         abortButton.setText("Abort");
         abortButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -203,6 +211,7 @@ public class ExecuteModelDialog extends MbDialog {
         } else if (this.currentPanel == this.outputsspanel) {
             this.showResultPanel(false);
         }
+        UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
@@ -229,6 +238,7 @@ public class ExecuteModelDialog extends MbDialog {
         } else if (this.currentPanel == this.resultpanel) {
             this.showParameterizeOutputsPanel(true);
         }
+        UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
 
 

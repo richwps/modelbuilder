@@ -449,7 +449,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 request.addException(exception.getExceptionReport().toString());
             } else if (response instanceof net.opengis.wps.x100.impl.UndeployProcessResponseDocumentImpl) {
                 net.opengis.wps.x100.impl.UndeployProcessResponseDocumentImpl deplok = (net.opengis.wps.x100.impl.UndeployProcessResponseDocumentImpl) response;
-                Logger.log(this.getClass(), "richwpsUndeployProcess()", deplok.getStringValue());
+                Logger.log(this.getClass(), "richwpsUndeployProcess()", deplok);
             } else {
                 Logger.log(this.getClass(), "richwpsUndeployProcess()", "Unknown reponse" + response);
                 Logger.log(this.getClass(), "richwpsUndeployProcess()", response.getClass());

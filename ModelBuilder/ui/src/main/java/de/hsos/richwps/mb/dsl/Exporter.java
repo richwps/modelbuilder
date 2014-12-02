@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.dsl;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.*;
-import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -46,7 +45,7 @@ public class Exporter {
     private List<Binding> bindings;
 
     /**
-     * A structure to trace allready established exectes.
+     * A structure to trace allready established executes.
      */
     private List<Execute> executes;
 
@@ -83,7 +82,7 @@ public class Exporter {
      */
     public void export(String path) throws Exception {
 
-        String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        final String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
 
         Writer writer = new Writer();
 
@@ -97,9 +96,10 @@ public class Exporter {
             //handle process.
             if (this.graph.getGraphModel().isProcess(cell)) {
                 ProcessEntity pe = ((ProcessEntity) this.graph.getGraphModel().getValue(cell));
-                //local/remote identification based on given hostname.
-                String baseuria = url.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
-                String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
+                //local/remote identification based on hostname.
+                //truncate the endpoints and compare.
+                final String baseuria = url.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
+                final String baseurib = pe.getServer().replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, "");
                 boolean isLocalBinding = baseuria.equals(baseurib);
                 this.handleProcessCell(cell, isLocalBinding);
 
@@ -111,6 +111,15 @@ public class Exporter {
                 this.handleInputCell(cell);
             }
         }
+        //write out all bindings 
+        for(Binding b:this.bindings){
+            this.workflow.add(b);
+        }
+        //write out all executes
+        for(Execute e:this.executes){
+            this.workflow.add(e);
+        }
+        //finally write out the workflow
         writer.create(path, this.workflow);
     }
 
@@ -140,22 +149,6 @@ public class Exporter {
                 }
             }
         }
-
-
-        /*ProcessPort source = (ProcessPort) input.getValue();
-         String uniqueIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
-         // OWS Identifier is the original port identifier
-         String owsIdentifier = getOwsIdentifier(source.getOwsIdentifier());
-
-         VarReference variable = new VarReference(owsIdentifier);
-         InReference inputReference = new InReference(owsIdentifier);
-         Assignment assignment = new Assignment(variable, inputReference);
-         // Save variable to variable reference map
-         this.variables.put(source.getOwsIdentifier(), variable);
-         // Write assignment to workflow
-         Logger.log("Debug::Exporter#defineInput()\n Assignment: " + assignment.toNotation());
-         ws.add(assignment);
-         */
     }
 
     /**
@@ -172,12 +165,12 @@ public class Exporter {
             ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
 
             // unique identifier is necessary to distinguish ports with the same owsIdentifier
-            String uniqueInIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
+            //String uniqueInIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
             // OWS Identifier is the original port identifier
             //String owsInIdentifier = uniqueInIdentifier.split(" ")[0];
 
             // ... same for out identifiers
-            String uniqueOutIdentifier = getUniqueIdentifier(target.getOwsIdentifier());
+            //String uniqueOutIdentifier = getUniqueIdentifier(target.getOwsIdentifier());
             String owsOutIdentifier = getOwsIdentifier(target.getOwsIdentifier());
 
             //String inIdentifier = source.getOwsIdentifier();
@@ -209,7 +202,8 @@ public class Exporter {
         Execute execute = new Execute(rolaidentifier);
         handleIngoingProcessCellTransitions(incoming, execute);
         handleOutgoingProcessCellTransitions(outgoing, execute);
-        this.workflow.add(execute);
+        this.executes.add(execute);
+        //this.workflow.add(execute);
     }
 
     /**
@@ -251,7 +245,7 @@ public class Exporter {
 
         if (!this.bindings.contains(bindingA)) {
             this.bindings.add(bindingA);
-            this.workflow.add(bindingA);
+            //this.workflow.add(bindingA);
         }
 
         return rolaidentifier;

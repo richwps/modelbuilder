@@ -16,7 +16,7 @@ import org.apache.log4j.PatternLayout;
 public class Logger {
 
     private static final java.util.logging.Logger log = java.util.logging.Logger.getLogger(Logger.class.getName());
-    private static FileHandler handler;
+    /*private static FileHandler handler;*/
     static org.apache.log4j.Logger log4j = org.apache.log4j.Logger.getLogger(Logger.class.getName());
 
     /**

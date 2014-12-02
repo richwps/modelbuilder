@@ -147,7 +147,6 @@ public class ResultVisualisation extends ADialogPanel {
      */
     @Override
     public ExecuteRequest getRequest() {
-        //nop
         return this.request;
     }
 

@@ -7,14 +7,15 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
+import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.InputParameterization;
 import de.hsos.richwps.mb.ui.dialogs.components.OutputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.ResultVisualisation;
 import de.hsos.richwps.mb.ui.dialogs.components.TestResultVisualisation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
  * A dialog that displays three consecutive panels for inputparameterisation,
@@ -45,7 +46,7 @@ public class TestModelDialog extends MbDialog {
      *
      */
     public TestModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
-        super(parent, "Test model");
+        super(parent, "Test model", MbDialog.BTN_ID_NONE);
         this.currentPanel = null;
         this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
@@ -166,9 +167,10 @@ public class TestModelDialog extends MbDialog {
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Execute");
+        setTitle("Test opend model");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        backButton.setMnemonic('B');
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -177,10 +179,13 @@ public class TestModelDialog extends MbDialog {
         });
         navpanel.add(backButton);
 
+        previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
+        previewButton.setMnemonic('P');
         previewButton.setText("Preview");
         previewButton.setToolTipText("Preview request");
         navpanel.add(previewButton);
 
+        nextButton.setMnemonic('N');
         nextButton.setText("Next");
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,6 +194,8 @@ public class TestModelDialog extends MbDialog {
         });
         navpanel.add(nextButton);
 
+        abortButton.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abortButton.setMnemonic('A');
         abortButton.setText("Abort");
         abortButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -212,6 +219,7 @@ public class TestModelDialog extends MbDialog {
         } else if (this.currentPanel == this.outputsspanel) {
             this.showResultPanel(false);
         }
+        UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
@@ -237,6 +245,7 @@ public class TestModelDialog extends MbDialog {
         } else if (this.currentPanel == this.resultpanel) {
             this.showParameretizeOutputsPanel(true);
         }
+        UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
 
 

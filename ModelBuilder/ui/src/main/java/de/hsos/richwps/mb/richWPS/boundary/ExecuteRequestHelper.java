@@ -44,7 +44,6 @@ public class ExecuteRequestHelper {
      * @param responseObject 52n reponse object. Execute-response or exception.
      * @param request ExecuteRequest with possible inputs (IInputSpecifier)
      * and outputs (IOutputSpecifier).
-     * @return request with results or exception.
      */
     public void analyseResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
         final URL res = this.getClass().getResource("/xml/wps_config.xml");
@@ -88,13 +87,13 @@ public class ExecuteRequestHelper {
                     }
                 }
             } catch (WPSClientException e) {
-                Logger.log(this.getClass(), "analsysResponse", "Unable to analyse response. " + e.getLocalizedMessage());
+                Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response. " + e.getLocalizedMessage());
             }
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());
-            Logger.log(this.getClass(), "analsysResponse", "Unable to analyse response." + "Response is Exception: " + exception.toString());
-            Logger.log(this.getClass(), "analsysResponse", exception.getExceptionReport());
+            Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response." + "Response is Exception: " + exception.toString());
+            Logger.log(this.getClass(), "analyseResponse", exception.getExceptionReport());
         }
     }
 
@@ -116,8 +115,7 @@ public class ExecuteRequestHelper {
     /**
      * Adds processs outputs to a request.
      *
-     * @param ExecuteRequestDTO with serverid and processid.
-     * @return ExecuteRequestDTO with list of outputs specifiers.
+     * @param request with serverid and processid.
      * @see IOutputSpecifier
      */
     void addOutputs(DescribeRequest request, ProcessDescriptionType process) {
@@ -197,5 +195,4 @@ public class ExecuteRequestHelper {
             }
         }
     }
-
 }

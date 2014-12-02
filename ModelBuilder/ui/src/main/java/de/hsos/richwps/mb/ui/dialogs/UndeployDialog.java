@@ -8,20 +8,21 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
+import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.ProcessSelection;
 import de.hsos.richwps.mb.ui.dialogs.components.SeverSelection;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 
 /**
- * A dialog that displays five consecutive panels for serverselection,
- * processselection, inputparameterisation, outputparameterisation and
- * resultvisualisation.
+ * A dialog that displays two consecutive panels for serverselection
+ * and processselection in order to undeploy a process.
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class UndeployDialog extends MbDialog {
 
@@ -35,12 +36,12 @@ public class UndeployDialog extends MbDialog {
      */
     private DescribeRequest desc_request;
     /**
-     * Undeploy-Request for performing undeploy-operation.
+     * Undeploy-Request for performing the undeploy-operation.
      */
     private UndeployRequest undeploy_request;
 
     /**
-     * Creates new form execViewDialog, starting with the first dialog
+     * Creates new form UndeployDialog, starting with the first dialog
      * (serverselection).
      *
      * @param parent
@@ -48,14 +49,14 @@ public class UndeployDialog extends MbDialog {
      * @param severids list of viable serverids.
      */
     public UndeployDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
-        super(parent, "Undeploy process");
+        super(parent, "Undeploy a process", MbDialog.BTN_ID_NONE);
 
         this.provider = new RichWPSProvider();
         this.desc_request = new DescribeRequest();
-        //this.request = new UndeployRequest();
         this.serverids = severids;
         this.initComponents();
         this.backButton.setVisible(false);
+        
         this.showServerSelection(false);
     }
 
@@ -67,6 +68,7 @@ public class UndeployDialog extends MbDialog {
     private void showServerSelection(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
+        this.previewButton.setVisible(false);
         this.serverselectionpanel = new SeverSelection(this.serverids, this.desc_request);
 
         if (this.currentPanel != null) {
@@ -93,8 +95,9 @@ public class UndeployDialog extends MbDialog {
         }
 
         this.backButton.setVisible(true);
+        this.previewButton.setVisible(true);
         this.nextButton.setVisible(true);
-
+        
         //refresh the request
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
@@ -110,7 +113,6 @@ public class UndeployDialog extends MbDialog {
             return;
         }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.desc_request);
-        this.nextButton.setText("Undeploy");
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.processesselectionpanel);
@@ -121,13 +123,12 @@ public class UndeployDialog extends MbDialog {
     /**
      * Switches from serverselectionpanel to processselectionpanel.
      *
-     * @param isBackAction indicator if a backaction is performed.
      */
     private void performUndeploy() {
         try {
             //refresh the request
             this.currentPanel.updateRequest();
-            this.desc_request = (DescribeRequest)  this.currentPanel.getRequest();
+            this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
             String endp = desc_request.getServerId();
             endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
             this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
@@ -169,13 +170,15 @@ public class UndeployDialog extends MbDialog {
 
         navpanel = new javax.swing.JPanel();
         backButton = new javax.swing.JButton();
+        previewButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Execute");
+        setTitle("Undeploy a process");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        backButton.setMnemonic('B');
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,6 +187,12 @@ public class UndeployDialog extends MbDialog {
         });
         navpanel.add(backButton);
 
+        previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
+        previewButton.setMnemonic('P');
+        previewButton.setText("Preview");
+        navpanel.add(previewButton);
+
+        nextButton.setMnemonic('N');
         nextButton.setText("Next");
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -192,6 +201,8 @@ public class UndeployDialog extends MbDialog {
         });
         navpanel.add(nextButton);
 
+        abortButton.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abortButton.setMnemonic('A');
         abortButton.setText("Abort");
         abortButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -215,6 +226,7 @@ public class UndeployDialog extends MbDialog {
         } else if (this.currentPanel == this.processesselectionpanel) {
             this.performUndeploy();
         }
+        UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
@@ -237,6 +249,7 @@ public class UndeployDialog extends MbDialog {
         if (this.currentPanel == this.processesselectionpanel) {
             this.showServerSelection(true);
         }
+        UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
 
 
@@ -245,5 +258,6 @@ public class UndeployDialog extends MbDialog {
     private javax.swing.JButton backButton;
     private javax.swing.JPanel navpanel;
     private javax.swing.JButton nextButton;
+    private javax.swing.JButton previewButton;
     // End of variables declaration//GEN-END:variables
 }
