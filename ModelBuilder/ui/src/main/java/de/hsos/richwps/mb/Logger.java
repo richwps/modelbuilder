@@ -1,11 +1,9 @@
 package de.hsos.richwps.mb;
 
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
 import org.apache.log4j.PatternLayout;
-import org.apache.log4j.SimpleLayout;
 
 /**
  * Simple output to System.err. Used for development issues (no need for a
@@ -29,8 +27,8 @@ public class Logger {
      */
     public static void log(Object o) {
         String oString = (null == o) ? "null" : o.toString();
-        String micro = (new Long(System.nanoTime())).toString();
-        System.err.println(micro.substring(0, 6) + ": " + oString);
+        /*String micro = (new Long(System.nanoTime())).toString();
+        System.err.println(micro.substring(0, 6) + ": " + oString*/
 
         try {
             PatternLayout layout = new PatternLayout("%d %p (%t) [%c] - %m%n");
@@ -41,9 +39,10 @@ public class Logger {
             // ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF:
             log4j.setLevel(org.apache.log4j.Level.ALL);
         } catch (Exception e) {
+            //nop
         }
         log4j.info(oString);
-        log.info(oString);
+        /*log.info(oString);*/
     }
     
     
@@ -51,12 +50,15 @@ public class Logger {
      * Uses Object.toString() for output to System.err. Prepends time
      * information (µs).
      *
+     * @param source
+     * @param locator
      * @param o
      */
     public static void log(Class source, String locator,Object o) {
         String oString = (null == o) ? "null" : source.getName()+"::"+locator+"::\t"+o.toString();
-        String micro = (new Long(System.nanoTime())).toString();
-        System.err.println(micro.substring(0, 6) + ": " + oString);
+        Logger.log(oString);
+        /*String micro = (new Long(System.nanoTime())).toString();*/
+        /*System.err.println(micro.substring(0, 6) + ": " + oString);
 
         try {
             PatternLayout layout = new PatternLayout("%d %p (%t) [%c] - %m%n");
@@ -70,6 +72,7 @@ public class Logger {
         }
         log4j.info(oString);
         log.info(oString);
+        */
     }
     
     
