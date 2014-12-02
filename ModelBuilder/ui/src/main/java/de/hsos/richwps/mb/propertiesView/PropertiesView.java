@@ -5,6 +5,7 @@ import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyDropdown;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldDouble;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldInteger;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldString;
 import de.hsos.richwps.mb.ui.ColorBorder;
@@ -188,6 +189,8 @@ public class PropertiesView extends TitledComponent {
                 return new PropertyDropdown(property);
             case Property.COMPONENT_TYPE_INTEGER:
                 return new PropertyTextFieldInteger(property);
+            case Property.COMPONENT_TYPE_DOUBLE:
+                return new PropertyTextFieldDouble(property);
         }
 
         return new PropertyTextFieldString(property);
@@ -200,7 +203,7 @@ public class PropertiesView extends TitledComponent {
      * @param propertyGroup
      * @param groupPanel
      */
-    protected void setupPropertyGroupTitledComponent(PropertyGroup propertyGroup, TitledComponent groupPanel) {
+    protected void setupPropertyGroupTitledComponent(PropertyGroup<? extends IObjectWithProperties> propertyGroup, TitledComponent groupPanel) {
         groupPanel.setTitleBold();
     }
 }

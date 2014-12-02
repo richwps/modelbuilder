@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
@@ -83,6 +84,22 @@ public class AppPropertiesView extends PropertiesView {
         }
         propertyComponentsListeningTo.clear();
 
+        // collect QoS target subgroups in order to style them later
+        qosTargetSubGroups = new LinkedList<>();
+        String qosGroup = ProcessProviderConfig.QOS_TARGETS_GROUP;
+        for (IObjectWithProperties aProperty : object.getProperties()) {
+            String aPropertyName = aProperty.getPropertiesObjectName();
+
+            if (aProperty instanceof PropertyGroup && aPropertyName.equals(qosGroup)) {
+
+                for (IObjectWithProperties property : aProperty.getProperties()) {
+                    if (property instanceof PropertyGroup) {
+                        qosTargetSubGroups.add(property.getPropertiesObjectName());
+                    }
+                }
+            }
+        }
+
         super.setObjectWithProperties(object);
     }
 
@@ -99,7 +116,6 @@ public class AppPropertiesView extends PropertiesView {
         } else {
 
             component = super.getComponentFor(property);
-
         }
 
         component.addPropertyChangedByUIListener(propertyUIChangeListener);
@@ -108,8 +124,10 @@ public class AppPropertiesView extends PropertiesView {
         return component;
     }
 
+    private LinkedList<String> qosTargetSubGroups;
+
     @Override
-    protected void setupPropertyGroupTitledComponent(PropertyGroup propertyGroup, TitledComponent groupPanel) {
+    protected void setupPropertyGroupTitledComponent(PropertyGroup<? extends IObjectWithProperties> propertyGroup, TitledComponent groupPanel) {
         super.setupPropertyGroupTitledComponent(propertyGroup, groupPanel);
 
         // nothing to do here
@@ -128,6 +146,17 @@ public class AppPropertiesView extends PropertiesView {
             if (isMetricGroup) {
                 groupPanel.resetTitleFontStyle();
             }
+        }
+
+        if (groupName.equals(ProcessProviderConfig.QOS_TARGETS_GROUP)) {
+            groupPanel.setTitleGradientColor2(AppConstants.QOS_TARGETS_BG_COLOR);
+            hasBrightBg = true;
+        }
+
+        if (qosTargetSubGroups.contains(groupName)) {
+            groupPanel.setTitleGradientColor2(AppConstants.QOS_TARGET_BG_COLOR);
+            groupPanel.resetTitleFontStyle();
+            hasBrightBg = true;
         }
 
         // Style port groups

@@ -8,6 +8,7 @@ import java.awt.Component;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 /**
  * Simple input for property values.
@@ -62,7 +63,9 @@ public abstract class PropertyTextField<E extends Object> extends AbstractProper
         if (property.isEditable()) {
             return this.textField;
         } else {
-            return new MultilineLabel(valueToString());
+            MultilineLabel label = new MultilineLabel(valueToString());
+            label.setBorder(new EmptyBorder(2, 2, 0, 2));
+            return label;
         }
 
     }

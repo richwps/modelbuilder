@@ -3,35 +3,35 @@ package de.hsos.richwps.mb.propertiesView.propertyComponents;
 import de.hsos.richwps.mb.properties.Property;
 
 /**
- * Swing Component for representing/editing Integer properties.
+ * Swing Component for representing/editing Double properties.
  *
  * @author dziegenh
  */
-public class PropertyTextFieldInteger extends PropertyTextField<Integer> {
+public class PropertyTextFieldDouble extends PropertyTextField<Double> {
 
-    public PropertyTextFieldInteger(Property<Integer> property) {
+    public PropertyTextFieldDouble(Property<Double> property) {
         super(property);
     }
 
     @Override
-    protected Integer parseValue(String value) {
+    protected Double parseValue(String value) {
         if (null == value) {
             return null;
         }
 
-        int intValue;
+        double parsedValue;
         try {
-            intValue = Integer.parseInt(value.trim());
+            parsedValue = Double.parseDouble(value.trim());
 
         } catch (NumberFormatException ex) {
             if (null == property.getValue()) {
                 return null;
             }
 
-            intValue = property.getValue();
+            parsedValue = property.getValue();
         }
 
-        return intValue;
+        return parsedValue;
     }
 
 }

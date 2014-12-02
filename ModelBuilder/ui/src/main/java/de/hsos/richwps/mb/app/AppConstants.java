@@ -202,6 +202,15 @@ public class AppConstants {
     public static String CAPTION_RECENTLY_USED = "Recently used: ";
 
     static boolean ENABLE_SUB_TREE_VIEW = false;
+    
+    /**
+     * BG color for targets group.
+     */
+    final static Color QOS_TARGETS_BG_COLOR = new Color(247, 231, 174);
+    /**
+     * BG color for a target sub group
+     */
+    final static Color QOS_TARGET_BG_COLOR = new Color(250, 240, 209);
 
     public enum PREFERENCES_TAB {
 
@@ -377,6 +386,8 @@ public class AppConstants {
     public final static String ICON_CLOSE_KEY = "richwps_icon_close";
     public final static String ICON_CLOSE_INACTIVE_KEY = "richwps_icon_close_inactive";
     public final static String ICON_SEARCH_KEY = "richwps_icon_search";
+    public final static String ICON_CHECK_KEY = "richwps_icon_check";
+    public final static String ICON_CHECK_FAVOURITE_KEY = "richwps_icon_check_favourite";
 
     /**
      * large icons directory/path

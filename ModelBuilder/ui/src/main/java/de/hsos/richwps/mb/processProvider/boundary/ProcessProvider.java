@@ -8,10 +8,13 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
+import de.hsos.richwps.mb.processProvider.control.QosConverter;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.sp.client.RDFException;
+import de.hsos.richwps.sp.client.ows.EUOM;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.Vocabulary;
 import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
@@ -19,6 +22,7 @@ import de.hsos.richwps.sp.client.ows.gettypes.Input;
 import de.hsos.richwps.sp.client.ows.gettypes.Network;
 import de.hsos.richwps.sp.client.ows.gettypes.Output;
 import de.hsos.richwps.sp.client.ows.gettypes.Process;
+import de.hsos.richwps.sp.client.ows.gettypes.QoSTarget;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
 import de.hsos.richwps.sp.client.ows.posttypes.PostBoundingBoxData;
 import de.hsos.richwps.sp.client.ows.posttypes.PostComplexData;
@@ -366,6 +370,12 @@ public class ProcessProvider {
         ProcessEntity processEntity = new ProcessEntity(spProcess.getWPS().getEndpoint(), spProcess.getIdentifier());
         processEntity.setOwsAbstract(spProcess.getAbstract());
         processEntity.setOwsTitle(spProcess.getTitle());
+
+        // add qos targets
+        PropertyGroup qosGroups = QosConverter.targetsToProperties(spProcess);
+        if (null != qosGroups) {
+            processEntity.setProperty(qosGroups.getPropertiesObjectName(), qosGroups);
+        }
 
         // add version as property
         String versionKey = ProcessEntity.PROPERTIES_KEY_VERSION;

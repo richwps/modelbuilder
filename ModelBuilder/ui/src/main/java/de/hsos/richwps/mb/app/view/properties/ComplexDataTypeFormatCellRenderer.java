@@ -8,7 +8,6 @@ import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -67,14 +66,15 @@ public class ComplexDataTypeFormatCellRenderer extends DefaultListCellRenderer {
                 boolean notNullAndEqual
                         = !oneIsNull && datatypeDescription.getFormats().contains(cdtValue);
 
+                // Highlight previously selected default format.
                 if(notNullAndEqual && cdtValue.equals(datatypeDescription.getDefaultFormat())) {
-                    // TODO set real color
-                    label.setBackground(Color.red);
+                    label.setBackground(new Color(0x0));
                 }
                 
                 if (bothNull || notNullAndEqual) {
                     label.setFont(label.getFont().deriveFont(Font.BOLD));
                     label.setForeground(AppConstants.SELECTION_BG_COLOR);
+                    label.setToolTipText("Supported format");
                 }
             }
 

@@ -247,6 +247,8 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_CLOSE_KEY, new ImageIcon(iconDir + "window-close-3.png", "close icon"));
         UIManager.put(AppConstants.ICON_CLOSE_INACTIVE_KEY, new ImageIcon(iconDir + "window-close-3_inactive.png", "close inactive icon"));
         UIManager.put(AppConstants.ICON_SEARCH_KEY, new ImageIcon(iconDir + "system-search-6.png", "search icon"));
+        UIManager.put(AppConstants.ICON_CHECK_KEY, new ImageIcon(iconDir + "dialog-clean.png", "check icon"));
+        UIManager.put(AppConstants.ICON_CHECK_FAVOURITE_KEY, new ImageIcon(iconDir + "dialog-clean-star.png", "check fav icon"));
 
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
 
