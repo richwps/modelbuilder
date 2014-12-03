@@ -11,7 +11,6 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.ui.UiHelper;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -23,7 +22,7 @@ import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
 
 /**
- * Creates the app components and establishes connections between them.
+ * Creates the app components and connects them.
  *
  * @author dziegenh
  */
@@ -38,9 +37,8 @@ public class AppSetup {
 
         app.frame = new AppFrame(AppConstants.FRAME_TITLE);
         AppSplashScreen splash = new AppSplashScreen();
-        splash.showProgess(0);
-
-        splash.showMessage("Loading config");
+        
+        splash.showMessageAndProgress("Loading config", 0);
         {
             String hostKey = AppConfig.CONFIG_KEYS.HTTPPROXY_S_HOST.name();
             String portKey = AppConfig.CONFIG_KEYS.HTTPPROXY_S_PORT.name();
@@ -51,131 +49,135 @@ public class AppSetup {
             String port = AppConfig.getConfig().get(portKey, "");
             System.setProperty("http.proxyPort", port);
         }
-        splash.showProgess(7);
+        
+        splash.showMessageAndProgress("Loading resources", 7);
+        {
+            // Load colors
+            String[] bgColorKeys = new String[]{
+                "CheckBoxMenuItem.selectionBackground",
+                "ComboBox.selectionBackground",
+                "EditorPane.selectionBackground",
+                "List.selectionBackground",
+                "Menu.selectionBackground",
+                "MenuItem.selectionBackground",
+                "RadioButtonMenuItem.selectionBackground",
+                "PasswordField.selectionBackground",
+                "ProgressBar.foreground",
+                "ProgressBar.selectionBackground",
+                "Table.selectionBackground",
+                "TextArea.selectionBackground",
+                "TextField.selectionBackground",
+                "TextPane.selectionBackground",
+                "Tree.selectionBackground"
+            };
+            for (String key : bgColorKeys) {
+                UIManager.put(key, AppConstants.SELECTION_BG_COLOR);
+            }
+            String[] fgColorKeys = new String[]{
+                "CheckBoxMenuItem.selectionForeground",
+                "ComboBox.selectionForeground",
+                "EditorPane.selectionForeground",
+                "List.selectionForeground",
+                "Menu.selectionForeground",
+                "MenuItem.selectionForeground",
+                "RadioButtonMenuItem.selectionForeground",
+                "PasswordField.selectionForeground",
+                "ProgressBar.background",
+                "ProgressBar.selectionForeground",
+                "Table.selectionForeground",
+                "TextArea.selectionForeground",
+                "TextField.selectionForeground",
+                "TextPane.selectionForeground",
+                "Tree.selectionForeground"
+            };
+            for (String key : fgColorKeys) {
+                UIManager.put(key, AppConstants.SELECTION_FG_COLOR);
+            }
 
-        splash.showMessage("Loading resources");
+            // Load icons etc. into UIManager
+            loadIcons();
 
-        // Load colors
-        String[] bgColorKeys = new String[]{
-            "CheckBoxMenuItem.selectionBackground",
-            "ComboBox.selectionBackground",
-            "EditorPane.selectionBackground",
-            "List.selectionBackground",
-            "Menu.selectionBackground",
-            "MenuItem.selectionBackground",
-            "RadioButtonMenuItem.selectionBackground",
-            "PasswordField.selectionBackground",
-            "ProgressBar.foreground",
-            "ProgressBar.selectionBackground",
-            "Table.selectionBackground",
-            "TextArea.selectionBackground",
-            "TextField.selectionBackground",
-            "TextPane.selectionBackground",
-            "Tree.selectionBackground"
-        };
-        for (String key : bgColorKeys) {
-            UIManager.put(key, AppConstants.SELECTION_BG_COLOR);
+            // Optional Debug Logging.
+            if (debugMode) {
+                AppConstants.DEBUG_MODE = true;
+                AppEventService.getInstance().registerObserver(new IAppEventObserver() {
+                    @Override
+                    public void eventOccured(AppEvent e) {
+                        de.hsos.richwps.mb.Logger.log(e);
+                    }
+                });
+            }
+
+            // Configure MB components before initialisation
+            GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
+            GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
+
+            // Setup monitor client
+            for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
+                app.getProcessMetricProvider().addMonitorKeyTranslation(keyTranslation[0], keyTranslation[1]);
+            }
+            app.getProcessMetricProvider().setMainPropertyGroupName(AppConstants.MONITOR_DATA);
+
+            // Load last used filename
+            String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
+            File lastFile = new File(lastFilename);
+            AppAction recentFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
+            recentFileAction.setEnabled(lastFile.exists());
+            if (lastFile.exists()) {
+                recentFileAction.setName(lastFilename);
+            }
         }
-        String[] fgColorKeys = new String[]{
-            "CheckBoxMenuItem.selectionForeground",
-            "ComboBox.selectionForeground",
-            "EditorPane.selectionForeground",
-            "List.selectionForeground",
-            "Menu.selectionForeground",
-            "MenuItem.selectionForeground",
-            "RadioButtonMenuItem.selectionForeground",
-            "PasswordField.selectionForeground",
-            "ProgressBar.background",
-            "ProgressBar.selectionForeground",
-            "Table.selectionForeground",
-            "TextArea.selectionForeground",
-            "TextField.selectionForeground",
-            "TextPane.selectionForeground",
-            "Tree.selectionForeground"
-        };
-        for (String key : fgColorKeys) {
-            UIManager.put(key, AppConstants.SELECTION_FG_COLOR);
-        }
 
-        // Load icons etc. into UIManager
-        loadIcons();
+        splash.showMessageAndProgress("Creating window", 15);
+        {
+            // Create frame.
+            app.getFrame().init(app);
+            app.getFrame().setModellingEnabled(false);
+            app.getFrame().setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
 
-        // Optional Debug Logging.
-        if (debugMode) {
-            AppConstants.DEBUG_MODE = true;
-            AppEventService.getInstance().registerObserver(new IAppEventObserver() {
+            // Delegate frame closing action
+            app.getFrame().addWindowListener(new WindowAdapter() {
                 @Override
-                public void eventOccured(AppEvent e) {
-                    de.hsos.richwps.mb.Logger.log(e);
+                public void windowClosing(WindowEvent e) {
+                    app.getActionProvider().fire(AppActionProvider.APP_ACTIONS.EXIT_APP);
                 }
             });
         }
 
-        // Configure MB components before initialisation
-        GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
-        GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
-
-        // Setup monitor client
-        for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
-            app.getProcessMetricProvider().addMonitorKeyTranslation(keyTranslation[0], keyTranslation[1]);
-        }
-        app.getProcessMetricProvider().setMainPropertyGroupName(AppConstants.MONITOR_DATA);
-
-        // Load last used filename
-        String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
-        File lastFile = new File(lastFilename);
-        AppAction recentFileAction = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.OPEN_RECENT_FILE);
-        recentFileAction.setEnabled(lastFile.exists());
-        if (lastFile.exists()) {
-            recentFileAction.setName(lastFilename);
-        }
-
-        splash.showMessageAndProgress("Creating window", 15);
-
-        // Create frame.
-        app.getFrame().init(app);
-        app.getFrame().setModellingEnabled(false);
-        app.getFrame().setIconImage(((ImageIcon) UIManager.getIcon(AppConstants.ICON_MBLOGO_KEY)).getImage());
-
-        // Delegate frame closing action
-        app.getFrame().addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                app.getActionProvider().fire(AppActionProvider.APP_ACTIONS.EXIT_APP);
-            }
-        });
-
         splash.showMessageAndProgress("Initialising tooltips", 30);
+        {
+            // Setup ToolTip.
+            ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
+            ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
+            UIManager.put("ToolTip.background", AppConstants.TOOLTIP_BG_COLOR);
 
-        // Setup ToolTip.
-        ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
-        ToolTipManager.sharedInstance().setDismissDelay(AppConstants.TOOLTIP_DISMISS_DELAY);
-        UIManager.put("ToolTip.background", AppConstants.TOOLTIP_BG_COLOR);
+            ProcessPort.TOOLTIP_STYLE_INPUT = AppConstants.TOOLTIP_CSS_FOR_INPUTS;
+            ProcessPort.TOOLTIP_STYLE_OUTPUT = AppConstants.TOOLTIP_CSS_FOR_OUTPUTS;
 
-        ProcessPort.TOOLTIP_STYLE_INPUT = AppConstants.TOOLTIP_CSS_FOR_INPUTS;
-        ProcessPort.TOOLTIP_STYLE_OUTPUT = AppConstants.TOOLTIP_CSS_FOR_OUTPUTS;
-
-        ProcessEntity.toolTipCssForMainContainer = AppConstants.TOOLTIP_CSS_FOR_MAIN_CONTAINER;
+            ProcessEntity.toolTipCssForMainContainer = AppConstants.TOOLTIP_CSS_FOR_MAIN_CONTAINER;
+        }
 
         splash.showMessageAndProgress("Initialising user interactions", 45);
-
-        app.initDragAndDrop();
-        app.getPreferencesDialog().init();
-        app.getGraphView().init();
+        {
+            app.initDragAndDrop();
+            app.getPreferencesDialog().init();
+            app.getGraphView().init();
+        }
 
         splash.showMessageAndProgress("Requesting processes", 60);
+        {
+            // connect to SP and fill tree with services etc. received from SP
+            String loadRemotesKey = AppConfig.CONFIG_KEYS.REMOTES_B_DISCOVER_ON_START.name();
+            boolean loadRemotesDefault = AppConstants.PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT;
+            boolean loadRemotes = AppConfig.getConfig().getBoolean(loadRemotesKey, loadRemotesDefault);
+            app.fillMainTree(loadRemotes);
 
-        // connect to SP and fill tree with services etc. received from SP
-        String loadRemotesKey = AppConfig.CONFIG_KEYS.REMOTES_B_DISCOVER_ON_START.name();
-        boolean loadRemotesDefault = AppConstants.PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT;
-        boolean loadRemotes = AppConfig.getConfig().getBoolean(loadRemotesKey, loadRemotesDefault);
-        app.fillMainTree(loadRemotes);
-
-        AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_SERVER, AppConstants.INFOTAB_ID_SERVER);
+            AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_SERVER, AppConstants.INFOTAB_ID_SERVER);
+        }
 
         splash.showMessageAndProgress("ModelBuilder is ready!", 100);
-
         splash.setVisible(false);
+        
         app.getFrame().setVisible(true);
 
         // Validate frame location and reset it if necessary.

@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
@@ -22,10 +23,13 @@ class SemanticProxyTabs extends JTabbedPane {
 
     HashMap<String, SpSearchresultTab> searchResultTabs;
     HashMap<String, SpTabTitle> searchResultTabComponents;
+    
     private final SemanticProxyInteractionComponents interactionComponents;
 
     private boolean appHasModel = false;
 
+    
+    
     public SemanticProxyTabs(SemanticProxyInteractionComponents components) {
         this.interactionComponents = components;
 
@@ -83,9 +87,23 @@ class SemanticProxyTabs extends JTabbedPane {
         }
 
         int numResults = tab.search();
-        String title = String.format(titleTemplate, query, numResults);
-        tabComponent.setTitle(title);
-        setSelectedComponent(tab);
+
+        // check for errors
+        if (numResults < 0) {
+            removeTab(query);
+            JOptionPane.showMessageDialog(
+                    this.interactionComponents.parent,
+                    "Error while performing SemanticProxy search."
+                    + "\nSee SemenaticProxy tab for details.",
+                    "SemanticProxy Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+        } else {
+            String title = String.format(titleTemplate, query, numResults);
+            tabComponent.setTitle(title);
+            setSelectedComponent(tab);
+        }
 
         return query;
     }

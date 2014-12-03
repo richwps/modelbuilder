@@ -1,43 +1,31 @@
 package de.hsos.richwps.mb.processProvider.boundary;
 
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
-import de.hsos.richwps.mb.processProvider.control.QosConverter;
+import de.hsos.richwps.mb.processProvider.control.EntityConverter;
+import de.hsos.richwps.mb.processProvider.control.MonitorDataConverter;
+import de.hsos.richwps.mb.processProvider.control.ProcessSearch;
+import de.hsos.richwps.mb.processProvider.control.Publisher;
+import de.hsos.richwps.mb.processProvider.control.ServerProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
-import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
-import de.hsos.richwps.mb.properties.Property;
-import de.hsos.richwps.mb.properties.PropertyGroup;
-import de.hsos.richwps.sp.client.RDFException;
-import de.hsos.richwps.sp.client.ows.EUOM;
+import de.hsos.richwps.mb.processProvider.exception.ProcessMetricProviderNotAvailable;
+import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.Vocabulary;
-import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
 import de.hsos.richwps.sp.client.ows.gettypes.Network;
 import de.hsos.richwps.sp.client.ows.gettypes.Output;
 import de.hsos.richwps.sp.client.ows.gettypes.Process;
-import de.hsos.richwps.sp.client.ows.gettypes.QoSTarget;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
-import de.hsos.richwps.sp.client.ows.posttypes.PostBoundingBoxData;
-import de.hsos.richwps.sp.client.ows.posttypes.PostComplexData;
-import de.hsos.richwps.sp.client.ows.posttypes.PostInAndOutputForm;
-import de.hsos.richwps.sp.client.ows.posttypes.PostInput;
-import de.hsos.richwps.sp.client.ows.posttypes.PostLiteralData;
-import de.hsos.richwps.sp.client.ows.posttypes.PostOutput;
-import de.hsos.richwps.sp.client.ows.posttypes.PostProcess;
-import de.hsos.richwps.sp.client.ows.posttypes.PostWPS;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 /**
  * Connects to the semantic proxy and receives/provides a list of available
@@ -49,10 +37,14 @@ public class ProcessProvider {
 
     private SPClient spClient;
     private Network net;
-    private WPS[] wpss;
+//    private WPS[] wpss;
     private String url;
 
     private final ProcessMetricProvider processMetricProvider;
+    private ProcessSearch processSearch;
+    private MonitorDataConverter monitorDataConverter;
+    private ServerProvider serverProvider;
+    private Publisher publisher;
 
     /**
      * Constructor, creates the SP client.
@@ -61,7 +53,6 @@ public class ProcessProvider {
         this.processMetricProvider = processMetricProvider;
 
         spClient = SPClient.getInstance();
-        this.wpss = new WPS[]{};
     }
 
     public String getUrl() {
@@ -88,6 +79,7 @@ public class ProcessProvider {
 
         try {
             net = spClient.getNetwork();
+            getServerProvider().setNet(net);
             spClient.clearCache();
         } catch (Exception ex) {
             net = null;
@@ -96,6 +88,14 @@ public class ProcessProvider {
         }
 
         return true;
+    }
+
+    ServerProvider getServerProvider() {
+        if (null == this.serverProvider) {
+            this.serverProvider = new ServerProvider();
+        }
+
+        return this.serverProvider;
     }
 
     /**
@@ -108,7 +108,7 @@ public class ProcessProvider {
         return null != net;
     }
 
-    private void fireSpReceiveExceptionAsAppEvent(Exception ex) {
+    protected void fireSpReceiveExceptionAsAppEvent(Exception ex) {
         String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, ex.getClass().getSimpleName(), ex.getMessage());
         AppEventService.getInstance().fireAppEvent(msg, this);
     }
@@ -116,8 +116,28 @@ public class ProcessProvider {
     public void clear() {
         if (null != spClient) {
             spClient.clearCache();
+            getServerProvider().clearCache();
             this.net = null;
         }
+    }
+
+    /**
+     * Returns a fully loaded process that matches the endpoint and ows
+     * identifier. If an error occurs while loading the process, a partially
+     * loaded process is returned.
+     *
+     * @param process
+     * @return
+     */
+    public ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process) {
+        process = process.clone();
+
+        ProcessEntity loadedProcess = getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+        if (null != loadedProcess) {
+            process = loadedProcess;
+        }
+
+        return process;
     }
 
     /**
@@ -132,58 +152,72 @@ public class ProcessProvider {
 
         ProcessEntity process = null;
 
-        // find desired endpoint (server)
-        for (WPS wps : wpss) {
-            try {
-                if (server.equals(wps.getEndpoint())) {
+        try {
+            // find desired endpoint (server)
+            for (WPS wps : getServerProvider().getWPSs()) {
+                try {
+                    if (server.equals(wps.getEndpoint())) {
 
-                    for (Process spProcess : wps.getProcesses()) {
+                        for (Process spProcess : wps.getProcesses()) {
 
-                        if (spProcess.getIdentifier().equals(identifier)) {
+                            if (spProcess.getIdentifier().equals(identifier)) {
 
-                            // Map process attributes
-                            process = createProcessEntity(spProcess);
+                                // if any error occurs, the "fully loaded" flag will not be set
+                                boolean loadError = false;
 
-                            // Map input ports
-                            try {
-                                for (Input spInput : spProcess.getInputs()) {
-                                    ProcessPort inPort = new ProcessPort(getDatatype(spInput.getInputFormChoice()));
-                                    inPort.setOwsIdentifier(spInput.getIdentifier());
-                                    inPort.setOwsAbstract(spInput.getAbstract());
-                                    inPort.setOwsTitle(spInput.getTitle());
-                                    process.addInputPort(inPort);
+                                // Map process attributes
+                                process = EntityConverter.createProcessEntity(spProcess);
+
+                                // Map input ports
+                                try {
+                                    for (Input spInput : spProcess.getInputs()) {
+                                        ProcessPortDatatype datatype = EntityConverter.getDatatype(spInput.getInputFormChoice());
+                                        ProcessPort inPort = new ProcessPort(datatype);
+                                        inPort.setOwsIdentifier(spInput.getIdentifier());
+                                        inPort.setOwsAbstract(spInput.getAbstract());
+                                        inPort.setOwsTitle(spInput.getTitle());
+                                        process.addInputPort(inPort);
+                                    }
+                                } catch (Exception ex) {
+                                    loadError = true;
+                                    fireSpReceiveExceptionAsAppEvent(ex);
                                 }
-                            } catch (Exception ex) {
-                                fireSpReceiveExceptionAsAppEvent(ex);
-                            }
 
-                            // Map output ports
-                            try {
-                                for (Output spOutput : spProcess.getOutputs()) {
-                                    ProcessPort outPort = new ProcessPort(getDatatype(spOutput.getOutputFormChoice()));
-                                    outPort.setOwsIdentifier(spOutput.getIdentifier());
-                                    outPort.setOwsAbstract(spOutput.getAbstract());
-                                    outPort.setOwsTitle(spOutput.getTitle());
-                                    process.addOutputPort(outPort);
+                                // Map output ports
+                                try {
+                                    for (Output spOutput : spProcess.getOutputs()) {
+                                        ProcessPortDatatype datatype = EntityConverter.getDatatype(spOutput.getOutputFormChoice());
+                                        ProcessPort outPort = new ProcessPort(datatype);
+                                        outPort.setOwsIdentifier(spOutput.getIdentifier());
+                                        outPort.setOwsAbstract(spOutput.getAbstract());
+                                        outPort.setOwsTitle(spOutput.getTitle());
+                                        process.addOutputPort(outPort);
+                                    }
+                                } catch (Exception ex) {
+                                    loadError = true;
+                                    fireSpReceiveExceptionAsAppEvent(ex);
                                 }
-                            } catch (Exception ex) {
-                                fireSpReceiveExceptionAsAppEvent(ex);
+
+                                // Add metric properties
+                                getMonitorDataConverter().addProcessMetrics(process);
+
+                                // process found, return to stop search
+                                process.setIsFullyLoaded(!loadError);
+
+                                return process;
                             }
-
-                            // Add metric properties
-                            addProcessMetrics(process);
-
-                            // process found, return to stop search
-                            process.setIsFullyLoaded(true);
-                            return process;
                         }
-                    }
 
+                    }
+                } catch (Exception ex) {
+                    fireSpReceiveExceptionAsAppEvent(ex);
                 }
-            } catch (Exception ex) {
-                fireSpReceiveExceptionAsAppEvent(ex);
             }
+
+        } catch (Exception ex) {
+            fireSpReceiveExceptionAsAppEvent(ex);
         }
+
         return null;
     }
 
@@ -192,36 +226,41 @@ public class ProcessProvider {
 
         // indicate error occurences but don't abort loading servers.
         // (errors are handled after the loading is done)
-        boolean rdfError = false;
+        String errorMsg = null;
+        String errorMsgType = null;
 
         if (null != net) {
+            WPS[] wpss = null;
             try {
-                wpss = net.getWPSs();
+                wpss = getServerProvider().getWPSs();
             } catch (Exception ex) {
-                rdfError = true;
+                errorMsg = ex.getMessage();
+                errorMsgType = ex.getClass().getSimpleName();
             }
 
-            if (!rdfError) {
+            if (null != wpss) {
                 for (WPS wps : wpss) {
                     try {
                         WpsServer server = new WpsServer(wps.getEndpoint());
                         for (Process process : wps.getProcesses()) {
-                            ProcessEntity processEntity = createProcessEntity(process);
+                            ProcessEntity processEntity = EntityConverter.createProcessEntity(process);
                             server.addProcess(processEntity);
                         }
 
                         servers.add(server);
 
                     } catch (Exception ex) {
-                        rdfError = true;
+                        errorMsg = ex.getMessage();
+                        errorMsgType = ex.getClass().getSimpleName();
                     }
                 }
             }
         }
 
         // handle occured errors
-        if (rdfError) {
-            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, this);
+        if (null != errorMsg) {
+            String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, "Exception", errorMsg);
+            AppEventService.getInstance().fireAppEvent(msg, this);
         }
 
         return servers;
@@ -233,299 +272,77 @@ public class ProcessProvider {
      * @return
      */
     public Collection<String> getAllServersFromSemanticProxy() {
-        LinkedList<String> servers = new LinkedList<>();
-
-        // indicate error occurences but don't abort loading servers.
-        // (errors are handled after the loading is done)
-        boolean rdfError = false;
-
-        if (null != net) {
-            try {
-                wpss = net.getWPSs();
-            } catch (Exception ex) {
-                rdfError = true;
-            }
-
-            if (!rdfError) {
-                for (WPS wps : wpss) {
-                    try {
-                        servers.add(wps.getEndpoint());
-                    } catch (RDFException ex) {
-                        rdfError = true;
-                    }
-                }
-            }
-        }
-
-        // handle occured errors
-        if (rdfError) {
-            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, this);
-        }
-
-        return servers;
-    }
-
-    private ProcessPortDatatype getDatatype(InAndOutputForm inputFormChoice) throws UnsupportedWpsDatatypeException {
-        switch (inputFormChoice.getDataType()) {
-            case InAndOutputForm.LITERAL_TYPE:
-                return ProcessPortDatatype.LITERAL;
-            case InAndOutputForm.COMPLEX_TYPE:
-                return ProcessPortDatatype.COMPLEX;
-            case InAndOutputForm.BOUNDING_BOX_TYPE:
-                return ProcessPortDatatype.BOUNDING_BOX;
-        }
-
-        throw new UnsupportedWpsDatatypeException(inputFormChoice.getDataType());
+        return getServerProvider().getAllServersFromSemanticProxy();
     }
 
     public String[] getPersistedRemotes() {
-        // TODO let app set these values !!!
-        Preferences preferences = AppConfig.getConfig();
-        String persistKeyBase = AppConfig.CONFIG_KEYS.REMOTES_S_URL.name();
-        String persistKeyCount = persistKeyBase + "_COUNT";
-        String persistKeyFormat = persistKeyBase + "_%d";
-
-        String currentItem = preferences.get(persistKeyBase, "");
-        int count = preferences.getInt(persistKeyCount, 0);
-
-        boolean currentItemAvailable = null != currentItem && !currentItem.isEmpty();
-        boolean currentItemAdded = !currentItemAvailable;
-
-        // load and add persisted items
-        List<String> loadedItems = new LinkedList<>();
-        for (int c = 0; c < count; c++) {
-            String key = String.format(persistKeyFormat, c);
-            String value = preferences.get(key, "").trim();
-
-            if (null != value) {
-                // avoid duplicates
-                if (!loadedItems.contains(value)) {
-                    loadedItems.add(value);
-                }
-
-                // remember if the currently used item has been added
-                if (value.equals(currentItem)) {
-                    currentItemAdded = true;
-                }
-            }
-        }
-
-        // assure the list contains the current item after loading
-        if (!currentItemAdded) {
-            loadedItems.add(currentItem);
-        }
-
-        return loadedItems.toArray(new String[]{});
+        return getServerProvider().getPersistedRemotes();
     }
 
     public String[] getAllServers() {
-        Collection<String> spServers = getAllServersFromSemanticProxy();
-        String[] remotes = getPersistedRemotes();
-
-        String[] servers = new String[spServers.size() + remotes.length];
-        int i = 0;
-
-        // add SP servers
-        for (String server : spServers) {
-            servers[i++] = server;
-        }
-
-        // add persisted remotes
-        for (String server : remotes) {
-            servers[i++] = server;
-        }
-
-        return servers;
+        return getServerProvider().getAllServers();
     }
 
-    public ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process) {
-        process = process.clone();
-
-        ProcessEntity loadedProcess = getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
-        if (null != loadedProcess) {
-            process = loadedProcess;
+    protected MonitorDataConverter getMonitorDataConverter() {
+        if (null == monitorDataConverter) {
+            monitorDataConverter = new MonitorDataConverter();
         }
 
-        addProcessMetrics(process);
-        process.setIsFullyLoaded(true);
-
-        return process;
+        return monitorDataConverter;
     }
 
-    private void addProcessMetrics(ProcessEntity process) {
-
-        // TODO re-enable process metrics when monitor client is faster !!! (currently THE bottleneck!)
-//        // get metric properties group
-//        String server = process.getServer();
-//        String identifier = process.getOwsIdentifier();
-//        PropertyGroup processMetric = processMetricProvider.getProcessMetric(server, identifier);
-//
-//        // add metric properties group to the process
-//        String metricPropertyName = processMetric.getPropertiesObjectName();
-//        processMetric.setIsTransient(true);
-//        process.setProperty(metricPropertyName, processMetric);
-    }
-
-    static ProcessEntity createProcessEntity(Process spProcess) throws Exception {
-        ProcessEntity processEntity = new ProcessEntity(spProcess.getWPS().getEndpoint(), spProcess.getIdentifier());
-        processEntity.setOwsAbstract(spProcess.getAbstract());
-        processEntity.setOwsTitle(spProcess.getTitle());
-
-        // add qos targets
-        PropertyGroup qosGroups = QosConverter.targetsToProperties(spProcess);
-        if (null != qosGroups) {
-            processEntity.setProperty(qosGroups.getPropertiesObjectName(), qosGroups);
+    protected ProcessSearch getProcessSearch() {
+        if (null == processSearch && null != spClient) {
+            processSearch = new ProcessSearch(spClient);
         }
 
-        // add version as property
-        String versionKey = ProcessEntity.PROPERTIES_KEY_VERSION;
-        String versionType = Property.COMPONENT_TYPE_TEXTFIELD;
-        String versionValue = spProcess.getProcessVersion();
-        Property versionProperty = new Property(versionKey, versionType, versionValue);
-        processEntity.setProperty(versionKey, versionProperty);
-
-        return processEntity;
+        return processSearch;
     }
 
+    /**
+     * Returns a list containing matching processes. The list is empty if no
+     * processes were found. If any error occurs, null is returned and the
+     * exception message is shown in the SP InfoTab.
+     *
+     * @param query
+     * @return
+     */
     public List<ProcessEntity> getProcessesByKeyword(String query) {
-        List<ProcessEntity> processes = new LinkedList<>();
-
-        Process[] searchResult = new Process[]{};
-
         try {
-            searchResult = spClient.searchProcessByKeyword(query);
-        } catch (Exception ex) {
-            Logger.log("Error searching process at SP: " + ex);
-        }
+            ProcessSearch search = getProcessSearch();
 
-        for (Process aProcess : searchResult) {
-            try {
-                ProcessEntity processEntity = createProcessEntity(aProcess);
-                processes.add(processEntity);
-
-            } catch (Exception ex) {
-                Logger.log("Error receiving process from SP: " + ex);
+            if (null == search) {
+                throw new SpClientNotAvailableException();
             }
+
+            return getProcessSearch().getProcessesByKeyword(query);
+
+        } catch (SpClientNotAvailableException ex) {
+            fireSpReceiveExceptionAsAppEvent(ex);
         }
 
-        return processes;
+        return null;
+    }
+
+    protected Publisher getPublisher() {
+        if (null == this.publisher) {
+            this.publisher = new Publisher();
+        }
+
+        return this.publisher;
     }
 
     public void publishProcess(ProcessEntity process) {
-        String server = process.getServer();
+        WPS[] wpss = null;
 
         try {
-
-            WPS wps = null;
-            for (WPS aWps : this.wpss) {
-                if (aWps.getEndpoint().equals(server)) {
-                    wps = aWps;
-                }
-            }
-
-            PostWPS postWps = new PostWPS();
-            // TODO handle non-existing WPS ! (->postWps)
-            if (null == wps) {
-//                PostWPS postWPS = new PostWPS();
-//                postWPS.setEndpoint(new URL(server));
-//                postWPS.setRichWPSEndpoint(new URL(wps.getRichWPSEndpoint()));
-
-            } else {
-                postWps.setRdfId(wps.getRDFID());
-            }
-
-            PostProcess postProcess = new PostProcess();
-            postProcess.setWps(postWps);
-            postProcess.setIdentifier(process.getOwsIdentifier());
-            postProcess.setBstract(process.getOwsAbstract());
-            postProcess.setTitle(process.getOwsTitle());
-
-            Object value;
-            value = process.getPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION);
-            postProcess.setProcessVersion((String) value);
-
-            ArrayList<PostInput> postInputs = new ArrayList<>();
-
-            for (ProcessPort aPort : process.getInputPorts()) {
-                PostInput postPort = new PostInput();
-                postPort.setBstract(aPort.getOwsAbstract());
-                postPort.setIdentifier(aPort.getOwsIdentifier());
-                postPort.setTitle(aPort.getOwsTitle());
-
-//                value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
-                value = new Integer(0);
-                postPort.setMaxOcc((int) value);
-//
-//                value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
-                postPort.setMinOcc((int) value);
-                // TODO set max mb !!
-                value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
-//                    postPort.setOcc((int) value);
-
-                PostInAndOutputForm datatype = null;
-                switch (aPort.getDatatype()) {
-                    case LITERAL:
-                        datatype = new PostLiteralData();
-                        // TODO set default value !
-                        break;
-                    case COMPLEX:
-                        datatype = new PostComplexData();
-                        // TODO set Format(s) !!
-                        break;
-                    case BOUNDING_BOX:
-                        datatype = new PostBoundingBoxData();
-                        break;
-                }
-
-                if (null != datatype) {
-                    postPort.setPostInputFormChoice(datatype);
-                }
-
-                postInputs.add(postPort);
-            }
-
-            postProcess.setInputs(postInputs);
-
-            ArrayList<PostOutput> postOutputs = new ArrayList<>();
-
-            for (ProcessPort aPort : process.getOutputPorts()) {
-                PostOutput postPort = new PostOutput();
-                postPort.setBstract(aPort.getOwsAbstract());
-                postPort.setIdentifier(aPort.getOwsIdentifier());
-                postPort.setTitle(aPort.getOwsTitle());
-
-                // TODO set max mb !!
-                value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
-//                    postPort.setOcc((int) value);
-
-                PostInAndOutputForm datatype = null;
-                switch (aPort.getDatatype()) {
-                    case LITERAL:
-                        datatype = new PostLiteralData();
-                        // TODO set default value !
-                        break;
-                    case COMPLEX:
-                        datatype = new PostComplexData();
-                        // TODO set Format(s) !!
-                        break;
-                    case BOUNDING_BOX:
-                        datatype = new PostBoundingBoxData();
-                        break;
-                }
-
-                if (null != datatype) {
-                    postPort.setPostOutputFormChoice(datatype);
-                }
-
-                postOutputs.add(postPort);
-            }
-            postProcess.setOutputs(postOutputs);
-
-            spClient.postProcess(postProcess);
-
+            wpss = getServerProvider().getWPSs();
         } catch (Exception ex) {
+            // TODO handle exception
             Logger.log(ex);
         }
+
+        getPublisher().publishProcess(wpss, process);
     }
 
 }
