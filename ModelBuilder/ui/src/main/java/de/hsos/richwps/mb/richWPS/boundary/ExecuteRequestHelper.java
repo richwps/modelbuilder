@@ -100,8 +100,8 @@ public class ExecuteRequestHelper {
     /**
      * Add processs inputs to a request.
      *
-     * @param ExecuteRequestDTO with serverid and processid.
-     * @return ExecuteRequestDTO with list of input specifiers.
+     * @param request with serverid and processid.
+     * @return request with list of input specifiers.
      * @see IInputSpecifier
      */
     void addInputs(DescribeRequest request, ProcessDescriptionType process) {

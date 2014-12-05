@@ -6,6 +6,7 @@ application/geotiff,,
 application/dbase,,
 application/remap,,
 application/x-erdas-hfa,,
+application/x-netcdf,,base64
 application/x-netcdf,,
 application/dgn,,
 image/jpeg,,
@@ -36,6 +37,8 @@ image/png,,base64
 application/x-geotiff,,base64
 application/hdf4-eos,,base64
 text/plain,,base64
+text/xml,http://schemas.opengis.net/om/2.0/observation.xsd,
+text/xml,http://schemas.opengis.net/om/1.0.0/om.xsd,
 text/xml,http://schemas.opengis.net/gml/3.1.1/base/feature.xsd,
 text/xml,http://schemas.opengis.net/gml/3.1.1/base/feature.xsd,
 text/xml,http://schemas.opengis.net/gml/3.1.0/base/feature.xsd,
