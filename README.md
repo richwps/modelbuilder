@@ -6,8 +6,8 @@ The ModelBuilder is a graphical tool for easy OWS orchestration. It centers arou
 # Usage
 
 1. build [RichWPS commons](https://github.com/richwps/commons)
-2. build [SemanticProxyClient](https://github.com/richwps/semanticproxy)
-3. build [MonitorClient](https://github.com/richwps/RichWPS-MonitorClient)
+2. build [RichWPS SemanticProxy Client](https://github.com/richwps/semanticproxy/tree/master/SemanticProxyClient)
+3. build [RichWPS Monitor Client](https://github.com/richwps/monitor/tree/master/client)
 4. `mvn clean install`
 
 # Development
