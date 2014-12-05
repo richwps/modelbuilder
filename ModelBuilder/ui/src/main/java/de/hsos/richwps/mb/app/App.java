@@ -40,6 +40,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -109,6 +110,8 @@ public class App {
                 // TODO create settings
                 processMetricProvider = new ProcessMetricProvider("http://localhost:1111");
             } catch (MalformedURLException ex) {
+                showErrorMessage(ex.getMessage());
+            } catch (Exception ex) {
                 showErrorMessage(ex.getMessage());
             }
         }

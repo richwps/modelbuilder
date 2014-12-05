@@ -1,13 +1,13 @@
 package de.hsos.richwps.mb.monitor.boundary;
 
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientImpl;
-import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessMetric;
+import de.hsos.ecs.richwps.wpsmonitor.client.http.WpsMonitorRequester;
+import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsMetricResource;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.ui.UiHelper;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,8 +25,12 @@ public class ProcessMetricProvider {
 
     private String mainPropertyGroupName = "monitor data";
 
-    public ProcessMetricProvider(String url) throws MalformedURLException {
-        client = new WpsMonitorClientImpl(new URL(url));
+    public ProcessMetricProvider(String url) throws Exception {
+        //FIXME as intended?
+        com.google.gson.Gson gson = new com.google.gson.Gson();
+        WpsMonitorRequester request;
+        request = new WpsMonitorRequester(new URL(url), gson);
+        client = new WpsMonitorClientImpl(new URL(url), request);
         translations = new HashMap<>();
     }
 
@@ -52,21 +56,21 @@ public class ProcessMetricProvider {
             WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
 
             // add metrics sub groups
-            for (Map.Entry<String, WpsProcessMetric> aMetric : wpsProcess.getMetrics().entrySet()) {
+            for (Map.Entry<String, WpsMetricResource> aMetric : wpsProcess.getMetrics().entrySet()) {
                 PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(translateMonitorKey(aMetric.getKey()));
 
                 // add metric values to sub group as properties
-                for (Map.Entry<String, Number> aMetricValue : aMetric.getValue().getData().entrySet()) {
+                //TODO adjust API usage.
+                /*for (Map.Entry<String, Number> aMetricValue : aMetric.getValue()..getData().entrySet()) {
 
-                    // create property
-                    String propertyName = translateMonitorKey(aMetricValue.getKey());
-                    String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
-                    String propertyValue = aMetricValue.getValue().toString();
-                    Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
+                 // create property
+                 String propertyName = translateMonitorKey(aMetricValue.getKey());
+                 String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
+                 String propertyValue = aMetricValue.getValue().toString();
+                 Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
 
-                    subGroup.addObject(property);
-                }
-
+                 subGroup.addObject(property);
+                 }*/
                 groups.addObject(subGroup);
             }
         } catch (Exception ex) {
