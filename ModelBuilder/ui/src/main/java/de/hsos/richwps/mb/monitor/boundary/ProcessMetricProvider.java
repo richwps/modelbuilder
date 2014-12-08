@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.monitor.boundary;
 
-import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientImpl;
-import de.hsos.ecs.richwps.wpsmonitor.client.http.WpsMonitorRequester;
+import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClient;
+import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientFactory;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsMetricResource;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
 import de.hsos.richwps.mb.Logger;
@@ -19,18 +19,14 @@ import java.util.Map;
  */
 public class ProcessMetricProvider {
 
-    private final WpsMonitorClientImpl client;
+    private final WpsMonitorClient client;
 
     private final HashMap<String, String> translations;
 
     private String mainPropertyGroupName = "monitor data";
 
     public ProcessMetricProvider(String url) throws Exception {
-        //FIXME as intended?
-        com.google.gson.Gson gson = new com.google.gson.Gson();
-        WpsMonitorRequester request;
-        request = new WpsMonitorRequester(new URL(url), gson);
-        client = new WpsMonitorClientImpl(new URL(url), request);
+        client = new WpsMonitorClientFactory().create(new URL(url));
         translations = new HashMap<>();
     }
 

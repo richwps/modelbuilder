@@ -15,18 +15,11 @@ public class MonitorDataConverter {
     
     private ProcessMetricProvider metricProvider;
 
+    public void setMetricProvider(ProcessMetricProvider metricProvider) {
+        this.metricProvider = metricProvider;
+    }
+    
     protected ProcessMetricProvider getMetricProvider() {
-        if(null == metricProvider) {
-            try {
-                // FIXME use constructor with factory
-                metricProvider = new ProcessMetricProvider(null);
-            } catch (Exception ex) {
-                Logger.getLogger(ex.getClass().getName()).log(Level.SEVERE, null, ex);
-                
-                // returning null indicates the error
-            }
-        }
-        
         return metricProvider;
     }
     

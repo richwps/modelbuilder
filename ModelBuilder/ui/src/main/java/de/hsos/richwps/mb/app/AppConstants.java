@@ -214,6 +214,8 @@ public class AppConstants {
     
     static String FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED = "A process with identifier '%s' is already deployed at '%s'";
 
+    static final String MONITOR_DEFAULT_URL = "http://localhost:1111";
+
     public enum PREFERENCES_TAB {
 
         PROCESSSOURCES,

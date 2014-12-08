@@ -108,7 +108,7 @@ public class App {
         if (null == processMetricProvider) {
             try {
                 // TODO create settings
-                processMetricProvider = new ProcessMetricProvider("http://localhost:1111");
+                processMetricProvider = new ProcessMetricProvider(AppConstants.MONITOR_DEFAULT_URL);
             } catch (MalformedURLException ex) {
                 showErrorMessage(ex.getMessage());
             } catch (Exception ex) {
@@ -174,7 +174,8 @@ public class App {
 
     ProcessProvider getProcessProvider() {
         if (null == processProvider) {
-            processProvider = new ProcessProvider(getProcessMetricProvider());
+            processProvider = new ProcessProvider();
+            processProvider.setProcessMetricProvider(getProcessMetricProvider());
             AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
         }
         return processProvider;
@@ -399,7 +400,7 @@ public class App {
         String server = (String) model.getPropertyValue(serverKey);
         String identifier = (String) model.getPropertyValue(identifierKey);
 
-        if (!server.isEmpty() && !identifier.isEmpty()) {
+        if (null != server && !server.isEmpty() && null != identifier && !identifier.isEmpty()) {
             return RichWPSProvider.hasProcess(server, identifier);
         }
 

@@ -13,7 +13,6 @@ import de.hsos.richwps.mb.processProvider.control.ProcessSearch;
 import de.hsos.richwps.mb.processProvider.control.Publisher;
 import de.hsos.richwps.mb.processProvider.control.ServerProvider;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
-import de.hsos.richwps.mb.processProvider.exception.ProcessMetricProviderNotAvailable;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.Vocabulary;
@@ -37,10 +36,9 @@ public class ProcessProvider {
 
     private SPClient spClient;
     private Network net;
-//    private WPS[] wpss;
-    private String url;
+    private String spUrl;
+    private String monitorUrl;
 
-    private final ProcessMetricProvider processMetricProvider;
     private ProcessSearch processSearch;
     private MonitorDataConverter monitorDataConverter;
     private ServerProvider serverProvider;
@@ -49,14 +47,12 @@ public class ProcessProvider {
     /**
      * Constructor, creates the SP client.
      */
-    public ProcessProvider(ProcessMetricProvider processMetricProvider) {
-        this.processMetricProvider = processMetricProvider;
-
+    public ProcessProvider() {
         spClient = SPClient.getInstance();
     }
 
     public String getUrl() {
-        return url;
+        return spUrl;
     }
 
     /**
@@ -67,7 +63,7 @@ public class ProcessProvider {
      * @throws java.lang.Exception
      */
     public boolean connect(String url) throws Exception {
-        this.url = url;
+        this.spUrl = url;
 
         // init SP Client
         Vocabulary.init(new URL(url + "/resources/vocab"));
@@ -345,4 +341,8 @@ public class ProcessProvider {
         getPublisher().publishProcess(wpss, process);
     }
 
+    public void setProcessMetricProvider(ProcessMetricProvider metricProvider) {
+        getMonitorDataConverter().setMetricProvider(metricProvider);
+    }
+    
 }

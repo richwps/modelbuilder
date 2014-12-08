@@ -1,7 +1,5 @@
 package de.hsos.richwps.mb.appEvents;
 
-import jdk.nashorn.internal.parser.TokenType;
-
 /**
  * Entity the AppEvent-Service.
  *
