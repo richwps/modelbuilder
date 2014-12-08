@@ -59,12 +59,16 @@ public class PropertiesView extends TitledComponent {
         }
     }
 
+    protected HashMap<Property, AbstractPropertyComponent> componentCache;
+
     public PropertiesView(Window parentWindow, String title) {
         super(title, new JPanel());
 
         this.parentWindow = parentWindow;
 
         this.propertiesCard = new PropertiesCard(parentWindow, this);
+
+        this.componentCache = new HashMap<>();
 
         contentPanel = (JPanel) getComponent(1);
 
@@ -78,6 +82,18 @@ public class PropertiesView extends TitledComponent {
         getCardLayout().show(getContentPanel(), card.name());
     }
 
+    /**
+     * Clears the cache for property components.
+     */
+    public void clearPropertyCache() {
+        this.componentCache.clear();
+    }
+
+    /**
+     * Sets the object whose properties are to be displayed.
+     *
+     * @param object
+     */
     public void setObjectWithProperties(IObjectWithProperties object) {
         propertiesCard.setObjectWithProperties(object);
         setupPropertyFields(CARD.OBJECT_WITH_PROPERTIES, propertiesCard.getObjectWithProperties());
@@ -86,6 +102,11 @@ public class PropertiesView extends TitledComponent {
         updateUI();
     }
 
+    /**
+     * Gets the object whose properties are displayed.
+     *
+     * @return
+     */
     public IObjectWithProperties getCurrentObjectWithProperties() {
         return propertiesCard.objectWithProperties;
     }
@@ -178,22 +199,44 @@ public class PropertiesView extends TitledComponent {
     }
 
     /**
-     * Creates default components for various component types.
+     * Returns the Swing component for a property . Gets propety components from
+     * cache if available. Otherwise, a default component is created.
      *
      * @param property
      * @return
      */
     protected AbstractPropertyComponent getComponentFor(Property property) {
-        switch (property.getComponentType()) {
-            case Property.COMPONENT_TYPE_DROPDOWN:
-                return new PropertyDropdown(property);
-            case Property.COMPONENT_TYPE_INTEGER:
-                return new PropertyTextFieldInteger(property);
-            case Property.COMPONENT_TYPE_DOUBLE:
-                return new PropertyTextFieldDouble(property);
+
+        // get property component from cache
+        if (componentCache.containsKey(property)) {
+            return componentCache.get(property);
         }
 
-        return new PropertyTextFieldString(property);
+        AbstractPropertyComponent component = null;
+
+        // component not in cache: create it.
+        switch (property.getComponentType()) {
+            case Property.COMPONENT_TYPE_DROPDOWN:
+                component = new PropertyDropdown(property);
+                break;
+
+            case Property.COMPONENT_TYPE_INTEGER:
+                component = new PropertyTextFieldInteger(property);
+                break;
+
+            case Property.COMPONENT_TYPE_DOUBLE:
+                component = new PropertyTextFieldDouble(property);
+                break;
+        }
+
+        if (null == component) {
+            component = new PropertyTextFieldString(property);
+        }
+
+        // add created component to cache
+        this.componentCache.put(property, component);
+
+        return component;
     }
 
     /**

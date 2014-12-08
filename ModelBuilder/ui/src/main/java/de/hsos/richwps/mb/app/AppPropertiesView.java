@@ -74,10 +74,9 @@ public class AppPropertiesView extends PropertiesView {
 
             // react to changes of the current process's identifier
             if (property.getPropertiesObjectName().equals(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER)) {
-                
+
                 // TODO find out it the process WAS deployed with the old identifier
                 // -> inform user that the deployed process remains with the old identifier
-                
                 // inform user if a process with the new identifier value exists
                 if (app.currentModelIsDeployed()) {
 
@@ -91,7 +90,7 @@ public class AppPropertiesView extends PropertiesView {
                     String hint = String.format(format, identifier, server);
                     AppEventService.getInstance().fireAppEvent(hint, AppConstants.INFOTAB_ID_SERVER, AppEvent.PRIORITY.URGENT);
                 }
-                
+
                 // update actions
                 app.updateDeploymentDependentActions();
             }
@@ -133,6 +132,14 @@ public class AppPropertiesView extends PropertiesView {
 
     @Override
     protected AbstractPropertyComponent getComponentFor(Property property) {
+
+        // get property component from cache
+        if (componentCache.containsKey(property)) {
+            return componentCache.get(property);
+        }
+
+        boolean addToCache = true;
+
         AbstractPropertyComponent component;
 
         if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX)) {
@@ -144,10 +151,16 @@ public class AppPropertiesView extends PropertiesView {
         } else {
 
             component = super.getComponentFor(property);
+            addToCache = false;
         }
 
         component.addPropertyChangedByUIListener(propertyUIChangeListener);
         propertyComponentsListeningTo.add(component);
+
+        if (addToCache) {
+            // add created component to cache
+            this.componentCache.put(property, component);
+        }
 
         return component;
     }
