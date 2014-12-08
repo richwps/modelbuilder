@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,6 +21,7 @@ import org.w3c.dom.NodeList;
 public class GraphModelCodec extends mxModelCodec {
 
     private final String propertyGroupsElement = "tmpPropertyGroup";
+    private final String OLD_IDENTIFIER_KEY = "Identifier";
 
     public GraphModelCodec() {
         super();
@@ -38,7 +40,7 @@ public class GraphModelCodec extends mxModelCodec {
     public Node beforeDecode(mxCodec dec, Node node, Object into) {
 
         ProcessPortCodec.reset();
-       
+
         if (node instanceof Element) {
             Element elt = (Element) node;
 
@@ -50,7 +52,36 @@ public class GraphModelCodec extends mxModelCodec {
                 if (null != into && (into instanceof GraphModel)) {
                     tmpPropertyGroup tmpGroup = new tmpPropertyGroup();
                     dec.decode(pGroups, tmpGroup);
-                    ((GraphModel) into).setPropertyGroups(tmpGroup.properties);
+
+                    PropertyGroup[] convertedGroup = new PropertyGroup[tmpGroup.properties.length];
+                    int curGrp = 0;
+
+                    // replace old identifier key
+                    Iterator<? extends IObjectWithProperties> iterator = tmpGroup.getProperties().iterator();
+                    if (iterator.hasNext()) {
+                        IObjectWithProperties next = iterator.next();
+
+                        if (next instanceof PropertyGroup) {
+                            Collection properties = ((PropertyGroup) next).getProperties();
+
+                            PropertyGroup nextGroup = new PropertyGroup(((PropertyGroup) next).getPropertiesObjectName());
+
+                            for (Object aProperty : properties) {
+                                IObjectWithProperties aPropertyObject = (IObjectWithProperties) aProperty;
+                                if (aPropertyObject.getPropertiesObjectName().equals(OLD_IDENTIFIER_KEY)) {
+                                    aPropertyObject.setPropertiesObjectName(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
+                                    nextGroup.addObject(aPropertyObject);
+                                } else {
+                                    nextGroup.addObject(aPropertyObject);
+                                }
+
+                            }
+
+                            convertedGroup[curGrp++] = nextGroup;
+                        }
+                    }
+
+                    ((GraphModel) into).setPropertyGroups(convertedGroup);
                 }
                 elt.removeChild(pGroups);
             }
