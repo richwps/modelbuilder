@@ -18,9 +18,10 @@ public class MonitorDataConverter {
     protected ProcessMetricProvider getMetricProvider() {
         if(null == metricProvider) {
             try {
+                // FIXME use constructor with factory
                 metricProvider = new ProcessMetricProvider(null);
-            } catch (MalformedURLException ex) {
-                Logger.getLogger(MonitorDataConverter.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(ex.getClass().getName()).log(Level.SEVERE, null, ex);
                 
                 // returning null indicates the error
             }

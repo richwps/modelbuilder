@@ -205,4 +205,8 @@ public class TitledComponent extends JPanel {
     public void resetTitleFontStyle() {
         componentTitle.resetFontStyle();
     }
+
+    public Component getComponent() {
+        return super.getComponent(0);
+    }
 }
