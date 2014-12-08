@@ -49,11 +49,18 @@ public class AppInfoTabs extends InfoTabs {
                             message = sb.toString();
                         }
 
-                        output(tabId, message);
+                        if (e.getPriority().equals(AppEvent.PRIORITY.URGENT)) {
+                            output(tabId, message, TAB_STATUS.WARNING);
+                        } else {
+                            output(tabId, message);
+                        }
                     }
                 }
             }
         });
+        
+        setIconKeyHighLight(AppConstants.ICON_INFO_KEY);
+        setIconKeyWarning(AppConstants.ICON_WARNING_KEY);
     }
 
     public boolean isPrependTime() {

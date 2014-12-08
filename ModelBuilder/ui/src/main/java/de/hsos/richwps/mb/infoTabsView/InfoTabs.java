@@ -1,9 +1,8 @@
 package de.hsos.richwps.mb.infoTabsView;
 
-import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Component;
-import java.util.LinkedList;
+import java.util.HashMap;
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
@@ -17,7 +16,8 @@ import javax.swing.event.ChangeListener;
  */
 public class InfoTabs extends JTabbedPane {
 
-    private LinkedList<String> tabIds;
+//    private LinkedList<String> tabIds;
+    private HashMap<String, InfoTabData> tabs;
 
     private String newline = System.getProperty("line.separator");
 
@@ -25,17 +25,27 @@ public class InfoTabs extends JTabbedPane {
     private float fontSize = 11f;
 
     private Color DEFAULT_FG_COLOR = Color.GRAY;
-    private Color SELECTED_FG_COLOR = Color.BLACK;
+    private Color HIGHLIGHT_FG_COLOR = Color.BLACK;
+
+    private String iconKeyWarning = "OptionPane.warningIcon";
+    private String iconKeyHighLight = "OptionPane.informationIcon";
+
+    public static enum TAB_STATUS {
+
+        NONE, HIGHLIGHT, WARNING
+    }
+
+    protected TAB_STATUS defaultTabStatus = TAB_STATUS.NONE;
 
     public InfoTabs() {
         super();
 
-        tabIds = new LinkedList<String>();
+        tabs = new HashMap<>();
 
         // Reset tab appearance when it gains the focus.
         addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                setTabStatus(getSelectedIndex(), true);
+                setTabStatus(getSelectedIndex(), TAB_STATUS.NONE);
             }
         });
     }
@@ -58,22 +68,48 @@ public class InfoTabs extends JTabbedPane {
         this.contentTextColor = color;
     }
 
-    public void addTab(String tabId, String title) {
-        tabIds.add(tabId);
-        InfoTabPanel infoTabPanel = new InfoTabPanel();
-        infoTabPanel.setTextColor(contentTextColor);
-        infoTabPanel.setFontSize(fontSize);
-        add(title, infoTabPanel);
-        setTabStatus(getIndex(tabId), true);
+    public void addTab(String tabId, String tabTitle) {
+        String title = tabTitle.trim();
+        String id = tabId.trim();
+
+        // don't replace an existing tab with the same title (id)
+        if (!this.tabs.containsKey(id)) {
+
+            // gets the index which will be used for add()
+            int index = getTabCount();  
+            
+            InfoTabData tabData = new InfoTabData(id, getDefaultTabStatus(), index);
+            tabs.put(id, tabData);
+
+            // create tab
+            InfoTabPanel infoTabPanel = new InfoTabPanel();
+            infoTabPanel.setTextColor(contentTextColor);
+            infoTabPanel.setFontSize(fontSize);
+            add(title, infoTabPanel);
+
+            setTabStatus(getIndex(id), getDefaultTabStatus());
+        }
     }
 
     /**
      * Append a value to a tab component.
      *
-     * @param tab
+     * @param tabId
      * @param value
      */
     public void output(String tabId, Object value) {
+        this.output(tabId, value, TAB_STATUS.HIGHLIGHT);
+    }
+
+    /**
+     * Append a value to a tab component set tab's status.
+     *
+     * @param tabId
+     * @param status
+     * @param value
+     */
+    public void output(String tabId, Object value, TAB_STATUS status) {
+
         InfoTabPanel infoTabPanel = getInfoTabPanel(tabId);
 
         infoTabPanel.appendOutput(value.toString());
@@ -81,7 +117,7 @@ public class InfoTabs extends JTabbedPane {
         infoTabPanel.scrollToBottom();
 
         if (!getSelectedComponent().equals(infoTabPanel)) {
-            setTabStatus(getIndex(tabId), false);
+            setTabStatus(getIndex(tabId), status);
         }
     }
 
@@ -106,16 +142,52 @@ public class InfoTabs extends JTabbedPane {
      * @return
      */
     protected int getIndex(String tabId) {
-        return tabIds.indexOf(tabId);
+        return this.tabs.get(tabId).getIndex();
     }
 
-    protected void setTabStatus(int index, boolean defaultStatus) {
-        // TODO let icon or icon key be set by app
-        Icon icon = defaultStatus ? null : UIManager.getIcon(AppConstants.ICON_INFO_KEY);
-        Color color = defaultStatus ? DEFAULT_FG_COLOR : SELECTED_FG_COLOR;
+    protected void setTabStatus(int index, TAB_STATUS status) {
+        // TODO let icons or icon keys be set by app
+        Icon icon = null;
+        Color color = DEFAULT_FG_COLOR;
+
+        switch (status) {
+            case HIGHLIGHT:
+                icon = UIManager.getIcon(iconKeyHighLight);
+                color = HIGHLIGHT_FG_COLOR;
+                break;
+            case WARNING:
+                icon = UIManager.getIcon(iconKeyWarning);
+                color = HIGHLIGHT_FG_COLOR;
+                break;
+        }
 
         setForegroundAt(index, color);
         setIconAt(index, icon);
+    }
+
+    public void setDefaultTabStatus(TAB_STATUS defaultTabStatus) {
+        this.defaultTabStatus = defaultTabStatus;
+    }
+
+    public TAB_STATUS getDefaultTabStatus() {
+        return defaultTabStatus;
+    }
+
+    public void removeTab(String tabId) {
+        // when implementing this method: 
+        // removing a tab may influence the other tab's indices!
+        // thus, the tab indices may have to be updated in the InfoTabData 
+        // objects (=values of HashMap this.tabs)
+
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void setIconKeyHighLight(String iconKeyHighLight) {
+        this.iconKeyHighLight = iconKeyHighLight;
+    }
+
+    public void setIconKeyWarning(String iconKeyWarning) {
+        this.iconKeyWarning = iconKeyWarning;
     }
 
 }

@@ -23,7 +23,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import de.hsos.richwps.mb.server.exception.GraphToRequestTransformationException;
+import de.hsos.richwps.mb.exception.GraphToRequestTransformationException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;

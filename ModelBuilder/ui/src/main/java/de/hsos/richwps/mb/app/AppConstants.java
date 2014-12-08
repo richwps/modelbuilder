@@ -211,6 +211,8 @@ public class AppConstants {
      * BG color for a target sub group
      */
     final static Color QOS_TARGET_BG_COLOR = new Color(250, 240, 209);
+    
+    static String FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED = "A process with identifier '%s' is already deployed at '%s'";
 
     public enum PREFERENCES_TAB {
 
@@ -388,6 +390,7 @@ public class AppConstants {
     public final static String ICON_SEARCH_KEY = "richwps_icon_search";
     public final static String ICON_CHECK_KEY = "richwps_icon_check";
     public final static String ICON_CHECK_FAVOURITE_KEY = "richwps_icon_check_favourite";
+    public final static String ICON_WARNING_KEY = "richwps_icon_warning";
 
     /**
      * large icons directory/path

@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.server.exception;
+package de.hsos.richwps.mb.exception;
 
 /**
  * Thrown during deployment if the graph (model) cannot be transformed to a

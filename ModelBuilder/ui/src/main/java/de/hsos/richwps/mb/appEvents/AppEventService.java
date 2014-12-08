@@ -80,12 +80,25 @@ public class AppEventService {
      *
      * @param message
      * @param source
-     * @param command
      */
     public void fireAppEvent(String message, Object source) {
         String command = getSourceCommands().get(source);
         if (null != command) {
             fireAppEvent(new AppEvent(message, source, command));
+        }
+    }
+
+    /**
+     * Shortcut method.
+     *
+     * @param message
+     * @param source
+     * @param priority
+     */
+    public void fireAppEvent(String message, Object source, AppEvent.PRIORITY priority) {
+        String command = getSourceCommands().get(source);
+        if (null != command) {
+            fireAppEvent(new AppEvent(message, source, command, priority));
         }
     }
 

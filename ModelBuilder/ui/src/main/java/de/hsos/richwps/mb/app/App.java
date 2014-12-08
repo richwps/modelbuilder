@@ -399,7 +399,11 @@ public class App {
         String server = (String) model.getPropertyValue(serverKey);
         String identifier = (String) model.getPropertyValue(identifierKey);
 
-        return RichWPSProvider.hasProcess(server, identifier);
+        if (!server.isEmpty() && !identifier.isEmpty()) {
+            return RichWPSProvider.hasProcess(server, identifier);
+        }
+
+        return false;
     }
 
     protected PropertiesView getPropertiesView() {

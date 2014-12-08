@@ -1,11 +1,15 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentLiteralDataType;
+import de.hsos.richwps.mb.appEvents.AppEvent;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
@@ -67,6 +71,30 @@ public class AppPropertiesView extends PropertiesView {
                     getCurrentObjectWithProperties());
 
             app.getUndoManager().addEdit(new AppUndoableEdit(this, changeAction, "change property value"));
+
+            // react to changes of the current process's identifier
+            if (property.getPropertiesObjectName().equals(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER)) {
+                
+                // TODO find out it the process WAS deployed with the old identifier
+                // -> inform user that the deployed process remains with the old identifier
+                
+                // inform user if a process with the new identifier value exists
+                if (app.currentModelIsDeployed()) {
+
+                    // Get deployment info
+                    String identifier = (String) property.getValue();
+                    GraphModel model = getGraphView().getGraph().getGraphModel();
+                    String server = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+
+                    // create and output hint with deployment info
+                    String format = AppConstants.FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED;
+                    String hint = String.format(format, identifier, server);
+                    AppEventService.getInstance().fireAppEvent(hint, AppConstants.INFOTAB_ID_SERVER, AppEvent.PRIORITY.URGENT);
+                }
+                
+                // update actions
+                app.updateDeploymentDependentActions();
+            }
         }
 
     };

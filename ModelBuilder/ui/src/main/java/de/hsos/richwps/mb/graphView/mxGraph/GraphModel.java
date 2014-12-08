@@ -20,7 +20,7 @@ import java.util.List;
  * @author dziegenh
  */
 public class GraphModel extends mxGraphModel implements IObjectWithProperties {
-    public static final String PROPERTIES_KEY_OWS_IDENTIFIER = "Identifier";
+    public static final String PROPERTIES_KEY_OWS_IDENTIFIER = "Identifier ";
     public static final String PROPERTIES_KEY_OWS_ABSTRACT = "Abstract";
     public static final String PROPERTIES_KEY_OWS_ENDPOINT = "Endpoint";
     public static final String PROPERTIES_KEY_OWS_VERSION = "Version";
