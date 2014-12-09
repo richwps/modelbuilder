@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
 import java.io.File;
+import java.util.Locale;
 
 /**
  * Collection of app-wide constant values.
@@ -219,6 +220,11 @@ public class AppConstants {
     static String[][] PROCESS_PROVIDER_TRANSLATIONS = new String[][]{
         {"SECONDS", "sec"}
     };
+
+    /**
+     * If not null, this locale will be set globally as default.
+     */
+    static Locale DEFAULT_LOCALE = null;
 
     public enum PREFERENCES_TAB {
 

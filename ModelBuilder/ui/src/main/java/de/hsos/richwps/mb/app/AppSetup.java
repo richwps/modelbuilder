@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -48,6 +49,10 @@ public class AppSetup {
 
             String port = AppConfig.getConfig().get(portKey, "");
             System.setProperty("http.proxyPort", port);
+
+            if (null != AppConstants.DEFAULT_LOCALE) {
+                Locale.setDefault(AppConstants.DEFAULT_LOCALE);
+            }
         }
 
         splash.showMessageAndProgress("Loading resources", 7);

@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.propertiesView.propertyComponents;
 
 import de.hsos.richwps.mb.properties.Property;
+import java.util.Locale;
 import org.apache.commons.lang3.Validate;
 
 /**
