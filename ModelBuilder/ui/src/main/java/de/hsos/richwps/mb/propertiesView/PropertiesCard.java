@@ -136,7 +136,15 @@ class PropertiesCard extends JScrollPane {
 
                 // Property: get component
             } else if (aProperty instanceof Property) {
-                aPropertyRow = createPropertyComponentPanel(propertiesView.getComponentFor((Property) aProperty));
+                Property aPropertyLeaf = (Property) aProperty;
+
+                // FIXME don't create/add any component if the component type is "none"
+                if (aPropertyLeaf.getComponentType().equals(Property.COMPONENT_TYPE_NONE)) {
+                    aPropertyRow = new JPanel();
+
+                } else {
+                    aPropertyRow = createPropertyComponentPanel(propertiesView.getComponentFor((Property) aProperty));
+                }
 
             }
 
@@ -234,7 +242,7 @@ class PropertiesCard extends JScrollPane {
     protected MultilineLabel createBodyLabel(String text) {
         MultilineLabel label = createMultilineLabel(text, PropertyCardsConfig.bodyLabelBgColor);
         label.setFocusable(true);
-        
+
         return label;
     }
 

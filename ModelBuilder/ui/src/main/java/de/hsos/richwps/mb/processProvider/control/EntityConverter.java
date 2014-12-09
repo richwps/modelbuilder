@@ -13,13 +13,13 @@ import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
  */
 public class EntityConverter {
 
-    public static ProcessEntity createProcessEntity(de.hsos.richwps.sp.client.ows.gettypes.Process spProcess) throws Exception {
+    public static ProcessEntity createProcessEntity(de.hsos.richwps.sp.client.ows.gettypes.Process spProcess, KeyTranslator translator) throws Exception {
         ProcessEntity processEntity = new ProcessEntity(spProcess.getWPS().getEndpoint(), spProcess.getIdentifier());
         processEntity.setOwsAbstract(spProcess.getAbstract());
         processEntity.setOwsTitle(spProcess.getTitle());
 
         // add qos targets
-        PropertyGroup qosGroups = QosConverter.targetsToProperties(spProcess);
+        PropertyGroup qosGroups = QosConverter.targetsToProperties(spProcess, translator);
         if (null != qosGroups) {
             processEntity.setProperty(qosGroups.getPropertiesObjectName(), qosGroups);
         }

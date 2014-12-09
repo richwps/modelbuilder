@@ -139,7 +139,6 @@ public class App {
         return null != file && file.exists();
     }
 
-    
     void setChangesSaved(boolean changesSaved) {
         if (currentModelFileExists()) {
             this.changesSaved = changesSaved;
@@ -175,6 +174,11 @@ public class App {
         if (null == processProvider) {
             processProvider = new ProcessProvider();
             processProvider.setProcessMetricProvider(getProcessMetricProvider());
+
+            for (String[] keyAndValue : AppConstants.PROCESS_PROVIDER_TRANSLATIONS) {
+                processProvider.getTranslator().addTranslation(keyAndValue[0], keyAndValue[1]);
+            }
+
             AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
         }
         return processProvider;
@@ -351,7 +355,7 @@ public class App {
     void modelLoaded() {
         getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
-        
+
         getPropertiesView().clearPropertyCache();
 
         if (hasSubTreeView()) {

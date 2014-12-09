@@ -19,6 +19,7 @@ import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.IPropertyChangedByUIListener;
+import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldDouble;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.util.LinkedList;
@@ -117,6 +118,8 @@ public class AppPropertiesView extends PropertiesView {
     @Override
     public void setObjectWithProperties(IObjectWithProperties object) {
 
+        String uomName = ProcessProviderConfig.QOS_TARGET_UOM;
+        
         // collect QoS target subgroups in order to style them later
         qosTargetSubGroups = new LinkedList<>();
         String qosGroup = ProcessProviderConfig.QOS_TARGETS_GROUP;
@@ -128,6 +131,22 @@ public class AppPropertiesView extends PropertiesView {
                 for (IObjectWithProperties property : aProperty.getProperties()) {
                     if (property instanceof PropertyGroup) {
                         qosTargetSubGroups.add(property.getPropertiesObjectName());
+                        
+                        // create components for QoS Values
+                        PropertyGroup<Property> qosSubGroup = (PropertyGroup) property;
+                        Property uomProperty = qosSubGroup.getPropertyObject(uomName);
+                        
+                        for(Property subGroupProperty : qosSubGroup.getProperties()) {
+                            String propertyName = subGroupProperty.getPropertiesObjectName();
+                            if(!propertyName.equals(uomName)) {
+                                AbstractPropertyComponent qosComponent = getComponentFor(subGroupProperty);
+                                if(qosComponent instanceof PropertyTextFieldDouble) {
+                                    PropertyTextFieldDouble textField = (PropertyTextFieldDouble) qosComponent;
+                                    textField.setValueViewFormat("%.2f " + uomProperty.getValue());
+                                }
+                                this.componentCache.put(subGroupProperty, qosComponent);
+                            }
+                        }
                     }
                 }
             }

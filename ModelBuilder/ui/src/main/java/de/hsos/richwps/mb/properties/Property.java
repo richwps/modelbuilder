@@ -15,6 +15,11 @@ import org.apache.commons.lang3.exception.CloneFailedException;
  */
 public class Property<E> implements IObjectWithProperties, Serializable, Cloneable {
 
+    /**
+     * Used for properties which should not added to views.
+     */
+    public final static String COMPONENT_TYPE_NONE = "NONE";
+    
     public final static String COMPONENT_TYPE_TEXTFIELD = "TEXTFIELD";
     public final static String COMPONENT_TYPE_INTEGER = "INTEGER";
     public final static String COMPONENT_TYPE_DOUBLE = "DOUBLE";

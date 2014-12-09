@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.control.EntityConverter;
+import de.hsos.richwps.mb.processProvider.control.KeyTranslator;
 import de.hsos.richwps.mb.processProvider.control.MonitorDataConverter;
 import de.hsos.richwps.mb.processProvider.control.ProcessSearch;
 import de.hsos.richwps.mb.processProvider.control.Publisher;
@@ -46,6 +47,8 @@ public class ProcessProvider {
     private ServerProvider serverProvider;
     private Publisher publisher;
 
+    private KeyTranslator translator;
+
     /**
      * Constructor, creates the SP client.
      */
@@ -55,6 +58,14 @@ public class ProcessProvider {
 
     public String getUrl() {
         return spUrl;
+    }
+
+    public KeyTranslator getTranslator() {
+        if (null == translator) {
+            translator = new KeyTranslator();
+        }
+
+        return translator;
     }
 
     /**
@@ -164,7 +175,7 @@ public class ProcessProvider {
                                 boolean loadError = false;
 
                                 // Map process attributes
-                                process = EntityConverter.createProcessEntity(spProcess);
+                                process = EntityConverter.createProcessEntity(spProcess, getTranslator());
 
                                 // Map input ports
                                 try {
@@ -174,9 +185,8 @@ public class ProcessProvider {
                                         inPort.setOwsIdentifier(spInput.getIdentifier());
                                         inPort.setOwsAbstract(spInput.getAbstract());
                                         inPort.setOwsTitle(spInput.getTitle());
-                                        
+
                                         // TODO map complex data form (see output form converter)
-                                        
                                         process.addInputPort(inPort);
                                     }
                                 } catch (Exception ex) {
@@ -189,7 +199,7 @@ public class ProcessProvider {
                                     for (Output spOutput : spProcess.getOutputs()) {
                                         final InAndOutputForm outputFormChoice = spOutput.getOutputFormChoice();
                                         ProcessPortDatatype datatype = EntityConverter.getDatatype(outputFormChoice);
-                                        
+
                                         // TODO move to EntityConverter
 //                                        if(datatype.equals(ProcessPortDatatype.COMPLEX)) {
 //                                            ComplexData complexForm =  (ComplexData) outputFormChoice;
@@ -204,7 +214,6 @@ public class ProcessProvider {
 //                                            // TODO convert supported formats
 //                                            
 //                                        }
-                                        
                                         ProcessPort outPort = new ProcessPort(datatype);
                                         outPort.setOwsIdentifier(spOutput.getIdentifier());
                                         outPort.setOwsAbstract(spOutput.getAbstract());
@@ -261,7 +270,7 @@ public class ProcessProvider {
                     try {
                         WpsServer server = new WpsServer(wps.getEndpoint());
                         for (Process process : wps.getProcesses()) {
-                            ProcessEntity processEntity = EntityConverter.createProcessEntity(process);
+                            ProcessEntity processEntity = EntityConverter.createProcessEntity(process, getTranslator());
                             server.addProcess(processEntity);
                         }
 
@@ -311,7 +320,7 @@ public class ProcessProvider {
 
     protected ProcessSearch getProcessSearch() {
         if (null == processSearch && null != spClient) {
-            processSearch = new ProcessSearch(spClient);
+            processSearch = new ProcessSearch(spClient, getTranslator());
         }
 
         return processSearch;
@@ -366,5 +375,5 @@ public class ProcessProvider {
     public void setProcessMetricProvider(ProcessMetricProvider metricProvider) {
         getMonitorDataConverter().setMetricProvider(metricProvider);
     }
-    
+
 }

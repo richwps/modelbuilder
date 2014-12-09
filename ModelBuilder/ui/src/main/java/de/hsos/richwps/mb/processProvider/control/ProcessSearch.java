@@ -12,10 +12,13 @@ import de.hsos.richwps.sp.client.ows.gettypes.Process;
  * @author dziegenh
  */
 public class ProcessSearch {
-    private final SPClient spClient;
 
-    public ProcessSearch(SPClient spClient) {
+    private final SPClient spClient;
+    private KeyTranslator translator;
+
+    public ProcessSearch(SPClient spClient, KeyTranslator translator) {
         this.spClient = spClient;
+        this.translator = translator;
     }
 
     public List<ProcessEntity> getProcessesByKeyword(String query) {
@@ -32,7 +35,7 @@ public class ProcessSearch {
 
         for (Process aProcess : searchResult) {
             try {
-                ProcessEntity processEntity = EntityConverter.createProcessEntity(aProcess);
+                ProcessEntity processEntity = EntityConverter.createProcessEntity(aProcess, translator);
                 processes.add(processEntity);
 
             } catch (Exception ex) {

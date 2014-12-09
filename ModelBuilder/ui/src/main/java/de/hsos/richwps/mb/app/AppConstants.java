@@ -202,7 +202,7 @@ public class AppConstants {
     public static String CAPTION_RECENTLY_USED = "Recently used: ";
 
     static boolean ENABLE_SUB_TREE_VIEW = false;
-    
+
     /**
      * BG color for targets group.
      */
@@ -211,10 +211,14 @@ public class AppConstants {
      * BG color for a target sub group
      */
     final static Color QOS_TARGET_BG_COLOR = new Color(250, 240, 209);
-    
+
     static String FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED = "A process with identifier '%s' is already deployed at '%s'";
 
     static final String MONITOR_DEFAULT_URL = "http://localhost:1111";
+
+    static String[][] PROCESS_PROVIDER_TRANSLATIONS = new String[][]{
+        {"SECONDS", "sec"}
+    };
 
     public enum PREFERENCES_TAB {
 

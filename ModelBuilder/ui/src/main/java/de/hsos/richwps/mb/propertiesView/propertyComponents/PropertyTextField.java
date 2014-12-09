@@ -61,8 +61,9 @@ public abstract class PropertyTextField<E extends Object> extends AbstractProper
     public Component getComponent() {
         if (property.isEditable()) {
             return this.textField;
+
         } else {
-            MultilineLabel label = new MultilineLabel(valueToString());
+            MultilineLabel label = new MultilineLabel(getValueForViews());
             label.setBorder(new EmptyBorder(2, 2, 0, 2));
             return label;
         }
@@ -83,6 +84,11 @@ public abstract class PropertyTextField<E extends Object> extends AbstractProper
     @Override
     protected void propertyValueChanged() {
         this.textField.setText(property.getValue().toString());
+    }
+
+    @Override
+    public String getValueForViews() {
+        return valueToString();
     }
 
 }

@@ -114,4 +114,8 @@ public abstract class AbstractPropertyComponent<C extends Component, E> implemen
         this.property.addChangeListener(changeListener);
     }
 
+    public String getValueForViews() {
+        return getValue().toString();
+    }
+    
 }

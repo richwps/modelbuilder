@@ -19,7 +19,7 @@ public class QosConverter {
      * @param spProcess
      * @return
      */
-    public static PropertyGroup targetsToProperties(de.hsos.richwps.sp.client.ows.gettypes.Process spProcess) {
+    public static PropertyGroup targetsToProperties(de.hsos.richwps.sp.client.ows.gettypes.Process spProcess, KeyTranslator translator) {
 
         PropertyGroup<PropertyGroup> qosGroup = null;
 
@@ -51,21 +51,24 @@ public class QosConverter {
                     varProperty.setComponentType(Property.COMPONENT_TYPE_DOUBLE);
                     varProperty.setValue(target.getVariance());
 
-//                    EUOM uom = qoSTargets[0].getUOM();
-//                    String uomString = " (" + uom.toString() + ")";
+                    EUOM uom = target.getUOM();
+                    Property<String> uomProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_UOM);
+                    uomProperty.setComponentType(Property.COMPONENT_TYPE_NONE);
+                    uomProperty.setValue(translator.getTranslation(uom.name()));
                     
                     targetGroup.addObject(abstractProperty);
                     targetGroup.addObject(minProperty);
                     targetGroup.addObject(maxProperty);
                     targetGroup.addObject(idealProperty);
                     targetGroup.addObject(varProperty);
+                    targetGroup.addObject(uomProperty);
 
                     qosGroup.addObject(targetGroup);
                 }
             }
 
         } catch (Exception ex) {
-            Logger.log("Error gettin qos targets: " + ex);
+            Logger.log("Error getting qos targets: " + ex);
         }
 
         return qosGroup;

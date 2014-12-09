@@ -17,6 +17,8 @@ public class ProcessProviderConfig {
     public final static String QOS_TARGET_IDEAL = "Ideal";
 
     public final static String QOS_TARGET_VAR = "Variance";
+    
+    public final static String QOS_TARGET_UOM = "Unit";
 
     public final static String EXCEPTION_MSG_SP_CLIENT_NOT_AVAILABLE = "SemanticProxy client is not available.";
 }
