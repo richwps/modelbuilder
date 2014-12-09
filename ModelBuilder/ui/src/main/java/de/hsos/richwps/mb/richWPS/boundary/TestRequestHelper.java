@@ -17,16 +17,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
-import net.opengis.wps.x100.IntermediateOutputDataType;
 import net.opengis.wps.x100.OutputDataType;
 import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.TestProcessDocument;
 import net.opengis.wps.x100.TestProcessResponseDocument;
-import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientConfig;
-import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.richwps.TestProcessRequestBuilder;
-import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 
 /**
  *
@@ -127,9 +123,9 @@ public class TestRequestHelper {
             Logger.log(this.getClass(), "analyseResponse", response.toString());
 
             OutputDataType[] overalloutputs = response.getTestProcessResponse().getProcessOutputs().getOutputArray();
-            IntermediateOutputDataType[] intermediates = response.getTestProcessResponse().getIntermediateProcessOutputs().getIntermediateOutputArray();
+            /*IntermediateOutputDataType[] intermediates = response.getTestProcessResponse().getIntermediateProcessOutputs().getIntermediateOutputArray();*/
             Logger.log(this.getClass(), "analyseResponse", overalloutputs);
-            Logger.log(this.getClass(), "analyseResponse", intermediates);
+            /*Logger.log(this.getClass(), "analyseResponse", intermediates);*/
             for (OutputDataType o : overalloutputs) {
 
                 if (o.getData() != null) {
@@ -140,34 +136,33 @@ public class TestRequestHelper {
                         request.addResult(key, value);
                     }
                 }
-                
+
                 //we might have a complexdata with reference
-                    if (o.getReference() != null) {
-                        String key = o.getIdentifier().getStringValue();
-                        String value = o.getReference().getHref();
-                        request.addResult(key, value);
-                    }
-            }
-
-            for (IntermediateOutputDataType o : intermediates) {
-                if (o.getData() != null) {
-
-                    //we might have a literaldata
-                    if (o.getData().getLiteralData() != null) {
-                        String key = o.getIdentifier().getStringValue();
-                        String value = o.getData().getLiteralData().getStringValue();
-                        request.addResult(key, value);
-                    }
+                if (o.getReference() != null) {
+                    String key = o.getIdentifier().getStringValue();
+                    String value = o.getReference().getHref();
+                    request.addResult(key, value);
                 }
-                
-                //we might have a complexdata with reference
-                    if (o.getReference() != null) {
-                        String key = o.getIdentifier().getStringValue();
-                        String value = o.getReference().getHref();
-                        request.addResult(key, value);
-                    }
             }
 
+            /*            for (IntermediateOutputDataType o : intermediates) {
+             if (o.getData() != null) {
+
+             //we might have a literaldata
+             if (o.getData().getLiteralData() != null) {
+             String key = o.getIdentifier().getStringValue();
+             String value = o.getData().getLiteralData().getStringValue();
+             request.addResult(key, value);
+             }
+             }
+                
+             //we might have a complexdata with reference
+             if (o.getReference() != null) {
+             String key = o.getIdentifier().getStringValue();
+             String value = o.getReference().getHref();
+             request.addResult(key, value);
+             }
+             }*/
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());

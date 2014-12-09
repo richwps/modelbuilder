@@ -339,8 +339,8 @@ public class RichWPSProvider implements IRichWPSProvider {
     public void richwpsTestProcess(TestRequest request) {
         final TestRequestHelper helper = new TestRequestHelper();
         TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
-        builder.setTestExecutionUnit(request.getExecutionUnit());
-        builder.setTestDeploymentProfileName(request.getDeploymentprofile());
+        builder.setExecutionUnit(request.getExecutionUnit());
+        builder.setDeploymentProfileName(request.getDeploymentprofile());
 
         HashMap theinputs = request.getInputArguments();
         helper.setInputs(builder, theinputs);
