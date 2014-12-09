@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import layout.TableLayout;
  */
 public class ResultVisualisation extends ADialogPanel {
 
-    private List<JPanel> renderers;
+    private List<TitledComponent> renderers;
     private RichWPSProvider provider;
     private ExecuteRequest request;
 
@@ -57,7 +58,8 @@ public class ResultVisualisation extends ADialogPanel {
 
         ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
         mt.start();
-        this.loadingLabel.setText("Sending and processing statement.\n This might take some time, depending on the remote process.");
+        this.loadingLabel.setText("<html>Sending and processing statement.<br/>"
+                + "This might take some time, depending on the remote process.</html>");
     }
 
     private void update(ExecuteRequest request) {
@@ -99,13 +101,19 @@ public class ResultVisualisation extends ADialogPanel {
                 OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
                 URIResultRenderer pan = new URIResultRenderer(identifier, uri);
-                outputsPanel.add(pan, c);
+                TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.setTitleBold();
+                tc.fold();
+                outputsPanel.add(tc, c);
             } else if (argument instanceof OutputLiteralDataArgument) {
                 String value = (String) results.get(key);
                 OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
                 String identifier = (_argument.getSepcifier()).getIdentifier();
                 LiteralResultRenderer pan = new LiteralResultRenderer(identifier, value);
-                outputsPanel.add(pan, c);
+                TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.setTitleBold();
+                tc.fold();
+                outputsPanel.add(tc, c);
             }
             i++;
         }
@@ -117,7 +125,10 @@ public class ResultVisualisation extends ADialogPanel {
 
     private void renderException(ExecuteRequest request) {
         this.request = request;
-        ExceptionRenderer r = new ExceptionRenderer("", request.getException());
+        this.loadingLabel.setVisible(false);
+        ExceptionRenderer exception = new ExceptionRenderer(this.request.getException());
+        TitledComponent tc = new TitledComponent("Exception", exception, TitledComponent.DEFAULT_TITLE_HEIGHT);
+
         this.remove(this.resultPane);
         GridBagConstraints g = new GridBagConstraints();
         g.gridx = 0;
@@ -129,8 +140,8 @@ public class ResultVisualisation extends ADialogPanel {
         g.insets = new Insets(5, 5, 5, 5);
         g.gridwidth = 2;
 
-        this.add(r, g);
-        this.loadingLabel.setVisible(false);
+        this.add(tc, g);
+        this.validate();
     }
 
     /**
@@ -186,7 +197,7 @@ public class ResultVisualisation extends ADialogPanel {
         selectedServer = new javax.swing.JLabel();
         selectedServerLabel = new javax.swing.JLabel();
 
-        setMinimumSize(new java.awt.Dimension(680, 700));
+        setMinimumSize(new java.awt.Dimension(600, 700));
         setPreferredSize(new java.awt.Dimension(600, 700));
         setLayout(new java.awt.GridBagLayout());
 
@@ -201,11 +212,11 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
 
-        resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Outputs"));
+        resultPane.setBorder(null);
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        resultPane.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        resultPane.setMinimumSize(new java.awt.Dimension(610, 600));
+        resultPane.setViewportBorder(null);
+        resultPane.setMinimumSize(new java.awt.Dimension(610, 700));
         resultPane.setPreferredSize(new java.awt.Dimension(610, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

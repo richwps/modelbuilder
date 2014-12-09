@@ -1,18 +1,19 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
-import javax.swing.border.TitledBorder;
 
 /**
  *
  * @author dalcacer
+ * @version 0.0.2
  */
 public class OutputLiteralData extends javax.swing.JPanel {
-    
+
     private OutputLiteralDataSpecifier specifier;
-    
+
     /**
      * Creates new form OutputLiteralData
+     *
      * @param specifier
      */
     public OutputLiteralData(final OutputLiteralDataSpecifier specifier) {
@@ -23,30 +24,36 @@ public class OutputLiteralData extends javax.swing.JPanel {
         String theidentifier = specifier.getIdentifier();
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
-        
-        this.titleValue.setText(thetitel);
-        
-        this.abstractValue.setText(theabstract);
 
-        this.setBorder(new TitledBorder(theidentifier));
-        
+        this.titleValue.setText(thetitel);
+
+        this.abstractValue.setText(theabstract);
     }
 
     /**
      *
      * @return
      */
-    public OutputLiteralDataSpecifier getSpecifier(){
+    public OutputLiteralDataSpecifier getSpecifier() {
         return this.specifier;
     }
-    
+
     /**
      *
      * @return
      */
-    public boolean isSelected(){
+    public boolean isSelected() {
         return this.selectOutput.isSelected();
     }
+
+    public void setSelected() {
+        this.selectOutput.setSelected(true);
+    }
+
+    public void setUnselected() {
+        this.selectOutput.setSelected(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -64,8 +71,9 @@ public class OutputLiteralData extends javax.swing.JPanel {
         abstractValue = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
 
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(550, 113));
-        setPreferredSize(new java.awt.Dimension(600, 200));
+        setPreferredSize(new java.awt.Dimension(500, 200));
         setLayout(new java.awt.GridBagLayout());
 
         selectOutput.setText("Select");

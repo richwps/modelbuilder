@@ -16,24 +16,26 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import layout.TableLayout;
 
 /**
  *
  * @author dalcacer
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class InputParameterization extends ADialogPanel {
 
     /**
      * List of panels that provide inputpanels.
      */
-    private List<JPanel> inputpanels;
+    private List<TitledComponent> inputpanels;
     /**
      * Connection to RichWPS server.
      */
@@ -42,6 +44,8 @@ public class InputParameterization extends ADialogPanel {
      * Request that should be executed.
      */
     private ExecuteRequest request;
+
+    private boolean expand = false;
 
     /**
      * Creates new form ExecutePanel
@@ -61,6 +65,7 @@ public class InputParameterization extends ADialogPanel {
         this.request = (ExecuteRequest) request;
         initComponents();
         this.inputpanels = new ArrayList<>();
+        this.expand = false;
         final String selectedserver = this.request.getEndpoint();
         final String selectedprocess = this.request.getIdentifier();
         this.selectedServer.setText(selectedserver);
@@ -99,8 +104,10 @@ public class InputParameterization extends ADialogPanel {
                 } else {
                     pan = new InputLiteralData((InputLiteralDataSpecifier) specifier);
                 }
-                this.inputpanels.add(pan);
-
+                TitledComponent tc = new TitledComponent(pan.getTitle(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.fold();
+                tc.setTitleBold();
+                this.inputpanels.add(tc);
             } else if (specifier instanceof InputComplexDataSpecifier) {
                 InputComplexData pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
@@ -110,7 +117,11 @@ public class InputParameterization extends ADialogPanel {
                 } else {
                     pan = new InputComplexData((InputComplexDataSpecifier) specifier);
                 }
-                this.inputpanels.add(pan);
+                TitledComponent tc = new TitledComponent(pan.getTitle(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.fold();
+                tc.setTitleBold();
+                this.inputpanels.add(tc);
+
             } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
                 InputBoundingBoxData pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
@@ -119,13 +130,12 @@ public class InputParameterization extends ADialogPanel {
                 } else {
                     pan = new InputBoundingBoxData((InputBoundingBoxDataSpecifier) specifier);
                 }
-                this.inputpanels.add(pan);
+                TitledComponent tc = new TitledComponent(pan.getTitle(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.fold();
+                tc.setTitleBold();
+                this.inputpanels.add(tc);
             }
         }
-
-        this.inputsPanelScrollPane.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
-        this.inputsPanelScrollPane.setAlignmentY(javax.swing.JScrollPane.TOP_ALIGNMENT);
-        this.inputsPanelScrollPane.getVerticalScrollBar().setValue(0);
 
         JPanel inputsPanel = new JPanel();
 
@@ -151,6 +161,8 @@ public class InputParameterization extends ADialogPanel {
             inputsPanel.add(panel, c);
             i++;
         }
+        String c = "0," + i + 1;
+        inputsPanel.add(new JPanel(), c);
 
         this.inputsPanelScrollPane.setViewportView(inputsPanel);
     }
@@ -162,10 +174,10 @@ public class InputParameterization extends ADialogPanel {
     public void updateRequest() {
         HashMap<String, IInputArgument> theinputs = new HashMap<>();
 
-        for (JPanel panel : this.inputpanels) {
+        for (TitledComponent panel : this.inputpanels) {
 
-            if (panel instanceof InputComplexData) {
-                InputComplexData pan = (InputComplexData) panel;
+            if (panel.getComponent() instanceof InputComplexData) {
+                InputComplexData pan = (InputComplexData) panel.getComponent();
                 InputComplexDataSpecifier specifier = pan.getSpecifier();
 
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
@@ -191,7 +203,6 @@ public class InputParameterization extends ADialogPanel {
 
                     param.setMimeType(amimetype);
                     if (aschema != null) {
-                        System.out.println(aschema);
                         param.setSchema(aschema);
                     }
                     if (aencoding != null) {
@@ -200,8 +211,8 @@ public class InputParameterization extends ADialogPanel {
                     }
                     theinputs.put(param.getIdentifier(), param);
                 }
-            } else if (panel instanceof InputLiteralData) {
-                InputLiteralData pan = (InputLiteralData) panel;
+            } else if (panel.getComponent() instanceof InputLiteralData) {
+                InputLiteralData pan = (InputLiteralData) panel.getComponent();
                 InputLiteralDataSpecifier specifier = pan.getSpecifier();
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please provide input for "
@@ -213,8 +224,8 @@ public class InputParameterization extends ADialogPanel {
                     InputLiteralDataArgument param = new InputLiteralDataArgument(specifier, pan.getText());
                     theinputs.put(param.getIdentifier(), param);
                 }
-            } else if (panel instanceof InputBoundingBoxData) {
-                InputBoundingBoxData pan = (InputBoundingBoxData) panel;
+            } else if (panel.getComponent() instanceof InputBoundingBoxData) {
+                InputBoundingBoxData pan = (InputBoundingBoxData) panel.getComponent();
                 InputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please provide input for "
@@ -248,9 +259,9 @@ public class InputParameterization extends ADialogPanel {
      */
     @Override
     public boolean isValidInput() {
-        for (JPanel panel : this.inputpanels) {
-            if (panel instanceof InputComplexData) {
-                InputComplexData pan = (InputComplexData) panel;
+        for (TitledComponent panel : this.inputpanels) {
+            if (panel.getComponent() instanceof InputComplexData) {
+                InputComplexData pan = (InputComplexData) panel.getComponent();
                 //this parameter is optional
                 if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
@@ -259,8 +270,8 @@ public class InputParameterization extends ADialogPanel {
                     JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
                     return false;
                 }
-            } else if (panel instanceof InputLiteralData) {
-                InputLiteralData pan = (InputLiteralData) panel;
+            } else if (panel.getComponent() instanceof InputLiteralData) {
+                InputLiteralData pan = (InputLiteralData) panel.getComponent();
                 //this parameter is optional
                 if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
@@ -269,8 +280,8 @@ public class InputParameterization extends ADialogPanel {
                     JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
                     return false;
                 }
-            } else if (panel instanceof InputBoundingBoxData) {
-                InputBoundingBoxData pan = (InputBoundingBoxData) panel;
+            } else if (panel.getComponent() instanceof InputBoundingBoxData) {
+                InputBoundingBoxData pan = (InputBoundingBoxData) panel.getComponent();
                 //this parameter is optional
                 if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
@@ -300,6 +311,7 @@ public class InputParameterization extends ADialogPanel {
         selectedProcessLabel = new javax.swing.JLabel();
         inputsPanelScrollPane = new javax.swing.JScrollPane();
         jLabel1 = new javax.swing.JLabel();
+        expandButton = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(620, 650));
         setLayout(new java.awt.GridBagLayout());
@@ -351,12 +363,13 @@ public class InputParameterization extends ADialogPanel {
         inputsPanelScrollPane.setBorder(null);
         inputsPanelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         inputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        inputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 600));
-        inputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 600));
+        inputsPanelScrollPane.setViewportBorder(null);
+        inputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
+        inputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 700));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -370,10 +383,44 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jLabel1, gridBagConstraints);
+
+        expandButton.setText("Expand all");
+        expandButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expandButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(expandButton, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
+        if (this.expand == true) {
+            for (TitledComponent tc : this.inputpanels) {
+                tc.fold();
+            }
+            this.expand = false;
+            this.expandButton.setText("Expand all");
+            return;
+        }
+
+        for (TitledComponent tc : this.inputpanels) {
+            tc.unfold();
+            this.expand = true;
+            this.expandButton.setText("Collapse all");
+        }
+    }//GEN-LAST:event_expandButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton expandButton;
     private javax.swing.JScrollPane inputsPanelScrollPane;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel selectedProcess;

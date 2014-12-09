@@ -571,7 +571,7 @@ public class App {
     void preview() {
         AppRichWPSManager manager = new AppRichWPSManager(this);
         String rola = "<html>" + manager.getROLA() + "</html>";
-        String[] bold = {"bind", "process", "execute", "store", "to", "with", "as"};
+        String[] bold = {"bind process", "execute", "store", " to ", " with ", " as "};
         for (String s : bold) {
             rola = rola.replace(s, "<b>" + s + "</b>");
         }

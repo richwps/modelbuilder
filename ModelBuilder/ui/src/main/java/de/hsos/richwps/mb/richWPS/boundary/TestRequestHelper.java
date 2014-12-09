@@ -123,11 +123,10 @@ public class TestRequestHelper {
             Logger.log(this.getClass(), "analyseResponse", response.toString());
 
             OutputDataType[] overalloutputs = response.getTestProcessResponse().getProcessOutputs().getOutputArray();
-            /*IntermediateOutputDataType[] intermediates = response.getTestProcessResponse().getIntermediateProcessOutputs().getIntermediateOutputArray();*/
             Logger.log(this.getClass(), "analyseResponse", overalloutputs);
-            /*Logger.log(this.getClass(), "analyseResponse", intermediates);*/
-            for (OutputDataType o : overalloutputs) {
 
+            //FIXME make use of executeresponseanalyzer
+            for (OutputDataType o : overalloutputs) {
                 if (o.getData() != null) {
                     //we might have a literaldata
                     if (o.getData().getLiteralData() != null) {
@@ -144,25 +143,6 @@ public class TestRequestHelper {
                     request.addResult(key, value);
                 }
             }
-
-            /*            for (IntermediateOutputDataType o : intermediates) {
-             if (o.getData() != null) {
-
-             //we might have a literaldata
-             if (o.getData().getLiteralData() != null) {
-             String key = o.getIdentifier().getStringValue();
-             String value = o.getData().getLiteralData().getStringValue();
-             request.addResult(key, value);
-             }
-             }
-                
-             //we might have a complexdata with reference
-             if (o.getReference() != null) {
-             String key = o.getIdentifier().getStringValue();
-             String value = o.getReference().getHref();
-             request.addResult(key, value);
-             }
-             }*/
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());

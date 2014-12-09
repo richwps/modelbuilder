@@ -11,6 +11,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ import layout.TableLayout;
  */
 public class TestResultVisualisation extends ADialogPanel {
 
-    private List<JPanel> renderers;
+    private List<TitledComponent> renderers;
     private RichWPSProvider provider;
     private TestRequest request;
 
@@ -58,7 +59,8 @@ public class TestResultVisualisation extends ADialogPanel {
 
         TestThread mt = new TestThread(this, this.request, this.provider);
         mt.start();
-        this.loadingLabel.setText("Sending and processing statement.\n This might take some time, depending on the remote process.");
+        this.loadingLabel.setText("<html>Sending and processing statement.<br/>"
+                + "This might take some time, depending on the remote process.</html>");
     }
 
     private void update(TestRequest request) {
@@ -97,10 +99,16 @@ public class TestResultVisualisation extends ADialogPanel {
             String value = (String) results.get(key);
             if (value.contains("http://")) {
                 URIResultRenderer pan = new URIResultRenderer(key.toString(), value);
-                outputsPanel.add(pan, c);
+                TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.setTitleBold();
+                tc.fold();
+                outputsPanel.add(tc, c);
             } else {
                 LiteralResultRenderer pan = new LiteralResultRenderer(key.toString(), value);
-                outputsPanel.add(pan, c);
+                TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.setTitleBold();
+                tc.fold();
+                outputsPanel.add(tc, c);
             }
             i++;
         }
@@ -112,8 +120,15 @@ public class TestResultVisualisation extends ADialogPanel {
 
     private void renderException(TestRequest request) {
         this.request = request;
-        ExceptionRenderer r = new ExceptionRenderer("", request.getException());
+        this.loadingLabel.setVisible(false);
+
+        ExceptionRenderer r = new ExceptionRenderer(request.getException());
+        TitledComponent tc = new TitledComponent("Exception", r, TitledComponent.DEFAULT_TITLE_HEIGHT);
+        tc.unfold();
+        tc.setTitleBold();
+
         this.remove(this.resultPane);
+        
         GridBagConstraints g = new GridBagConstraints();
         g.gridx = 0;
         g.gridy = 3;
@@ -124,8 +139,7 @@ public class TestResultVisualisation extends ADialogPanel {
         g.insets = new Insets(5, 5, 5, 5);
         g.gridwidth = 2;
 
-        this.add(r, g);
-        this.loadingLabel.setVisible(false);
+        this.add(tc, g);
     }
 
     /**
@@ -196,12 +210,12 @@ public class TestResultVisualisation extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(loadingLabel, gridBagConstraints);
 
-        resultPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Outputs"));
+        resultPane.setBorder(null);
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         resultPane.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         resultPane.setMinimumSize(new java.awt.Dimension(610, 600));
-        resultPane.setPreferredSize(new java.awt.Dimension(610, 600));
+        resultPane.setPreferredSize(new java.awt.Dimension(610, 550));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;

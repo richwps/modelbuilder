@@ -5,6 +5,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.AppRichWPSManager;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -15,6 +16,7 @@ import de.hsos.richwps.mb.ui.dialogs.components.TestResultVisualisation;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
 /**
@@ -52,15 +54,15 @@ public class TestModelDialog extends MbDialog {
         this.provider = new RichWPSProvider();
         this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
         this.request.setExecutionUnit(manager.getROLA());
-        this.transitions=manager.getTransitions();
-        
+        this.transitions = manager.getTransitions();
+
         for (String var : manager.getVariables()) {
-            this.request.addVariable("var."+var);
+            this.request.addVariable("var." + var);
         }
 
         try {
             this.provider.disconnect();
-            this.provider.connect(request.getServerId(),request.getEndpoint());
+            this.provider.connect(request.getServerId(), request.getEndpoint());
         } catch (Exception ex) {
             String msg = "Unable to connect to selected WebProcessingService.";
             JOptionPane.showMessageDialog(this, msg);
@@ -84,7 +86,7 @@ public class TestModelDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
 
-        this.inputspanel = new InputParameterization (this.provider, this.request);
+        this.inputspanel = new InputParameterization(this.provider, this.request);
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
@@ -127,7 +129,7 @@ public class TestModelDialog extends MbDialog {
                 return;
             }
         }
-        
+
         this.backButton.setVisible(true);
         this.nextButton.setVisible(false);
         this.previewButton.setVisible(false);
@@ -183,6 +185,11 @@ public class TestModelDialog extends MbDialog {
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
         previewButton.setToolTipText("Preview request");
+        previewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewButtonActionPerformed(evt);
+            }
+        });
         navpanel.add(previewButton);
 
         nextButton.setMnemonic('N');
@@ -247,6 +254,19 @@ public class TestModelDialog extends MbDialog {
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
+        this.currentPanel.updateRequest();
+        this.request = (TestRequest) this.currentPanel.getRequest();
+        String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
+        final JTextPane textpane = new javax.swing.JTextPane();
+        textpane.setContentType("text");
+        textpane.setText(requeststr);
+        textpane.setEditable(false);
+        final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+        JOptionPane.showMessageDialog(this, scrollPane);
+    }//GEN-LAST:event_previewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

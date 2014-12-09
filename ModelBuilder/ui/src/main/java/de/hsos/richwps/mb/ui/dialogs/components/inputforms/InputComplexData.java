@@ -62,13 +62,22 @@ public class InputComplexData extends javax.swing.JPanel {
         String occurstxt = "Min: " + this.specifier.getMinOccur()
                 + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
             this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
+    }
+    
+     public String getTitle() {
+        String title="";
+        if (this.specifier.getMinOccur() == 0) {
+            title = "(OPTIONAL) " + this.specifier.getIdentifier();
+            this.isMandatory = false;
+        } else {
+            title = "(MANDATORY) " + this.specifier.getIdentifier();
+        }
+        return title;
     }
     
     
@@ -116,10 +125,10 @@ public class InputComplexData extends javax.swing.JPanel {
         String occurstxt = "Min: " + this.specifier.getMinOccur()
                 + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            //this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            //this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
             this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
@@ -196,9 +205,9 @@ public class InputComplexData extends javax.swing.JPanel {
         occursLabel = new javax.swing.JLabel();
         occurs = new javax.swing.JLabel();
 
-        setBorder(null);
-        setMinimumSize(new java.awt.Dimension(550, 300));
-        setPreferredSize(new java.awt.Dimension(600, 300));
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
+        setMinimumSize(new java.awt.Dimension(500, 250));
+        setPreferredSize(new java.awt.Dimension(500, 300));
         setLayout(new java.awt.GridBagLayout());
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -255,7 +264,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -317,7 +326,7 @@ public class InputComplexData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -331,7 +340,7 @@ public class InputComplexData extends javax.swing.JPanel {
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
         titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;

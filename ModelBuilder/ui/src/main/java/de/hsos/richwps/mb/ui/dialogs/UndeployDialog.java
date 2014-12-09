@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -15,6 +16,7 @@ import de.hsos.richwps.mb.ui.dialogs.components.SeverSelection;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
 /**
@@ -190,6 +192,11 @@ public class UndeployDialog extends MbDialog {
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
+        previewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewButtonActionPerformed(evt);
+            }
+        });
         navpanel.add(previewButton);
 
         nextButton.setMnemonic('N');
@@ -251,6 +258,19 @@ public class UndeployDialog extends MbDialog {
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
+        this.currentPanel.updateRequest();
+        this.undeploy_request = (UndeployRequest) this.currentPanel.getRequest();
+        String requeststr = this.provider.richwpsPreviewUndeployProcess(this.undeploy_request);
+        final JTextPane textpane = new javax.swing.JTextPane();
+        textpane.setContentType("text");
+        textpane.setText(requeststr);
+        textpane.setEditable(false);
+        final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+        JOptionPane.showMessageDialog(this, scrollPane);
+    }//GEN-LAST:event_previewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

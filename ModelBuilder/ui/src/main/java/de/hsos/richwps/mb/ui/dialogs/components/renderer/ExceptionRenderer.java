@@ -3,11 +3,11 @@ package de.hsos.richwps.mb.ui.dialogs.components.renderer;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import javax.swing.border.TitledBorder;
 
 /**
  *
  * @author dalcacer
+ * @version 0.0.2
  */
 public class ExceptionRenderer extends javax.swing.JPanel {
 
@@ -20,14 +20,19 @@ public class ExceptionRenderer extends javax.swing.JPanel {
 
     /**
      * Creates new form FeatureCollectionRenderer
-     * @param identifier
-     * @param value
+     *
+     * @param exception
      */
-    public ExceptionRenderer(String identifier, String value) {
+    public ExceptionRenderer(final String exception) {
         initComponents();
-        this.setBorder(new TitledBorder(identifier));
-        this.value.setText(value);
+        this.exceptionPane.setText(exception);
+        this.exceptionPane.setContentType("text/plain");
+        this.exceptionPane.setEditable(false);
+        this.exceptionPane.setVisible(true);
         
+        this.exceptionPane.validate();
+        exceptionScrollPane.setViewportView(this.exceptionPane);
+        exceptionScrollPane.revalidate();
     }
 
     /**
@@ -40,13 +45,27 @@ public class ExceptionRenderer extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        exceptionScrollPane = new javax.swing.JScrollPane();
+        exceptionPane = new javax.swing.JTextPane();
         copyToClipBoard = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        value = new javax.swing.JTextArea();
 
-        setMinimumSize(new java.awt.Dimension(600, 600));
-        setPreferredSize(new java.awt.Dimension(600, 600));
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
+        setMinimumSize(new java.awt.Dimension(600, 650));
+        setPreferredSize(new java.awt.Dimension(600, 650));
         setLayout(new java.awt.GridBagLayout());
+
+        exceptionScrollPane.setBorder(null);
+        exceptionScrollPane.setMinimumSize(new java.awt.Dimension(500, 500));
+        exceptionScrollPane.setPreferredSize(new java.awt.Dimension(500, 550));
+
+        exceptionPane.setBorder(null);
+        exceptionPane.setMinimumSize(new java.awt.Dimension(600, 500));
+        exceptionPane.setPreferredSize(new java.awt.Dimension(600, 500));
+        exceptionScrollPane.setViewportView(exceptionPane);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(exceptionScrollPane, gridBagConstraints);
 
         copyToClipBoard.setText("Copy To Clipboard");
         copyToClipBoard.addActionListener(new java.awt.event.ActionListener() {
@@ -62,24 +81,10 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(copyToClipBoard, gridBagConstraints);
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Exception:"));
-        jScrollPane1.setMinimumSize(new java.awt.Dimension(500, 500));
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(500, 500));
-
-        value.setEditable(false);
-        value.setColumns(20);
-        value.setLineWrap(true);
-        value.setRows(10);
-        value.setMinimumSize(new java.awt.Dimension(600, 500));
-        value.setPreferredSize(new java.awt.Dimension(700, 500));
-        jScrollPane1.setViewportView(value);
-
-        add(jScrollPane1, new java.awt.GridBagConstraints());
     }// </editor-fold>//GEN-END:initComponents
 
     private void copyToClipBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyToClipBoardActionPerformed
-    StringSelection stringSelection = new StringSelection(value.getText());
+        StringSelection stringSelection = new StringSelection(exceptionPane.getText());
         Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
         clpbrd.setContents(stringSelection, null);
     }//GEN-LAST:event_copyToClipBoardActionPerformed
@@ -87,7 +92,7 @@ public class ExceptionRenderer extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyToClipBoard;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea value;
+    private javax.swing.JTextPane exceptionPane;
+    private javax.swing.JScrollPane exceptionScrollPane;
     // End of variables declaration//GEN-END:variables
 }

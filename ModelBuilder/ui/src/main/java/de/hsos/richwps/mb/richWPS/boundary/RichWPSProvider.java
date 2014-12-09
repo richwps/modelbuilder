@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.logging.Level;
 import net.opengis.ows.x11.ExceptionReportDocument;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.ComplexTypesType;
@@ -330,6 +331,39 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
+     * Describes process and its' in and outputs.
+     *
+     * @param request ExecuteRequestDTO with serverid and processid and in- and
+     * outputarguments.
+     */
+    @Override
+    public String wpsPreviewExecuteProcess(ExecuteRequest request) {
+        final ExecuteRequestHelper helper = new ExecuteRequestHelper();
+        String severid = request.getEndpoint();
+        String processid = request.getIdentifier();
+
+        HashMap theinputs = request.getInputArguments();
+        HashMap theoutputs = request.getOutputArguments();
+
+        ProcessDescriptionType description = this.getProcessDescriptionType(request);
+        org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
+
+        helper.setInputs(executeBuilder, theinputs);
+        helper.setOutputs(executeBuilder, theoutputs);
+
+        ExecuteDocument execute = null;
+        try {
+            execute = executeBuilder.getExecute();
+            execute.getExecute().setService("WPS");
+            return execute.toString();
+
+        } catch (Exception e) {
+            Logger.log(this.getClass(), "wpsExecuteProcess()", processid + ", " + e);
+        }
+        return "";
+    }
+
+    /**
      * Deploys a new process.
      *
      * @param request DeployRequestDTO.
@@ -376,6 +410,36 @@ public class RichWPSProvider implements IRichWPSProvider {
             Logger.log(this.getClass(), "richwpsTestProcess()", "Unable to create "
                     + "deploymentdocument. " + ex);
         }
+    }
+    
+    
+    /**
+     * Deploys a new process.
+     *
+     * @param request DeployRequestDTO.
+     * @see DeployRequest
+     */
+    @Override
+    public String richwpsPreviewTestProcess(TestRequest request) {
+        try {
+            final TestRequestHelper helper = new TestRequestHelper();
+            TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
+            builder.setExecutionUnit(request.getExecutionUnit());
+            builder.setDeploymentProfileName(request.getDeploymentprofile());
+            
+            HashMap theinputs = request.getInputArguments();
+            helper.setInputs(builder, theinputs);
+            
+            HashMap theoutputs = request.getOutputArguments();
+            helper.setOutputs(builder, theoutputs);
+            
+            TestProcessDocument testprocessdocument = null;
+            testprocessdocument = builder.getTestdocument();
+            return testprocessdocument.toString();
+        } catch (WPSClientException ex) {
+            Logger.log(this.getClass(), "richwpsPreviewTestProcess", ex);
+        }
+        return "";
     }
 
     /**
@@ -458,6 +522,27 @@ public class RichWPSProvider implements IRichWPSProvider {
             Logger.log(this.getClass(), "richwpsUndeployProcess()", "Unable to create "
                     + "deploymentdocument." + ex);
         }
+    }
+
+    /**
+     * Undeploys a given process.
+     *
+     * @param request DeployRequestDTO.
+     * @see UndeployRequest
+     * @return <code>true</code> for deployment success.
+     */
+    @Override
+    public String richwpsPreviewUndeployProcess(UndeployRequest request) {
+
+        try {
+            TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
+            builder.setIdentifier(request.getIdentifier());
+            return builder.getDeploydocument().toString();
+        } catch (WPSClientException ex) {
+            Logger.log(this.getClass(), "richwpsPreviewUndeployProcess", ex);
+            java.util.logging.Logger.getLogger(RichWPSProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "";
     }
 
     /**

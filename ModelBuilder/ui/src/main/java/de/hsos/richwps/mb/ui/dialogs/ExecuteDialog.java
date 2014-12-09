@@ -23,6 +23,7 @@ import java.io.ObjectOutputStream;
 import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -318,6 +319,11 @@ public class ExecuteDialog extends MbDialog {
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
         previewButton.setToolTipText("Preview request");
+        previewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewButtonActionPerformed(evt);
+            }
+        });
         navpanel.add(previewButton);
 
         nextButton.setMnemonic('N');
@@ -451,6 +457,19 @@ public class ExecuteDialog extends MbDialog {
             }
         }
     }//GEN-LAST:event_loadButtonActionPerformed
+
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
+        this.currentPanel.updateRequest();
+        this.request = (ExecuteRequest) this.currentPanel.getRequest();
+        String requeststr = this.provider.wpsPreviewExecuteProcess(this.request);
+        final JTextPane textpane = new javax.swing.JTextPane();
+        textpane.setContentType("text");
+        textpane.setText(requeststr);
+        textpane.setEditable(false);
+        final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+        JOptionPane.showMessageDialog(this, scrollPane);
+    }//GEN-LAST:event_previewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

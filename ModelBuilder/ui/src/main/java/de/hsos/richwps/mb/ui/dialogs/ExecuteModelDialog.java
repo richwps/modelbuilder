@@ -14,6 +14,7 @@ import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
 /**
@@ -184,6 +185,11 @@ public class ExecuteModelDialog extends MbDialog {
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
+        previewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                previewButtonActionPerformed(evt);
+            }
+        });
         navpanel.add(previewButton);
 
         abortButton.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -216,7 +222,6 @@ public class ExecuteModelDialog extends MbDialog {
 
     private void abortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abortButtonActionPerformed
 
-
         //make sure the client cache is emptied.
         if (provider != null) {
             try {
@@ -240,6 +245,19 @@ public class ExecuteModelDialog extends MbDialog {
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
+        this.currentPanel.updateRequest();
+        this.request = (ExecuteRequest) this.currentPanel.getRequest();
+        String requeststr = this.provider.wpsPreviewExecuteProcess(this.request);
+        final JTextPane textpane = new javax.swing.JTextPane();
+        textpane.setContentType("text");
+        textpane.setText(requeststr);
+        textpane.setEditable(false);
+        final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
+        scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
+        JOptionPane.showMessageDialog(this, scrollPane);
+    }//GEN-LAST:event_previewButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

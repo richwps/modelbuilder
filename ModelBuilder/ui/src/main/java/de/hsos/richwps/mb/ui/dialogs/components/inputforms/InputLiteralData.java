@@ -13,7 +13,7 @@ public class InputLiteralData extends javax.swing.JPanel {
 
     private String id;
     private InputLiteralDataSpecifier specifier;
-    private boolean isMandatory=false;
+    private boolean isMandatory = false;
 
     /**
      *
@@ -36,24 +36,33 @@ public class InputLiteralData extends javax.swing.JPanel {
 
         String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
-            this.isMandatory=false;
+            this.isMandatory = false;
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
-            this.isMandatory=true;
+            this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
 
         this.type.setText(datatype);
         this.value.setText(defaultvalue);
     }
-    
+
+    public String getTitle() {
+        String title="";
+        if (this.specifier.getMinOccur() == 0) {
+            title = "(OPTIONAL) " + this.specifier.getIdentifier();
+            this.isMandatory = false;
+        } else {
+            title = "(MANDATORY) " + this.specifier.getIdentifier();
+        }
+        return title;
+    }
+
     /**
      *
      * @param specifier
      * @param argument
      */
-    public InputLiteralData(InputLiteralDataSpecifier specifier,InputLiteralDataArgument argument) {
+    public InputLiteralData(InputLiteralDataSpecifier specifier, InputLiteralDataArgument argument) {
         initComponents();
         this.specifier = specifier;
         String theidentifier = specifier.getIdentifier();
@@ -70,11 +79,11 @@ public class InputLiteralData extends javax.swing.JPanel {
 
         String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
-            this.isMandatory=false;
+            //this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            this.isMandatory = false;
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
-            this.isMandatory=true;
+            //this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
 
@@ -82,9 +91,10 @@ public class InputLiteralData extends javax.swing.JPanel {
         this.value.setText(argument.getValue());
     }
 
-    public void setText(String content){
+    public void setText(String content) {
         this.value.setText(content);
     }
+
     /**
      *
      * @return
@@ -100,8 +110,8 @@ public class InputLiteralData extends javax.swing.JPanel {
     public String getText() {
         return this.value.getText();
     }
-    
-    public boolean isMandatory(){
+
+    public boolean isMandatory() {
         return this.isMandatory;
     }
 
@@ -126,9 +136,9 @@ public class InputLiteralData extends javax.swing.JPanel {
         typeLabel = new javax.swing.JLabel();
         type = new javax.swing.JTextArea();
 
-        setBorder(null);
-        setMinimumSize(new java.awt.Dimension(600, 225));
-        setPreferredSize(new java.awt.Dimension(500, 225));
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
+        setMinimumSize(new java.awt.Dimension(500, 200));
+        setPreferredSize(new java.awt.Dimension(500, 200));
         setLayout(new java.awt.GridBagLayout());
 
         value.setMinimumSize(new java.awt.Dimension(450, 27));
@@ -137,7 +147,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -188,7 +198,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -205,7 +215,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -257,7 +267,7 @@ public class InputLiteralData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;

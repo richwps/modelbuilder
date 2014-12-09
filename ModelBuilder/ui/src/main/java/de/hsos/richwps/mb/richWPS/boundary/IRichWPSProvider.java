@@ -81,6 +81,8 @@ public interface IRichWPSProvider {
      */
     public void wpsExecuteProcess(ExecuteRequest request);
 
+    public String wpsPreviewExecuteProcess(ExecuteRequest request);
+
     /**
      * Deploys a process, via RichWPS:deploy()-Request.
      *
@@ -102,6 +104,9 @@ public interface IRichWPSProvider {
      * @see UneployRequest
      */
     public void richwpsUndeployProcess(UndeployRequest request);
+
+    public String richwpsPreviewUndeployProcess(UndeployRequest request);
+    public String richwpsPreviewTestProcess(TestRequest request);
 
     /**
      * Performs a request.

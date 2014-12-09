@@ -54,7 +54,7 @@ public class OutputBoundingBoxData extends javax.swing.JPanel {
         this.id = theidentifier;
         //this.identifier.setText(theidentifier);
 
-        this.setBorder(new TitledBorder(theidentifier));
+        //this.setBorder(new TitledBorder(theidentifier));
         this.titleValue.setText(thetitel);
         this.abstractValue.setText(theabstract);
     }
@@ -75,6 +75,13 @@ public class OutputBoundingBoxData extends javax.swing.JPanel {
         return this.selectOutput.isSelected();
     }
 
+    public void setSelected(){
+        this.selectOutput.setSelected(true);
+    }
+    
+     public void setUnselected(){
+        this.selectOutput.setSelected(false);
+    }
     /**
      *
      * @return
@@ -102,8 +109,9 @@ public class OutputBoundingBoxData extends javax.swing.JPanel {
         titleValue = new javax.swing.JTextArea();
         selectOutput = new javax.swing.JCheckBox();
 
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(550, 200));
-        setPreferredSize(new java.awt.Dimension(600, 250));
+        setPreferredSize(new java.awt.Dimension(500, 250));
         setRequestFocusEnabled(false);
         setLayout(new java.awt.GridBagLayout());
 

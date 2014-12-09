@@ -47,6 +47,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         }
     }
 
+    
     /**
      * id For input-identification in InputParameterization.
      */
@@ -86,10 +87,8 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: "
                 + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
             this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
@@ -116,6 +115,18 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         }
     }
 
+    
+     public String getTitle() {
+        String title="";
+        if (this.specifier.getMinOccur() == 0) {
+            title = "(OPTIONAL) " + this.specifier.getIdentifier();
+            this.isMandatory = false;
+        } else {
+            title = "(MANDATORY) " + this.specifier.getIdentifier();
+        }
+        return title;
+    }
+     
     /**
      *
      * @param specifier
@@ -143,10 +154,10 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: "
                 + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
-            this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
+            //this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
-            this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
+            //this.setBorder(new TitledBorder("(MANDATORY) " + theidentifier));
             this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
@@ -237,7 +248,8 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         valueLabel3 = new javax.swing.JLabel();
         valueLabel4 = new javax.swing.JLabel();
 
-        setMinimumSize(new java.awt.Dimension(600, 250));
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
+        setMinimumSize(new java.awt.Dimension(500, 200));
         setPreferredSize(new java.awt.Dimension(500, 250));
         setLayout(new java.awt.GridBagLayout());
 
@@ -273,7 +285,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -289,7 +301,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -357,7 +369,6 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -370,7 +381,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -395,7 +406,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;

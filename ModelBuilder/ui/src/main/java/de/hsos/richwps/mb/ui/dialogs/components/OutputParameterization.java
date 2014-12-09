@@ -16,24 +16,28 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgumen
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.ui.TitledComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import layout.TableLayout;
 
 /**
  * Dialog for ouput parameterisation.
  *
  * @author dalcacer
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class OutputParameterization extends ADialogPanel {
 
-    private List<JPanel> outputs;
+    private List<TitledComponent> outputs;
     private RichWPSProvider provider;
     private ExecuteRequest request;
+    private boolean allSelected = false;
+    private boolean expand = false;
 
     /**
      * Creates new form OutputParameterization.
@@ -51,6 +55,8 @@ public class OutputParameterization extends ADialogPanel {
     public OutputParameterization(final RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (ExecuteRequest) request;
+        this.allSelected = false;
+        this.expand = false;
         initComponents();
 
         final String selectedserver = this.request.getEndpoint();
@@ -59,7 +65,7 @@ public class OutputParameterization extends ADialogPanel {
         this.selectedProcess.setText(selectedprocess);
 
         this.outputs = new ArrayList<>();
-        
+
         if (request instanceof TestRequest) {
             //nop
         } else {
@@ -82,11 +88,23 @@ public class OutputParameterization extends ADialogPanel {
 
         for (IOutputSpecifier specifier : this.request.getOutputs()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
-                this.outputs.add(new OutputLiteralData((OutputLiteralDataSpecifier) specifier));
+                OutputLiteralData pan = new OutputLiteralData((OutputLiteralDataSpecifier) specifier);
+                TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.fold();
+                tc.setTitleBold();
+                this.outputs.add(tc);
             } else if (specifier instanceof OutputComplexDataSpecifier) {
-                this.outputs.add(new OutputComplexData((OutputComplexDataSpecifier) specifier));
+                OutputComplexData pan = new OutputComplexData((OutputComplexDataSpecifier) specifier);
+                TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.fold();
+                tc.setTitleBold();
+                this.outputs.add(tc);
             } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
-                this.outputs.add(new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier));
+                OutputBoundingBoxData pan = new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier);
+                TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                tc.fold();
+                tc.setTitleBold();
+                this.outputs.add(tc);
             }
         }
 
@@ -110,9 +128,9 @@ public class OutputParameterization extends ADialogPanel {
             i++;
         }
 
-        this.outputsPanelScrollPane.setAlignmentX(javax.swing.JScrollPane.LEFT_ALIGNMENT);
-        this.outputsPanelScrollPane.setAlignmentY(javax.swing.JScrollPane.TOP_ALIGNMENT);
-        this.outputsPanelScrollPane.getVerticalScrollBar().setValue(0);
+        String c = "0," + i + 1;
+        outputsPanel.add(new JPanel(), c);
+
         this.outputsPanelScrollPane.setViewportView(outputsPanel);
     }
 
@@ -123,11 +141,11 @@ public class OutputParameterization extends ADialogPanel {
     public void updateRequest() {
         HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
 
-        for (JPanel panel : this.outputs) {
+        for (TitledComponent panel : this.outputs) {
 
-            if (panel instanceof OutputComplexData) {
+            if (panel.getComponent() instanceof OutputComplexData) {
 
-                OutputComplexData pan = (OutputComplexData) panel;
+                OutputComplexData pan = (OutputComplexData) panel.getComponent();
                 if (pan.isSelected()) {
                     OutputComplexDataSpecifier specifier = pan.getSpecifier();
                     OutputComplexDataArgument argument = new OutputComplexDataArgument(specifier);
@@ -145,8 +163,8 @@ public class OutputParameterization extends ADialogPanel {
 
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
-            } else if (panel instanceof OutputLiteralData) {
-                OutputLiteralData pan = (OutputLiteralData) panel;
+            } else if (panel.getComponent() instanceof OutputLiteralData) {
+                OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
 
                 if (pan.isSelected()) {
                     OutputLiteralDataSpecifier specifier = pan.getSpecifier();
@@ -154,8 +172,8 @@ public class OutputParameterization extends ADialogPanel {
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
 
-            } else if (panel instanceof OutputBoundingBoxData) {
-                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel;
+            } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
+                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
 
                 if (pan.isSelected()) {
                     OutputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
@@ -183,20 +201,20 @@ public class OutputParameterization extends ADialogPanel {
     @Override
     public boolean isValidInput() {
         boolean someThingSelected = false;
-        for (JPanel panel : this.outputs) {
-            if (panel instanceof OutputComplexData) {
-                OutputComplexData pan = (OutputComplexData) panel;
+        for (TitledComponent panel : this.outputs) {
+            if (panel.getComponent() instanceof OutputComplexData) {
+                OutputComplexData pan = (OutputComplexData) panel.getComponent();
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
 
-            } else if (panel instanceof OutputLiteralData) {
-                OutputLiteralData pan = (OutputLiteralData) panel;
+            } else if (panel.getComponent() instanceof OutputLiteralData) {
+                OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
-            } else if (panel instanceof OutputBoundingBoxData) {
-                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel;
+            } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
+                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
@@ -226,14 +244,18 @@ public class OutputParameterization extends ADialogPanel {
         selectedServerLabel = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
         outputsPanelScrollPane = new javax.swing.JScrollPane();
+        selectAllButton = new javax.swing.JButton();
+        expandButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(620, 650));
         setLayout(new java.awt.GridBagLayout());
 
         selectedServer.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -242,8 +264,8 @@ public class OutputParameterization extends ADialogPanel {
 
         selectedProcess.setText("jLabel2");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -255,7 +277,8 @@ public class OutputParameterization extends ADialogPanel {
         selectedServerLabel.setText("Server:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -267,7 +290,8 @@ public class OutputParameterization extends ADialogPanel {
         selectedProcessLabel.setText("Process:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
@@ -276,23 +300,123 @@ public class OutputParameterization extends ADialogPanel {
 
         outputsPanelScrollPane.setBorder(null);
         outputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        outputsPanelScrollPane.setViewportBorder(null);
         outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 600));
-        outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 600));
+        outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 550));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(outputsPanelScrollPane, gridBagConstraints);
+
+        selectAllButton.setText("Select All");
+        selectAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectAllButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectAllButton, gridBagConstraints);
+
+        expandButton.setText("Expand all");
+        expandButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expandButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(expandButton, gridBagConstraints);
+
+        jLabel1.setText("Plase select required outputs.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
+        if (allSelected == false) {
+            for (TitledComponent panel : this.outputs) {
+                if (panel.getComponent() instanceof OutputComplexData) {
+                    OutputComplexData pan = (OutputComplexData) panel.getComponent();
+                    pan.setSelected();
+
+                } else if (panel.getComponent() instanceof OutputLiteralData) {
+                    OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
+                    pan.setSelected();
+                } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
+                    OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
+                    pan.setSelected();
+                }
+            }
+            allSelected = true;
+            this.selectAllButton.setText("Deselect all");
+            return;
+        }
+
+        for (TitledComponent panel : this.outputs) {
+            if (panel.getComponent() instanceof OutputComplexData) {
+                OutputComplexData pan = (OutputComplexData) panel.getComponent();
+                pan.setUnselected();
+
+            } else if (panel.getComponent() instanceof OutputLiteralData) {
+                OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
+                pan.setUnselected();
+            } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
+                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
+                pan.setSelected();
+                pan.setUnselected();
+            }
+        }
+        allSelected = false;
+        this.selectAllButton.setText("Select all");
+    }//GEN-LAST:event_selectAllButtonActionPerformed
+
+    private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
+        if (this.expand == true) {
+            for (TitledComponent tc : this.outputs) {
+                tc.fold();
+            }
+            this.expand = false;
+            this.expandButton.setText("Expand all");
+            return;
+        }
+
+        for (TitledComponent tc : this.outputs) {
+            tc.unfold();
+            this.expand = true;
+            this.expandButton.setText("Collapse all");
+        }
+    }//GEN-LAST:event_expandButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton expandButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane outputsPanelScrollPane;
+    private javax.swing.JButton selectAllButton;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;

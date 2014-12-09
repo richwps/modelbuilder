@@ -52,7 +52,7 @@ public class ExecuteRequestHelper {
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
         HashMap theoutputs = request.getOutputArguments();
-        
+        //FIXME simplify
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
             Logger.log(this.getClass(), "analyseResponse", response.toString());
