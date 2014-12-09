@@ -117,10 +117,13 @@ public class ResultVisualisation extends ADialogPanel {
             }
             i++;
         }
-
+        String c = "0," + i + 1;
+        outputsPanel.add(new JPanel(), c);
+        
         this.resultPane.setViewportView(outputsPanel);
         this.resultPane.setVisible(true);
         this.loadingLabel.setVisible(false);
+        this.validate();
     }
 
     private void renderException(ExecuteRequest request) {
@@ -216,8 +219,8 @@ public class ResultVisualisation extends ADialogPanel {
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         resultPane.setViewportBorder(null);
-        resultPane.setMinimumSize(new java.awt.Dimension(610, 700));
-        resultPane.setPreferredSize(new java.awt.Dimension(610, 600));
+        resultPane.setMinimumSize(new java.awt.Dimension(600, 550));
+        resultPane.setPreferredSize(new java.awt.Dimension(600, 550));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;

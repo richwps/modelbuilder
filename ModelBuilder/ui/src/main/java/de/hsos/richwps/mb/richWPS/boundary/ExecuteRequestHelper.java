@@ -152,9 +152,6 @@ public class ExecuteRequestHelper {
                 param = (InputBoundingBoxDataArgument) o;
                 final String crs = param.getCrsType();
                 String[] split = param.getValue().split(",");
-                for (String s : split) {
-                    System.out.println(s);
-                }
                 BigInteger dimension = BigInteger.valueOf(split.length);
                 String[] lower = split[0].split(" ");
                 String[] upper = split[1].split(" ");

@@ -10,10 +10,10 @@
       </Border>
     </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[600, 650]"/>
+      <Dimension value="[600, 550]"/>
     </Property>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[600, 650]"/>
+      <Dimension value="[600, 550]"/>
     </Property>
   </Properties>
   <AuxValues>

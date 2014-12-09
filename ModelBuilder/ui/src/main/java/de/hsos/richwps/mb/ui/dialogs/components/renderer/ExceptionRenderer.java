@@ -50,8 +50,8 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         copyToClipBoard = new javax.swing.JButton();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
-        setMinimumSize(new java.awt.Dimension(600, 650));
-        setPreferredSize(new java.awt.Dimension(600, 650));
+        setMinimumSize(new java.awt.Dimension(600, 550));
+        setPreferredSize(new java.awt.Dimension(600, 550));
         setLayout(new java.awt.GridBagLayout());
 
         exceptionScrollPane.setBorder(null);

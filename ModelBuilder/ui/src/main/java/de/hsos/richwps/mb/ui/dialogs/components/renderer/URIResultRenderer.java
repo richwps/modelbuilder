@@ -7,7 +7,6 @@ import java.awt.datatransfer.StringSelection;
 import java.net.URI;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.border.TitledBorder;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,7 +30,6 @@ public class URIResultRenderer extends javax.swing.JPanel {
      */
     public URIResultRenderer(String identifier, String reference) {
         initComponents();
-        this.setBorder(new TitledBorder(identifier));
         this.httpuri=reference;
         String abbString = StringUtils.abbreviateMiddle(httpuri, "[...]" ,50);
         this.uri.setText(abbString);
@@ -52,6 +50,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         copyToClipBoard = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
+        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(600, 100));
         setPreferredSize(new java.awt.Dimension(600, 100));
         setLayout(new java.awt.GridBagLayout());

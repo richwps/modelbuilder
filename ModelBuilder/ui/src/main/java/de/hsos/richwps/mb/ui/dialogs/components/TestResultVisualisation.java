@@ -113,6 +113,9 @@ public class TestResultVisualisation extends ADialogPanel {
             i++;
         }
 
+        String c = "0," + i + 1;
+        outputsPanel.add(new JPanel(), c);
+
         this.resultPane.setViewportView(outputsPanel);
         this.resultPane.setVisible(true);
         this.loadingLabel.setVisible(false);
@@ -128,7 +131,7 @@ public class TestResultVisualisation extends ADialogPanel {
         tc.setTitleBold();
 
         this.remove(this.resultPane);
-        
+
         GridBagConstraints g = new GridBagConstraints();
         g.gridx = 0;
         g.gridy = 3;

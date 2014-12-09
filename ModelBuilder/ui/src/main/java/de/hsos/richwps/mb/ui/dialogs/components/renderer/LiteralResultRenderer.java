@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.ui.dialogs.components.renderer;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -25,7 +24,6 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
      */
     public LiteralResultRenderer(String identifier, String value) {
         initComponents();
-        this.setBorder(new TitledBorder(identifier));
         this.value.setText(value);
         
     }
