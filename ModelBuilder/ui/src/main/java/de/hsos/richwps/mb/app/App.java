@@ -43,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import layout.TableLayout;
@@ -569,18 +570,23 @@ public class App {
      */
     void preview() {
         AppRichWPSManager manager = new AppRichWPSManager(this);
-        final String rola = manager.getROLA();
-
+        String rola = "<html>" + manager.getROLA() + "</html>";
+        String[] bold = {"bind", "process", "execute", "store", "to", "with", "as"};
+        for (String s : bold) {
+            rola = rola.replace(s, "<b>" + s + "</b>");
+        }
+        rola = rola.replace("\n", "<br/>");
         if (manager.isError()) {
             JOptionPane.showMessageDialog(frame,
                     AppConstants.DEPLOY_ERROR_DIALOG_MSG,
                     AppConstants.DEPLOY_ERROR_DIALOG_TITLE,
                     JOptionPane.ERROR_MESSAGE);
         } else {
-            final javax.swing.JTextArea textArea = new javax.swing.JTextArea(rola);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textArea);
+            final JTextPane textpane = new javax.swing.JTextPane();
+            textpane.setContentType("text/html");
+            textpane.setText(rola);
+            textpane.setEditable(false);
+            final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
             scrollPane.setPreferredSize(new java.awt.Dimension(500, 500));
             JOptionPane.showMessageDialog(frame, scrollPane);
         }
