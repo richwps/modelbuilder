@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.view.semanticProxy.MainTreeViewController;
 import de.hsos.richwps.mb.app.view.semanticProxy.SubTreeViewController;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
@@ -40,7 +39,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -85,7 +83,7 @@ public class App {
     private UndeployDialog undeployAnyDialog;
     private TestModelDialog testDialog;
 
-    private boolean changesSaved = false;
+    boolean changesSaved = false;
     private FormatProvider formatProvider;
     private ProcessMetricProvider processMetricProvider;
     private SementicProxySearch semanticProxySearch;
@@ -125,9 +123,9 @@ public class App {
      * @return
      */
     boolean currentModelFileExists() {
-        // no current file => return true
+        // no current file => return false
         if (null == getCurrentModelFilename() || getCurrentModelFilename().isEmpty()) {
-            return true;
+            return false;
         }
 
         // check file existence
@@ -141,6 +139,7 @@ public class App {
         return null != file && file.exists();
     }
 
+    
     void setChangesSaved(boolean changesSaved) {
         if (currentModelFileExists()) {
             this.changesSaved = changesSaved;

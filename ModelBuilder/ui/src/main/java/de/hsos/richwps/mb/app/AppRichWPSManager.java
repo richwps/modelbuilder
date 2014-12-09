@@ -15,7 +15,6 @@ import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
@@ -71,8 +70,10 @@ public class AppRichWPSManager {
             this.app = app;
             this.graph = app.getGraphView().getGraph();
             this.error = false;
-            this.exporter = new Exporter(this.graph);
+            this.exporter = new Exporter(this.graph.clone());
         } catch (NoIdentifierException | IdentifierDuplicatedException ex) {
+            java.util.logging.Logger.getLogger(AppRichWPSManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (CloneNotSupportedException ex) {
             java.util.logging.Logger.getLogger(AppRichWPSManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

@@ -254,11 +254,11 @@ public class ProcessEntity extends OwsObjectWithProperties {
         clone.toolTipText = null; // indicate lazy init.
 
         for (ProcessPort port : getInputPorts()) {
-            clone.addInputPort(port);
+            clone.addInputPort(port.clone());
         }
 
         for (ProcessPort port : getOutputPorts()) {
-            clone.addOutputPort(port);
+            clone.addOutputPort(port.clone());
         }
 
         for (Entry<String, PropertyGroup<? extends IObjectWithProperties>> addGroup : additionalGroups.entrySet()) {

@@ -127,13 +127,19 @@ public class AppActionHandler implements IAppActionHandler {
 
             String remote = app.askRemote();
 
-            // cancel if no remote is available
+            // cancel if no remote server is set
             if (null == remote || remote.isEmpty()) {
                 return;
             }
 
             getGraphView().newGraph(remote);
             app.getFrame().resetGraphViewTitle();
+            
+            // override "changes saved" status
+            app.setCurrentModelFilename(".");
+            app.setChangesSaved(true);
+            app.setCurrentModelFilename(null);
+            
             app.modelLoaded();
         }
     }

@@ -98,6 +98,16 @@ public class AppPropertiesView extends PropertiesView {
 
     };
 
+    @Override
+    public void clearPropertyCache() {
+        for (AbstractPropertyComponent component : propertyComponentsListeningTo) {
+            component.removePropertyChangedByUIListener(propertyUIChangeListener);
+        }
+        propertyComponentsListeningTo.clear();
+
+        super.clearPropertyCache();
+    }
+
     /**
      * Sets the object whose properties are to be shown. Removes change listener
      * of currently shown property component.
@@ -106,10 +116,6 @@ public class AppPropertiesView extends PropertiesView {
      */
     @Override
     public void setObjectWithProperties(IObjectWithProperties object) {
-        for (AbstractPropertyComponent component : propertyComponentsListeningTo) {
-            component.removePropertyChangedByUIListener(propertyUIChangeListener);
-        }
-        propertyComponentsListeningTo.clear();
 
         // collect QoS target subgroups in order to style them later
         qosTargetSubGroups = new LinkedList<>();
@@ -154,9 +160,11 @@ public class AppPropertiesView extends PropertiesView {
             addToCache = false;
         }
 
-        component.addPropertyChangedByUIListener(propertyUIChangeListener);
-        propertyComponentsListeningTo.add(component);
-
+        if (!propertyComponentsListeningTo.contains(component)) {
+            component.addPropertyChangedByUIListener(propertyUIChangeListener);
+            propertyComponentsListeningTo.add(component);
+        }
+        
         if (addToCache) {
             // add created component to cache
             this.componentCache.put(property, component);

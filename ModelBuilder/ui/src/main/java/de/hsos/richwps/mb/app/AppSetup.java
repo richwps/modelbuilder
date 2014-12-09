@@ -37,7 +37,7 @@ public class AppSetup {
 
         app.frame = new AppFrame(AppConstants.FRAME_TITLE);
         AppSplashScreen splash = new AppSplashScreen();
-        
+
         splash.showMessageAndProgress("Loading config", 0);
         {
             String hostKey = AppConfig.CONFIG_KEYS.HTTPPROXY_S_HOST.name();
@@ -49,7 +49,7 @@ public class AppSetup {
             String port = AppConfig.getConfig().get(portKey, "");
             System.setProperty("http.proxyPort", port);
         }
-        
+
         splash.showMessageAndProgress("Loading resources", 7);
         {
             // Load colors
@@ -177,7 +177,7 @@ public class AppSetup {
 
         splash.showMessageAndProgress("ModelBuilder is ready!", 100);
         splash.setVisible(false);
-        
+
         app.getFrame().setVisible(true);
 
         // Validate frame location and reset it if necessary.
@@ -186,8 +186,12 @@ public class AppSetup {
             app.getFrame().setLocation(AppConstants.FRAME_DEFAULT_LOCATION);
         }
 
-        // no model loaded
+        // set existing pseudo-filename to enable setting the "changes saved" status.
+        app.setCurrentModelFilename(".");
         app.setChangesSaved(true);
+        app.setCurrentModelFilename(null);
+
+        // update actions as no model is loaded
         app.getGraphView().setEnabled(false);
         app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS).setEnabled(false);
         app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO).setEnabled(false);

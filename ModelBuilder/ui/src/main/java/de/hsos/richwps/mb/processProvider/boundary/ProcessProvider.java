@@ -16,6 +16,9 @@ import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.Vocabulary;
+import de.hsos.richwps.sp.client.ows.gettypes.ComplexData;
+import de.hsos.richwps.sp.client.ows.gettypes.ComplexDataCombination;
+import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
 import de.hsos.richwps.sp.client.ows.gettypes.Network;
 import de.hsos.richwps.sp.client.ows.gettypes.Output;
@@ -37,7 +40,6 @@ public class ProcessProvider {
     private SPClient spClient;
     private Network net;
     private String spUrl;
-    private String monitorUrl;
 
     private ProcessSearch processSearch;
     private MonitorDataConverter monitorDataConverter;
@@ -172,6 +174,9 @@ public class ProcessProvider {
                                         inPort.setOwsIdentifier(spInput.getIdentifier());
                                         inPort.setOwsAbstract(spInput.getAbstract());
                                         inPort.setOwsTitle(spInput.getTitle());
+                                        
+                                        // TODO map complex data form (see output form converter)
+                                        
                                         process.addInputPort(inPort);
                                     }
                                 } catch (Exception ex) {
@@ -182,7 +187,24 @@ public class ProcessProvider {
                                 // Map output ports
                                 try {
                                     for (Output spOutput : spProcess.getOutputs()) {
-                                        ProcessPortDatatype datatype = EntityConverter.getDatatype(spOutput.getOutputFormChoice());
+                                        final InAndOutputForm outputFormChoice = spOutput.getOutputFormChoice();
+                                        ProcessPortDatatype datatype = EntityConverter.getDatatype(outputFormChoice);
+                                        
+                                        // TODO move to EntityConverter
+//                                        if(datatype.equals(ProcessPortDatatype.COMPLEX)) {
+//                                            ComplexData complexForm =  (ComplexData) outputFormChoice;
+//                                            
+//                                            // TODO convert defaul format
+//                                            ComplexDataCombination defaultFormat = complexForm.getDefaultFormat();
+//                                            defaultFormat.getEncoding(); // may be null
+//                                            defaultFormat.getSchema();   // may be null
+//                                        
+//                                            // TODO INPUTS: convert MaxMB -> don't convert for outputs !
+//                                            
+//                                            // TODO convert supported formats
+//                                            
+//                                        }
+                                        
                                         ProcessPort outPort = new ProcessPort(datatype);
                                         outPort.setOwsIdentifier(spOutput.getIdentifier());
                                         outPort.setOwsAbstract(spOutput.getAbstract());

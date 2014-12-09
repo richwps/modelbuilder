@@ -59,6 +59,9 @@ public class PropertiesView extends TitledComponent {
         }
     }
 
+    /**
+     * Holds property components for the current ObjectWithProperties.
+     */
     protected HashMap<Property, AbstractPropertyComponent> componentCache;
 
     public PropertiesView(Window parentWindow, String title) {
@@ -143,13 +146,6 @@ public class PropertiesView extends TitledComponent {
         if (property instanceof PropertyTextFieldString) {
             final AbstractPropertyComponent propertyComponent = (AbstractPropertyComponent) property;
 
-            // listen to changes
-//            propertyComponent.getComponent().addFocusListener(new FocusAdapter() {
-//                @Override
-//                public void focusLost(FocusEvent e) {
-//                    firePropertyChangeEvent(card, property.getPropertiesObjectName(), property, propertyComponent.getValue());
-//                }
-//            });
             // setup GUI
             JTextField label = (JTextField) ((AbstractPropertyComponent) property).getComponent();
             CompoundBorder border = new CompoundBorder(new ColorBorder(PropertyCardsConfig.headLabelBgColor, 2, 0, 0, 1), label.getBorder());
@@ -173,17 +169,6 @@ public class PropertiesView extends TitledComponent {
                 setupPropertyFields(card, aProperty);
             }
         }
-
-        // TODO setup additional components
-//                    else if (property instanceof PropertyComplexDataTypeFormat) {
-//                    ComplexDataTypeFormatLabel component = (ComplexDataTypeFormatLabel) property.getComponent();
-//                    component.addSelectionListener(new IFormatSelectionListener() {
-//                        @Override
-//                        public void formatSelected(ComplexDataTypeFormat format) {
-//                            firePropertyChangeEvent(card, property.getPropertyName(), getGlobalPortCard().getPort(), format);
-//                        }
-//                    });
-//                }
     }
 
     private MultiProcessCard getMultiProcessesCard() {

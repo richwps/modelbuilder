@@ -115,7 +115,7 @@ public class GraphSetup {
      * @param graph
      * @return
      */
-    public static Graph setup(Graph graph) {
+    public static void setup(Graph graph) {
         // graph setup
         graph.setCellsDisconnectable(true);
         graph.setAllowDanglingEdges(false);
@@ -199,8 +199,6 @@ public class GraphSetup {
         portStyle = (Hashtable<String, Object>) portStyle.clone();
         portStyle.put(mxConstants.STYLE_FILLCOLOR, "#" + localOutputBgColor);
         stylesheet.putCellStyle(STYLENAME_LOCAL_OUTPUT, portStyle);
-
-        return graph;
     }
 
     static void setupGraphComponent(GraphComponent component) {
