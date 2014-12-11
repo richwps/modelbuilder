@@ -77,16 +77,11 @@ public class ProcessProvider {
      */
     public boolean connect(String url) throws Exception {
         this.spUrl = url;
-
-        // init SP Client
-        Vocabulary.init(new URL(url + "/resources/vocab"));
-        spClient.setRootURL(url + "/resources");
-        spClient.setSearchURL(url + "/search");
-        spClient.setWpsListURL(url + "/resources/wpss");
-        spClient.setProcessListURL(url + "/resources/processes");
-        spClient.setIdgeneratorURL(url + "/idgenerator");
+        
 
         try {
+            //init SP client
+            spClient.autoInitClient(new URL(url));
             net = spClient.getNetwork();
             getServerProvider().setNet(net);
             spClient.clearCache();
