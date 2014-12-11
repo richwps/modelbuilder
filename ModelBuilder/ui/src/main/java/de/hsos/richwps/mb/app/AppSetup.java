@@ -259,8 +259,13 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_CLOSE_INACTIVE_KEY, new ImageIcon(iconDir + "window-close-3_inactive.png", "close inactive icon"));
         UIManager.put(AppConstants.ICON_SEARCH_KEY, new ImageIcon(iconDir + "system-search-6.png", "search icon"));
         UIManager.put(AppConstants.ICON_CHECK_KEY, new ImageIcon(iconDir + "dialog-clean.png", "check icon"));
+        UIManager.put(AppConstants.ICON_CHECK_DISABLED_KEY, new ImageIcon(iconDir + "dialog-clean_disabled.png", "disabled check icon"));
         UIManager.put(AppConstants.ICON_CHECK_FAVOURITE_KEY, new ImageIcon(iconDir + "dialog-clean-star.png", "check fav icon"));
+        UIManager.put(AppConstants.ICON_CHECK_FAVOURITE_DISABLED_KEY, new ImageIcon(iconDir + "dialog-clean-star_disabled.png", "disabled check fav icon"));
+        UIManager.put(AppConstants.ICON_FAVOURITE_DISABLED_KEY, new ImageIcon(iconDir + "bookmark-4_disabled.png", "disabled fav icon"));
+        UIManager.put(AppConstants.ICON_FAVOURITE_KEY, new ImageIcon(iconDir + "bookmark-4.png", "fav icon"));
         UIManager.put(AppConstants.ICON_WARNING_KEY, new ImageIcon(iconDir + "dialog-warning-4.png", "warning icon"));
+        UIManager.put(AppConstants.ICON_EMPTY_KEY, new ImageIcon(iconDir + "empty.png", "empty icon"));
 
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
 

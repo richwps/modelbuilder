@@ -19,7 +19,7 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
     private ComplexDataTypeFormat defaultFormat;
 
     public DataTypeDescriptionComplex() {
-        formats = new LinkedList<>();
+        this.formats = new LinkedList<>();
     }
 
     public DataTypeDescriptionComplex(ComplexDataTypeFormat format) {
@@ -94,14 +94,14 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
         for (ComplexDataTypeFormat aFormat : formats) {
             clone.formats.add(aFormat);
         }
-        
+
         try {
             clone.setDefaultFormat(defaultFormat);
         } catch (IllegalDefaultFormatException ex) {
             // ignore; just log
             Logger.log("DataTypeDescriptionComplex: IllegalDefaultFormat " + ex);
         }
-        
+
         return clone;
     }
 

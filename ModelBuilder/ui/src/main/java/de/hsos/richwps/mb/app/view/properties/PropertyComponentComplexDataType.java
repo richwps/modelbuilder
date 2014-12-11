@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app.view.properties;
 
+import de.hsos.richwps.mb.app.view.complexDataType.ComplexDataTypeLabel;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
@@ -18,9 +19,9 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class PropertyComponentComplexDataType extends AbstractPropertyComponent<ComplexDataTypeFormatLabel, DataTypeDescriptionComplex> {
+public class PropertyComponentComplexDataType extends AbstractPropertyComponent<ComplexDataTypeLabel, DataTypeDescriptionComplex> {
 
-    private ComplexDataTypeFormatLabel component;
+    private ComplexDataTypeLabel component;
 
     public static String PROPERTY_NAME = "Complex datatype format";
     public static String COMPONENT_TYPE = "Complex datatype format";
@@ -31,7 +32,7 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
 
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
         formats.addAll(formatProvider.getComplexDataTypes());
-        component = new ComplexDataTypeFormatLabel(parent, formats);
+        component = new ComplexDataTypeLabel(parent, formats);
         component.addSelectionListener(new IDataTypeDescriptionChangeListener() {
             @Override
             public void dataTypeDescriptionChanged(DataTypeDescriptionComplex dataTypeDescription) {
@@ -50,7 +51,7 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
     }
 
     @Override
-    public ComplexDataTypeFormatLabel getComponent() {
+    public ComplexDataTypeLabel getComponent() {
         return component;
     }
 

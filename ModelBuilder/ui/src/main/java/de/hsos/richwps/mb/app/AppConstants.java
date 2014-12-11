@@ -256,6 +256,26 @@ public class AppConstants {
      * If not null, this locale will be set globally as default.
      */
     static Locale DEFAULT_LOCALE = null;
+    
+    /**
+     * ToolTipText for selected supported formats.
+     */
+    public static String COMPLEX_FORMAT_TOOLTIP_SUPPORTEDFORMAT = "Supported format. Click to remove support for this format.";
+    
+    /**
+     * ToolTipText for selected supported formats.
+     */
+    public static String COMPLEX_FORMAT_TOOLTIP_SUPPORTEDFORMAT_DESELECTED = "Click to add support for this format.";
+
+    /**
+     * ToolTipText for selected default format.
+     */
+    public static String COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT = "Current default format.";
+    
+    /**
+     * ToolTipText for deselected default format.
+     */
+    public static String COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT_DESELECTED = "Click to set as the default supported format";
 
     public enum PREFERENCES_TAB {
 
@@ -432,7 +452,12 @@ public class AppConstants {
     public final static String ICON_CLOSE_INACTIVE_KEY = "richwps_icon_close_inactive";
     public final static String ICON_SEARCH_KEY = "richwps_icon_search";
     public final static String ICON_CHECK_KEY = "richwps_icon_check";
+    public final static String ICON_CHECK_DISABLED_KEY = "richwps_icon_disabled_check";
     public final static String ICON_CHECK_FAVOURITE_KEY = "richwps_icon_check_favourite";
+    public final static String ICON_CHECK_FAVOURITE_DISABLED_KEY = "richwps_icon_check_favourite_disabled";
+    public final static String ICON_FAVOURITE_DISABLED_KEY = "richwps_icon_favourite_disabled";
+    public final static String ICON_FAVOURITE_KEY = "richwps_icon_favourite";
+    public final static String ICON_EMPTY_KEY = "richwps_icon_empty";
     public final static String ICON_WARNING_KEY = "richwps_icon_warning";
 
     /**

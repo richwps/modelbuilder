@@ -18,25 +18,25 @@ import java.util.List;
  * @author dziegenh
  */
 public class FormatProvider {
-
+    
     private final String csvFile;
-
+    
     private List<ComplexDataTypeFormat> dataTypes;
-
+    
     public FormatProvider(String formatCsvFile) {
         this.csvFile = formatCsvFile;
     }
-
+    
     public List<ComplexDataTypeFormat> getComplexDataTypes() throws LoadDataTypesException {
-
+        
         if (null != dataTypes) {
             return dataTypes;
         }
-
+        
         dataTypes = new LinkedList<>();
         LoadDataTypesException exception = null;
         BufferedReader reader = null;
-
+        
         try {
             String path = AppConstants.RESOURCES_DIR + File.separator + "csv" + File.separator + csvFile;
             reader = new BufferedReader(new FileReader(path));
@@ -47,11 +47,14 @@ public class FormatProvider {
                 String mimeType = values[0];
                 String schema = (values.length > 1) ? values[1] : "";
                 String encoding = (values.length > 2) ? values[2] : "";
-
+                
                 ComplexDataTypeFormat tmp = new ComplexDataTypeFormat(mimeType, schema, encoding);
-                dataTypes.add(tmp);
+                
+                if (!dataTypes.contains(tmp)) {
+                    dataTypes.add(tmp);
+                }
             }
-
+            
         } catch (FileNotFoundException e) {
             exception = new LoadDataTypesException();
         } catch (IOException e) {
@@ -65,12 +68,12 @@ public class FormatProvider {
                 }
             }
         }
-
+        
         if (null != exception) {
             throw exception;
         }
-
+        
         return dataTypes;
     }
-
+    
 }

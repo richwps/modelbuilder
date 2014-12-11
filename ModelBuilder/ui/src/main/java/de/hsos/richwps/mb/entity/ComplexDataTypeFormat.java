@@ -64,11 +64,18 @@ public class ComplexDataTypeFormat implements Serializable {
             toolTipText
                     = "<html><b>MimeType: "
                     + ComplexDataTypeFormat.getValueForViews(mimeType)
-                    + "</b><br/>&nbsp;&nbsp;Schema: "
-                    + ComplexDataTypeFormat.getValueForViews(schema)
-                    + "<br/>&nbsp;&nbsp;Encoding: "
-                    + ComplexDataTypeFormat.getValueForViews(encoding)
-                    + "</html>";
+                    + "</b>";
+            
+            if (null != schema && !schema.isEmpty()) {
+                toolTipText += "<br/>&nbsp;&nbsp;Schema: "
+                        + ComplexDataTypeFormat.getValueForViews(schema);
+            }
+            if (null != encoding && !encoding.isEmpty()) {
+                toolTipText += "<br/>&nbsp;&nbsp;Encoding: "
+                        + ComplexDataTypeFormat.getValueForViews(encoding);
+            }
+            
+            toolTipText += "</html>";
         }
 
         return toolTipText;
