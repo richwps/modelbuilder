@@ -66,9 +66,14 @@ public class AppConstants {
     // Dialoges
     public final static String DIALOG_BTN_CLOSE = "Close";
     public final static String DIALOG_BTN_CANCEL = "Cancel";
+    public final static String DIALOG_BTN_START = "Start";
     public final static String DIALOG_BTN_BACK = "< Back";
     public final static String DIALOG_BTN_NEXT = "Next >";
     public final static String DIALOG_BTN_OK = "Ok";
+    public final static String DIALOG_BTN_EXPAND_ALL = "Expand all";
+    public final static String DIALOG__BTN_COLLAPSE_ALL = "Collapse all";
+    public final static String DIALOG_BTN_SELECT_ALL = "Select all";
+    public final static String DIALOG_BTN_DESELECT_ALL = "Deelect all";
     public final static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
 
     // Preferences Dialog
@@ -106,6 +111,9 @@ public class AppConstants {
     //Execute/Undeployerror Dialog
     public final static String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
     public final static String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
+
+    //Connectivity errors
+    public final static String CONNECT_FAILED = "Unable to connect to selected server.";
 
     // About Dialog
     /**

@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputBoundingBoxData;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputComplexData;
@@ -33,7 +34,7 @@ import layout.TableLayout;
  */
 public class OutputParameterization extends ADialogPanel {
 
-    private List<TitledComponent> outputs;
+    private List<TitledComponent> outputpanels;
     private RichWPSProvider provider;
     private ExecuteRequest request;
     private boolean allSelected = false;
@@ -64,7 +65,7 @@ public class OutputParameterization extends ADialogPanel {
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
 
-        this.outputs = new ArrayList<>();
+        this.outputpanels = new ArrayList<>();
 
         if (request instanceof TestRequest) {
             //nop
@@ -92,19 +93,19 @@ public class OutputParameterization extends ADialogPanel {
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.outputs.add(tc);
+                this.outputpanels.add(tc);
             } else if (specifier instanceof OutputComplexDataSpecifier) {
                 OutputComplexData pan = new OutputComplexData((OutputComplexDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.outputs.add(tc);
+                this.outputpanels.add(tc);
             } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
                 OutputBoundingBoxData pan = new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.outputs.add(tc);
+                this.outputpanels.add(tc);
             }
         }
 
@@ -112,8 +113,8 @@ public class OutputParameterization extends ADialogPanel {
         double size[][] = new double[2][1];
         size[0] = new double[]{TableLayout.FILL};
 
-        double innersize[] = new double[outputs.size()];
-        for (int i = 0; i < outputs.size(); i++) {
+        double innersize[] = new double[outputpanels.size()];
+        for (int i = 0; i < outputpanels.size(); i++) {
             innersize[i] = TableLayout.PREFERRED;
         }
         size[1] = innersize;
@@ -122,7 +123,7 @@ public class OutputParameterization extends ADialogPanel {
         outputsPanel.setLayout(layout);
 
         int i = 0;
-        for (JPanel panel : this.outputs) {
+        for (JPanel panel : this.outputpanels) {
             String c = "0," + i;
             outputsPanel.add(panel, c);
             i++;
@@ -131,6 +132,13 @@ public class OutputParameterization extends ADialogPanel {
         String c = "0," + i + 1;
         outputsPanel.add(new JPanel(), c);
 
+        if (this.outputpanels.size() <= 2) {
+            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
+            this.expand=true;
+            for (int u = 0; u < this.outputpanels.size(); u++) {
+                this.outputpanels.get(u).setFolded(false);
+            }
+        }
         this.outputsPanelScrollPane.setViewportView(outputsPanel);
     }
 
@@ -141,7 +149,7 @@ public class OutputParameterization extends ADialogPanel {
     public void updateRequest() {
         HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
 
-        for (TitledComponent panel : this.outputs) {
+        for (TitledComponent panel : this.outputpanels) {
 
             if (panel.getComponent() instanceof OutputComplexData) {
 
@@ -201,7 +209,7 @@ public class OutputParameterization extends ADialogPanel {
     @Override
     public boolean isValidInput() {
         boolean someThingSelected = false;
-        for (TitledComponent panel : this.outputs) {
+        for (TitledComponent panel : this.outputpanels) {
             if (panel.getComponent() instanceof OutputComplexData) {
                 OutputComplexData pan = (OutputComplexData) panel.getComponent();
                 if (pan.isSelected()) {
@@ -239,17 +247,35 @@ public class OutputParameterization extends ADialogPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         selectedServer = new javax.swing.JLabel();
         selectedProcess = new javax.swing.JLabel();
         selectedServerLabel = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
-        outputsPanelScrollPane = new javax.swing.JScrollPane();
+        jPanel2 = new javax.swing.JPanel();
         selectAllButton = new javax.swing.JButton();
         expandButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        outputsPanelScrollPane = new javax.swing.JScrollPane();
+        jSeparator1 = new javax.swing.JSeparator();
 
+        setMinimumSize(new java.awt.Dimension(625, 667));
         setPreferredSize(new java.awt.Dimension(620, 650));
         setLayout(new java.awt.GridBagLayout());
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        jLabel1.setText("Please select required outputs.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         selectedServer.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -260,7 +286,7 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedServer, gridBagConstraints);
+        jPanel1.add(selectedServer, gridBagConstraints);
 
         selectedProcess.setText("jLabel2");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -270,7 +296,7 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedProcess, gridBagConstraints);
+        jPanel1.add(selectedProcess, gridBagConstraints);
 
         selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedServerLabel.setLabelFor(selectedServer);
@@ -283,7 +309,7 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedServerLabel, gridBagConstraints);
+        jPanel1.add(selectedServerLabel, gridBagConstraints);
 
         selectedProcessLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedProcessLabel.setLabelFor(selectedProcess);
@@ -296,25 +322,20 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedProcessLabel, gridBagConstraints);
+        jPanel1.add(selectedProcessLabel, gridBagConstraints);
 
-        outputsPanelScrollPane.setBorder(null);
-        outputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        outputsPanelScrollPane.setViewportBorder(null);
-        outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 600));
-        outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 550));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(outputsPanelScrollPane, gridBagConstraints);
+        add(jPanel1, gridBagConstraints);
+
+        jPanel2.setMinimumSize(new java.awt.Dimension(85, 100));
+        jPanel2.setLayout(new java.awt.GridBagLayout());
 
         selectAllButton.setText("Select All");
+        selectAllButton.setMaximumSize(new java.awt.Dimension(70, 32));
+        selectAllButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        selectAllButton.setPreferredSize(new java.awt.Dimension(70, 32));
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectAllButtonActionPerformed(evt);
@@ -328,9 +349,12 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectAllButton, gridBagConstraints);
+        jPanel2.add(selectAllButton, gridBagConstraints);
 
         expandButton.setText("Expand all");
+        expandButton.setMaximumSize(new java.awt.Dimension(70, 32));
+        expandButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        expandButton.setPreferredSize(new java.awt.Dimension(70, 32));
         expandButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 expandButtonActionPerformed(evt);
@@ -344,21 +368,42 @@ public class OutputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(expandButton, gridBagConstraints);
+        jPanel2.add(expandButton, gridBagConstraints);
 
-        jLabel1.setText("Plase select required outputs.");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_END;
+        add(jPanel2, gridBagConstraints);
+
+        outputsPanelScrollPane.setBorder(null);
+        outputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        outputsPanelScrollPane.setViewportBorder(null);
+        outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
+        outputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 700));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(outputsPanelScrollPane, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel1, gridBagConstraints);
+        add(jSeparator1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         if (allSelected == false) {
-            for (TitledComponent panel : this.outputs) {
+            for (TitledComponent panel : this.outputpanels) {
                 if (panel.getComponent() instanceof OutputComplexData) {
                     OutputComplexData pan = (OutputComplexData) panel.getComponent();
                     pan.setSelected();
@@ -372,11 +417,11 @@ public class OutputParameterization extends ADialogPanel {
                 }
             }
             allSelected = true;
-            this.selectAllButton.setText("Deselect all");
+            this.selectAllButton.setText(AppConstants.DIALOG_BTN_DESELECT_ALL);
             return;
         }
 
-        for (TitledComponent panel : this.outputs) {
+        for (TitledComponent panel : this.outputpanels) {
             if (panel.getComponent() instanceof OutputComplexData) {
                 OutputComplexData pan = (OutputComplexData) panel.getComponent();
                 pan.setUnselected();
@@ -391,23 +436,23 @@ public class OutputParameterization extends ADialogPanel {
             }
         }
         allSelected = false;
-        this.selectAllButton.setText("Select all");
+        this.selectAllButton.setText(AppConstants.DIALOG_BTN_SELECT_ALL);
     }//GEN-LAST:event_selectAllButtonActionPerformed
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
         if (this.expand == true) {
-            for (TitledComponent tc : this.outputs) {
+            for (TitledComponent tc : this.outputpanels) {
                 tc.fold();
             }
             this.expand = false;
-            this.expandButton.setText("Expand all");
+            this.expandButton.setText(AppConstants.DIALOG_BTN_EXPAND_ALL);
             return;
         }
 
-        for (TitledComponent tc : this.outputs) {
+        for (TitledComponent tc : this.outputpanels) {
             tc.unfold();
             this.expand = true;
-            this.expandButton.setText("Collapse all");
+            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
         }
     }//GEN-LAST:event_expandButtonActionPerformed
 
@@ -415,6 +460,9 @@ public class OutputParameterization extends ADialogPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton expandButton;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JScrollPane outputsPanelScrollPane;
     private javax.swing.JButton selectAllButton;
     private javax.swing.JLabel selectedProcess;

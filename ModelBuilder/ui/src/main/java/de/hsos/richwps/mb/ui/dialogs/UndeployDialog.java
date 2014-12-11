@@ -20,8 +20,8 @@ import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
 /**
- * A dialog that displays two consecutive panels for serverselection
- * and processselection in order to undeploy a process.
+ * A dialog that displays two consecutive panels for serverselection and
+ * processselection in order to undeploy a process.
  *
  * @author dalcacer
  * @version 0.0.3
@@ -57,8 +57,10 @@ public class UndeployDialog extends MbDialog {
         this.desc_request = new DescribeRequest();
         this.serverids = severids;
         this.initComponents();
+        this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
+        this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
+        this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         this.backButton.setVisible(false);
-        
         this.showServerSelection(false);
     }
 
@@ -77,7 +79,6 @@ public class UndeployDialog extends MbDialog {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
         }
-        this.nextButton.setText("Next");
         this.add(this.serverselectionpanel);
         this.pack();
         this.currentPanel = serverselectionpanel;
@@ -99,7 +100,7 @@ public class UndeployDialog extends MbDialog {
         this.backButton.setVisible(true);
         this.previewButton.setVisible(true);
         this.nextButton.setVisible(true);
-        
+
         //refresh the request
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
@@ -107,12 +108,10 @@ public class UndeployDialog extends MbDialog {
         try {
             this.provider.connect(this.desc_request.getEndpoint());
         } catch (Exception ex) {
-            String msg = "Unable to connect to selected WebProcessingService.";
-            JOptionPane.showMessageDialog(this, msg);
+            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
             AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
             Logger.log(this.getClass(), "showProcessSelection()", ex);
-            return;
         }
         this.processesselectionpanel = new ProcessSelection(this.provider, this.desc_request);
         this.remove(this.currentPanel);
@@ -171,8 +170,8 @@ public class UndeployDialog extends MbDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         navpanel = new javax.swing.JPanel();
-        backButton = new javax.swing.JButton();
         previewButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
@@ -180,18 +179,11 @@ public class UndeployDialog extends MbDialog {
         setTitle("Undeploy a process");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        backButton.setMnemonic('B');
-        backButton.setText("Back");
-        backButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backButtonActionPerformed(evt);
-            }
-        });
-        navpanel.add(backButton);
-
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
+        previewButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        previewButton.setPreferredSize(new java.awt.Dimension(70, 32));
         previewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 previewButtonActionPerformed(evt);
@@ -199,8 +191,21 @@ public class UndeployDialog extends MbDialog {
         });
         navpanel.add(previewButton);
 
+        backButton.setMnemonic('B');
+        backButton.setText("Back");
+        backButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        backButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+        navpanel.add(backButton);
+
         nextButton.setMnemonic('N');
         nextButton.setText("Next");
+        nextButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        nextButton.setPreferredSize(new java.awt.Dimension(70, 32));
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nextButtonActionPerformed(evt);
@@ -211,6 +216,8 @@ public class UndeployDialog extends MbDialog {
         abortButton.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         abortButton.setMnemonic('A');
         abortButton.setText("Abort");
+        abortButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        abortButton.setPreferredSize(new java.awt.Dimension(70, 32));
         abortButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 abortButtonActionPerformed(evt);
@@ -228,7 +235,9 @@ public class UndeployDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.serverselectionpanel) {
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showProcessSelection(false);
         } else if (this.currentPanel == this.processesselectionpanel) {
             this.performUndeploy();
@@ -253,6 +262,7 @@ public class UndeployDialog extends MbDialog {
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.processesselectionpanel) {
             this.showServerSelection(true);
         }
@@ -261,7 +271,10 @@ public class UndeployDialog extends MbDialog {
 
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         this.currentPanel.updateRequest();
-        this.undeploy_request = (UndeployRequest) this.currentPanel.getRequest();
+        this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
+        String endp = desc_request.getServerId();
+        endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
         String requeststr = this.provider.richwpsPreviewUndeployProcess(this.undeploy_request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");

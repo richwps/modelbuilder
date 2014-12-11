@@ -64,17 +64,18 @@ public class TestModelDialog extends MbDialog {
             this.provider.disconnect();
             this.provider.connect(request.getServerId(), request.getEndpoint());
         } catch (Exception ex) {
-            String msg = "Unable to connect to selected WebProcessingService.";
-            JOptionPane.showMessageDialog(this, msg);
+            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
             AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
             Logger.log(this.getClass(), "TestModelDialog()", ex);
-            return;
         }
 
         this.remotes = new ArrayList();
         this.remotes.add(this.request.getServerId());
         this.initComponents();
+        this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
+        this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
+        this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         this.showParameterizeInputsPanel(false);
     }
 
@@ -163,8 +164,8 @@ public class TestModelDialog extends MbDialog {
         java.awt.GridBagConstraints gridBagConstraints;
 
         navpanel = new javax.swing.JPanel();
-        backButton = new javax.swing.JButton();
         previewButton = new javax.swing.JButton();
+        backButton = new javax.swing.JButton();
         nextButton = new javax.swing.JButton();
         abortButton = new javax.swing.JButton();
 
@@ -172,19 +173,12 @@ public class TestModelDialog extends MbDialog {
         setTitle("Test opend model");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        backButton.setMnemonic('B');
-        backButton.setText("Back");
-        backButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                backButtonActionPerformed(evt);
-            }
-        });
-        navpanel.add(backButton);
-
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
         previewButton.setToolTipText("Preview request");
+        previewButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        previewButton.setPreferredSize(new java.awt.Dimension(70, 32));
         previewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 previewButtonActionPerformed(evt);
@@ -192,8 +186,21 @@ public class TestModelDialog extends MbDialog {
         });
         navpanel.add(previewButton);
 
+        backButton.setMnemonic('B');
+        backButton.setText("Back");
+        backButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        backButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+        navpanel.add(backButton);
+
         nextButton.setMnemonic('N');
         nextButton.setText("Next");
+        nextButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        nextButton.setPreferredSize(new java.awt.Dimension(70, 32));
         nextButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nextButtonActionPerformed(evt);
@@ -204,6 +211,8 @@ public class TestModelDialog extends MbDialog {
         abortButton.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         abortButton.setMnemonic('A');
         abortButton.setText("Abort");
+        abortButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        abortButton.setPreferredSize(new java.awt.Dimension(70, 32));
         abortButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 abortButtonActionPerformed(evt);
@@ -221,9 +230,13 @@ public class TestModelDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
+        this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showParameretizeOutputsPanel(false);
         } else if (this.currentPanel == this.outputsspanel) {
+            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
             this.showResultPanel(false);
         }
         UiHelper.centerToWindow(this, parent);
@@ -247,9 +260,11 @@ public class TestModelDialog extends MbDialog {
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.outputsspanel) {
             this.showParameterizeInputsPanel(true);
         } else if (this.currentPanel == this.resultpanel) {
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showParameretizeOutputsPanel(true);
         }
         UiHelper.centerToWindow(this, parent);

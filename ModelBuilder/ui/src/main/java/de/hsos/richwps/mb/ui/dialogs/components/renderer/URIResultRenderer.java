@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class URIResultRenderer extends javax.swing.JPanel {
 
@@ -75,6 +76,9 @@ public class URIResultRenderer extends javax.swing.JPanel {
         add(uri, gridBagConstraints);
 
         copyToClipBoard.setText("Copy To Clipboard");
+        copyToClipBoard.setMaximumSize(new java.awt.Dimension(110, 32));
+        copyToClipBoard.setMinimumSize(new java.awt.Dimension(110, 32));
+        copyToClipBoard.setPreferredSize(new java.awt.Dimension(110, 32));
         copyToClipBoard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyToClipBoardActionPerformed(evt);
@@ -85,7 +89,6 @@ public class URIResultRenderer extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(copyToClipBoard, gridBagConstraints);
 

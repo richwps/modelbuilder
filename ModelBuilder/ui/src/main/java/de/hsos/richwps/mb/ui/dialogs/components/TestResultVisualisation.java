@@ -5,12 +5,8 @@ import de.hsos.richwps.mb.ui.dialogs.components.renderer.ExceptionRenderer;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralResultRenderer;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIResultRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -25,7 +21,7 @@ import layout.TableLayout;
 /**
  *
  * @author dalcacer
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class TestResultVisualisation extends ADialogPanel {
 
@@ -134,7 +130,7 @@ public class TestResultVisualisation extends ADialogPanel {
 
         GridBagConstraints g = new GridBagConstraints();
         g.gridx = 0;
-        g.gridy = 3;
+        g.gridy = 2;
         g.fill = GridBagConstraints.BOTH;
         g.anchor = GridBagConstraints.NORTHWEST;
         g.ipadx = 5;
@@ -167,6 +163,7 @@ public class TestResultVisualisation extends ADialogPanel {
         private TestRequest request;
         private RichWPSProvider provider;
         private TestResultVisualisation parent;
+        private boolean expand = false;
 
         public TestThread(TestResultVisualisation parent, TestRequest request, RichWPSProvider provider) {
             this.parent = parent;
@@ -193,10 +190,15 @@ public class TestResultVisualisation extends ADialogPanel {
 
         loadingLabel = new javax.swing.JLabel();
         resultPane = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
         selectedProcess = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
         selectedServer = new javax.swing.JLabel();
         selectedServerLabel = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jPanel2 = new javax.swing.JPanel();
+        expandButton = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(680, 700));
         setPreferredSize(new java.awt.Dimension(600, 700));
@@ -221,59 +223,133 @@ public class TestResultVisualisation extends ADialogPanel {
         resultPane.setPreferredSize(new java.awt.Dimension(610, 550));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(resultPane, gridBagConstraints);
 
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
         selectedProcess.setText("jLabel2");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedProcess, gridBagConstraints);
+        jPanel1.add(selectedProcess, gridBagConstraints);
 
         selectedProcessLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedProcessLabel.setText("Process:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 20;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedProcessLabel, gridBagConstraints);
+        jPanel1.add(selectedProcessLabel, gridBagConstraints);
 
         selectedServer.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedServer, gridBagConstraints);
+        jPanel1.add(selectedServer, gridBagConstraints);
 
         selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedServerLabel.setText("Server:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 20;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedServerLabel, gridBagConstraints);
+        jPanel1.add(selectedServerLabel, gridBagConstraints);
+
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        jLabel1.setText("Results for testing ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(jLabel1, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        add(jPanel1, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jSeparator1, gridBagConstraints);
+
+        jPanel2.setMinimumSize(new java.awt.Dimension(85, 100));
+        jPanel2.setLayout(new java.awt.GridBagLayout());
+
+        expandButton.setText("Expand all");
+        expandButton.setMaximumSize(new java.awt.Dimension(70, 32));
+        expandButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        expandButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        expandButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                expandButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel2.add(expandButton, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        add(jPanel2, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
+        /*if (this.expand == true) {
+            for (TitledComponent tc : this.outputs) {
+                tc.fold();
+            }
+            this.expand = false;
+            this.expandButton.setText("Expand all");
+            return;
+        }
+
+        for (TitledComponent tc : this.outputs) {
+            tc.unfold();
+            this.expand = true;
+            this.expandButton.setText("Collapse all");
+        }*/
+    }//GEN-LAST:event_expandButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton expandButton;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel loadingLabel;
     private javax.swing.JScrollPane resultPane;
     private javax.swing.JLabel selectedProcess;

@@ -46,6 +46,9 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         setLayout(new java.awt.GridBagLayout());
 
         copyToClipBoard.setText("Copy To Clipboard");
+        copyToClipBoard.setMaximumSize(new java.awt.Dimension(110, 32));
+        copyToClipBoard.setMinimumSize(new java.awt.Dimension(110, 32));
+        copyToClipBoard.setPreferredSize(new java.awt.Dimension(110, 32));
         copyToClipBoard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyToClipBoardActionPerformed(evt);
@@ -53,7 +56,8 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
@@ -68,8 +72,8 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         value.setPreferredSize(new java.awt.Dimension(450, 300));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);

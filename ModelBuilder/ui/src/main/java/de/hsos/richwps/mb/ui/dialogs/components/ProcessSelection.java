@@ -121,6 +121,7 @@ public class ProcessSelection extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(processesBox, gridBagConstraints);
 
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         jLabel1.setText("Please select a process");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;

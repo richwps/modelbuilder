@@ -31,8 +31,8 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         this.exceptionPane.setVisible(true);
         
         this.exceptionPane.validate();
-        exceptionScrollPane.setViewportView(this.exceptionPane);
-        exceptionScrollPane.revalidate();
+        this.exceptionScrollPane.setViewportView(this.exceptionPane);
+        this.exceptionScrollPane.revalidate();
     }
 
     /**
@@ -48,10 +48,11 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         exceptionScrollPane = new javax.swing.JScrollPane();
         exceptionPane = new javax.swing.JTextPane();
         copyToClipBoard = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
-        setMinimumSize(new java.awt.Dimension(600, 550));
-        setPreferredSize(new java.awt.Dimension(600, 550));
+        setMinimumSize(new java.awt.Dimension(610, 600));
+        setPreferredSize(new java.awt.Dimension(610, 600));
         setLayout(new java.awt.GridBagLayout());
 
         exceptionScrollPane.setBorder(null);
@@ -59,15 +60,20 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         exceptionScrollPane.setPreferredSize(new java.awt.Dimension(500, 550));
 
         exceptionPane.setBorder(null);
-        exceptionPane.setMinimumSize(new java.awt.Dimension(600, 500));
-        exceptionPane.setPreferredSize(new java.awt.Dimension(600, 500));
+        exceptionPane.setMinimumSize(new java.awt.Dimension(650, 500));
+        exceptionPane.setPreferredSize(new java.awt.Dimension(650, 500));
         exceptionScrollPane.setViewportView(exceptionPane);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         add(exceptionScrollPane, gridBagConstraints);
 
         copyToClipBoard.setText("Copy To Clipboard");
+        copyToClipBoard.setMaximumSize(new java.awt.Dimension(110, 32));
+        copyToClipBoard.setMinimumSize(new java.awt.Dimension(110, 32));
+        copyToClipBoard.setPreferredSize(new java.awt.Dimension(110, 32));
         copyToClipBoard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 copyToClipBoardActionPerformed(evt);
@@ -75,12 +81,18 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.PAGE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(copyToClipBoard, gridBagConstraints);
+
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        jLabel1.setText("A server-side exception occured.");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void copyToClipBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyToClipBoardActionPerformed
@@ -94,5 +106,6 @@ public class ExceptionRenderer extends javax.swing.JPanel {
     private javax.swing.JButton copyToClipBoard;
     private javax.swing.JTextPane exceptionPane;
     private javax.swing.JScrollPane exceptionScrollPane;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

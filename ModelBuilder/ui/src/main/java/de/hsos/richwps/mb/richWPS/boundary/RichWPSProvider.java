@@ -537,7 +537,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
             builder.setIdentifier(request.getIdentifier());
-            return builder.getDeploydocument().toString();
+            return builder.getUndeploydocument().toString();
         } catch (WPSClientException ex) {
             Logger.log(this.getClass(), "richwpsPreviewUndeployProcess", ex);
             java.util.logging.Logger.getLogger(RichWPSProvider.class.getName()).log(Level.SEVERE, null, ex);

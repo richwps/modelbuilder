@@ -135,6 +135,7 @@ public class SeverSelection extends ADialogPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(serverSelectionBox, gridBagConstraints);
 
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         jLabel1.setText("Please select or enter a Web Processing Service");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;

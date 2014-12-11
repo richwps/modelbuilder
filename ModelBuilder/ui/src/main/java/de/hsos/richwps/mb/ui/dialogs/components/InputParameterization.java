@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
-import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBoundingBoxData;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputLiteralData;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputComplexData;
@@ -22,13 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import layout.TableLayout;
 
 /**
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class InputParameterization extends ADialogPanel {
 
@@ -164,6 +163,13 @@ public class InputParameterization extends ADialogPanel {
         String c = "0," + i + 1;
         inputsPanel.add(new JPanel(), c);
 
+        if (this.inputpanels.size() <= 2) {
+            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
+            this.expand=true;
+            for (int u = 0; u < this.inputpanels.size(); u++) {
+                this.inputpanels.get(u).setFolded(false);
+            }
+        }
         this.inputsPanelScrollPane.setViewportView(inputsPanel);
     }
 
@@ -305,16 +311,31 @@ public class InputParameterization extends ADialogPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         selectedServer = new javax.swing.JLabel();
         selectedProcess = new javax.swing.JLabel();
         selectedServerLabel = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
-        inputsPanelScrollPane = new javax.swing.JScrollPane();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
         expandButton = new javax.swing.JButton();
+        inputsPanelScrollPane = new javax.swing.JScrollPane();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setPreferredSize(new java.awt.Dimension(620, 650));
         setLayout(new java.awt.GridBagLayout());
+
+        jPanel1.setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        jLabel1.setText("Please provide inputdata for ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         selectedServer.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -324,7 +345,7 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedServer, gridBagConstraints);
+        jPanel1.add(selectedServer, gridBagConstraints);
 
         selectedProcess.setText("jLabel2");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -334,7 +355,7 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedProcess, gridBagConstraints);
+        jPanel1.add(selectedProcess, gridBagConstraints);
 
         selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedServerLabel.setLabelFor(selectedServer);
@@ -346,7 +367,7 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedServerLabel, gridBagConstraints);
+        jPanel1.add(selectedServerLabel, gridBagConstraints);
 
         selectedProcessLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         selectedProcessLabel.setLabelFor(selectedProcess);
@@ -358,33 +379,21 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectedProcessLabel, gridBagConstraints);
+        jPanel1.add(selectedProcessLabel, gridBagConstraints);
 
-        inputsPanelScrollPane.setBorder(null);
-        inputsPanelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        inputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        inputsPanelScrollPane.setViewportBorder(null);
-        inputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
-        inputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 700));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(inputsPanelScrollPane, gridBagConstraints);
-
-        jLabel1.setText("Please provide inputdata for ");
-        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel1, gridBagConstraints);
+        add(jPanel1, gridBagConstraints);
+
+        jPanel2.setMinimumSize(new java.awt.Dimension(85, 100));
+        jPanel2.setPreferredSize(new java.awt.Dimension(85, 100));
+        jPanel2.setLayout(new java.awt.GridBagLayout());
 
         expandButton.setText("Expand all");
+        expandButton.setMinimumSize(new java.awt.Dimension(70, 32));
+        expandButton.setPreferredSize(new java.awt.Dimension(70, 32));
         expandButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 expandButtonActionPerformed(evt);
@@ -398,7 +407,36 @@ public class InputParameterization extends ADialogPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(expandButton, gridBagConstraints);
+        jPanel2.add(expandButton, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_END;
+        add(jPanel2, gridBagConstraints);
+
+        inputsPanelScrollPane.setBorder(null);
+        inputsPanelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        inputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        inputsPanelScrollPane.setViewportBorder(null);
+        inputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
+        inputsPanelScrollPane.setPreferredSize(new java.awt.Dimension(610, 700));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(inputsPanelScrollPane, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jSeparator1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
@@ -407,14 +445,14 @@ public class InputParameterization extends ADialogPanel {
                 tc.fold();
             }
             this.expand = false;
-            this.expandButton.setText("Expand all");
+            this.expandButton.setText(AppConstants.DIALOG_BTN_EXPAND_ALL);
             return;
         }
 
         for (TitledComponent tc : this.inputpanels) {
             tc.unfold();
             this.expand = true;
-            this.expandButton.setText("Collapse all");
+            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
         }
     }//GEN-LAST:event_expandButtonActionPerformed
 
@@ -423,6 +461,9 @@ public class InputParameterization extends ADialogPanel {
     private javax.swing.JButton expandButton;
     private javax.swing.JScrollPane inputsPanelScrollPane;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;
