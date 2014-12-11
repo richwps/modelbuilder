@@ -26,17 +26,15 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 
 /**
- * Dialog panel for input parameterisation.
- * 
+ * Dialog panel for input parameterisation
+ *
  * @author dalcacer
  * @version 0.0.3
  */
 public class InputPanel extends APanel {
 
-    /**
-     * List of panels that provide inputpanels.
-     */
-    private List<TitledComponent> inputpanels;
+    /**List of displayable inputs.*/
+    private List<TitledComponent> panels;
     /**
      * Connection to RichWPS server.
      */
@@ -65,7 +63,7 @@ public class InputPanel extends APanel {
         this.provider = provider;
         this.request = (ExecuteRequest) request;
         initComponents();
-        this.inputpanels = new ArrayList<>();
+        this.panels = new ArrayList<>();
         this.expand = false;
         final String selectedserver = this.request.getEndpoint();
         final String selectedprocess = this.request.getIdentifier();
@@ -73,13 +71,14 @@ public class InputPanel extends APanel {
         this.selectedProcess.setText(selectedprocess);
 
         if (request instanceof TestRequest) {
-            //nop
+            //noop
         } else {
-            //update only if necessary 
+            //update the request-object only if necessary 
             if (!request.isLoaded()) {
                 this.provider.wpsDescribeProcess(this.request);
             }
         }
+        this.prepare();
         this.visualize();
     }
 
@@ -87,7 +86,8 @@ public class InputPanel extends APanel {
      * Creates and adds inputpanels based on inputdescriptions.
      */
     @Override
-    public void visualize() {
+    public void prepare() {
+        //check the request for correctness
         if (this.request.getInputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load inputs from "
                     + "process description.",
@@ -95,13 +95,13 @@ public class InputPanel extends APanel {
             optionPane.setVisible(true);
             return;
         }
+
         for (IInputSpecifier specifier : this.request.getInputs()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
 
                 InputLiteralForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputLiteralDataArgument arg = (InputLiteralDataArgument)
-                            this.request.getInputArguments().get(specifier.getIdentifier());
+                    InputLiteralDataArgument arg = (InputLiteralDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
                     pan = new InputLiteralForm((InputLiteralDataSpecifier) specifier, arg);
                 } else {
                     pan = new InputLiteralForm((InputLiteralDataSpecifier) specifier);
@@ -110,12 +110,11 @@ public class InputPanel extends APanel {
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.inputpanels.add(tc);
+                this.panels.add(tc);
             } else if (specifier instanceof InputComplexDataSpecifier) {
                 InputComplexForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputComplexDataArgument arg = (InputComplexDataArgument)
-                            this.request.getInputArguments().get(specifier.getIdentifier());
+                    InputComplexDataArgument arg = (InputComplexDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
                     pan = new InputComplexForm((InputComplexDataSpecifier) specifier, arg);
 
                 } else {
@@ -125,13 +124,12 @@ public class InputPanel extends APanel {
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.inputpanels.add(tc);
+                this.panels.add(tc);
 
             } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
                 InputBBoxForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputBoundingBoxDataArgument arg = (InputBoundingBoxDataArgument)
-                            this.request.getInputArguments().get(specifier.getIdentifier());
+                    InputBoundingBoxDataArgument arg = (InputBoundingBoxDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
                     pan = new InputBBoxForm((InputBoundingBoxDataSpecifier) specifier, arg);
                 } else {
                     pan = new InputBBoxForm((InputBoundingBoxDataSpecifier) specifier);
@@ -140,19 +138,34 @@ public class InputPanel extends APanel {
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.inputpanels.add(tc);
+                this.panels.add(tc);
             }
+        }
+
+    }
+
+    /**
+     * Creates and adds inputpanels based on inputdescriptions.
+     */
+    @Override
+    public void visualize() {
+        //check the request for correctness
+        if (this.request.getInputs().isEmpty()) {
+            JOptionPane optionPane = new JOptionPane("Unable to load inputs from "
+                    + "process description.",
+                    JOptionPane.WARNING_MESSAGE);
+            optionPane.setVisible(true);
+            return;
         }
 
         JPanel inputsPanel = new JPanel();
 
         double size[][] = new double[2][1];
-        size[0] = new double[]{TableLayout.FILL
-        };
+        size[0] = new double[]{TableLayout.FILL};
 
-        double innersize[] = new double[inputpanels.size()];
+        double innersize[] = new double[panels.size()];
         for (int i = 0;
-                i < inputpanels.size();
+                i < panels.size();
                 i++) {
             innersize[i] = TableLayout.PREFERRED;
         }
@@ -163,7 +176,7 @@ public class InputPanel extends APanel {
         inputsPanel.setLayout(layout);
 
         int i = 0;
-        for (JPanel panel : this.inputpanels) {
+        for (JPanel panel : this.panels) {
             String c = "0," + i;
             inputsPanel.add(panel, c);
             i++;
@@ -171,10 +184,10 @@ public class InputPanel extends APanel {
         String c = "0," + i + 1;
         inputsPanel.add(new JPanel(), c);
 
-        if (this.inputpanels.size() <= 2) {
+        if (this.panels.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand = true;
-            for (TitledComponent inputpanel : this.inputpanels) {
+            for (TitledComponent inputpanel : this.panels) {
                 inputpanel.setFolded(false);
             }
         }
@@ -188,7 +201,7 @@ public class InputPanel extends APanel {
     public void updateRequest() {
         HashMap<String, IInputArgument> theinputs = new HashMap<>();
 
-        for (TitledComponent panel : this.inputpanels) {
+        for (TitledComponent panel : this.panels) {
 
             if (panel.getComponent() instanceof InputComplexForm) {
                 InputComplexForm pan = (InputComplexForm) panel.getComponent();
@@ -275,7 +288,7 @@ public class InputPanel extends APanel {
      */
     @Override
     public boolean isValidInput() {
-        for (TitledComponent panel : this.inputpanels) {
+        for (TitledComponent panel : this.panels) {
             if (panel.getComponent() instanceof InputComplexForm) {
                 InputComplexForm pan = (InputComplexForm) panel.getComponent();
                 //this parameter is optional
@@ -457,7 +470,7 @@ public class InputPanel extends APanel {
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
         if (this.expand == true) {
-            for (TitledComponent tc : this.inputpanels) {
+            for (TitledComponent tc : this.panels) {
                 tc.fold();
             }
             this.expand = false;
@@ -465,7 +478,7 @@ public class InputPanel extends APanel {
             return;
         }
 
-        for (TitledComponent tc : this.inputpanels) {
+        for (TitledComponent tc : this.panels) {
             tc.unfold();
             this.expand = true;
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);

@@ -87,7 +87,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 this.richwps.disconnect(serverid);
                 this.wps.disconnect(serverid);
             } catch (Exception e) {
-                //nop
+                //noop
             }
         }
     }

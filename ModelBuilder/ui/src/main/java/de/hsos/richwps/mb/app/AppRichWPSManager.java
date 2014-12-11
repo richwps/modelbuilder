@@ -23,6 +23,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import de.hsos.richwps.mb.exception.GraphToRequestTransformationException;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -97,22 +98,22 @@ public class AppRichWPSManager {
         //verify information
         if (identifier.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_ID_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_ID_MISSING);
             return "";
         } else if (title.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_TITLE_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_TITLE_MISSING);
             return "";
         } else if (version.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_VERSION_MISSING);
             return "";
         }
         //generate rola
         final String rola = this.generateROLA();
         if (null == rola) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_ROLA_FAILED);
+            this.computingModelFailed(AppConstants.DEPLOY_ROLA_FAILED);
             return "";
         }
         return rola;
@@ -152,15 +153,15 @@ public class AppRichWPSManager {
         //verify information
         if (identifier.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_ID_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_ID_MISSING);
             return;
         } else if (title.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_TITLE_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_TITLE_MISSING);
             return;
         } else if (version.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_VERSION_MISSING);
             return;
         }
 
@@ -180,7 +181,7 @@ public class AppRichWPSManager {
 
         if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
             this.error = true;
-            this.deploymentFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
+            this.deployingModelFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
                     + richwpsendpoint);
             return;
         }
@@ -189,7 +190,7 @@ public class AppRichWPSManager {
         final String rola = this.generateROLA();
         if (null == rola) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_ROLA_FAILED);
+            this.computingModelFailed(AppConstants.DEPLOY_ROLA_FAILED);
             return;
         }
 
@@ -203,7 +204,7 @@ public class AppRichWPSManager {
             this.defineInputsOutputs(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_DESC_FAILED);
+            this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
             Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
             return;
         }
@@ -216,7 +217,7 @@ public class AppRichWPSManager {
 
             if (request.isException()) {
                 this.error = true;
-                this.deploymentFailed(AppConstants.DEPLOY_SERVERSIDE_ERROR);
+                this.deployingModelFailed(AppConstants.DEPLOY_SERVERSIDE_ERROR);
                 String msg = AppConstants.DEPLOY_SERVERSIDE_ERROR + "\n"
                         + request.getException();
                 JOptionPane.showMessageDialog(null, msg);
@@ -225,18 +226,22 @@ public class AppRichWPSManager {
             }
 
             AppEventService service = AppEventService.getInstance();
-            service.fireAppEvent("Process deployed.", AppConstants.INFOTAB_ID_SERVER);
+            service.fireAppEvent(AppConstants.DEPLOY_SUCCESS, AppConstants.INFOTAB_ID_SERVER);
+               JOptionPane.showMessageDialog(null,
+                        AppConstants.DEPLOY_SUCCESS,
+                        AppConstants.DEPLOY_SUCCESS,
+                        JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
             this.error = true;
-            this.deploymentFailed("An error occured while deployment.");
+            this.deployingModelFailed("An error occured while deployment.");
             Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
             return;
         }
         try {
             instance.disconnect();
         } catch (Exception ex) {
-            //nop
+            //noop
         }
     }
 
@@ -254,15 +259,15 @@ public class AppRichWPSManager {
         //verify information
         if (identifier.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_ID_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_ID_MISSING);
             return null;
         } else if (title.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_TITLE_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_TITLE_MISSING);
             return null;
         } else if (version.isEmpty()) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_VERSION_MISSING);
+            this.computingModelFailed(AppConstants.DEPLOY_VERSION_MISSING);
             return null;
         }
 
@@ -282,7 +287,7 @@ public class AppRichWPSManager {
 
         if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
             this.error = true;
-            this.deploymentFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
+            this.deployingModelFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
                     + richwpsendpoint);
             return null;
         }
@@ -291,7 +296,7 @@ public class AppRichWPSManager {
         final String rola = this.generateROLA();
         if (null == rola) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_ROLA_FAILED);
+            this.computingModelFailed(AppConstants.DEPLOY_ROLA_FAILED);
             return null;
         }
 
@@ -305,7 +310,7 @@ public class AppRichWPSManager {
             this.defineInputsOutputs(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
-            this.processingFailed(AppConstants.DEPLOY_DESC_FAILED);
+            this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
             Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
             return null;
         }
@@ -342,13 +347,15 @@ public class AppRichWPSManager {
                 try {
                     provider.disconnect();
                 } catch (Exception ex) {
-                    //nop
+                    //noop
                 }
                 AppEventService service = AppEventService.getInstance();
-                service.fireAppEvent("Process undeployed.", AppConstants.INFOTAB_ID_SERVER);
+                service.fireAppEvent(AppConstants.UNDEPLOY_SUCCESS, AppConstants.INFOTAB_ID_SERVER);
+
             } catch (Exception ex) {
                 this.error = true;
-                String msg = "An error occured while undeploying  " + identifier + " from"
+                String msg = AppConstants.UNDEPLOY_FAILURE
+                        + "An error occured while undeploying  " + identifier + " from"
                         + " " + auri + ". " + ex.getLocalizedMessage();
                 AppEventService appservice = AppEventService.getInstance();
                 appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
@@ -356,7 +363,8 @@ public class AppRichWPSManager {
             }
         } else {
             this.error = true;
-            String msg = "The requested process " + identifier + " was not found"
+            String msg = AppConstants.UNDEPLOY_FAILURE
+                    + "The requested process " + identifier + " was not found"
                     + " on " + auri;
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
@@ -379,7 +387,7 @@ public class AppRichWPSManager {
                 f.deleteOnExit();
             } catch (Exception e) {
                 this.error = true;
-                this.processingFailed(AppConstants.TMP_FILE_FAILED);
+                this.computingModelFailed(AppConstants.TMP_FILE_FAILED);
                 Logger.log(this.getClass(), "generateRola()",
                         AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
@@ -394,14 +402,14 @@ public class AppRichWPSManager {
                 content = new String(chars);
             } catch (IOException ex) {
                 this.error = true;
-                this.processingFailed("");
+                this.computingModelFailed("");
                 Logger.log(this.getClass(), "generateRola()", ex.getLocalizedMessage());
             }
             return content;
 
         } catch (Exception ex) {
             this.error = true;
-            this.processingFailed("Unable to create underlying workflow"
+            this.computingModelFailed("Unable to create underlying workflow"
                     + " description (ROLA).");
             Logger.log(this.getClass(), "generateRola()", ex.getLocalizedMessage());
         }
@@ -487,7 +495,7 @@ public class AppRichWPSManager {
                 if (complexSpecifier.getTitle().equals("")) {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
-                
+
                 Integer maxc = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
                 Integer minc = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
                 complexSpecifier.setMinOccur(minc);
@@ -511,12 +519,12 @@ public class AppRichWPSManager {
 
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
-                        this.processingFailed("Supported types for input "
+                        this.computingModelFailed("Supported types for input "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
                     if (supportedType.isEmpty()) {
                         this.error = true;
-                        this.processingFailed("Default type for input "
+                        this.computingModelFailed("Default type for input "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
 
@@ -524,7 +532,7 @@ public class AppRichWPSManager {
                     complexSpecifier.setDefaulttype(supportedType);
                 } catch (Exception ex) {
                     this.error = true;
-                    this.processingFailed("Definition of supported types/default type for input "
+                    this.computingModelFailed("Definition of supported types/default type for input "
                             + complexSpecifier.getIdentifier() + " is invalid.");
                     Logger.log(this.getClass(), "createInputPortSpecifier()", ex.getLocalizedMessage());
                 }
@@ -586,12 +594,12 @@ public class AppRichWPSManager {
 
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
-                        this.processingFailed("Supported types for output "
+                        this.computingModelFailed("Supported types for output "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
                     if (supportedType.isEmpty()) {
                         this.error = true;
-                        this.processingFailed("Default type for output "
+                        this.computingModelFailed("Default type for output "
                                 + complexSpecifier.getIdentifier() + " can not be empty.");
                     }
 
@@ -599,7 +607,7 @@ public class AppRichWPSManager {
                     complexSpecifier.setDefaulttype(supportedType);
                 } catch (Exception ex) {
                     this.error = true;
-                    this.processingFailed("Definition of supported types/default type for output "
+                    this.computingModelFailed("Definition of supported types/default type for output "
                             + complexSpecifier.getIdentifier() + " is invalid.");
                     Logger.log(this.getClass(), "createOutputPortSpecifier()", ex.getLocalizedMessage());
                 }
@@ -620,7 +628,7 @@ public class AppRichWPSManager {
      *
      * @param reason The reason for failing.
      */
-    private void deploymentFailed(final String reason) {
+    private void deployingModelFailed(final String reason) {
         AppEventService.getInstance().fireAppEvent(reason,
                 AppConstants.INFOTAB_ID_SERVER);
     }
@@ -630,7 +638,7 @@ public class AppRichWPSManager {
      *
      * @param reason The reason for failing.
      */
-    private void processingFailed(final String reason) {
+    private void computingModelFailed(final String reason) {
         AppEventService.getInstance().fireAppEvent(reason,
                 AppConstants.INFOTAB_ID_EDITOR);
     }

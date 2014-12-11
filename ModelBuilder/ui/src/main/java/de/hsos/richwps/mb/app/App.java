@@ -26,6 +26,7 @@ import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.dialogs.ProfileModelDialog;
 import de.hsos.richwps.mb.ui.dialogs.TestModelDialog;
 
 import de.hsos.richwps.mb.ui.dialogs.UndeployDialog;
@@ -83,6 +84,7 @@ public class App {
     private ExecuteModelDialog execDialog;
     private UndeployDialog undeployAnyDialog;
     private TestModelDialog testDialog;
+    private ProfileModelDialog profileDialog;
 
     boolean changesSaved = false;
     private FormatProvider formatProvider;
@@ -570,7 +572,7 @@ public class App {
      */
     void preview() {
         AppRichWPSManager manager = new AppRichWPSManager(this);
-        String rola = "<html>" + manager.getROLA() + "</html>";
+        String rola = "<html font=\"Arial\">" + manager.getROLA() + "</html>";
         String[] bold = {"bind process", "execute", "store", " to ", " with ", " as "};
         for (String s : bold) {
             rola = rola.replace(s, "<b>" + s + "</b>");
@@ -584,6 +586,7 @@ public class App {
         } else {
             final JTextPane textpane = new javax.swing.JTextPane();
             textpane.setContentType("text/html");
+            textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);
             textpane.setText(rola);
             textpane.setEditable(false);
             final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
@@ -656,7 +659,6 @@ public class App {
      * Shows an dialog to execute the currently opened model.
      */
     void showTestModel() {
-        //if (null == execDialog) {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
         final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
@@ -676,7 +678,31 @@ public class App {
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
             return;
         }
-        //}
+    }
+
+    /**
+     * Shows an dialog to execute the currently opened model.
+     */
+    void showProfileModel() {
+        final GraphModel model = this.getGraphView().getGraph().getGraphModel();
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
+        if (!RichWPSProvider.hasProcess(auri, identifier)) {
+            AppRichWPSManager manager = new AppRichWPSManager(this);
+            profileDialog = new ProfileModelDialog(getFrame(), false, manager);
+            profileDialog.setVisible(true);
+        } else {
+            /*JOptionPane.showMessageDialog(frame,
+             AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
+             AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
+             JOptionPane.ERROR_MESSAGE);*/
+            String msg = "The requested process " + identifier + " is already present"
+                    + " on " + auri;
+            JOptionPane.showMessageDialog(this.frame, msg);
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            return;
+        }
     }
 
     void showAbout() {

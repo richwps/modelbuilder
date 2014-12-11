@@ -23,13 +23,21 @@ import layout.TableLayout;
 
 /**
  * Dialog panel for result visualisation.
+ *
  * @author dalcacer
  * @version 0.0.2
  */
 public class ResultPanel extends APanel {
 
-    private List<TitledComponent> renderers;
+    /**
+     * List of displayable results.
+     */
+    private List<TitledComponent> panels;
+    /**
+     * Connection to RichWPS server.
+     */
     private RichWPSProvider provider;
+    
     private ExecuteRequest request;
     private boolean expand = false;
 
@@ -41,7 +49,7 @@ public class ResultPanel extends APanel {
     public ResultPanel(RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (ExecuteRequest) request;
-        this.renderers = new ArrayList<>();
+        this.panels = new ArrayList<>();
         initComponents();
         this.selectedProcess.setText(request.getIdentifier());
         this.selectedServer.setText(request.getEndpoint());
@@ -63,17 +71,24 @@ public class ResultPanel extends APanel {
         this.loadingLabel.setText(AppConstants.DIALOG_REQUEST_SENT);
     }
 
+    /**
+     * Updates this panel, onces the thread is run.
+     *
+     * @param request.
+     * @see ExecuteThread.
+     */
     private void update(ExecuteRequest request) {
         this.loadingLabel.setText("Processing results.");
         this.request = request;
         if (this.request.isException()) {
             renderException(request);
         } else {
-            this.renderResults(request);
+            this.prepareResults(request);
+            this.visualiseResults();
         }
     }
 
-    private void renderResults(ExecuteRequest request) {
+    private void prepareResults(ExecuteRequest request) {
         this.request = request;
         HashMap results = this.request.getResults();
         HashMap arguments = this.request.getOutputArguments();
@@ -93,9 +108,7 @@ public class ResultPanel extends APanel {
         TableLayout layout = new TableLayout(size);
         outputsPanel.setLayout(layout);
 
-        int i = 0;
         for (Object key : keys) {
-            String c = "0," + i;
             IOutputArgument argument = (IOutputArgument) arguments.get(key);
             if (argument instanceof OutputComplexDataArgument) {
                 String uri = (String) results.get(key);
@@ -105,8 +118,7 @@ public class ResultPanel extends APanel {
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
-                this.renderers.add(tc);
-                outputsPanel.add(tc, c);
+                this.panels.add(tc);
             } else if (argument instanceof OutputLiteralDataArgument) {
                 String value = (String) results.get(key);
                 OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
@@ -115,18 +127,39 @@ public class ResultPanel extends APanel {
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
-                this.renderers.add(tc);
-                outputsPanel.add(tc, c);
+                this.panels.add(tc);
             }
+        }
+    }
+
+    private void visualiseResults() {
+        JPanel outputsPanel = new JPanel();
+
+        double size[][] = new double[2][1];
+        size[0] = new double[]{TableLayout.FILL};
+
+        double innersize[] = new double[this.panels.size()];
+        for (int i = 0; i < this.panels.size(); i++) {
+            innersize[i] = TableLayout.PREFERRED;
+        }
+        size[1] = innersize;
+
+        TableLayout layout = new TableLayout(size);
+        outputsPanel.setLayout(layout);
+
+        int i = 0;
+        for (TitledComponent compo : this.panels) {
+            String c = "0," + i;
+            outputsPanel.add(compo, c);
             i++;
         }
         String c = "0," + i + 1;
         outputsPanel.add(new JPanel(), c);
 
-        if (this.renderers.size() <= 2) {
+        if (this.panels.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand = true;
-            for (TitledComponent renderer : this.renderers) {
+            for (TitledComponent renderer : this.panels) {
                 renderer.setFolded(false);
             }
         }
@@ -165,7 +198,7 @@ public class ResultPanel extends APanel {
      */
     @Override
     public void updateRequest() {
-        //nop
+        //noop
     }
 
     /**
@@ -346,7 +379,7 @@ public class ResultPanel extends APanel {
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
         if (this.expand == true) {
-            for (TitledComponent tc : this.renderers) {
+            for (TitledComponent tc : this.panels) {
                 tc.fold();
             }
             this.expand = false;
@@ -354,7 +387,7 @@ public class ResultPanel extends APanel {
             return;
         }
 
-        for (TitledComponent tc : this.renderers) {
+        for (TitledComponent tc : this.panels) {
             tc.unfold();
             this.expand = true;
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);

@@ -20,12 +20,19 @@ import layout.TableLayout;
 
 /**
  * Dialog panel for testresult visualisation.
+ *
  * @author dalcacer
  * @version 0.0.2
  */
 public class TestResultPanel extends APanel {
 
-    private List<TitledComponent> renderers;
+    /**
+     * List of displayable results.
+     */
+    private List<TitledComponent> panels;
+    /**
+     * Connection to RichWPS server.
+     */
     private RichWPSProvider provider;
     private TestRequest request;
     private boolean expand = false;
@@ -38,7 +45,7 @@ public class TestResultPanel extends APanel {
     public TestResultPanel(RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (TestRequest) request;
-        this.renderers = new ArrayList<>();
+        this.panels = new ArrayList<>();
         initComponents();
         this.selectedProcess.setText(request.getIdentifier());
         this.selectedServer.setText(request.getEndpoint());
@@ -100,14 +107,14 @@ public class TestResultPanel extends APanel {
                 tc.setTitleBold();
                 tc.fold();
                 outputsPanel.add(tc, c);
-                this.renderers.add(tc);
+                this.panels.add(tc);
             } else {
                 LiteralRenderer pan = new LiteralRenderer(key.toString(), value);
                 TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 outputsPanel.add(tc, c);
-                this.renderers.add(tc);
+                this.panels.add(tc);
             }
             i++;
         }
@@ -115,10 +122,10 @@ public class TestResultPanel extends APanel {
         String c = "0," + i + 1;
         outputsPanel.add(new JPanel(), c);
 
-        if (this.renderers.size() <= 2) {
+        if (this.panels.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand = true;
-            for (TitledComponent renderer : this.renderers) {
+            for (TitledComponent renderer : this.panels) {
                 renderer.setFolded(false);
             }
         }
@@ -157,7 +164,7 @@ public class TestResultPanel extends APanel {
      */
     @Override
     public void updateRequest() {
-        //nop
+        //noop
     }
 
     /**
@@ -339,7 +346,7 @@ public class TestResultPanel extends APanel {
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
         if (this.expand == true) {
-            for (TitledComponent tc : this.renderers) {
+            for (TitledComponent tc : this.panels) {
                 tc.fold();
             }
             this.expand = false;
@@ -347,7 +354,7 @@ public class TestResultPanel extends APanel {
             return;
         }
 
-        for (TitledComponent tc : this.renderers) {
+        for (TitledComponent tc : this.panels) {
             tc.unfold();
             this.expand = true;
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);

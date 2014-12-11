@@ -47,7 +47,7 @@ public class TestModelDialog extends MbDialog {
      *
      */
     public TestModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
-        super(parent, "Test model", MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.TEST_THIS_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
         this.currentPanel = null;
         this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
@@ -275,6 +275,7 @@ public class TestModelDialog extends MbDialog {
         String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
+        textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);
         textpane.setText(requeststr);
         textpane.setEditable(false);
         final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);

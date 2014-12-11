@@ -76,6 +76,7 @@ public class AppConstants {
     public final static String DIALOG_BTN_DESELECT_ALL = "Deelect all";
     public final static String DIALOG_VALIDATION_MISSING_INPUT = "Please provide input for ";
     public final static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
+    public final static java.awt.Font DIALOG_TEXTPANE_FONT = new java.awt.Font("Arial", 0, 12);
 
     // Preferences Dialog
     public final static String PREFERENCES_DIALOG_TITLE = "Configuration";
@@ -102,21 +103,41 @@ public class AppConstants {
     public final static String DEPLOY_VERSION_MISSING = "Insufficient model information. Version is missing.";
     public final static String DEPLOY_ROLA_FAILED = "Unable to create underlying workflow description (ROLA) based on model.";
     public final static String DEPLOY_DESC_FAILED = "Unable to create WPS:ProcessDescription based on model.";
-    public final static String DEPLOY_CONNECT_FAILED = "Unable to connect to selected WPS-T server.";
+    public final static String DEPLOY_CONNECT_FAILED = "Unable to connect to selected RichWPS server.";
     public final static String DEPLOY_SERVERSIDE_ERROR = "An error occured while deployment. A serverside error has been invoked.";
+    public final static String DEPLOY_SUCCESS = "Deployment performed successfully.";
+    public final static String DEPLOY_FAILURE = "Deployment failed.";
 
+    
+    //Execute Dialog
+    public final static String EXECUTE_DIALOG_TITLE = "Execute a remote process";
+
+    //Execute Dialog
+    public final static String EXECUTE_THIS_DIALOG_TITLE = "Execute the opend model";
+
+    //Undeploy Dialog
+    public final static String DEPLOY_DIALOG_TITLE = "Undeploy a given process";
+    public final static String UNDEPLOY_SUCCESS = "Undeployment performed successfully.";
+    public final static String UNDEPLOY_FAILURE = "Undeployment failed.";
     //Undeployerror Dialog
     public final static String UNDEPLOY_ERROR_DIALOG_TITLE = "Error while undeployment";
     public final static String UNDEPLOY_ERROR_DIALOG_MSG = "An error occured while undeployment. See logs for further information.";
 
+    //Test Dialog
+    public final static String TEST_THIS_DIALOG_TITLE = "Test the opend model";
+
+    //Profile Dialog
+    public final static String PROFILE_THIS_DIALOG_TITLE = "Profile the opend model";
+
+    
     //Execute/Undeployerror Dialog
     public final static String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
     public final static String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
 
     //Connectivity errors
     public final static String CONNECT_FAILED = "Unable to connect to selected server.";
-    public final static String DIALOG_REQUEST_SENT ="<html>Sending and processing statement.<br/>"
-                + "This might take some time, depending on the remote process <br/> and amount of data..</html>";
+    public final static String DIALOG_REQUEST_SENT = "<html>Sending and processing statement.<br/>"
+            + "This might take some time, depending on the remote process <br/> and amount of data..</html>";
 
     // About Dialog
     /**
@@ -158,11 +179,6 @@ public class AppConstants {
      * Number of visible characters of the "recent file" path.
      */
     public static final int RECENT_FILE_VISIBLE_WIDTH = 70;
-
-    /**
-     * Title of deploy dialog.
-     */
-    public final static String DEPLOY_DIALOG_TITLE = "Deploy process";
 
     public static int GRAPHVIEW_PROCESS_TITLE_MAX_VIEW_LENGTH = 21;
     public static int TREEVIEW_PROCESS_TITLE_MAX_VIEW_LENGTH = 50;

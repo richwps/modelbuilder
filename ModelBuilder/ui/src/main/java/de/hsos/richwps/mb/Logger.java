@@ -39,7 +39,7 @@ public class Logger {
             // ALL | DEBUG | INFO | WARN | ERROR | FATAL | OFF:
             log4j.setLevel(org.apache.log4j.Level.ALL);
         } catch (Exception e) {
-            //nop
+            //noop
         }
         log4j.info(oString);
         /*log.info(oString);*/

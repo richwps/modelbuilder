@@ -44,4 +44,5 @@ public abstract class APanel extends JPanel {
     
     
     public void visualize(){};
+    public void prepare(){};
 }

@@ -46,7 +46,7 @@ public class ExecuteModelDialog extends MbDialog {
      */
     public ExecuteModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
             final String processid) {
-        super(parent, "Execute model", MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.EXECUTE_THIS_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
         this.currentPanel = null;
         this.request = new ExecuteRequest();
         this.request.setEndpoint(serverid);
@@ -270,6 +270,7 @@ public class ExecuteModelDialog extends MbDialog {
         String requeststr = this.provider.wpsPreviewExecuteProcess(this.request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
+        textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);
         textpane.setText(requeststr);
         textpane.setEditable(false);
         final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);

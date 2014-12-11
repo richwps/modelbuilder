@@ -33,7 +33,13 @@ import layout.TableLayout;
  */
 public class OutputPanel extends APanel {
 
-    private List<TitledComponent> outputpanels;
+    /**
+     * List of displayable outputs.
+     */
+    private List<TitledComponent> panels;
+    /**
+     * Connection to RichWPS server.
+     */
     private RichWPSProvider provider;
     private ExecuteRequest request;
     private boolean allSelected = false;
@@ -64,24 +70,25 @@ public class OutputPanel extends APanel {
         this.selectedServer.setText(selectedserver);
         this.selectedProcess.setText(selectedprocess);
 
-        this.outputpanels = new ArrayList<>();
+        this.panels = new ArrayList<>();
 
         if (request instanceof TestRequest) {
-            //nop
+            //noop
         } else {
             //update only if necessary 
             if (!request.isLoaded()) {
                 this.provider.wpsDescribeProcess(this.request);
             }
         }
+        this.prepare();
         this.visualize();
     }
 
     /**
-     * 
+     *
      */
     @Override
-    public void visualize() {
+    public void prepare() {
 
         if (this.request.getOutputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load outputs from"
@@ -96,28 +103,43 @@ public class OutputPanel extends APanel {
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.outputpanels.add(tc);
+                this.panels.add(tc);
             } else if (specifier instanceof OutputComplexDataSpecifier) {
                 OutputComplexForm pan = new OutputComplexForm((OutputComplexDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.outputpanels.add(tc);
+                this.panels.add(tc);
             } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
                 OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
-                this.outputpanels.add(tc);
+                this.panels.add(tc);
             }
+        }
+
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void visualize() {
+
+        if (this.request.getOutputs().isEmpty()) {
+            JOptionPane optionPane = new JOptionPane("Unable to load outputs from"
+                    + "process description.", JOptionPane.WARNING_MESSAGE);
+            optionPane.setVisible(true);
+            return;
         }
 
         JPanel outputsPanel = new JPanel();
         double size[][] = new double[2][1];
         size[0] = new double[]{TableLayout.FILL};
 
-        double innersize[] = new double[outputpanels.size()];
-        for (int i = 0; i < outputpanels.size(); i++) {
+        double innersize[] = new double[panels.size()];
+        for (int i = 0; i < panels.size(); i++) {
             innersize[i] = TableLayout.PREFERRED;
         }
         size[1] = innersize;
@@ -126,7 +148,7 @@ public class OutputPanel extends APanel {
         outputsPanel.setLayout(layout);
 
         int i = 0;
-        for (JPanel panel : this.outputpanels) {
+        for (JPanel panel : this.panels) {
             String c = "0," + i;
             outputsPanel.add(panel, c);
             i++;
@@ -135,10 +157,10 @@ public class OutputPanel extends APanel {
         String c = "0," + i + 1;
         outputsPanel.add(new JPanel(), c);
 
-        if (this.outputpanels.size() <= 2) {
+        if (this.panels.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
-            this.expand=true;
-            for (TitledComponent outputpanel : this.outputpanels) {
+            this.expand = true;
+            for (TitledComponent outputpanel : this.panels) {
                 outputpanel.setFolded(false);
             }
         }
@@ -152,7 +174,7 @@ public class OutputPanel extends APanel {
     public void updateRequest() {
         HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
 
-        for (TitledComponent panel : this.outputpanels) {
+        for (TitledComponent panel : this.panels) {
 
             if (panel.getComponent() instanceof OutputComplexForm) {
 
@@ -212,7 +234,7 @@ public class OutputPanel extends APanel {
     @Override
     public boolean isValidInput() {
         boolean someThingSelected = false;
-        for (TitledComponent panel : this.outputpanels) {
+        for (TitledComponent panel : this.panels) {
             if (panel.getComponent() instanceof OutputComplexForm) {
                 OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 if (pan.isSelected()) {
@@ -406,7 +428,7 @@ public class OutputPanel extends APanel {
 
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         if (allSelected == false) {
-            for (TitledComponent panel : this.outputpanels) {
+            for (TitledComponent panel : this.panels) {
                 if (panel.getComponent() instanceof OutputComplexForm) {
                     OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                     pan.setSelected();
@@ -424,7 +446,7 @@ public class OutputPanel extends APanel {
             return;
         }
 
-        for (TitledComponent panel : this.outputpanels) {
+        for (TitledComponent panel : this.panels) {
             if (panel.getComponent() instanceof OutputComplexForm) {
                 OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 pan.setUnselected();
@@ -444,7 +466,7 @@ public class OutputPanel extends APanel {
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
         if (this.expand == true) {
-            for (TitledComponent tc : this.outputpanels) {
+            for (TitledComponent tc : this.panels) {
                 tc.fold();
             }
             this.expand = false;
@@ -452,7 +474,7 @@ public class OutputPanel extends APanel {
             return;
         }
 
-        for (TitledComponent tc : this.outputpanels) {
+        for (TitledComponent tc : this.panels) {
             tc.unfold();
             this.expand = true;
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);

@@ -2,95 +2,128 @@ package de.hsos.richwps.mb.ui.dialogs;
 
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.app.AppRichWPSManager;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
-import de.hsos.richwps.mb.ui.dialogs.components.ProcessPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.ServerPanel;
-import java.awt.Font;
+import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.TestResultPanel;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
 
 /**
- * A dialog that displays two consecutive panels for serverselection and
- * processselection in order to undeploy a process.
+ * A dialog that displays three consecutive panels for inputparameterisation,
+ * outputparameterisation and resultvisualisation.
  *
  * @author dalcacer
- * @version 0.0.3
+ * @version 0.0.1
  */
-public class UndeployDialog extends MbDialog {
+public class ProfileModelDialog extends MbDialog {
 
     private APanel currentPanel;
-    private ServerPanel serverselectionpanel;
-    private ProcessPanel processesselectionpanel;
-    private List<String> serverids;
+    private InputPanel inputspanel;
+    private OutputPanel outputsspanel;
+    private TestResultPanel resultpanel;
+    private List<String> remotes;
     private RichWPSProvider provider;
-    /**
-     * Describe-Request for discovery.
-     */
-    private DescribeRequest desc_request;
-    /**
-     * Undeploy-Request for performing the undeploy-operation.
-     */
-    private UndeployRequest undeploy_request;
+    private TestRequest request;
+    private List<String> transitions;
 
     /**
-     * Creates new form UndeployDialog, starting with the first dialog
-     * (serverselection).
+     * Creates new form ExecuteModelDialog, starting with the
+     * inputparamerization.
      *
      * @param parent
      * @param modal
-     * @param severids list of viable serverids.
+     *
+     * @param manager manager to access graph and exporter.
+     *
      */
-    public UndeployDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
-        super(parent, AppConstants.DEPLOY_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
-
+    public ProfileModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
+        super(parent, AppConstants.PROFILE_THIS_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
+        this.currentPanel = null;
+        this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
-        this.desc_request = new DescribeRequest();
-        this.serverids = severids;
+        this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
+        this.request.setExecutionUnit(manager.getROLA());
+        this.transitions = manager.getTransitions();
+
+        for (String var : manager.getVariables()) {
+            this.request.addVariable("var." + var);
+        }
+
+        try {
+            this.provider.disconnect();
+            this.provider.connect(request.getServerId(), request.getEndpoint());
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
+            Logger.log(this.getClass(), "TestModelDialog()", ex);
+        }
+
+        this.remotes = new ArrayList();
+        this.remotes.add(this.request.getServerId());
         this.initComponents();
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
-        this.backButton.setVisible(false);
-        this.showServerSelection(false);
+        this.showParameterizeInputsPanel(false);
     }
 
     /**
-     * Shows serverselection panel.
-     *
-     * @param isBackAction indicator if a backaction is performed.
+     * Switches from processselectionpanel to parameterizeinputspanel.
      */
-    private void showServerSelection(boolean isBackAction) {
+    private void showParameterizeInputsPanel(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
-        this.serverselectionpanel = new ServerPanel(this.serverids, this.desc_request);
 
+        this.inputspanel = new InputPanel(this.provider, this.request);
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
         }
-        this.add(this.serverselectionpanel);
+
+        this.add(this.inputspanel);
         this.pack();
-        this.currentPanel = serverselectionpanel;
+        this.currentPanel = inputspanel;
     }
 
     /**
-     * Switches from serverselectionpanel to processselectionpanel.
-     *
-     * @param isBackAction indicator if a backaction is performed.
+     * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
-    private void showProcessSelection(boolean isBackAction) {
-        //blockage if input is not valid.
+    private void showParameretizeOutputsPanel(boolean isBackAction) {
+        if (!isBackAction) {
+            if (!this.currentPanel.isValidInput()) {
+                return;
+            }
+        }
+        this.backButton.setVisible(true);
+        this.previewButton.setVisible(true);
+        this.nextButton.setVisible(true);
+
+        //refresh the request
+        this.currentPanel.updateRequest();
+        this.request = (TestRequest) this.currentPanel.getRequest();
+
+        this.outputsspanel = new OutputPanel(this.provider, this.request);
+        this.remove(this.currentPanel);
+        this.currentPanel.setVisible(false);
+        this.add(this.outputsspanel);
+        this.pack();
+        this.currentPanel = outputsspanel;
+
+    }
+
+    private void showResultPanel(boolean isBackAction) {
         if (!isBackAction) {
             if (!this.currentPanel.isValidInput()) {
                 return;
@@ -98,77 +131,25 @@ public class UndeployDialog extends MbDialog {
         }
 
         this.backButton.setVisible(true);
-        this.previewButton.setVisible(true);
-        this.nextButton.setVisible(true);
+        this.nextButton.setVisible(false);
+        this.previewButton.setVisible(false);
 
         //refresh the request
         this.currentPanel.updateRequest();
-        this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
+        this.request = (TestRequest) this.currentPanel.getRequest();
+        //in case the request was allready used.
+        this.request.flushException();
+        this.request.flushResults();
 
-        try {
-            this.provider.connect(this.desc_request.getEndpoint());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
-            AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log(this.getClass(), "showProcessSelection()", ex);
-        }
-        this.processesselectionpanel = new ProcessPanel(this.provider, this.desc_request);
+        this.resultpanel = new TestResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.processesselectionpanel);
+        this.add(this.resultpanel);
         this.pack();
-        this.currentPanel = processesselectionpanel;
-    }
+        this.currentPanel = resultpanel;
+        this.currentPanel.setVisible(true);
 
-    /**
-     * Performs the undeployment by means of this_desc_request.
-     *
-     */
-    private void performUndeploy() {
-        try {
-            //refresh the request
-            this.currentPanel.updateRequest();
-            this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
-            String endp = desc_request.getServerId();
-            endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-            this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
-            this.provider.connect(this.desc_request.getServerId(), endp);
-            this.provider.richwpsUndeployProcess(undeploy_request);
-            if (undeploy_request.isException()) {
-
-                String msg = AppConstants.UNDEPLOY_FAILURE
-                        + "An error occured while undeploying  " + this.undeploy_request.getIdentifier() + " from"
-                        + " " + endp + ". " + undeploy_request.getException();
-
-                AppEventService appservice = AppEventService.getInstance();
-                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-                JOptionPane.showMessageDialog(null, msg,
-                        AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-                AppEventService.getInstance().fireAppEvent(AppConstants.UNDEPLOY_SUCCESS,
-                        AppConstants.INFOTAB_ID_SERVER);
-                JOptionPane.showMessageDialog(null,
-                        AppConstants.UNDEPLOY_SUCCESS,
-                        AppConstants.UNDEPLOY_SUCCESS,
-                        JOptionPane.INFORMATION_MESSAGE);
-                //make sure the client cache is emptied.
-                if (provider != null) {
-                    try {
-                        provider.disconnect();
-                        this.desc_request = new DescribeRequest();
-                    } catch (Exception ex) {
-                        Logger.log(this.getClass(), "performUndeploy()", ex);
-                    }
-                }
-                this.showServerSelection(false); //reset
-                this.setVisible(false);
-                this.dispose();
-            }
-        } catch (Exception ex) {
-            Logger.log(this.getClass(), "performUndeploy()", ex);
-        }
+        this.resultpanel.testProcess();
     }
 
     /**
@@ -188,12 +169,13 @@ public class UndeployDialog extends MbDialog {
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Undeploy a process");
+        setTitle("Test opend model");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");
+        previewButton.setToolTipText("Preview request");
         previewButton.setMinimumSize(new java.awt.Dimension(70, 32));
         previewButton.setPreferredSize(new java.awt.Dimension(70, 32));
         previewButton.addActionListener(new java.awt.event.ActionListener() {
@@ -248,11 +230,13 @@ public class UndeployDialog extends MbDialog {
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
-        if (this.currentPanel == this.serverselectionpanel) {
+        this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
+        if (this.currentPanel == this.inputspanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showProcessSelection(false);
-        } else if (this.currentPanel == this.processesselectionpanel) {
-            this.performUndeploy();
+            this.showParameretizeOutputsPanel(false);
+        } else if (this.currentPanel == this.outputsspanel) {
+            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
+            this.showResultPanel(false);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -263,31 +247,32 @@ public class UndeployDialog extends MbDialog {
         if (provider != null) {
             try {
                 provider.disconnect();
-                this.desc_request = new DescribeRequest();
+                this.request = new TestRequest();
             } catch (Exception ex) {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
-        this.showServerSelection(false); //reset
+
+        //this.showParameterizeInputsPanel(false);     //Reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
-        if (this.currentPanel == this.processesselectionpanel) {
-            this.showServerSelection(true);
+        if (this.currentPanel == this.outputsspanel) {
+            this.showParameterizeInputsPanel(true);
+        } else if (this.currentPanel == this.resultpanel) {
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
+            this.showParameretizeOutputsPanel(true);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         this.currentPanel.updateRequest();
-        this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
-        String endp = desc_request.getServerId();
-        endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
-        String requeststr = this.provider.richwpsPreviewUndeployProcess(this.undeploy_request);
+        this.request = (TestRequest) this.currentPanel.getRequest();
+        String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
         textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);

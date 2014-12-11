@@ -80,7 +80,7 @@ public class ExecuteDialog extends MbDialog {
      * @param severids list of viable serverids.
      */
     public ExecuteDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
-        super(parent, "Execute process", MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.EXECUTE_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
         this.initComponents();
 
         this.serverids = severids;
@@ -484,6 +484,7 @@ public class ExecuteDialog extends MbDialog {
         String requeststr = this.provider.wpsPreviewExecuteProcess(this.request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
+        textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);
         textpane.setText(requeststr);
         textpane.setEditable(false);
         final javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(textpane);
