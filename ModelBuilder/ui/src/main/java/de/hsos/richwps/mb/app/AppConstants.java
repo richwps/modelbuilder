@@ -217,8 +217,12 @@ public class AppConstants {
 
     static final String MONITOR_DEFAULT_URL = "http://localhost:1111";
 
+    /**
+     * ProcessProvider translations for views.
+     */
     static String[][] PROCESS_PROVIDER_TRANSLATIONS = new String[][]{
-        {"SECONDS", "sec"}
+        {"SECONDS", "sec"}, // SemanticProxy QoS EUOM
+        {"UNDEFINED", ""}
     };
 
     /**
