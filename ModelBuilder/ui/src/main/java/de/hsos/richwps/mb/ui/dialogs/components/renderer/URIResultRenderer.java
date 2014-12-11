@@ -50,6 +50,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         uri = new javax.swing.JLabel();
         copyToClipBoard = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(600, 100));
@@ -67,7 +68,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -86,7 +87,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -100,6 +101,15 @@ public class URIResultRenderer extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         add(jLabel1, gridBagConstraints);
+
+        jLabel2.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        jLabel2.setText("ComplexData-Result (as reference)");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jLabel2, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void copyToClipBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyToClipBoardActionPerformed
@@ -131,6 +141,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyToClipBoard;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel uri;
     // End of variables declaration//GEN-END:variables
 }

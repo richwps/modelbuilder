@@ -40,6 +40,7 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
 
         copyToClipBoard = new javax.swing.JButton();
         value = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(600, 400));
         setPreferredSize(new java.awt.Dimension(600, 400));
@@ -56,7 +57,7 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
@@ -72,12 +73,21 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
         value.setPreferredSize(new java.awt.Dimension(450, 300));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(value, gridBagConstraints);
+
+        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        jLabel1.setText("LiteralData-Result");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void copyToClipBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyToClipBoardActionPerformed
@@ -89,6 +99,7 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton copyToClipBoard;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JTextArea value;
     // End of variables declaration//GEN-END:variables
 }
