@@ -8,12 +8,12 @@ import java.awt.datatransfer.StringSelection;
  *
  * @author dalcacer
  */
-public class LiteralResultRenderer extends javax.swing.JPanel {
+public class LiteralRenderer extends javax.swing.JPanel {
 
     /**
      * Creates new form FeatureCollectionRenderer
      */
-    public LiteralResultRenderer() {
+    public LiteralRenderer() {
         initComponents();
     }
 
@@ -22,7 +22,7 @@ public class LiteralResultRenderer extends javax.swing.JPanel {
      * @param identifier
      * @param value
      */
-    public LiteralResultRenderer(String identifier, String value) {
+    public LiteralRenderer(String identifier, String value) {
         initComponents();
         this.value.setText(value);
         

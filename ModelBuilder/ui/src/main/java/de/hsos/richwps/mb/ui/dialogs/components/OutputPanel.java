@@ -1,10 +1,10 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
+import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputBoundingBoxData;
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputComplexData;
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputLiteralData;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputBBoxForm;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputComplexForm;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputLiteralForm;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import layout.TableLayout;
 
 /**
@@ -32,7 +31,7 @@ import layout.TableLayout;
  * @author dalcacer
  * @version 0.0.2
  */
-public class OutputParameterization extends ADialogPanel {
+public class OutputPanel extends APanel {
 
     private List<TitledComponent> outputpanels;
     private RichWPSProvider provider;
@@ -43,7 +42,7 @@ public class OutputParameterization extends ADialogPanel {
     /**
      * Creates new form OutputParameterization.
      */
-    public OutputParameterization() {
+    public OutputPanel() {
         initComponents();
     }
 
@@ -53,7 +52,7 @@ public class OutputParameterization extends ADialogPanel {
      * @param provider
      * @param request
      */
-    public OutputParameterization(final RichWPSProvider provider, IRequest request) {
+    public OutputPanel(final RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (ExecuteRequest) request;
         this.allSelected = false;
@@ -75,10 +74,14 @@ public class OutputParameterization extends ADialogPanel {
                 this.provider.wpsDescribeProcess(this.request);
             }
         }
-        this.createOutputPanels();
+        this.visualize();
     }
 
-    private void createOutputPanels() {
+    /**
+     * 
+     */
+    @Override
+    public void visualize() {
 
         if (this.request.getOutputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load outputs from"
@@ -89,19 +92,19 @@ public class OutputParameterization extends ADialogPanel {
 
         for (IOutputSpecifier specifier : this.request.getOutputs()) {
             if (specifier instanceof OutputLiteralDataSpecifier) {
-                OutputLiteralData pan = new OutputLiteralData((OutputLiteralDataSpecifier) specifier);
+                OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.outputpanels.add(tc);
             } else if (specifier instanceof OutputComplexDataSpecifier) {
-                OutputComplexData pan = new OutputComplexData((OutputComplexDataSpecifier) specifier);
+                OutputComplexForm pan = new OutputComplexForm((OutputComplexDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.outputpanels.add(tc);
             } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
-                OutputBoundingBoxData pan = new OutputBoundingBoxData((OutputBoundingBoxDataSpecifier) specifier);
+                OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataSpecifier) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
@@ -135,8 +138,8 @@ public class OutputParameterization extends ADialogPanel {
         if (this.outputpanels.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand=true;
-            for (int u = 0; u < this.outputpanels.size(); u++) {
-                this.outputpanels.get(u).setFolded(false);
+            for (TitledComponent outputpanel : this.outputpanels) {
+                outputpanel.setFolded(false);
             }
         }
         this.outputsPanelScrollPane.setViewportView(outputsPanel);
@@ -151,9 +154,9 @@ public class OutputParameterization extends ADialogPanel {
 
         for (TitledComponent panel : this.outputpanels) {
 
-            if (panel.getComponent() instanceof OutputComplexData) {
+            if (panel.getComponent() instanceof OutputComplexForm) {
 
-                OutputComplexData pan = (OutputComplexData) panel.getComponent();
+                OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 if (pan.isSelected()) {
                     OutputComplexDataSpecifier specifier = pan.getSpecifier();
                     OutputComplexDataArgument argument = new OutputComplexDataArgument(specifier);
@@ -171,8 +174,8 @@ public class OutputParameterization extends ADialogPanel {
 
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
-            } else if (panel.getComponent() instanceof OutputLiteralData) {
-                OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
+            } else if (panel.getComponent() instanceof OutputLiteralForm) {
+                OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
 
                 if (pan.isSelected()) {
                     OutputLiteralDataSpecifier specifier = pan.getSpecifier();
@@ -180,8 +183,8 @@ public class OutputParameterization extends ADialogPanel {
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
 
-            } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
-                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
+            } else if (panel.getComponent() instanceof OutputBBoxForm) {
+                OutputBBoxForm pan = (OutputBBoxForm) panel.getComponent();
 
                 if (pan.isSelected()) {
                     OutputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
@@ -210,19 +213,19 @@ public class OutputParameterization extends ADialogPanel {
     public boolean isValidInput() {
         boolean someThingSelected = false;
         for (TitledComponent panel : this.outputpanels) {
-            if (panel.getComponent() instanceof OutputComplexData) {
-                OutputComplexData pan = (OutputComplexData) panel.getComponent();
+            if (panel.getComponent() instanceof OutputComplexForm) {
+                OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
 
-            } else if (panel.getComponent() instanceof OutputLiteralData) {
-                OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
+            } else if (panel.getComponent() instanceof OutputLiteralForm) {
+                OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
-            } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
-                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
+            } else if (panel.getComponent() instanceof OutputBBoxForm) {
+                OutputBBoxForm pan = (OutputBBoxForm) panel.getComponent();
                 if (pan.isSelected()) {
                     someThingSelected = true;
                 }
@@ -404,15 +407,15 @@ public class OutputParameterization extends ADialogPanel {
     private void selectAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectAllButtonActionPerformed
         if (allSelected == false) {
             for (TitledComponent panel : this.outputpanels) {
-                if (panel.getComponent() instanceof OutputComplexData) {
-                    OutputComplexData pan = (OutputComplexData) panel.getComponent();
+                if (panel.getComponent() instanceof OutputComplexForm) {
+                    OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                     pan.setSelected();
 
-                } else if (panel.getComponent() instanceof OutputLiteralData) {
-                    OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
+                } else if (panel.getComponent() instanceof OutputLiteralForm) {
+                    OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
                     pan.setSelected();
-                } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
-                    OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
+                } else if (panel.getComponent() instanceof OutputBBoxForm) {
+                    OutputBBoxForm pan = (OutputBBoxForm) panel.getComponent();
                     pan.setSelected();
                 }
             }
@@ -422,15 +425,15 @@ public class OutputParameterization extends ADialogPanel {
         }
 
         for (TitledComponent panel : this.outputpanels) {
-            if (panel.getComponent() instanceof OutputComplexData) {
-                OutputComplexData pan = (OutputComplexData) panel.getComponent();
+            if (panel.getComponent() instanceof OutputComplexForm) {
+                OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 pan.setUnselected();
 
-            } else if (panel.getComponent() instanceof OutputLiteralData) {
-                OutputLiteralData pan = (OutputLiteralData) panel.getComponent();
+            } else if (panel.getComponent() instanceof OutputLiteralForm) {
+                OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
                 pan.setUnselected();
-            } else if (panel.getComponent() instanceof OutputBoundingBoxData) {
-                OutputBoundingBoxData pan = (OutputBoundingBoxData) panel.getComponent();
+            } else if (panel.getComponent() instanceof OutputBBoxForm) {
+                OutputBBoxForm pan = (OutputBBoxForm) panel.getComponent();
                 pan.setSelected();
                 pan.setUnselected();
             }

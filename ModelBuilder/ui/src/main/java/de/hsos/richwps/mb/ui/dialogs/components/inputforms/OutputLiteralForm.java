@@ -7,7 +7,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifi
  * @author dalcacer
  * @version 0.0.2
  */
-public class OutputLiteralData extends javax.swing.JPanel {
+public class OutputLiteralForm extends javax.swing.JPanel {
 
     private OutputLiteralDataSpecifier specifier;
 
@@ -16,7 +16,7 @@ public class OutputLiteralData extends javax.swing.JPanel {
      *
      * @param specifier
      */
-    public OutputLiteralData(final OutputLiteralDataSpecifier specifier) {
+    public OutputLiteralForm(final OutputLiteralDataSpecifier specifier) {
         this.specifier = specifier;
         initComponents();
 

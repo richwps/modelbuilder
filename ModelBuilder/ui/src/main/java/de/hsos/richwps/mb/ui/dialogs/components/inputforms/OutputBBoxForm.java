@@ -1,24 +1,25 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
-import net.opengis.wps.x100.ComplexDataDescriptionType;
+import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
+import java.util.List;
+import javax.swing.border.TitledBorder;
 
 /**
- *
- * @author dalcacer
+ * Shows title & abstract of BBOutput and allows selection of type.
+ * @author caduevel
  */
-public class OutputComplexData extends javax.swing.JPanel {
+public class OutputBBoxForm extends javax.swing.JPanel {
 
-    private OutputComplexDataSpecifier specifier;
+    private final OutputBoundingBoxDataSpecifier specifier;
 
-    private String id;
-    private ComplexDataDescriptionType[] subtypes_;
+    private final String id;
 
     /**
      * Creates new form OutputsParamPanel
      * @param specifier
      */
-    public OutputComplexData(OutputComplexDataSpecifier specifier) {
+    public OutputBBoxForm(
+            final OutputBoundingBoxDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
 
@@ -29,22 +30,26 @@ public class OutputComplexData extends javax.swing.JPanel {
 
         this.selectType.removeAllItems();
 
-        for (java.util.List type : specifier.getTypes()) {
-            String amimetype = (String) type.get(OutputComplexDataSpecifier.mimetype_IDX);
-            String aschema = (String) type.get(OutputComplexDataSpecifier.schema_IDX);
-            String aencoding = (String) type.get(OutputComplexDataSpecifier.encoding_IDX);
-            String line = "";
+        List<String> suppCRS = specifier.getSupportedCRS();
+        String defaultCRS = specifier.getDefaultCRS();
 
-            if (specifier.isDefaultType(type)){
-                line = "<html><b>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</b></html>";
-                this.selectType.addItem(line);
-                this.selectType.setSelectedItem(line);
-            } else {
-                line = "<html>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</html>";
-                this.selectType.addItem(line);
+
+        //Fill combobox, select defaultCRS
+        boolean defaultInSupported = false;
+        for (String type : suppCRS) {
+            if (type != null && !type.equals("")) {
+                this.selectType.addItem(type);
+                if (type.equals(defaultCRS)) {
+                    defaultInSupported = true;
+                    this.selectType.setSelectedItem(type);
+                }
             }
         }
-
+        if (!defaultInSupported) {
+            this.selectType.addItem(defaultCRS);
+            this.selectType.setSelectedItem(defaultCRS);
+        }
+        
         //FIXME
         this.id = theidentifier;
         //this.identifier.setText(theidentifier);
@@ -58,7 +63,7 @@ public class OutputComplexData extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputComplexDataSpecifier getSpecifier() {
+    public OutputBoundingBoxDataSpecifier getSpecifier() {
         return this.specifier;
     }
 
@@ -69,32 +74,22 @@ public class OutputComplexData extends javax.swing.JPanel {
     public boolean isSelected() {
         return this.selectOutput.isSelected();
     }
-    
-    
+
     public void setSelected(){
         this.selectOutput.setSelected(true);
     }
     
-    public void setUnselected(){
+     public void setUnselected(){
         this.selectOutput.setSelected(false);
     }
-
     /**
      *
      * @return
      */
-    public java.util.List getType() {
-        int idx = this.selectType.getSelectedIndex();
-        return specifier.getTypes().get(idx);
+    public String getType() {
+        return this.selectType.getSelectedItem().toString();
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean asReference() {
-        return this.selectAsReference.isSelected();
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -106,15 +101,13 @@ public class OutputComplexData extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
-        selectOutput = new javax.swing.JCheckBox();
         selectType = new javax.swing.JComboBox();
-        selectAsReference = new javax.swing.JCheckBox();
-        selectStore = new javax.swing.JCheckBox();
         titleLabel = new javax.swing.JLabel();
         typeLabel = new javax.swing.JLabel();
         abstractLabel = new javax.swing.JLabel();
         abstractValue = new javax.swing.JTextArea();
         titleValue = new javax.swing.JTextArea();
+        selectOutput = new javax.swing.JCheckBox();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(550, 200));
@@ -122,17 +115,7 @@ public class OutputComplexData extends javax.swing.JPanel {
         setRequestFocusEnabled(false);
         setLayout(new java.awt.GridBagLayout());
 
-        selectOutput.setText("Select");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectOutput, gridBagConstraints);
-
-        selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "$supported-crs-types" }));
         selectType.setPreferredSize(new java.awt.Dimension(450, 50));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -143,28 +126,6 @@ public class OutputComplexData extends javax.swing.JPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(selectType, gridBagConstraints);
-
-        selectAsReference.setSelected(true);
-        selectAsReference.setText("As Reference");
-        selectAsReference.setEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectAsReference, gridBagConstraints);
-
-        selectStore.setText("Store");
-        selectStore.setEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectStore, gridBagConstraints);
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setText("Title:");
@@ -177,7 +138,7 @@ public class OutputComplexData extends javax.swing.JPanel {
         add(titleLabel, gridBagConstraints);
 
         typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        typeLabel.setText("Type:");
+        typeLabel.setText("CRS-Type:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -225,15 +186,23 @@ public class OutputComplexData extends javax.swing.JPanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(titleValue, gridBagConstraints);
+
+        selectOutput.setText("Select");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(selectOutput, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel abstractLabel;
     private javax.swing.JTextArea abstractValue;
-    private javax.swing.JCheckBox selectAsReference;
     private javax.swing.JCheckBox selectOutput;
-    private javax.swing.JCheckBox selectStore;
     private javax.swing.JComboBox selectType;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextArea titleValue;

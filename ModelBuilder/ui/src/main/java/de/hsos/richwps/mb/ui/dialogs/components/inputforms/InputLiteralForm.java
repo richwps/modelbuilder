@@ -9,7 +9,7 @@ import javax.swing.border.TitledBorder;
  * @author dalcacer
  * @version 0.0.1
  */
-public class InputLiteralData extends javax.swing.JPanel {
+public class InputLiteralForm extends javax.swing.JPanel {
 
     private String id;
     private InputLiteralDataSpecifier specifier;
@@ -19,7 +19,7 @@ public class InputLiteralData extends javax.swing.JPanel {
      *
      * @param specifier
      */
-    public InputLiteralData(InputLiteralDataSpecifier specifier) {
+    public InputLiteralForm(InputLiteralDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
         String theidentifier = specifier.getIdentifier();
@@ -62,7 +62,7 @@ public class InputLiteralData extends javax.swing.JPanel {
      * @param specifier
      * @param argument
      */
-    public InputLiteralData(InputLiteralDataSpecifier specifier, InputLiteralDataArgument argument) {
+    public InputLiteralForm(InputLiteralDataSpecifier specifier, InputLiteralDataArgument argument) {
         initComponents();
         this.specifier = specifier;
         String theidentifier = specifier.getIdentifier();

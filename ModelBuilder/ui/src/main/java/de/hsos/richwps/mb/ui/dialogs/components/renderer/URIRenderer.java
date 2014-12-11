@@ -14,13 +14,13 @@ import org.apache.commons.lang3.StringUtils;
  * @author dalcacer
  * @version 0.0.1
  */
-public class URIResultRenderer extends javax.swing.JPanel {
+public class URIRenderer extends javax.swing.JPanel {
 
     private String httpuri;
     /**
      * Creates new form FeatureCollectionRenderer
      */
-    public URIResultRenderer() {
+    public URIRenderer() {
         initComponents();
     }
 
@@ -29,7 +29,7 @@ public class URIResultRenderer extends javax.swing.JPanel {
      * @param identifier
      * @param reference
      */
-    public URIResultRenderer(String identifier, String reference) {
+    public URIRenderer(String identifier, String reference) {
         initComponents();
         this.httpuri=reference;
         String abbString = StringUtils.abbreviateMiddle(httpuri, "[...]" ,50);

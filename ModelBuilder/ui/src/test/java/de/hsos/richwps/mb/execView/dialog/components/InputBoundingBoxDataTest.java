@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBoundingBoxData;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBBoxForm;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -35,55 +35,55 @@ public class InputBoundingBoxDataTest {
     }
 
     /**
-     * Test of getSpecifier method, of class InputBoundingBoxData.
+     * Test of getSpecifier method, of class InputBBoxForm.
      */
     @Test
     public void testGetSpecifier() {
         System.out.println("getSpecifier");
         InputBoundingBoxDataSpecifier spec;
         spec = new InputBoundingBoxDataSpecifier();
-        InputBoundingBoxData instance = new InputBoundingBoxData(spec);
+        InputBBoxForm instance = new InputBBoxForm(spec);
         InputBoundingBoxDataSpecifier result = instance.getSpecifier();
         assertEquals(spec, result);
     }
 
     /**
-     * Test of getText method, of class InputBoundingBoxData.
+     * Test of getText method, of class InputBBoxForm.
      */
     @Test
     public void testGetText() {
         System.out.println("getText");
         InputBoundingBoxDataSpecifier spec;
         spec = new InputBoundingBoxDataSpecifier();
-        InputBoundingBoxData instance = new InputBoundingBoxData(spec);
+        InputBBoxForm instance = new InputBBoxForm(spec);
         String expResult = "-2.0"+" "+"-1.0"+","+"3.0"+" "+"4.0";
         String result = instance.getText();
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of getCRS method, of class InputBoundingBoxData.
+     * Test of getCRS method, of class InputBBoxForm.
      */
     @Test
     public void testGetCRS() {
         System.out.println("getCRS");
         InputBoundingBoxDataSpecifier spec;
         spec = new InputBoundingBoxDataSpecifier();
-        InputBoundingBoxData instance = new InputBoundingBoxData(spec);
+        InputBBoxForm instance = new InputBBoxForm(spec);
         String expResult = "";
         String result = instance.getCRS();
         assertEquals(expResult, result);
     }
 
     /**
-     * Test of isMandatory method, of class InputBoundingBoxData.
+     * Test of isMandatory method, of class InputBBoxForm.
      */
     @Test
     public void testIsMandatory() {
         System.out.println("isMandatory");
         InputBoundingBoxDataSpecifier spec;
         spec = new InputBoundingBoxDataSpecifier();
-        InputBoundingBoxData instance = new InputBoundingBoxData(spec);
+        InputBBoxForm instance = new InputBBoxForm(spec);
         boolean expResult = false;
         boolean result = instance.isMandatory();
         assertEquals(expResult, result);

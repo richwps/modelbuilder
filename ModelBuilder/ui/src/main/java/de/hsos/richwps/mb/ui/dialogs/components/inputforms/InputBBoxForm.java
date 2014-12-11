@@ -14,7 +14,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author caduevel
  */
-public class InputBoundingBoxData extends javax.swing.JPanel {
+public class InputBBoxForm extends javax.swing.JPanel {
 
     public class CoordinateVerifier extends InputVerifier {
 
@@ -64,7 +64,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
      *
      * @param specifier
      */
-    public InputBoundingBoxData(final InputBoundingBoxDataSpecifier specifier) {
+    public InputBBoxForm(final InputBoundingBoxDataSpecifier specifier) {
         initComponents();
 
         InputVerifier verifier = new CoordinateVerifier();
@@ -131,7 +131,7 @@ public class InputBoundingBoxData extends javax.swing.JPanel {
      *
      * @param specifier
      */
-    public InputBoundingBoxData(final InputBoundingBoxDataSpecifier specifier, InputBoundingBoxDataArgument argument) {
+    public InputBBoxForm(final InputBoundingBoxDataSpecifier specifier, InputBoundingBoxDataArgument argument) {
         initComponents();
 
         InputVerifier verifier = new CoordinateVerifier();

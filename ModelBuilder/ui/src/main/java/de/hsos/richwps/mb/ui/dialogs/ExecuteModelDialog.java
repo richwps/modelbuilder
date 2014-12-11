@@ -3,10 +3,9 @@ package de.hsos.richwps.mb.ui.dialogs;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.InputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.OutputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.ResultVisualisation;
+import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.ResultPanel;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
@@ -26,10 +25,10 @@ import javax.swing.UIManager;
  */
 public class ExecuteModelDialog extends MbDialog {
 
-    private ADialogPanel currentPanel;
-    private InputParameterization inputspanel;
-    private OutputParameterization outputsspanel;
-    private ResultVisualisation resultpanel;
+    private APanel currentPanel;
+    private InputPanel inputspanel;
+    private OutputPanel outputsspanel;
+    private ResultPanel resultpanel;
     private List<String> remotes;
     private RichWPSProvider provider;
     private ExecuteRequest request;
@@ -80,7 +79,7 @@ public class ExecuteModelDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
 
-        this.inputspanel = new InputParameterization(this.provider, this.request);
+        this.inputspanel = new InputPanel(this.provider, this.request);
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
@@ -110,7 +109,7 @@ public class ExecuteModelDialog extends MbDialog {
             this.request = (ExecuteRequest) this.currentPanel.getRequest();
         }
 
-        this.outputsspanel = new OutputParameterization(this.provider, this.request);
+        this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.outputsspanel);
@@ -138,7 +137,7 @@ public class ExecuteModelDialog extends MbDialog {
         this.request.flushException();
         this.request.flushResults();
 
-        this.resultpanel = new ResultVisualisation(this.provider, this.request);
+        this.resultpanel = new ResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.resultpanel);

@@ -1,9 +1,10 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
+import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBoundingBoxData;
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputLiteralData;
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputComplexData;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBBoxForm;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputLiteralForm;
+import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputComplexForm;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
@@ -25,11 +26,12 @@ import javax.swing.JPanel;
 import layout.TableLayout;
 
 /**
- *
+ * Dialog panel for input parameterisation.
+ * 
  * @author dalcacer
  * @version 0.0.3
  */
-public class InputParameterization extends ADialogPanel {
+public class InputPanel extends APanel {
 
     /**
      * List of panels that provide inputpanels.
@@ -49,7 +51,7 @@ public class InputParameterization extends ADialogPanel {
     /**
      * Creates new form ExecutePanel
      */
-    public InputParameterization() {
+    public InputPanel() {
         initComponents();
     }
 
@@ -59,7 +61,7 @@ public class InputParameterization extends ADialogPanel {
      * @param provider
      * @param request
      */
-    public InputParameterization(final RichWPSProvider provider, IRequest request) {
+    public InputPanel(final RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (ExecuteRequest) request;
         initComponents();
@@ -78,14 +80,14 @@ public class InputParameterization extends ADialogPanel {
                 this.provider.wpsDescribeProcess(this.request);
             }
         }
-        this.createInputPanels();
+        this.visualize();
     }
 
     /**
      * Creates and adds inputpanels based on inputdescriptions.
      */
-    private void createInputPanels() {
-
+    @Override
+    public void visualize() {
         if (this.request.getInputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load inputs from "
                     + "process description.",
@@ -96,40 +98,46 @@ public class InputParameterization extends ADialogPanel {
         for (IInputSpecifier specifier : this.request.getInputs()) {
             if (specifier instanceof InputLiteralDataSpecifier) {
 
-                InputLiteralData pan;
+                InputLiteralForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputLiteralDataArgument arg = (InputLiteralDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
-                    pan = new InputLiteralData((InputLiteralDataSpecifier) specifier, arg);
+                    InputLiteralDataArgument arg = (InputLiteralDataArgument)
+                            this.request.getInputArguments().get(specifier.getIdentifier());
+                    pan = new InputLiteralForm((InputLiteralDataSpecifier) specifier, arg);
                 } else {
-                    pan = new InputLiteralData((InputLiteralDataSpecifier) specifier);
+                    pan = new InputLiteralForm((InputLiteralDataSpecifier) specifier);
                 }
-                TitledComponent tc = new TitledComponent(pan.getTitle(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
+                        TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.inputpanels.add(tc);
             } else if (specifier instanceof InputComplexDataSpecifier) {
-                InputComplexData pan;
+                InputComplexForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputComplexDataArgument arg = (InputComplexDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
-                    pan = new InputComplexData((InputComplexDataSpecifier) specifier, arg);
+                    InputComplexDataArgument arg = (InputComplexDataArgument)
+                            this.request.getInputArguments().get(specifier.getIdentifier());
+                    pan = new InputComplexForm((InputComplexDataSpecifier) specifier, arg);
 
                 } else {
-                    pan = new InputComplexData((InputComplexDataSpecifier) specifier);
+                    pan = new InputComplexForm((InputComplexDataSpecifier) specifier);
                 }
-                TitledComponent tc = new TitledComponent(pan.getTitle(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
+                        TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.inputpanels.add(tc);
 
             } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
-                InputBoundingBoxData pan;
+                InputBBoxForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputBoundingBoxDataArgument arg = (InputBoundingBoxDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
-                    pan = new InputBoundingBoxData((InputBoundingBoxDataSpecifier) specifier, arg);
+                    InputBoundingBoxDataArgument arg = (InputBoundingBoxDataArgument)
+                            this.request.getInputArguments().get(specifier.getIdentifier());
+                    pan = new InputBBoxForm((InputBoundingBoxDataSpecifier) specifier, arg);
                 } else {
-                    pan = new InputBoundingBoxData((InputBoundingBoxDataSpecifier) specifier);
+                    pan = new InputBBoxForm((InputBoundingBoxDataSpecifier) specifier);
                 }
-                TitledComponent tc = new TitledComponent(pan.getTitle(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
+                        TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.inputpanels.add(tc);
@@ -165,9 +173,9 @@ public class InputParameterization extends ADialogPanel {
 
         if (this.inputpanels.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
-            this.expand=true;
-            for (int u = 0; u < this.inputpanels.size(); u++) {
-                this.inputpanels.get(u).setFolded(false);
+            this.expand = true;
+            for (TitledComponent inputpanel : this.inputpanels) {
+                inputpanel.setFolded(false);
             }
         }
         this.inputsPanelScrollPane.setViewportView(inputsPanel);
@@ -182,12 +190,12 @@ public class InputParameterization extends ADialogPanel {
 
         for (TitledComponent panel : this.inputpanels) {
 
-            if (panel.getComponent() instanceof InputComplexData) {
-                InputComplexData pan = (InputComplexData) panel.getComponent();
+            if (panel.getComponent() instanceof InputComplexForm) {
+                InputComplexForm pan = (InputComplexForm) panel.getComponent();
                 InputComplexDataSpecifier specifier = pan.getSpecifier();
 
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Please provide input for "
+                    JOptionPane.showMessageDialog(this, AppConstants.DIALOG_VALIDATION_MISSING_INPUT
                             + pan.getSpecifier().getIdentifier());
                     break;
                 } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
@@ -217,11 +225,12 @@ public class InputParameterization extends ADialogPanel {
                     }
                     theinputs.put(param.getIdentifier(), param);
                 }
-            } else if (panel.getComponent() instanceof InputLiteralData) {
-                InputLiteralData pan = (InputLiteralData) panel.getComponent();
+            } else if (panel.getComponent() instanceof InputLiteralForm) {
+                InputLiteralForm pan = (InputLiteralForm) panel.getComponent();
                 InputLiteralDataSpecifier specifier = pan.getSpecifier();
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Please provide input for "
+                    JOptionPane.showMessageDialog(this,
+                            AppConstants.DIALOG_VALIDATION_MISSING_INPUT
                             + pan.getSpecifier().getIdentifier());
                     break;
                 } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
@@ -230,11 +239,12 @@ public class InputParameterization extends ADialogPanel {
                     InputLiteralDataArgument param = new InputLiteralDataArgument(specifier, pan.getText());
                     theinputs.put(param.getIdentifier(), param);
                 }
-            } else if (panel.getComponent() instanceof InputBoundingBoxData) {
-                InputBoundingBoxData pan = (InputBoundingBoxData) panel.getComponent();
+            } else if (panel.getComponent() instanceof InputBBoxForm) {
+                InputBBoxForm pan = (InputBBoxForm) panel.getComponent();
                 InputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Please provide input for "
+                    JOptionPane.showMessageDialog(this,
+                            AppConstants.DIALOG_VALIDATION_MISSING_INPUT
                             + pan.getSpecifier().getIdentifier());
                     break;
                 } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
@@ -266,34 +276,40 @@ public class InputParameterization extends ADialogPanel {
     @Override
     public boolean isValidInput() {
         for (TitledComponent panel : this.inputpanels) {
-            if (panel.getComponent() instanceof InputComplexData) {
-                InputComplexData pan = (InputComplexData) panel.getComponent();
+            if (panel.getComponent() instanceof InputComplexForm) {
+                InputComplexForm pan = (InputComplexForm) panel.getComponent();
                 //this parameter is optional
                 if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    JOptionPane.showMessageDialog(this,
+                            AppConstants.DIALOG_VALIDATION_MISSING_INPUT
+                            + pan.getSpecifier().getIdentifier());
                     return false;
                 }
-            } else if (panel.getComponent() instanceof InputLiteralData) {
-                InputLiteralData pan = (InputLiteralData) panel.getComponent();
+            } else if (panel.getComponent() instanceof InputLiteralForm) {
+                InputLiteralForm pan = (InputLiteralForm) panel.getComponent();
                 //this parameter is optional
                 if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    JOptionPane.showMessageDialog(this,
+                            AppConstants.DIALOG_VALIDATION_MISSING_INPUT
+                            + pan.getSpecifier().getIdentifier());
                     return false;
                 }
-            } else if (panel.getComponent() instanceof InputBoundingBoxData) {
-                InputBoundingBoxData pan = (InputBoundingBoxData) panel.getComponent();
+            } else if (panel.getComponent() instanceof InputBBoxForm) {
+                InputBBoxForm pan = (InputBBoxForm) panel.getComponent();
                 //this parameter is optional
                 if (pan.getSpecifier().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Please provide input for " + pan.getSpecifier().getIdentifier());
+                    JOptionPane.showMessageDialog(this,
+                            AppConstants.DIALOG_VALIDATION_MISSING_INPUT
+                            + pan.getSpecifier().getIdentifier());
                     return false;
                 }
             }

@@ -1,9 +1,10 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
+import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.ExceptionRenderer;
-import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralResultRenderer;
-import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIResultRenderer;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralRenderer;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
@@ -12,7 +13,6 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgumen
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,11 +22,11 @@ import javax.swing.UIManager;
 import layout.TableLayout;
 
 /**
- *
+ * Dialog panel for result visualisation.
  * @author dalcacer
  * @version 0.0.2
  */
-public class ResultVisualisation extends ADialogPanel {
+public class ResultPanel extends APanel {
 
     private List<TitledComponent> renderers;
     private RichWPSProvider provider;
@@ -38,7 +38,7 @@ public class ResultVisualisation extends ADialogPanel {
      * @param provider
      * @param request
      */
-    public ResultVisualisation(RichWPSProvider provider, IRequest request) {
+    public ResultPanel(RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (ExecuteRequest) request;
         this.renderers = new ArrayList<>();
@@ -60,8 +60,7 @@ public class ResultVisualisation extends ADialogPanel {
 
         ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
         mt.start();
-        this.loadingLabel.setText("<html>Sending and processing statement.<br/>"
-                + "This might take some time, depending on the remote process.</html>");
+        this.loadingLabel.setText(AppConstants.DIALOG_REQUEST_SENT);
     }
 
     private void update(ExecuteRequest request) {
@@ -102,7 +101,7 @@ public class ResultVisualisation extends ADialogPanel {
                 String uri = (String) results.get(key);
                 OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
-                URIResultRenderer pan = new URIResultRenderer(identifier, uri);
+                URIRenderer pan = new URIRenderer(identifier, uri);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
@@ -112,7 +111,7 @@ public class ResultVisualisation extends ADialogPanel {
                 String value = (String) results.get(key);
                 OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
                 String identifier = (_argument.getSepcifier()).getIdentifier();
-                LiteralResultRenderer pan = new LiteralResultRenderer(identifier, value);
+                LiteralRenderer pan = new LiteralRenderer(identifier, value);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
@@ -127,8 +126,8 @@ public class ResultVisualisation extends ADialogPanel {
         if (this.renderers.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand = true;
-            for (int u = 0; u < this.renderers.size(); u++) {
-                this.renderers.get(u).setFolded(false);
+            for (TitledComponent renderer : this.renderers) {
+                renderer.setFolded(false);
             }
         }
 
@@ -182,9 +181,9 @@ public class ResultVisualisation extends ADialogPanel {
 
         private ExecuteRequest request;
         private RichWPSProvider provider;
-        private ResultVisualisation parent;
+        private ResultPanel parent;
 
-        public ExecuteThread(ResultVisualisation parent, ExecuteRequest request, RichWPSProvider provider) {
+        public ExecuteThread(ResultPanel parent, ExecuteRequest request, RichWPSProvider provider) {
             this.parent = parent;
             this.request = request;
             this.provider = provider;

@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.ui.dialogs.components;
+package de.hsos.richwps.mb.ui.dialogs;
 
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
@@ -14,10 +14,11 @@ import javax.swing.JPanel;
  * @see de.hsos.richwps.mb.ui.dialogs.UndeployDialog;
  * @see de.hsos.richwps.mb.ui.dialogs.TestModelDialog;
  */
-public abstract class ADialogPanel extends JPanel {
+public abstract class APanel extends JPanel {
 
     /**
      * Update the current request, before getting it.
+     * @see ADialogPanel#getRequest().
      */
     public void updateRequest() {
     }
@@ -26,7 +27,7 @@ public abstract class ADialogPanel extends JPanel {
      * Get the current request.
      *
      * @return IRequest a describe/execute-request.
-     * @see ADialogPanel#updateRequest()
+     * @see ADialogPanel#updateRequest().
      */
     public IRequest getRequest() {
         return null;
@@ -40,4 +41,7 @@ public abstract class ADialogPanel extends JPanel {
     public boolean isValidInput() {
         return false;
     }
+    
+    
+    public void visualize(){};
 }

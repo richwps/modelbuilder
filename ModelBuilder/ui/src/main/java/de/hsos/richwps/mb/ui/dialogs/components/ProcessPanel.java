@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
+import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
@@ -7,10 +8,11 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * Dialog panel for process selection.
  * @author dalcacer
+ * @version 0.0.3
  */
-public class ProcessSelection extends ADialogPanel {
+public class ProcessPanel extends APanel {
 
     private RichWPSProvider provider;
     private List<String> processes;
@@ -20,7 +22,7 @@ public class ProcessSelection extends ADialogPanel {
     /**
      * Creates new form ProcessSelection
      */
-    public ProcessSelection() {
+    public ProcessPanel() {
         this.initComponents();
     }
 
@@ -29,7 +31,7 @@ public class ProcessSelection extends ADialogPanel {
      * @param provider
      * @param dto
      */
-    public ProcessSelection(RichWPSProvider provider, IRequest request) {
+    public ProcessPanel(RichWPSProvider provider, IRequest request) {
         this.request = (DescribeRequest) request;
         this.wpsurl = this.request.getEndpoint();
         this.provider = provider;

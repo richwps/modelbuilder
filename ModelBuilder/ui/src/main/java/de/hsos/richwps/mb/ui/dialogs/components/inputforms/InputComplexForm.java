@@ -11,7 +11,7 @@ import static net.opengis.wps.x100.DescriptionType.type;
  *
  * @author dalcacer
  */
-public class InputComplexData extends javax.swing.JPanel {
+public class InputComplexForm extends javax.swing.JPanel {
 
     private String id;
     private ComplexDataDescriptionType[] subtypes_;
@@ -23,7 +23,7 @@ public class InputComplexData extends javax.swing.JPanel {
      *
      * @param specifier the specifier of the complexinputdata.
      */
-    public InputComplexData(final InputComplexDataSpecifier specifier) {
+    public InputComplexForm(final InputComplexDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
 
@@ -86,7 +86,7 @@ public class InputComplexData extends javax.swing.JPanel {
      *
      * @param specifier the specifier of the complexinputdata.
      */
-    public InputComplexData(final InputComplexDataSpecifier specifier, InputComplexDataArgument argument) {
+    public InputComplexForm(final InputComplexDataSpecifier specifier, InputComplexDataArgument argument) {
         initComponents();
         this.specifier = specifier;
 

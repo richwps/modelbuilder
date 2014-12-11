@@ -10,9 +10,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
-import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.ProcessSelection;
-import de.hsos.richwps.mb.ui.dialogs.components.SeverSelection;
+import de.hsos.richwps.mb.ui.dialogs.components.ProcessPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.ServerPanel;
 import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
@@ -28,9 +27,9 @@ import javax.swing.UIManager;
  */
 public class UndeployDialog extends MbDialog {
 
-    private ADialogPanel currentPanel;
-    private SeverSelection serverselectionpanel;
-    private ProcessSelection processesselectionpanel;
+    private APanel currentPanel;
+    private ServerPanel serverselectionpanel;
+    private ProcessPanel processesselectionpanel;
     private List<String> serverids;
     private RichWPSProvider provider;
     /**
@@ -73,7 +72,7 @@ public class UndeployDialog extends MbDialog {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
-        this.serverselectionpanel = new SeverSelection(this.serverids, this.desc_request);
+        this.serverselectionpanel = new ServerPanel(this.serverids, this.desc_request);
 
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
@@ -113,7 +112,7 @@ public class UndeployDialog extends MbDialog {
             appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
             Logger.log(this.getClass(), "showProcessSelection()", ex);
         }
-        this.processesselectionpanel = new ProcessSelection(this.provider, this.desc_request);
+        this.processesselectionpanel = new ProcessPanel(this.provider, this.desc_request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.processesselectionpanel);

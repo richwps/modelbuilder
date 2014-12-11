@@ -74,6 +74,7 @@ public class AppConstants {
     public final static String DIALOG__BTN_COLLAPSE_ALL = "Collapse all";
     public final static String DIALOG_BTN_SELECT_ALL = "Select all";
     public final static String DIALOG_BTN_DESELECT_ALL = "Deelect all";
+    public final static String DIALOG_VALIDATION_MISSING_INPUT = "Please provide input for ";
     public final static Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
 
     // Preferences Dialog
@@ -114,6 +115,8 @@ public class AppConstants {
 
     //Connectivity errors
     public final static String CONNECT_FAILED = "Unable to connect to selected server.";
+    public final static String DIALOG_REQUEST_SENT ="<html>Sending and processing statement.<br/>"
+                + "This might take some time, depending on the remote process <br/> and amount of data..</html>";
 
     // About Dialog
     /**

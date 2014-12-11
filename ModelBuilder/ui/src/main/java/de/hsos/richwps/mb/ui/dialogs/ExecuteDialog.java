@@ -3,12 +3,11 @@ package de.hsos.richwps.mb.ui.dialogs;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.InputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.OutputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.ProcessSelection;
-import de.hsos.richwps.mb.ui.dialogs.components.ResultVisualisation;
-import de.hsos.richwps.mb.ui.dialogs.components.SeverSelection;
+import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.ProcessPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.ResultPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.ServerPanel;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
@@ -39,27 +38,27 @@ public class ExecuteDialog extends MbDialog {
     /**
      * The currently shown panel.
      */
-    private ADialogPanel currentPanel;
+    private APanel currentPanel;
     /**
      * A panel used for serverselection.
      */
-    private SeverSelection serverselectionpanel;
+    private ServerPanel serverselectionpanel;
     /**
      * A panel used for processselection.
      */
-    private ProcessSelection processesselectionpanel;
+    private ProcessPanel processesselectionpanel;
     /**
      * A panel used to parameterize given ogc inputs.
      */
-    private InputParameterization inputspanel;
+    private InputPanel inputspanel;
     /**
      * A panel used to parameterize given ogc outputs.
      */
-    private OutputParameterization outputsspanel;
+    private OutputPanel outputsspanel;
     /**
      * A panel used to visualized ogc outputs.
      */
-    private ResultVisualisation resultpanel;
+    private ResultPanel resultpanel;
     /**
      * List of viable endpoints.
      */
@@ -105,7 +104,7 @@ public class ExecuteDialog extends MbDialog {
         this.loadButton.setVisible(true);
         this.saveButton.setVisible(false);
         this.previewButton.setVisible(false);
-        this.serverselectionpanel = new SeverSelection(this.serverids, this.request);
+        this.serverselectionpanel = new ServerPanel(this.serverids, this.request);
 
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
@@ -153,7 +152,7 @@ public class ExecuteDialog extends MbDialog {
             Logger.log(this.getClass(), "showProcessSelection()", ex);
             return;
         }
-        this.processesselectionpanel = new ProcessSelection(this.provider, this.request);
+        this.processesselectionpanel = new ProcessPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.processesselectionpanel);
@@ -186,7 +185,7 @@ public class ExecuteDialog extends MbDialog {
             this.request = new ExecuteRequest(req);
         }
 
-        this.inputspanel = new InputParameterization(this.provider, this.request);
+        this.inputspanel = new InputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.inputspanel);
@@ -219,7 +218,7 @@ public class ExecuteDialog extends MbDialog {
             this.request = (ExecuteRequest) this.currentPanel.getRequest();
         }
 
-        this.outputsspanel = new OutputParameterization(this.provider, this.request);
+        this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.outputsspanel);
@@ -250,7 +249,7 @@ public class ExecuteDialog extends MbDialog {
             this.request.flushResults();
         }
 
-        this.resultpanel = new ResultVisualisation(this.provider, this.request);
+        this.resultpanel = new ResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.resultpanel);

@@ -9,10 +9,9 @@ import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
-import de.hsos.richwps.mb.ui.dialogs.components.ADialogPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.InputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.OutputParameterization;
-import de.hsos.richwps.mb.ui.dialogs.components.TestResultVisualisation;
+import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.TestResultPanel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -28,10 +27,10 @@ import javax.swing.UIManager;
  */
 public class TestModelDialog extends MbDialog {
 
-    private ADialogPanel currentPanel;
-    private InputParameterization inputspanel;
-    private OutputParameterization outputsspanel;
-    private TestResultVisualisation resultpanel;
+    private APanel currentPanel;
+    private InputPanel inputspanel;
+    private OutputPanel outputsspanel;
+    private TestResultPanel resultpanel;
     private List<String> remotes;
     private RichWPSProvider provider;
     private TestRequest request;
@@ -87,7 +86,7 @@ public class TestModelDialog extends MbDialog {
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
 
-        this.inputspanel = new InputParameterization(this.provider, this.request);
+        this.inputspanel = new InputPanel(this.provider, this.request);
         if (this.currentPanel != null) {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
@@ -115,7 +114,7 @@ public class TestModelDialog extends MbDialog {
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
 
-        this.outputsspanel = new OutputParameterization(this.provider, this.request);
+        this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.outputsspanel);
@@ -142,7 +141,7 @@ public class TestModelDialog extends MbDialog {
         this.request.flushException();
         this.request.flushResults();
 
-        this.resultpanel = new TestResultVisualisation(this.provider, this.request);
+        this.resultpanel = new TestResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.resultpanel);

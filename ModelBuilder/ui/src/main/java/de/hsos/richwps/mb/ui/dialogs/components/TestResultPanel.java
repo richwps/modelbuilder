@@ -1,9 +1,10 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
+import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.ExceptionRenderer;
-import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralResultRenderer;
-import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIResultRenderer;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralRenderer;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
@@ -18,11 +19,11 @@ import javax.swing.UIManager;
 import layout.TableLayout;
 
 /**
- *
+ * Dialog panel for testresult visualisation.
  * @author dalcacer
  * @version 0.0.2
  */
-public class TestResultVisualisation extends ADialogPanel {
+public class TestResultPanel extends APanel {
 
     private List<TitledComponent> renderers;
     private RichWPSProvider provider;
@@ -34,7 +35,7 @@ public class TestResultVisualisation extends ADialogPanel {
      * @param provider
      * @param request
      */
-    public TestResultVisualisation(RichWPSProvider provider, IRequest request) {
+    public TestResultPanel(RichWPSProvider provider, IRequest request) {
         this.provider = provider;
         this.request = (TestRequest) request;
         this.renderers = new ArrayList<>();
@@ -56,15 +57,14 @@ public class TestResultVisualisation extends ADialogPanel {
 
         TestThread mt = new TestThread(this, this.request, this.provider);
         mt.start();
-        this.loadingLabel.setText("<html>Sending and processing statement.<br/>"
-                + "This might take some time, depending on the remote process.</html>");
+        this.loadingLabel.setText(AppConstants.DIALOG_REQUEST_SENT);
     }
 
     private void update(TestRequest request) {
         this.loadingLabel.setText("Processing results.");
         this.request = (TestRequest) request;
         if (this.request.isException()) {
-            renderException(request);
+            this.renderException(request);
         } else {
             this.renderResults(request);
         }
@@ -95,14 +95,14 @@ public class TestResultVisualisation extends ADialogPanel {
             String c = "0," + i;
             String value = (String) results.get(key);
             if (value.contains("http://")) {
-                URIResultRenderer pan = new URIResultRenderer(key.toString(), value);
+                URIRenderer pan = new URIRenderer(key.toString(), value);
                 TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 outputsPanel.add(tc, c);
                 this.renderers.add(tc);
             } else {
-                LiteralResultRenderer pan = new LiteralResultRenderer(key.toString(), value);
+                LiteralRenderer pan = new LiteralRenderer(key.toString(), value);
                 TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
@@ -118,8 +118,8 @@ public class TestResultVisualisation extends ADialogPanel {
         if (this.renderers.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand = true;
-            for (int u = 0; u < this.renderers.size(); u++) {
-                this.renderers.get(u).setFolded(false);
+            for (TitledComponent renderer : this.renderers) {
+                renderer.setFolded(false);
             }
         }
         this.resultPane.setViewportView(outputsPanel);
@@ -173,10 +173,10 @@ public class TestResultVisualisation extends ADialogPanel {
 
         private TestRequest request;
         private RichWPSProvider provider;
-        private TestResultVisualisation parent;
+        private TestResultPanel parent;
         private boolean expand = false;
 
-        public TestThread(TestResultVisualisation parent, TestRequest request, RichWPSProvider provider) {
+        public TestThread(TestResultPanel parent, TestRequest request, RichWPSProvider provider) {
             this.parent = parent;
             this.request = request;
             this.provider = provider;
