@@ -9,7 +9,6 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +27,7 @@ public class TestResultVisualisation extends ADialogPanel {
     private List<TitledComponent> renderers;
     private RichWPSProvider provider;
     private TestRequest request;
+    private boolean expand = false;
 
     /**
      *
@@ -45,6 +45,7 @@ public class TestResultVisualisation extends ADialogPanel {
         this.loadingLabel.setIcon(ico);
         this.loadingLabel.setText("Preparing statement.");
         this.resultPane.setVisible(false);
+        this.expand = false;
     }
 
     /**
@@ -99,12 +100,14 @@ public class TestResultVisualisation extends ADialogPanel {
                 tc.setTitleBold();
                 tc.fold();
                 outputsPanel.add(tc, c);
+                this.renderers.add(tc);
             } else {
                 LiteralResultRenderer pan = new LiteralResultRenderer(key.toString(), value);
                 TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 outputsPanel.add(tc, c);
+                this.renderers.add(tc);
             }
             i++;
         }
@@ -112,6 +115,13 @@ public class TestResultVisualisation extends ADialogPanel {
         String c = "0," + i + 1;
         outputsPanel.add(new JPanel(), c);
 
+        if (this.renderers.size() <= 2) {
+            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
+            this.expand = true;
+            for (int u = 0; u < this.renderers.size(); u++) {
+                this.renderers.get(u).setFolded(false);
+            }
+        }
         this.resultPane.setViewportView(outputsPanel);
         this.resultPane.setVisible(true);
         this.loadingLabel.setVisible(false);
@@ -121,24 +131,25 @@ public class TestResultVisualisation extends ADialogPanel {
         this.request = request;
         this.loadingLabel.setVisible(false);
 
-        ExceptionRenderer r = new ExceptionRenderer(request.getException());
-        TitledComponent tc = new TitledComponent("Exception", r, TitledComponent.DEFAULT_TITLE_HEIGHT);
-        tc.unfold();
-        tc.setTitleBold();
+        ExceptionRenderer exception = new ExceptionRenderer(request.getException());
+        /*TitledComponent tc = new TitledComponent("Exception", r, TitledComponent.DEFAULT_TITLE_HEIGHT);
+         tc.unfold();
+         tc.setTitleBold();*/
 
         this.remove(this.resultPane);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
 
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = 0;
-        g.gridy = 2;
-        g.fill = GridBagConstraints.BOTH;
-        g.anchor = GridBagConstraints.NORTHWEST;
-        g.ipadx = 5;
-        g.ipady = 5;
-        g.insets = new Insets(5, 5, 5, 5);
-        g.gridwidth = 2;
-
-        this.add(tc, g);
+        this.add(exception, gridBagConstraints);
+        this.validate();
+        this.expandButton.setEnabled(false);
     }
 
     /**
@@ -200,8 +211,8 @@ public class TestResultVisualisation extends ADialogPanel {
         jPanel2 = new javax.swing.JPanel();
         expandButton = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(680, 700));
-        setPreferredSize(new java.awt.Dimension(600, 700));
+        setMinimumSize(new java.awt.Dimension(620, 700));
+        setPreferredSize(new java.awt.Dimension(620, 700));
         setLayout(new java.awt.GridBagLayout());
 
         loadingLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -219,8 +230,8 @@ public class TestResultVisualisation extends ADialogPanel {
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         resultPane.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        resultPane.setMinimumSize(new java.awt.Dimension(610, 600));
-        resultPane.setPreferredSize(new java.awt.Dimension(610, 550));
+        resultPane.setMinimumSize(new java.awt.Dimension(600, 600));
+        resultPane.setPreferredSize(new java.awt.Dimension(600, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -248,7 +259,7 @@ public class TestResultVisualisation extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 20;
+        gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -269,7 +280,7 @@ public class TestResultVisualisation extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 20;
+        gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -327,20 +338,20 @@ public class TestResultVisualisation extends ADialogPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
-        /*if (this.expand == true) {
-            for (TitledComponent tc : this.outputs) {
+        if (this.expand == true) {
+            for (TitledComponent tc : this.renderers) {
                 tc.fold();
             }
             this.expand = false;
-            this.expandButton.setText("Expand all");
+            this.expandButton.setText(AppConstants.DIALOG_BTN_EXPAND_ALL);
             return;
         }
 
-        for (TitledComponent tc : this.outputs) {
+        for (TitledComponent tc : this.renderers) {
             tc.unfold();
             this.expand = true;
-            this.expandButton.setText("Collapse all");
-        }*/
+            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
+        }
     }//GEN-LAST:event_expandButtonActionPerformed
 
 

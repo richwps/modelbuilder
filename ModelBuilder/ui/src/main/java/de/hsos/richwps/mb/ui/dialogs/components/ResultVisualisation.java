@@ -27,7 +27,7 @@ import layout.TableLayout;
  * @version 0.0.2
  */
 public class ResultVisualisation extends ADialogPanel {
-    
+
     private List<TitledComponent> renderers;
     private RichWPSProvider provider;
     private ExecuteRequest request;
@@ -57,13 +57,13 @@ public class ResultVisualisation extends ADialogPanel {
     public void executeProcess() {
         this.resultPane.setVisible(false);
         this.loadingLabel.setVisible(true);
-        
+
         ExecuteThread mt = new ExecuteThread(this, this.request, this.provider);
         mt.start();
         this.loadingLabel.setText("<html>Sending and processing statement.<br/>"
                 + "This might take some time, depending on the remote process.</html>");
     }
-    
+
     private void update(ExecuteRequest request) {
         this.loadingLabel.setText("Processing results.");
         this.request = request;
@@ -73,27 +73,27 @@ public class ResultVisualisation extends ADialogPanel {
             this.renderResults(request);
         }
     }
-    
+
     private void renderResults(ExecuteRequest request) {
         this.request = request;
         HashMap results = this.request.getResults();
         HashMap arguments = this.request.getOutputArguments();
         java.util.Set keys = results.keySet();
-        
+
         JPanel outputsPanel = new JPanel();
-        
+
         double size[][] = new double[2][1];
         size[0] = new double[]{TableLayout.FILL};
-        
+
         double innersize[] = new double[results.size()];
         for (int i = 0; i < results.size(); i++) {
             innersize[i] = TableLayout.PREFERRED;
         }
         size[1] = innersize;
-        
+
         TableLayout layout = new TableLayout(size);
         outputsPanel.setLayout(layout);
-        
+
         int i = 0;
         for (Object key : keys) {
             String c = "0," + i;
@@ -123,7 +123,7 @@ public class ResultVisualisation extends ADialogPanel {
         }
         String c = "0," + i + 1;
         outputsPanel.add(new JPanel(), c);
-        
+
         if (this.renderers.size() <= 2) {
             this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
             this.expand = true;
@@ -131,32 +131,32 @@ public class ResultVisualisation extends ADialogPanel {
                 this.renderers.get(u).setFolded(false);
             }
         }
-        
+
         this.resultPane.setViewportView(outputsPanel);
         this.resultPane.setVisible(true);
-        this.loadingLabel.setVisible(false);
         this.validate();
+        this.loadingLabel.setVisible(false);
     }
-    
+
     private void renderException(ExecuteRequest request) {
         this.request = request;
         this.loadingLabel.setVisible(false);
         ExceptionRenderer exception = new ExceptionRenderer(this.request.getException());
-        TitledComponent tc = new TitledComponent("Exception", exception, TitledComponent.DEFAULT_TITLE_HEIGHT);
-        
-        this.resultPane.setViewportView(tc);
+        /*TitledComponent tc = new TitledComponent("Exception", exception, TitledComponent.DEFAULT_TITLE_HEIGHT);
+         this.resultPane.setViewportView(tc);*/
+
         this.remove(this.resultPane);
-        GridBagConstraints g = new GridBagConstraints();
-        g.gridx = 0;
-        g.gridy = 2;
-        g.fill = GridBagConstraints.BOTH;
-        g.anchor = GridBagConstraints.NORTHWEST;
-        g.ipadx = 5;
-        g.ipady = 5;
-        g.insets = new Insets(5, 5, 5, 5);
-        g.gridwidth = 3;
-        
-        this.add(tc, g);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+
+        this.add(exception, gridBagConstraints);
         this.validate();
         this.expandButton.setEnabled(false);
     }
@@ -177,19 +177,19 @@ public class ResultVisualisation extends ADialogPanel {
     public ExecuteRequest getRequest() {
         return this.request;
     }
-    
+
     private class ExecuteThread extends Thread {
-        
+
         private ExecuteRequest request;
         private RichWPSProvider provider;
         private ResultVisualisation parent;
-        
+
         public ExecuteThread(ResultVisualisation parent, ExecuteRequest request, RichWPSProvider provider) {
             this.parent = parent;
             this.request = request;
             this.provider = provider;
         }
-        
+
         @Override
         public void run() {
             this.provider.request(this.request);
@@ -219,8 +219,8 @@ public class ResultVisualisation extends ADialogPanel {
         jPanel2 = new javax.swing.JPanel();
         expandButton = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(600, 700));
-        setPreferredSize(new java.awt.Dimension(600, 700));
+        setMinimumSize(new java.awt.Dimension(620, 700));
+        setPreferredSize(new java.awt.Dimension(620, 700));
         setLayout(new java.awt.GridBagLayout());
 
         loadingLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
@@ -238,8 +238,8 @@ public class ResultVisualisation extends ADialogPanel {
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         resultPane.setViewportBorder(null);
-        resultPane.setMinimumSize(new java.awt.Dimension(600, 550));
-        resultPane.setPreferredSize(new java.awt.Dimension(600, 550));
+        resultPane.setMinimumSize(new java.awt.Dimension(600, 600));
+        resultPane.setPreferredSize(new java.awt.Dimension(600, 600));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -267,7 +267,7 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 20;
+        gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -288,7 +288,7 @@ public class ResultVisualisation extends ADialogPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 20;
+        gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -296,7 +296,11 @@ public class ResultVisualisation extends ADialogPanel {
 
         jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         jLabel1.setText("Results for");
-        jPanel1.add(jLabel1, new java.awt.GridBagConstraints());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel1.add(jLabel1, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;
@@ -350,7 +354,7 @@ public class ResultVisualisation extends ADialogPanel {
             this.expandButton.setText(AppConstants.DIALOG_BTN_EXPAND_ALL);
             return;
         }
-        
+
         for (TitledComponent tc : this.renderers) {
             tc.unfold();
             this.expand = true;

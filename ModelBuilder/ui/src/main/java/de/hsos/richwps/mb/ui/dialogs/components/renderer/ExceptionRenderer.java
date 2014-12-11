@@ -50,9 +50,9 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         copyToClipBoard = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
-        setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
-        setMinimumSize(new java.awt.Dimension(610, 600));
-        setPreferredSize(new java.awt.Dimension(610, 600));
+        setBorder(null);
+        setMinimumSize(new java.awt.Dimension(600, 600));
+        setPreferredSize(new java.awt.Dimension(600, 600));
         setLayout(new java.awt.GridBagLayout());
 
         exceptionScrollPane.setBorder(null);
@@ -60,8 +60,8 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         exceptionScrollPane.setPreferredSize(new java.awt.Dimension(500, 550));
 
         exceptionPane.setBorder(null);
-        exceptionPane.setMinimumSize(new java.awt.Dimension(650, 500));
-        exceptionPane.setPreferredSize(new java.awt.Dimension(650, 500));
+        exceptionPane.setMinimumSize(new java.awt.Dimension(650, 400));
+        exceptionPane.setPreferredSize(new java.awt.Dimension(650, 400));
         exceptionScrollPane.setViewportView(exceptionPane);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -92,6 +92,9 @@ public class ExceptionRenderer extends javax.swing.JPanel {
         jLabel1.setText("A server-side exception occured.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 5;
+        gridBagConstraints.ipady = 5;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jLabel1, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 

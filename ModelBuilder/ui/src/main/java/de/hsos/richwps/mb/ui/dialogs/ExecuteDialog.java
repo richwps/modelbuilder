@@ -384,7 +384,6 @@ public class ExecuteDialog extends MbDialog {
             this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
             this.showResultPanel();
         }
-        this.pack();
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
 
