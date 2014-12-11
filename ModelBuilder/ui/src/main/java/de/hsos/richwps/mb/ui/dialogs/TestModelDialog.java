@@ -5,9 +5,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.AppRichWPSManager;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
-import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
@@ -25,14 +23,12 @@ import javax.swing.UIManager;
  * @author dalcacer
  * @version 0.0.1
  */
-public class TestModelDialog extends MbDialog {
+public class TestModelDialog extends ADialog {
 
-    private APanel currentPanel;
     private InputPanel inputspanel;
     private OutputPanel outputsspanel;
     private TestResultPanel resultpanel;
-    private List<String> remotes;
-    private RichWPSProvider provider;
+
     private TestRequest request;
     private List<String> transitions;
 
@@ -47,7 +43,7 @@ public class TestModelDialog extends MbDialog {
      *
      */
     public TestModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
-        super(parent, AppConstants.TEST_THIS_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.TEST_THIS_DIALOG_TITLE);
         this.currentPanel = null;
         this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
@@ -69,19 +65,22 @@ public class TestModelDialog extends MbDialog {
             Logger.log(this.getClass(), "TestModelDialog()", ex);
         }
 
-        this.remotes = new ArrayList();
-        this.remotes.add(this.request.getServerId());
+        this.serverids = new ArrayList();
+        this.serverids.add(this.request.getServerId());
         this.initComponents();
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
-        this.showParameterizeInputsPanel(false);
+        this.showInputsPanel(false);
     }
 
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
+     *
+     * @param isBackAction
      */
-    private void showParameterizeInputsPanel(boolean isBackAction) {
+    @Override
+    public void showInputsPanel(final boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
@@ -100,7 +99,9 @@ public class TestModelDialog extends MbDialog {
     /**
      * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
-    private void showParameretizeOutputsPanel(boolean isBackAction) {
+    @Override
+    public void showOutputsPanel(final boolean isBackAction) {
+        //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
             if (!this.currentPanel.isValidInput()) {
                 return;
@@ -123,11 +124,15 @@ public class TestModelDialog extends MbDialog {
 
     }
 
-    private void showResultPanel(boolean isBackAction) {
-        if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
-                return;
-            }
+    /**
+     *
+     * @param isBackAction
+     */
+    @Override
+    public void showResultsPanel() {
+        //in case of a next-action block, if the provided input is not valid.
+        if (!this.currentPanel.isValidInput()) {
+            return;
         }
 
         this.backButton.setVisible(true);
@@ -229,14 +234,15 @@ public class TestModelDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        final boolean isBackAction = false;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameretizeOutputsPanel(false);
+            this.showOutputsPanel(isBackAction);
         } else if (this.currentPanel == this.outputsspanel) {
             this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
-            this.showResultPanel(false);
+            this.showResultsPanel();
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -259,12 +265,13 @@ public class TestModelDialog extends MbDialog {
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        final boolean isBackAction = true;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.outputsspanel) {
-            this.showParameterizeInputsPanel(true);
+            this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameretizeOutputsPanel(true);
+            this.showOutputsPanel(isBackAction);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

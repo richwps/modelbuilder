@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
-import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import java.net.HttpURLConnection;

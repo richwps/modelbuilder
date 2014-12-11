@@ -8,10 +8,8 @@ import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.ResultPanel;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
@@ -23,14 +21,11 @@ import javax.swing.UIManager;
  * @author dalcacer
  * @version 0.0.2
  */
-public class ExecuteModelDialog extends MbDialog {
+public class ExecuteModelDialog extends ADialog {
 
-    private APanel currentPanel;
     private InputPanel inputspanel;
     private OutputPanel outputsspanel;
     private ResultPanel resultpanel;
-    private List<String> remotes;
-    private RichWPSProvider provider;
     private ExecuteRequest request;
 
     /**
@@ -46,7 +41,7 @@ public class ExecuteModelDialog extends MbDialog {
      */
     public ExecuteModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
             final String processid) {
-        super(parent, AppConstants.EXECUTE_THIS_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.EXECUTE_THIS_DIALOG_TITLE);
         this.currentPanel = null;
         this.request = new ExecuteRequest();
         this.request.setEndpoint(serverid);
@@ -62,19 +57,20 @@ public class ExecuteModelDialog extends MbDialog {
             Logger.log(this.getClass(), "ExecuteModelDialog()", ex);
             return;
         }
-        this.remotes = new ArrayList();
-        this.remotes.add(serverid);
+        this.serverids = new ArrayList();
+        this.serverids.add(serverid);
         this.initComponents();
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
-        this.showParameterizeInputsPanel(false, false);
+        this.showInputsPanel(false);
     }
 
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
-    private void showParameterizeInputsPanel(boolean isBackAction, final boolean update) {
+    @Override
+    public void showInputsPanel(boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
@@ -93,7 +89,9 @@ public class ExecuteModelDialog extends MbDialog {
     /**
      * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
-    private void showParameterizeOutputsPanel(final boolean isBackAction, final boolean update) {
+    @Override
+    public void showOutputsPanel(final boolean isBackAction) {
+        //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
             if (!this.currentPanel.isValidInput()) {
                 return;
@@ -104,7 +102,7 @@ public class ExecuteModelDialog extends MbDialog {
         this.previewButton.setVisible(true);
 
         //refresh the request
-        if (update) {
+        if (!isBackAction) {
             this.currentPanel.updateRequest();
             this.request = (ExecuteRequest) this.currentPanel.getRequest();
         }
@@ -118,21 +116,25 @@ public class ExecuteModelDialog extends MbDialog {
 
     }
 
-    private void showResultPanel(final boolean isBackAction, final boolean update) {
-        if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
-                return;
-            }
+    /**
+     *
+     * @param isBackAction
+     * @param update
+     */
+    @Override
+    public void showResultsPanel() {
+        //in case of a next-action block, if the provided input is not valid.
+        if (!this.currentPanel.isValidInput()) {
+            return;
         }
         this.backButton.setVisible(true);
         this.nextButton.setVisible(false);
         this.previewButton.setVisible(false);
 
         //refresh the request
-        if (update) {
-            this.currentPanel.updateRequest();
-            this.request = (ExecuteRequest) this.currentPanel.getRequest();
-        }
+        this.currentPanel.updateRequest();
+        this.request = (ExecuteRequest) this.currentPanel.getRequest();
+
         //in case the request was allready used.
         this.request.flushException();
         this.request.flushResults();
@@ -224,14 +226,15 @@ public class ExecuteModelDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        final boolean isBackAction = false;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameterizeOutputsPanel(false, true);
+            this.showOutputsPanel(isBackAction);
         } else if (this.currentPanel == this.outputsspanel) {
             this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
-            this.showResultPanel(false, true);
+            this.showResultsPanel();
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -254,12 +257,13 @@ public class ExecuteModelDialog extends MbDialog {
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        final boolean isBackAction = true;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.outputsspanel) {
-            this.showParameterizeInputsPanel(true, false);
+            this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameterizeOutputsPanel(true, false);
+            this.showOutputsPanel(isBackAction);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

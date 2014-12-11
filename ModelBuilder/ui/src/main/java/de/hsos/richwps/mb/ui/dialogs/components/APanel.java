@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.ui.dialogs;
+package de.hsos.richwps.mb.ui.dialogs.components;
 
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
@@ -8,7 +8,7 @@ import javax.swing.JPanel;
  * A dialog panel that can be displayed within Execute/Deploy/Test-dialogs.
  *
  * @author dalcacer
- * @version 0.0.1
+ * @version 0.0.2
  * @see de.hsos.richwps.mb.ui.dialogs.ExecuteModelDialog;
  * @see de.hsos.richwps.mb.ui.dialogs.ExecuteDialog;
  * @see de.hsos.richwps.mb.ui.dialogs.UndeployDialog;
@@ -18,9 +18,11 @@ public abstract class APanel extends JPanel {
 
     /**
      * Update the current request, before getting it.
+     *
      * @see ADialogPanel#getRequest().
      */
     public void updateRequest() {
+        //noop
     }
 
     /**
@@ -41,8 +43,20 @@ public abstract class APanel extends JPanel {
     public boolean isValidInput() {
         return false;
     }
-    
-    
-    public void visualize(){};
-    public void prepare(){};
+
+    /**
+     * Prepare components for visualisation (besides initcomps).
+     */
+    public void prepare() {
+        //noop
+    }
+
+    ;
+    /**
+     * Visualize components.
+     */
+    public void visualize() {
+        //noop
+    }
+;
 }

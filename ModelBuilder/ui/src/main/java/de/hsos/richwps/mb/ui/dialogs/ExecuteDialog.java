@@ -11,7 +11,6 @@ import de.hsos.richwps.mb.ui.dialogs.components.ServerPanel;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -33,12 +32,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * @author dalcacer
  * @version 0.0.3
  */
-public class ExecuteDialog extends MbDialog {
+public class ExecuteDialog extends ADialog {
 
-    /**
-     * The currently shown panel.
-     */
-    private APanel currentPanel;
     /**
      * A panel used for serverselection.
      */
@@ -60,14 +55,6 @@ public class ExecuteDialog extends MbDialog {
      */
     private ResultPanel resultpanel;
     /**
-     * List of viable endpoints.
-     */
-    private List<String> serverids;
-    /**
-     * Interface to WPS/RichWPS-server.
-     */
-    private RichWPSProvider provider;
-    /**
      * The final request that is parameterized and executed.
      */
     private ExecuteRequest request;
@@ -80,25 +67,26 @@ public class ExecuteDialog extends MbDialog {
      * @param severids list of viable serverids.
      */
     public ExecuteDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
-        super(parent, AppConstants.EXECUTE_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.EXECUTE_DIALOG_TITLE);
         this.initComponents();
 
         this.serverids = severids;
         this.provider = new RichWPSProvider();
+
         this.request = new ExecuteRequest();
         this.backButton.setVisible(false);
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
-        this.showServerSelection();
+        this.showServersPanel();
     }
 
     /**
      * Shows serverselection panel.
      *
-     * @param isBackAction indicator if a backaction is performed.
      */
-    private void showServerSelection() {
+    @Override
+    public void showServersPanel() {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.loadButton.setVisible(true);
@@ -121,7 +109,8 @@ public class ExecuteDialog extends MbDialog {
      *
      * @param isBackAction indicator if a backaction is performed.
      */
-    private void showProcessSelection(final boolean isBackAction, final boolean update) {
+    @Override
+    public void showProcessesPanel(final boolean isBackAction) {
 
         //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
@@ -137,7 +126,7 @@ public class ExecuteDialog extends MbDialog {
         this.previewButton.setVisible(false);
 
         //refresh the request
-        if (update) {
+        if (!isBackAction) {
             this.currentPanel.updateRequest();
             DescribeRequest req = (DescribeRequest) this.currentPanel.getRequest();
             this.request = new ExecuteRequest(req);
@@ -165,7 +154,8 @@ public class ExecuteDialog extends MbDialog {
      *
      * @param isBackAction indicator if a backaction is performed.
      */
-    private void showParameterizeInputsPanel(final boolean isBackAction, final boolean update) {
+    @Override
+    public void showInputsPanel(final boolean isBackAction) {
 
         //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
@@ -179,7 +169,7 @@ public class ExecuteDialog extends MbDialog {
         this.loadButton.setVisible(false);
         this.previewButton.setVisible(false);
 
-        if (update) {//refresh the request
+        if (!isBackAction) {
             this.currentPanel.updateRequest();
             DescribeRequest req = (DescribeRequest) this.currentPanel.getRequest();
             this.request = new ExecuteRequest(req);
@@ -198,7 +188,8 @@ public class ExecuteDialog extends MbDialog {
      *
      * @param isBackAction indicator if a backaction is performed.
      */
-    private void showParameterizeOutputsPanel(final boolean isBackAction, final boolean update) {
+    @Override
+    public void showOutputsPanel(final boolean isBackAction) {
 
         //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
@@ -213,7 +204,7 @@ public class ExecuteDialog extends MbDialog {
         this.previewButton.setVisible(true);
 
         //refresh the request
-        if (update) {
+        if (!isBackAction) {
             this.currentPanel.updateRequest();
             this.request = (ExecuteRequest) this.currentPanel.getRequest();
         }
@@ -229,10 +220,12 @@ public class ExecuteDialog extends MbDialog {
     /**
      * Switches from parametizeoutputspabnel to showresultspanel.
      *
-     * @param isBackAction indicator if a backaction is performed.
      */
-    private void showResultPanel() {
-
+    @Override
+    public void showResultsPanel() {
+        if (!this.currentPanel.isValidInput()) {
+            return;
+        }
         this.backButton.setVisible(true);
         this.saveButton.setVisible(false);
         this.nextButton.setVisible(false);
@@ -258,6 +251,10 @@ public class ExecuteDialog extends MbDialog {
         this.currentPanel.setVisible(true);
 
         this.resultpanel.executeProcess();
+    }
+
+    public void addServerid(String serverid) {
+        this.serverids.add(serverid);
     }
 
     /**
@@ -373,15 +370,15 @@ public class ExecuteDialog extends MbDialog {
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.serverselectionpanel) {
-            this.showProcessSelection(isBackAction, true);
+            this.showProcessesPanel(isBackAction);
         } else if (this.currentPanel == this.processesselectionpanel) {
-            this.showParameterizeInputsPanel(isBackAction, true);
+            this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.inputspanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameterizeOutputsPanel(isBackAction, true);
+            this.showOutputsPanel(isBackAction);
         } else if (this.currentPanel == this.outputsspanel) {
             this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
-            this.showResultPanel();
+            this.showResultsPanel();
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -397,7 +394,7 @@ public class ExecuteDialog extends MbDialog {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
-        this.showServerSelection(); //reset
+        this.showServersPanel(); //reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed
@@ -406,14 +403,14 @@ public class ExecuteDialog extends MbDialog {
         final boolean isBackAction = true;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.processesselectionpanel) {
-            this.showServerSelection();
+            this.showServersPanel();
         } else if (this.currentPanel == this.inputspanel) {
-            this.showProcessSelection(isBackAction, false);
+            this.showProcessesPanel(isBackAction);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.showParameterizeInputsPanel(isBackAction, false);
+            this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameterizeOutputsPanel(isBackAction, false);
+            this.showOutputsPanel(isBackAction);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
@@ -466,7 +463,7 @@ public class ExecuteDialog extends MbDialog {
                 this.request = (ExecuteRequest) objectinputstream.readObject();
                 objectinputstream.close();
                 streamIn.close();
-                this.showParameterizeInputsPanel(false, false);
+                this.showInputsPanel(false);
 
             } catch (IOException | ClassNotFoundException ex) {
                 String msg = "Unable to open execute request.";

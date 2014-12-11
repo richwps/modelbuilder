@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
-import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputBBoxForm;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputComplexForm;

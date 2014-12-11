@@ -5,13 +5,11 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.AppRichWPSManager;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
-import de.hsos.richwps.mb.ui.MbDialog;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
-import de.hsos.richwps.mb.ui.dialogs.components.TestResultPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.ProfileResultPanel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -25,19 +23,17 @@ import javax.swing.UIManager;
  * @author dalcacer
  * @version 0.0.1
  */
-public class ProfileModelDialog extends MbDialog {
+public class ProfileModelDialog extends ADialog {
 
-    private APanel currentPanel;
     private InputPanel inputspanel;
     private OutputPanel outputsspanel;
-    private TestResultPanel resultpanel;
-    private List<String> remotes;
-    private RichWPSProvider provider;
-    private TestRequest request;
+    private ProfileResultPanel resultpanel;
+
+    private ProfileRequest request;
     private List<String> transitions;
 
     /**
-     * Creates new form ExecuteModelDialog, starting with the
+     * Creates new form ProfileModelDialog, starting with the
      * inputparamerization.
      *
      * @param parent
@@ -47,9 +43,9 @@ public class ProfileModelDialog extends MbDialog {
      *
      */
     public ProfileModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
-        super(parent, AppConstants.PROFILE_THIS_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.PROFILE_THIS_DIALOG_TITLE);
         this.currentPanel = null;
-        this.request = manager.getTestRequest();
+        this.request = manager.getProfileRequest();
         this.provider = new RichWPSProvider();
         this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
         this.request.setExecutionUnit(manager.getROLA());
@@ -66,22 +62,23 @@ public class ProfileModelDialog extends MbDialog {
             JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log(this.getClass(), "TestModelDialog()", ex);
+            Logger.log(this.getClass(), "ProfileModelDialog()", ex);
         }
 
-        this.remotes = new ArrayList();
-        this.remotes.add(this.request.getServerId());
+        this.serverids = new ArrayList();
+        this.serverids.add(this.request.getServerId());
         this.initComponents();
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
-        this.showParameterizeInputsPanel(false);
+        this.showInputsPanel(false);
     }
 
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
-    private void showParameterizeInputsPanel(boolean isBackAction) {
+    @Override
+    public void showInputsPanel(final boolean isBackAction) {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
@@ -100,7 +97,9 @@ public class ProfileModelDialog extends MbDialog {
     /**
      * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
-    private void showParameretizeOutputsPanel(boolean isBackAction) {
+    @Override
+    public void showOutputsPanel(boolean isBackAction) {
+        //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
             if (!this.currentPanel.isValidInput()) {
                 return;
@@ -111,8 +110,10 @@ public class ProfileModelDialog extends MbDialog {
         this.nextButton.setVisible(true);
 
         //refresh the request
-        this.currentPanel.updateRequest();
-        this.request = (TestRequest) this.currentPanel.getRequest();
+        if (!isBackAction) {
+            this.currentPanel.updateRequest();
+        }
+        this.request = (ProfileRequest) this.currentPanel.getRequest();
 
         this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
@@ -123,25 +124,24 @@ public class ProfileModelDialog extends MbDialog {
 
     }
 
-    private void showResultPanel(boolean isBackAction) {
-        if (!isBackAction) {
-            if (!this.currentPanel.isValidInput()) {
-                return;
-            }
+    @Override
+    public void showResultsPanel() {
+        //in case of a next-action block, if the provided input is not valid.
+        if (!this.currentPanel.isValidInput()) {
+            return;
         }
-
         this.backButton.setVisible(true);
         this.nextButton.setVisible(false);
         this.previewButton.setVisible(false);
 
         //refresh the request
         this.currentPanel.updateRequest();
-        this.request = (TestRequest) this.currentPanel.getRequest();
+        this.request = (ProfileRequest) this.currentPanel.getRequest();
         //in case the request was allready used.
         this.request.flushException();
         this.request.flushResults();
 
-        this.resultpanel = new TestResultPanel(this.provider, this.request);
+        this.resultpanel = new ProfileResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
         this.add(this.resultpanel);
@@ -149,7 +149,7 @@ public class ProfileModelDialog extends MbDialog {
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);
 
-        this.resultpanel.testProcess();
+        this.resultpanel.profileProcess();
     }
 
     /**
@@ -229,14 +229,15 @@ public class ProfileModelDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        final boolean isBackAction = false;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameretizeOutputsPanel(false);
+            this.showOutputsPanel(isBackAction);
         } else if (this.currentPanel == this.outputsspanel) {
             this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
-            this.showResultPanel(false);
+            this.showResultsPanel();
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -247,32 +248,34 @@ public class ProfileModelDialog extends MbDialog {
         if (provider != null) {
             try {
                 provider.disconnect();
-                this.request = new TestRequest();
+                this.request = new ProfileRequest();
             } catch (Exception ex) {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
 
-        //this.showParameterizeInputsPanel(false);     //Reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        final boolean isBackAction = true;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.outputsspanel) {
-            this.showParameterizeInputsPanel(true);
+            this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showParameretizeOutputsPanel(true);
+            this.showOutputsPanel(isBackAction);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         this.currentPanel.updateRequest();
-        this.request = (TestRequest) this.currentPanel.getRequest();
-        String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
+        this.request = (ProfileRequest) this.currentPanel.getRequest();
+        //FIXME        
+        //String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
+        String requeststr = "Not, yet.";
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
         textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);

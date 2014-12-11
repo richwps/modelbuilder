@@ -7,6 +7,7 @@ import java.awt.datatransfer.StringSelection;
 /**
  *
  * @author dalcacer
+ * @version 0.0.1
  */
 public class LiteralRenderer extends javax.swing.JPanel {
 

@@ -24,6 +24,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifi
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import de.hsos.richwps.mb.exception.GraphToRequestTransformationException;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -317,6 +318,77 @@ public class AppRichWPSManager {
 
         return request;
     }
+    
+    public ProfileRequest getProfileRequest() {
+        //load information from model.
+        final GraphModel model = this.graph.getGraphModel();
+        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
+        final String title = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_TITLE);
+        final String version = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_VERSION);
+        final String theabstract = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ABSTRACT);
+
+        //verify information
+        if (identifier.isEmpty()) {
+            this.error = true;
+            this.computingModelFailed(AppConstants.DEPLOY_ID_MISSING);
+            return null;
+        } else if (title.isEmpty()) {
+            this.error = true;
+            this.computingModelFailed(AppConstants.DEPLOY_TITLE_MISSING);
+            return null;
+        } else if (version.isEmpty()) {
+            this.error = true;
+            this.computingModelFailed(AppConstants.DEPLOY_VERSION_MISSING);
+            return null;
+        }
+
+        String wpsendpoint = "";
+        String richwpsendpoint = "";
+        if (RichWPSProvider.isWPSEndpoint(auri)) {
+            wpsendpoint = auri;
+            richwpsendpoint = wpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
+                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
+            richwpsendpoint = auri;
+            wpsendpoint = richwpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+        }
+
+        if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
+            this.error = true;
+            this.deployingModelFailed(AppConstants.DEPLOY_CONNECT_FAILED + " "
+                    + richwpsendpoint);
+            return null;
+        }
+
+        //generate rola
+        final String rola = this.generateROLA();
+        if (null == rola) {
+            this.error = true;
+            this.computingModelFailed(AppConstants.DEPLOY_ROLA_FAILED);
+            return null;
+        }
+
+        //generate processdescription
+        ProfileRequest request = new ProfileRequest(wpsendpoint, richwpsendpoint,
+                identifier, title, version, RichWPSProvider.deploymentProfile);
+        request.setAbstract(theabstract);
+        request.setExecutionUnit(rola);
+
+        try {
+            this.defineInputsOutputs(request);
+        } catch (GraphToRequestTransformationException ex) {
+            this.error = true;
+            this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
+            Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
+            return null;
+        }
+
+        return request;
+    }
 
     /**
      * Undeploys the opend model.
@@ -417,6 +489,29 @@ public class AppRichWPSManager {
     }
 
     private void defineInputsOutputs(TestRequest request) throws GraphToRequestTransformationException {
+
+        // Transform global inputs
+        for (ProcessPort port : graph.getGlobalInputPorts()) {
+            IInputSpecifier specifier = this.createInputPortSpecifier(port);
+            if (null == specifier) {
+                throw new GraphToRequestTransformationException(port);
+            }
+            request.addInput(specifier);
+        }
+
+        // Transform global outputs
+        for (ProcessPort port : graph.getGlobalOutputPorts()) {
+            IOutputSpecifier specifier = null;
+            specifier = this.createOutputPortSpecifier(port);
+
+            if (null == specifier) {
+                throw new GraphToRequestTransformationException(port);
+            }
+            request.addOutput(specifier);
+        }
+    }
+    
+    private void defineInputsOutputs(ProfileRequest request) throws GraphToRequestTransformationException {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {

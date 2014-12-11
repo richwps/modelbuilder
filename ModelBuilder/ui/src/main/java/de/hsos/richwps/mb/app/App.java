@@ -390,8 +390,7 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.PREVIEW_ROLA).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
-        // TODO set status when profiling is implemented
-        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(false);
+        getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
     }
 
     void updateDeploymentDependentActions() {
@@ -565,6 +564,7 @@ public class App {
         }
 
         undeployAnyDialog.setVisible(true);
+        updateDeploymentDependentActions();
     }
 
     /**
@@ -632,7 +632,6 @@ public class App {
      * Shows an dialog to execute the currently opened model.
      */
     void showExecuteModel() {
-        //if (null == execDialog) {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
         final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
@@ -651,12 +650,10 @@ public class App {
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
             return;
         }
-        //}
-
     }
 
     /**
-     * Shows an dialog to execute the currently opened model.
+     * Shows an dialog to test the currently opened model.
      */
     void showTestModel() {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
@@ -667,10 +664,6 @@ public class App {
             testDialog = new TestModelDialog(getFrame(), false, manager);
             testDialog.setVisible(true);
         } else {
-            /*JOptionPane.showMessageDialog(frame,
-             AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
-             AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
-             JOptionPane.ERROR_MESSAGE);*/
             String msg = "The requested process " + identifier + " is already present"
                     + " on " + auri;
             JOptionPane.showMessageDialog(this.frame, msg);
@@ -681,7 +674,7 @@ public class App {
     }
 
     /**
-     * Shows an dialog to execute the currently opened model.
+     * Shows an dialog to profile the currently opened model.
      */
     void showProfileModel() {
         final GraphModel model = this.getGraphView().getGraph().getGraphModel();
@@ -692,10 +685,6 @@ public class App {
             profileDialog = new ProfileModelDialog(getFrame(), false, manager);
             profileDialog.setVisible(true);
         } else {
-            /*JOptionPane.showMessageDialog(frame,
-             AppConstants.PROCESSNOTFOUND_DIALOG_MSG,
-             AppConstants.PROCESSNOTFOUND_DIALOG_TITLE,
-             JOptionPane.ERROR_MESSAGE);*/
             String msg = "The requested process " + identifier + " is already present"
                     + " on " + auri;
             JOptionPane.showMessageDialog(this.frame, msg);

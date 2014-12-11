@@ -6,8 +6,10 @@ import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralRenderer;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.ProfileRenderer;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,12 +20,12 @@ import javax.swing.UIManager;
 import layout.TableLayout;
 
 /**
- * Dialog panel for testresult visualisation.
+ * Dialog panel for profileresult visualisation.
  *
  * @author dalcacer
  * @version 0.0.2
  */
-public class TestResultPanel extends APanel {
+public class ProfileResultPanel extends APanel {
 
     /**
      * List of displayable results.
@@ -33,7 +35,7 @@ public class TestResultPanel extends APanel {
      * Connection to RichWPS server.
      */
     private RichWPSProvider provider;
-    private TestRequest request;
+    private ProfileRequest request;
     private boolean expand = false;
 
     /**
@@ -41,9 +43,9 @@ public class TestResultPanel extends APanel {
      * @param provider
      * @param request
      */
-    public TestResultPanel(RichWPSProvider provider, IRequest request) {
+    public ProfileResultPanel(RichWPSProvider provider, IRequest request) {
         this.provider = provider;
-        this.request = (TestRequest) request;
+        this.request = (ProfileRequest) request;
         this.panels = new ArrayList<>();
         initComponents();
         this.selectedProcess.setText(request.getIdentifier());
@@ -57,18 +59,18 @@ public class TestResultPanel extends APanel {
 
     /**
      */
-    public void testProcess() {
+    public void profileProcess() {
         this.resultPane.setVisible(false);
         this.loadingLabel.setVisible(true);
 
-        TestThread mt = new TestThread(this, this.request, this.provider);
+        ProfileThread mt = new ProfileThread(this, this.request, this.provider);
         mt.start();
         this.loadingLabel.setText(AppConstants.DIALOG_REQUEST_SENT);
     }
 
-    private void update(TestRequest request) {
+    private void update(ProfileRequest request) {
         this.loadingLabel.setText("Processing results.");
-        this.request = (TestRequest) request;
+        this.request = (ProfileRequest) request;
         if (this.request.isException()) {
             this.renderException(request);
         } else {
@@ -76,11 +78,9 @@ public class TestResultPanel extends APanel {
         }
     }
 
-    private void renderResults(TestRequest request) {
-        this.request = (TestRequest) request;
+    private void renderResults(ProfileRequest request) {
+        this.request = (ProfileRequest) request;
         HashMap results = this.request.getResults();
-        HashMap arguments = this.request.getOutputArguments();
-        java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();
 
@@ -97,24 +97,15 @@ public class TestResultPanel extends APanel {
         outputsPanel.setLayout(layout);
 
         int i = 0;
-        for (Object key : keys) {
+        for (int j = 0; j < 5; j++) {
             String c = "0," + i;
-            String value = (String) results.get(key);
-            if (value.contains("http://")) {
-                URIRenderer pan = new URIRenderer(key.toString(), value);
-                TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
-                tc.setTitleBold();
-                tc.fold();
-                outputsPanel.add(tc, c);
-                this.panels.add(tc);
-            } else {
-                LiteralRenderer pan = new LiteralRenderer(key.toString(), value);
-                TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
-                tc.setTitleBold();
-                tc.fold();
-                outputsPanel.add(tc, c);
-                this.panels.add(tc);
-            }
+
+            ProfileRenderer renderer = new ProfileRenderer("", "");
+            TitledComponent tc = new TitledComponent("ProcessName", renderer, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+            tc.setTitleBold();
+            tc.fold();
+            outputsPanel.add(tc, c);
+            this.panels.add(tc);
             i++;
         }
 
@@ -133,7 +124,7 @@ public class TestResultPanel extends APanel {
         this.loadingLabel.setVisible(false);
     }
 
-    private void renderException(TestRequest request) {
+    private void renderException(ProfileRequest request) {
         this.request = request;
         this.loadingLabel.setVisible(false);
 
@@ -175,14 +166,14 @@ public class TestResultPanel extends APanel {
         return this.request;
     }
 
-    private class TestThread extends Thread {
+    private class ProfileThread extends Thread {
 
-        private TestRequest request;
+        private ProfileRequest request;
         private RichWPSProvider provider;
-        private TestResultPanel parent;
+        private ProfileResultPanel parent;
         private boolean expand = false;
 
-        public TestThread(TestResultPanel parent, TestRequest request, RichWPSProvider provider) {
+        public ProfileThread(ProfileResultPanel parent, ProfileRequest request, RichWPSProvider provider) {
             this.parent = parent;
             this.request = request;
             this.provider = provider;
@@ -190,7 +181,8 @@ public class TestResultPanel extends APanel {
 
         @Override
         public void run() {
-            this.provider.request(this.request);
+            //FIXME
+            //this.provider.request(this.request);
             this.parent.update(this.request);
         }
     }

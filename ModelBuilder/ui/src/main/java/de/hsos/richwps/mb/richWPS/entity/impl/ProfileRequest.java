@@ -14,7 +14,7 @@ import org.n52.wps.client.richwps.ProcessDescriptionTypeBuilder;
  * @author dalcacer
  * @version 0.0.1
  */
-public class TestRequest extends ExecuteRequest implements IRequest {
+public class ProfileRequest extends ExecuteRequest implements IRequest {
 
     /**
      * List of available process inputs and their specification/types.
@@ -46,7 +46,7 @@ public class TestRequest extends ExecuteRequest implements IRequest {
     /**
      * Constructs a new TestRequest
      */
-    public TestRequest() {
+    public ProfileRequest() {
         super();
         this.endpoint = "";
         this.identifier = "";
@@ -71,7 +71,7 @@ public class TestRequest extends ExecuteRequest implements IRequest {
      * @param processversion the process version.
      * @param deploymentprofile the deploymentprofile (ROLA).
      */
-    public TestRequest(final String serverid, final String endpoint, final String identifier,
+    public ProfileRequest(final String serverid, final String endpoint, final String identifier,
             final String title, final String processversion, final String deploymentprofile) {
         this.serverid = serverid;
         this.endpoint = endpoint;

@@ -6,15 +6,11 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
-import de.hsos.richwps.mb.ui.MbDialog;
 import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.ui.dialogs.components.ProcessPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.ServerPanel;
-import java.awt.Font;
 import java.util.List;
-import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
@@ -26,13 +22,11 @@ import javax.swing.UIManager;
  * @author dalcacer
  * @version 0.0.3
  */
-public class UndeployDialog extends MbDialog {
+public class UndeployDialog extends ADialog {
 
-    private APanel currentPanel;
     private ServerPanel serverselectionpanel;
     private ProcessPanel processesselectionpanel;
-    private List<String> serverids;
-    private RichWPSProvider provider;
+
     /**
      * Describe-Request for discovery.
      */
@@ -51,7 +45,7 @@ public class UndeployDialog extends MbDialog {
      * @param severids list of viable serverids.
      */
     public UndeployDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
-        super(parent, AppConstants.DEPLOY_DIALOG_TITLE, MbDialog.BTN_ID_NONE);
+        super(parent, AppConstants.DEPLOY_DIALOG_TITLE);
 
         this.provider = new RichWPSProvider();
         this.desc_request = new DescribeRequest();
@@ -61,7 +55,7 @@ public class UndeployDialog extends MbDialog {
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         this.backButton.setVisible(false);
-        this.showServerSelection(false);
+        this.showServersPanel();
     }
 
     /**
@@ -69,7 +63,8 @@ public class UndeployDialog extends MbDialog {
      *
      * @param isBackAction indicator if a backaction is performed.
      */
-    private void showServerSelection(boolean isBackAction) {
+    @Override
+    public void showServersPanel() {
         this.backButton.setVisible(false);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
@@ -89,8 +84,9 @@ public class UndeployDialog extends MbDialog {
      *
      * @param isBackAction indicator if a backaction is performed.
      */
-    private void showProcessSelection(boolean isBackAction) {
-        //blockage if input is not valid.
+    @Override
+    public void showProcessesPanel(final boolean isBackAction) {//noop
+        //in case of a next-action block, if the provided input is not valid.
         if (!isBackAction) {
             if (!this.currentPanel.isValidInput()) {
                 return;
@@ -125,49 +121,67 @@ public class UndeployDialog extends MbDialog {
      * Performs the undeployment by means of this_desc_request.
      *
      */
-    private void performUndeploy() {
+    private void undeploy() {
+        //in case of a next-action block, if the provided input is not valid.
+        if (!this.currentPanel.isValidInput()) {
+            return;
+        }
+        //refresh the request
+        this.currentPanel.updateRequest();
+        this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
+
+//prepare the request
+        String endp = desc_request.getServerId();
+        endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
+
+        //perform the request
         try {
-            //refresh the request
-            this.currentPanel.updateRequest();
-            this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
-            String endp = desc_request.getServerId();
-            endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-            this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
             this.provider.connect(this.desc_request.getServerId(), endp);
             this.provider.richwpsUndeployProcess(undeploy_request);
-            if (undeploy_request.isException()) {
-
-                String msg = AppConstants.UNDEPLOY_FAILURE
-                        + "An error occured while undeploying  " + this.undeploy_request.getIdentifier() + " from"
-                        + " " + endp + ". " + undeploy_request.getException();
-
-                AppEventService appservice = AppEventService.getInstance();
-                appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
-                JOptionPane.showMessageDialog(null, msg,
-                        AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
-                        JOptionPane.ERROR_MESSAGE);
-            } else {
-                AppEventService.getInstance().fireAppEvent(AppConstants.UNDEPLOY_SUCCESS,
-                        AppConstants.INFOTAB_ID_SERVER);
-                JOptionPane.showMessageDialog(null,
-                        AppConstants.UNDEPLOY_SUCCESS,
-                        AppConstants.UNDEPLOY_SUCCESS,
-                        JOptionPane.INFORMATION_MESSAGE);
-                //make sure the client cache is emptied.
-                if (provider != null) {
-                    try {
-                        provider.disconnect();
-                        this.desc_request = new DescribeRequest();
-                    } catch (Exception ex) {
-                        Logger.log(this.getClass(), "performUndeploy()", ex);
-                    }
-                }
-                this.showServerSelection(false); //reset
-                this.setVisible(false);
-                this.dispose();
-            }
         } catch (Exception ex) {
             Logger.log(this.getClass(), "performUndeploy()", ex);
+            String msg = AppConstants.UNDEPLOY_FAILURE
+                    + "An error occured while undeploying  " + this.undeploy_request.getIdentifier() + " from"
+                    + " " + endp + ". " + undeploy_request.getException();
+
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            JOptionPane.showMessageDialog(null, msg,
+                    AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+        //Analyyse the response
+        if (undeploy_request.isException()) {
+            String msg = AppConstants.UNDEPLOY_FAILURE
+                    + "An error occured while undeploying  " + this.undeploy_request.getIdentifier() + " from"
+                    + " " + endp + ". " + undeploy_request.getException();
+
+            AppEventService appservice = AppEventService.getInstance();
+            appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
+            JOptionPane.showMessageDialog(null, msg,
+                    AppConstants.UNDEPLOY_ERROR_DIALOG_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            AppEventService.getInstance().fireAppEvent(AppConstants.UNDEPLOY_SUCCESS,
+                    AppConstants.INFOTAB_ID_SERVER);
+            JOptionPane.showMessageDialog(null,
+                    AppConstants.UNDEPLOY_SUCCESS,
+                    AppConstants.UNDEPLOY_SUCCESS,
+                    JOptionPane.INFORMATION_MESSAGE);
+            //make sure the client cache is emptied.
+            if (provider != null) {
+                try {
+                    provider.disconnect();
+                    this.desc_request = new DescribeRequest();
+                } catch (Exception ex) {
+                    Logger.log(this.getClass(), "performUndeploy()", ex);
+                }
+            }
+            this.showServersPanel(); //reset
+            this.setVisible(false);
+            this.dispose();
         }
     }
 
@@ -247,12 +261,13 @@ public class UndeployDialog extends MbDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void nextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextButtonActionPerformed
+        final boolean isBackAction = false;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.serverselectionpanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
-            this.showProcessSelection(false);
+            this.showProcessesPanel(isBackAction);
         } else if (this.currentPanel == this.processesselectionpanel) {
-            this.performUndeploy();
+            this.undeploy();
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -268,7 +283,7 @@ public class UndeployDialog extends MbDialog {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);
             }
         }
-        this.showServerSelection(false); //reset
+        this.showServersPanel(); //reset
         this.setVisible(false);
         this.dispose();
     }//GEN-LAST:event_abortButtonActionPerformed
@@ -276,7 +291,7 @@ public class UndeployDialog extends MbDialog {
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.processesselectionpanel) {
-            this.showServerSelection(true);
+            this.showServersPanel();
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

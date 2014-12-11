@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.ui.dialogs.components;
 
-import de.hsos.richwps.mb.ui.dialogs.APanel;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.ExceptionRenderer;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralRenderer;
