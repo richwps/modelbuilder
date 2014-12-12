@@ -284,4 +284,14 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
         }
         return true;
     }
+    
+    public boolean isDescribed() {
+        if ((this.availableinputs.isEmpty()) && (this.availableoutputs.isEmpty())) {
+            return false;
+        }
+        return true;
+    }
+    
+    
+    
 }

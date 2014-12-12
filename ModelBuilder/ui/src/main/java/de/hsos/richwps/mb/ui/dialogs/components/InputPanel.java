@@ -9,6 +9,8 @@ import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
@@ -71,10 +73,12 @@ public class InputPanel extends APanel {
 
         if (request instanceof TestRequest) {
             //noop
-        } else {
+        }else if (request instanceof ProfileRequest) {
+            //noop
+        }else {
             //update the request-object only if necessary 
             if (!request.isLoaded()) {
-                this.provider.wpsDescribeProcess(this.request);
+                this.provider.request((DescribeRequest)this.request);
             }
         }
         this.prepare();

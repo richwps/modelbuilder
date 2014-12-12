@@ -2,9 +2,8 @@ package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.*;
+
 import java.util.HashMap;
 import java.util.List;
 import net.opengis.wps.x100.ExecuteDocument;
@@ -15,8 +14,6 @@ import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.richwps.TransactionalRequestBuilder;
-import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -59,8 +56,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param wpsurl serverid of WebProcessingService.
      * @throws java.lang.Exception
      */
-    @Override
-    public void connect(String wpsurl) throws Exception {
+    private void connect(String wpsurl) throws Exception {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
@@ -75,8 +71,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      *
      * @throws java.lang.Exception
      */
-    @Override
-    public void disconnect() throws Exception {
+    private void disconnect() throws Exception {
         this.wps = WPSClientSession.getInstance();
         this.richwps = RichWPSClientSession.getInstance();
 
@@ -87,20 +82,21 @@ public class RichWPSProvider implements IRichWPSProvider {
                 this.richwps.disconnect(serverid);
                 this.wps.disconnect(serverid);
             } catch (Exception e) {
-                //noop
+                Logger.log(this.getClass(), "disconnect()", e.getLocalizedMessage());
+                throw new Exception("Unable to disconnect from service " + serverid);
+
             }
         }
     }
 
     /**
-     * Connects the provider to a WPS-server with WPS-T functionality.
+     * Connects the provider to a WPS-server with RichWPS functionality.
      *
      * @param wpsurl wpsurl of WebProcessingService (used as unique serverid).
      * @param richwpsurl richwpsurl of RichWPS Service.
      * @throws java.lang.Exception when unable to connect to service.
      */
-    @Override
-    public void connect(String wpsurl, String richwpsurl) throws Exception {
+    private void connect(String wpsurl, String richwpsurl) throws Exception {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
@@ -119,122 +115,91 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Lists all available processes.
+     * Performs a request.
      *
-     * @param wpsurl serverid of WebProcessingService.
-     * @return list of processes.
+     * @param request IRequest.
+     * @see IRequest
+     * @see ExecuteRequest
+     * @see DeployRequest
+     * @see UndeployRequest
+     * @see TestRequest
+     * @see ProfileRequest
+     * @see GetProcessesRequest
+     * @see GetInputTypesRequest
+     * @see GetOutputTypesRequest
      */
     @Override
-    public List<String> wpsGetAvailableProcesses(String wpsurl) {
+    public void request(IRequest request) {
 
-        List<String> processes = new ArrayList<>();
+        final String givenendpoint = request.getEndpoint();
+
+        String richwpsurl = "";
+        String wpsurl = "";
+        if (RichWPSProvider.isWPSEndpoint(givenendpoint)) {
+            wpsurl = givenendpoint;
+            richwpsurl = givenendpoint.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        } else if (RichWPSProvider.isRichWPSEndpoint(givenendpoint)) {
+            richwpsurl = givenendpoint;
+            wpsurl = givenendpoint.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
+        }
         try {
-            this.wps = WPSClientSession.getInstance();
-            this.wps.connect(wpsurl);
-            ProcessDescriptionsDocument pdd = this.wps.describeAllProcesses(wpsurl);
-            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
-            ProcessBriefType[] descs = descriptions.getProcessDescriptionArray();
-
-            for (ProcessBriefType process : descs) {
-                if (process.getIdentifier() != null) {
-                    String identifier = process.getIdentifier().getStringValue();
-                    processes.add(identifier);
+            if (request instanceof TestRequest) {
+                //check test before execute and desscribe, it is a differentiation.
+                Logger.log(this.getClass(), "request()", "performing " + TestRequest.class.getSimpleName());
+                this.connect(wpsurl, richwpsurl);
+                this.richwpsTestProcess((TestRequest) request);
+            } else if (request instanceof GetInputTypesRequest) {
+                Logger.log(this.getClass(), "request()", "performing " + GetInputTypesRequest.class.getSimpleName());
+                this.connect(wpsurl, richwpsurl);
+                this.richwpsGetInputTypes((GetInputTypesRequest) request);
+            } else if (request instanceof GetOutputTypesRequest) {
+                Logger.log(this.getClass(), "request()", "performing " + GetOutputTypesRequest.class.getSimpleName());
+                this.connect(wpsurl, richwpsurl);
+                this.richwpsGetOutputTypes((GetOutputTypesRequest) request);
+            } else if (request instanceof DeployRequest) {
+                Logger.log(this.getClass(), "request()", "performing " + DeployRequest.class.getSimpleName());
+                this.connect(wpsurl, richwpsurl);
+                this.richwpsDeployProcess((DeployRequest) request);
+            } else if (request instanceof UndeployRequest) {
+                Logger.log(this.getClass(), "request()", "performing " + UndeployRequest.class.getSimpleName());
+                this.connect(wpsurl, richwpsurl);
+                this.richwpsUndeployProcess((UndeployRequest) request);
+            } else if (request instanceof GetProcessesRequest) {
+                Logger.log(this.getClass(), "request()", "performing " + GetProcessesRequest.class.getSimpleName());
+                this.connect(wpsurl);
+                this.wpsGetAvailableProcesses((GetProcessesRequest) request);
+            } else if (request instanceof ExecuteRequest) {
+                //check execute before describe, it is a differentiation.
+                this.connect(wpsurl);
+                //executes can be used for process discovery/description, too!
+                if (((ExecuteRequest) request).isDescribed()) {
+                    Logger.log(this.getClass(), "request()", "performing " + ExecuteRequest.class.getSimpleName());
+                    this.wpsExecuteProcess((ExecuteRequest) request);
                 } else {
-                    //de.hsos.richwps.mb.Logger.log("Debug:wpsGetAvailableProcesses()" + process);
+                    Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
+                    this.wpsDescribeProcess((DescribeRequest) request);
                 }
+            } else if (request instanceof DescribeRequest) {
+                Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
+                this.connect(wpsurl);
+                this.wpsDescribeProcess((DescribeRequest) request);
             }
-        } catch (WPSClientException e) {
-            Logger.log(this.getClass(), "wpsGetAvailableProcesses()", e);
+            this.disconnect();
+        } catch (Exception e) {
+            Logger.log(this.getClass(), "request()", e);
         }
-        return processes;
     }
 
     /**
-     * Lists all available inputtypes.
+     * Describes process and its' in and outputs.
      *
-     * @param wpsurl serverid of WebProcessingService.
-     * @return list of formats..
-     */
-    @Override
-    public List<List<String>> richwpsGetInputTypes(String wpsurl) {
-
-        String richwpsurl = wpsurl;
-        richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
-        List<List<String>> formats = new LinkedList<>();
-        try {
-            this.richwps = RichWPSClientSession.getInstance();
-            this.richwps.connect(wpsurl, richwpsurl);
-            GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
-            builder.setComplexTypesOnly(true);
-            // request supported types
-            Object responseObject = richwps.getSupportedTypes(wpsurl, builder.build());
-            if (responseObject instanceof SupportedTypesResponseDocument) {
-                SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
-                ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedInputTypes().getComplexTypesArray();
-                for (ComplexTypesType type : types) {
-                    ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
-                    for (ComplexDataDescriptionType atype : schonwiedertsypes) {
-                        List<String> aformat = new LinkedList<>();
-                        aformat.add(atype.getMimeType());
-                        aformat.add(atype.getSchema());
-                        aformat.add(atype.getEncoding());
-                        formats.add(aformat);
-                    }
-                }
-            }
-            if (responseObject instanceof ExceptionReportDocument) {
-                ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
-                Logger.log(this.getClass(), "richwpsGetInputTypes()", response.toString());
-            }
-        } catch (WPSClientException e) {
-            Logger.log(this.getClass(), "richwpsGetInputTypes()", e);
-        }
-        return formats;
-    }
-
-    /**
-     * Lists all available inputtypes.
+     * @param request ExecuteRequestDTO with serverid and processid.
      *
-     * @param wpsurl serverid of WebProcessingService.
-     * @return list of formats..
+     *
+     * public void wpsDescribeProcess(ExecuteRequest request) {
+     * this.request((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest)
+     * request); }
      */
-    @Override
-    public List<List<String>> richwpsGetOutputTypes(String wpsurl) {
-
-        String richwpsurl = wpsurl;
-        richwpsurl = richwpsurl.split(RichWPSProvider.DEFAULT_52N_WPS_ENDPOINT)[0] + DEFAULT_RICHWPS_ENDPOINT;
-        List<List<String>> formats = new LinkedList<>();
-        try {
-            this.richwps = RichWPSClientSession.getInstance();
-            this.richwps.connect(wpsurl, richwpsurl);
-            GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
-            builder.setComplexTypesOnly(true);
-            // request supported types
-            Object responseObject = richwps.getSupportedTypes(wpsurl, builder.build());
-            if (responseObject instanceof SupportedTypesResponseDocument) {
-                SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
-                ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedOutputTypes().getComplexTypesArray();
-                for (ComplexTypesType type : types) {
-                    ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
-                    for (ComplexDataDescriptionType atype : schonwiedertsypes) {
-                        List<String> aformat = new LinkedList<>();
-                        aformat.add(atype.getMimeType());
-                        aformat.add(atype.getSchema());
-                        aformat.add(atype.getEncoding());
-                        formats.add(aformat);
-                    }
-                }
-            }
-            if (responseObject instanceof ExceptionReportDocument) {
-                ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
-                Logger.log(this.getClass(), "richwpsGetOutputTypes()", response.toString());
-            }
-        } catch (WPSClientException e) {
-            Logger.log(this.getClass(), "richwpsGetOutputTypes()", e);
-        }
-        return formats;
-    }
-
     /**
      * Describes a process, via wps:wpsDescribeProcess()-Request. Produces
      * DescribeRequest.
@@ -242,11 +207,11 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param request DescribeRequest with serverid and processid.
      *
      */
-    @Override
-    public void wpsDescribeProcess(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request) {
+    private void wpsDescribeProcess(de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest request) {
+        String wpsurl = request.getEndpoint();
+
         ExecuteRequestHelper helper = new ExecuteRequestHelper();
         try {
-            String wpsurl = request.getEndpoint();
             String[] processes = new String[1];
             processes[0] = request.getIdentifier();
             ProcessDescriptionsDocument pdd = this.wps.describeProcess(processes, wpsurl);
@@ -274,21 +239,129 @@ public class RichWPSProvider implements IRichWPSProvider {
             if (request.getOutputs().isEmpty()) {
                 helper.addOutputs(request, processdescriptions);
             }
-
         } catch (WPSClientException ex) {
+            Logger.log(this.getClass(), "wpsDescribeProcess()", ex);
+        } catch (Exception ex) {
             Logger.log(this.getClass(), "wpsDescribeProcess()", ex);
         }
     }
 
     /**
-     * Describes process and its' in and outputs.
+     * Lists all available processes.
      *
-     * @param request ExecuteRequestDTO with serverid and processid.
-     *
+     * @param wpsurl serverid of WebProcessingService.
+     * @return list of processes.
      */
-    @Override
-    public void wpsDescribeProcess(ExecuteRequest request) {
-        this.wpsDescribeProcess((de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest) request);
+    private void wpsGetAvailableProcesses(GetProcessesRequest request) {
+
+        List<String> processes = new ArrayList<>();
+
+        try {
+            ProcessDescriptionsDocument pdd = this.wps.describeAllProcesses(request.getEndpoint());
+            ProcessDescriptionsDocument.ProcessDescriptions descriptions = pdd.getProcessDescriptions();
+            ProcessBriefType[] descs = descriptions.getProcessDescriptionArray();
+
+            for (ProcessBriefType process : descs) {
+                if (process.getIdentifier() != null) {
+                    String identifier = process.getIdentifier().getStringValue();
+                    processes.add(identifier);
+                } else {
+                    //de.hsos.richwps.mb.Logger.log("Debug:wpsGetAvailableProcesses()" + process);
+                }
+            }
+
+        } catch (WPSClientException e) {
+            Logger.log(this.getClass(), "wpsGetAvailableProcesses()", e);
+        }
+
+        try {
+            this.disconnect();
+        } catch (Exception e) {
+            Logger.log(this.getClass(), "wpsGetAvailableProcesses()", "Unable to disconnect, " + e);
+            //throw new Exception("Unable to connect to service " + wpsurl);
+        }
+        request.setProcesses(processes);
+    }
+
+    /**
+     * Lists all available inputtypes.
+     *
+     * @param wpsurl serverid of WebProcessingService.
+     * @return list of formats..
+     */
+    private void richwpsGetInputTypes(GetInputTypesRequest request) {
+
+        List<List<String>> formats = new LinkedList<>();
+
+        GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
+        builder.setComplexTypesOnly(true);
+        // request supported types
+        Object responseObject = null;
+        try {
+            responseObject = richwps.getSupportedTypes(request.getServerId(), builder.build());
+        } catch (Exception e) {
+            Logger.log(this.getClass(), "richwpsGetInputTypes()", e);
+        }
+        if (responseObject instanceof SupportedTypesResponseDocument) {
+            SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
+            ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedInputTypes().getComplexTypesArray();
+            for (ComplexTypesType type : types) {
+                ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
+                for (ComplexDataDescriptionType atype : schonwiedertsypes) {
+                    List<String> aformat = new LinkedList<>();
+                    aformat.add(atype.getMimeType());
+                    aformat.add(atype.getSchema());
+                    aformat.add(atype.getEncoding());
+                    formats.add(aformat);
+                }
+            }
+        }
+        request.setFormats(formats);
+        if (responseObject instanceof ExceptionReportDocument) {
+            ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
+            Logger.log(this.getClass(), "richwpsGetInputTypes()", response.toString());
+        }
+
+    }
+
+    /**
+     * Lists all available inputtypes.
+     *
+     * @param wpsurl serverid of WebProcessingService.
+     * @return list of formats..
+     */
+    private void richwpsGetOutputTypes(GetOutputTypesRequest request) {
+
+        List<List<String>> formats = new LinkedList<>();
+
+        GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
+        builder.setComplexTypesOnly(true);
+        // request supported types
+        Object responseObject = null;
+        try {
+            responseObject = richwps.getSupportedTypes(request.getServerId(), builder.build());
+        } catch (WPSClientException e) {
+            Logger.log(this.getClass(), "richwpsGetOutputTypes()", e);
+        }
+        if (responseObject instanceof SupportedTypesResponseDocument) {
+            SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
+            ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedOutputTypes().getComplexTypesArray();
+            for (ComplexTypesType type : types) {
+                ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
+                for (ComplexDataDescriptionType atype : schonwiedertsypes) {
+                    List<String> aformat = new LinkedList<>();
+                    aformat.add(atype.getMimeType());
+                    aformat.add(atype.getSchema());
+                    aformat.add(atype.getEncoding());
+                    formats.add(aformat);
+                }
+            }
+        }
+        request.setFormats(formats);
+        if (responseObject instanceof ExceptionReportDocument) {
+            ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
+            Logger.log(this.getClass(), "richwpsGetOutputTypes()", response.toString());
+        }
     }
 
     /**
@@ -297,8 +370,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param request ExecuteRequestDTO with serverid and processid and in- and
      * outputarguments.
      */
-    @Override
-    public void wpsExecuteProcess(ExecuteRequest request) {
+    private void wpsExecuteProcess(ExecuteRequest request) {
         final ExecuteRequestHelper helper = new ExecuteRequestHelper();
         String severid = request.getEndpoint();
         String processid = request.getIdentifier();
@@ -369,8 +441,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param request DeployRequestDTO.
      * @see DeployRequest
      */
-    @Override
-    public void richwpsTestProcess(TestRequest request) {
+    private void richwpsTestProcess(TestRequest request) {
         final TestRequestHelper helper = new TestRequestHelper();
         TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
         builder.setExecutionUnit(request.getExecutionUnit());
@@ -411,12 +482,12 @@ public class RichWPSProvider implements IRichWPSProvider {
                     + "deploymentdocument. " + ex);
         }
     }
-    
-    
+
     /**
      * Deploys a new process.
      *
-     * @param request DeployRequestDTO.
+     * @param request TestRequest.
+     *
      * @see DeployRequest
      */
     @Override
@@ -426,13 +497,13 @@ public class RichWPSProvider implements IRichWPSProvider {
             TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
             builder.setExecutionUnit(request.getExecutionUnit());
             builder.setDeploymentProfileName(request.getDeploymentprofile());
-            
+
             HashMap theinputs = request.getInputArguments();
             helper.setInputs(builder, theinputs);
-            
+
             HashMap theoutputs = request.getOutputArguments();
             helper.setOutputs(builder, theoutputs);
-            
+
             TestProcessDocument testprocessdocument = null;
             testprocessdocument = builder.getTestdocument();
             return testprocessdocument.toString();
@@ -445,11 +516,10 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Deploys a new process.
      *
-     * @param request DeployRequestDTO.
+     * @param request DeployRequest.
      * @see DeployRequest
      */
-    @Override
-    public void richwpsDeployProcess(DeployRequest request) {
+    private void richwpsDeployProcess(DeployRequest request) {
         TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
 
         builder.setDeployExecutionUnit(request.getExecutionUnit());
@@ -486,13 +556,10 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Undeploys a given process.
      *
-     * @param request DeployRequestDTO.
+     * @param request UndeployRequest.
      * @see UndeployRequest
-     * @return <code>true</code> for deployment success.
      */
-    @Override
-    public void richwpsUndeployProcess(UndeployRequest request) {
-
+    private void richwpsUndeployProcess(UndeployRequest request) {
         TransactionalRequestBuilder builder = new TransactionalRequestBuilder();
         builder.setIdentifier(request.getIdentifier());
 
@@ -527,7 +594,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Undeploys a given process.
      *
-     * @param request DeployRequestDTO.
+     * @param request UndeployRequest.
      * @see UndeployRequest
      * @return <code>true</code> for deployment success.
      */
@@ -540,42 +607,17 @@ public class RichWPSProvider implements IRichWPSProvider {
             return builder.getUndeploydocument().toString();
         } catch (WPSClientException ex) {
             Logger.log(this.getClass(), "richwpsPreviewUndeployProcess", ex);
-            java.util.logging.Logger.getLogger(RichWPSProvider.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(RichWPSProvider.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return "";
-    }
-
-    /**
-     * Performs a wps/richwps-request.
-     *
-     * @param request IRequest.
-     * @see IRequest
-     * @see ExecuteRequest
-     * @see ProcessDescription
-     * @see DeployRequest
-     * @see UndeployRequest
-     * @return <code>true</code> for deployment success.
-     */
-    @Override
-    public void request(IRequest request) {
-        if (request instanceof TestRequest) {   //first to check!
-            this.richwpsTestProcess((TestRequest) request);
-        } else if (request instanceof ExecuteRequest) {
-            this.wpsExecuteProcess((ExecuteRequest) request);
-        } else if (request instanceof DeployRequest) {
-            this.richwpsDeployProcess((DeployRequest) request);
-        } else if (request instanceof UndeployRequest) {
-            this.richwpsUndeployProcess((UndeployRequest) request);
-        } else if (request instanceof DescribeRequest) {
-            this.wpsDescribeProcess((DescribeRequest) request);
-        }
     }
 
     /**
      * Retreives and extracts the processdescription type from a given
      * WPS-server.
      *
-     * @param request ExecuteRequestDTO with serverid and process id.
+     * @param request ExecuteRequest with serverid and process id.
      * @return 52n processdescriptiontype.
      */
     private ProcessDescriptionType getProcessDescriptionType(ExecuteRequest request) {
@@ -659,7 +701,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         } catch (Exception ex) {
             Logger.log(RichWPSProvider.class, "hasProcess", "Unable to connect to " + auri + " " + ex);
         }
-        List<String> processes = provider.wpsGetAvailableProcesses(auri);
+        GetProcessesRequest request = new GetProcessesRequest(auri);
+        provider.request(request);
+        List<String> processes = request.getProcesses();
         return processes.contains(processid);
     }
 }

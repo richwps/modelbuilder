@@ -55,16 +55,6 @@ public class ProfileModelDialog extends ADialog {
             this.request.addVariable("var." + var);
         }
 
-        try {
-            this.provider.disconnect();
-            this.provider.connect(request.getServerId(), request.getEndpoint());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
-            AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log(this.getClass(), "ProfileModelDialog()", ex);
-        }
-
         this.serverids = new ArrayList();
         this.serverids.add(this.request.getServerId());
         this.initComponents();
@@ -247,7 +237,6 @@ public class ProfileModelDialog extends ADialog {
         //make sure the client cache is emptied.
         if (provider != null) {
             try {
-                provider.disconnect();
                 this.request = new ProfileRequest();
             } catch (Exception ex) {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);

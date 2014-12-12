@@ -3,11 +3,13 @@ package de.hsos.richwps.mb.ui.dialogs.components;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
 import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
  * Dialog panel for process selection.
+ *
  * @author dalcacer
  * @version 0.0.3
  */
@@ -34,8 +36,10 @@ public class ProcessPanel extends APanel {
         this.request = (DescribeRequest) request;
         this.wpsurl = this.request.getEndpoint();
         this.provider = provider;
+        GetProcessesRequest procrequest = new GetProcessesRequest(wpsurl);
         try {
-            this.processes = this.provider.wpsGetAvailableProcesses(wpsurl);
+            this.provider.request(procrequest);
+            this.processes = procrequest.getProcesses();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unable to load processes.");
             return;
@@ -46,12 +50,12 @@ public class ProcessPanel extends APanel {
 
     private void init() {
         this.processesBox.removeAllItems();
-        
+
         if (this.processes.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Unable to load processes.");
             return;
         }
-        
+
         for (String process : this.processes) {
             this.processesBox.addItem(process);
         }

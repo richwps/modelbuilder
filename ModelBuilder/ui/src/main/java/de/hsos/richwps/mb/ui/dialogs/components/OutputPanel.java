@@ -10,6 +10,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
@@ -73,10 +75,12 @@ public class OutputPanel extends APanel {
 
         if (request instanceof TestRequest) {
             //noop
+        }else if (request instanceof ProfileRequest) {
+            //noop
         } else {
             //update only if necessary 
             if (!request.isLoaded()) {
-                this.provider.wpsDescribeProcess(this.request);
+                this.provider.request((DescribeRequest)this.request);
             }
         }
         this.prepare();

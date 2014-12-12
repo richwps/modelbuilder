@@ -2,8 +2,10 @@ package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.*;
-import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetInputTypesRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetOutputTypesRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
@@ -43,43 +45,27 @@ public class RichWPSProviderTest extends TestCase {
 
     /**
      * Test of connect method, of class RichWPSProvider.
+     *
+     * public void testConnect() { System.out.println("testConnect");
+     * RichWPSProvider instance = new RichWPSProvider(); try {
+     * instance.connect(wpsurl); } catch (Exception e) { fail("Unable to
+     * connect."); } }
      */
-    public void testConnect() {
-        System.out.println("testConnect");
-        RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl);
-        } catch (Exception e) {
-            fail("Unable to connect.");
-        }
-    }
-
     /**
      * Test of connect method, of class RichWPSProvider.
+     *
+     * public void testConnectException() { System.out.println("testConnect");
+     * RichWPSProvider instance = new RichWPSProvider(); try {
+     * instance.connect("http://no"); } catch (Exception e) { assertNotNull(e);
+     * return; } fail("Expected exception was not raised."); }
      */
-    public void testConnectException() {
-        System.out.println("testConnect");
-        RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect("http://no");
-        } catch (Exception e) {
-            assertNotNull(e);
-            return;
-        }
-        fail("Expected exception was not raised.");
-    }
-
     /**
      * Test of wpsGetAvailableProcesses method, of class RichWPSProvider.
      */
     public void testGetAvailableProcesses() {
         System.out.println("getAvailableProcesses");
         RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl);
-        } catch (Exception ex) {
-            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
         /*List<String> expResult = new ArrayList<String>();
          expResult.add("org.n52.wps.server.algorithm.test.MultiReferenceInputAlgorithm");
          expResult.add("org.n52.wps.server.algorithm.JTSConvexHullAlgorithm");
@@ -97,7 +83,9 @@ public class RichWPSProviderTest extends TestCase {
          expResult.add("org.n52.wps.server.algorithgeuelPriceProcess");
          expResult.add("org.envirocar.wps.TrackToCSVProcess");
          expResult.add("org.envirocar.wps.HarvestAllTracksProcess");*/
-        List<String> result = instance.wpsGetAvailableProcesses(wpsurl);
+        GetProcessesRequest procrequest = new GetProcessesRequest(wpsurl);
+        instance.request(procrequest);
+        List<String> result = procrequest.getProcesses();
         assertNotSame(new ArrayList<String>(), result); //not empty!
     }
 
@@ -109,16 +97,11 @@ public class RichWPSProviderTest extends TestCase {
         String processid = "org.n52.wps.server.algorithm.test.DummyTestClass";
 
         RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl);
-        } catch (Exception ex) {
-            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         ExecuteRequest request = new ExecuteRequest();
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
-        instance.wpsDescribeProcess(request);
+        instance.request((DescribeRequest) request);
         List<IInputSpecifier> inputs = request.getInputs();
         assertEquals(3, inputs.size()); //3 with BBOX support
         assertEquals("ComplexInputData", ((IInputSpecifier) inputs.get(0)).getIdentifier());
@@ -129,7 +112,7 @@ public class RichWPSProviderTest extends TestCase {
         assertEquals(3, outputs.size()); //3 with BBOX support
         assertEquals("ComplexOutputData", ((IOutputSpecifier) outputs.get(0)).getIdentifier());
         assertEquals("LiteralOutputData", ((IOutputSpecifier) outputs.get(1)).getIdentifier());
-        assertEquals("BBOXOutputData", ((IOutputSpecifier)outputs.get(2)).getIdentifier());   
+        assertEquals("BBOXOutputData", ((IOutputSpecifier) outputs.get(2)).getIdentifier());
     }
 
     public void testEchoProcess() {
@@ -137,17 +120,12 @@ public class RichWPSProviderTest extends TestCase {
         String processid = "org.n52.wps.server.algorithm.test.EchoProcess";
 
         RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl);
-        } catch (Exception ex) {
-            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         ExecuteRequest request = new ExecuteRequest();
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
 
-        instance.wpsDescribeProcess(request);
+        instance.request((DescribeRequest) request);
         List<IInputSpecifier> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
@@ -174,39 +152,36 @@ public class RichWPSProviderTest extends TestCase {
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
         OutputComplexDataSpecifier outspec;
-        if(outputs.get(0) instanceof OutputComplexDataSpecifier){
+        if (outputs.get(0) instanceof OutputComplexDataSpecifier) {
             outspec = (OutputComplexDataSpecifier) outputs.get(0);
-        }else{
+        } else {
             outspec = (OutputComplexDataSpecifier) outputs.get(1);
         }
-        
+
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
 
-        instance.wpsExecuteProcess(request);
+        instance.request(request);
 
         HashMap<String, Object> theResults = request.getResults();
         assertNotNull(theResults);
     }
 
+    /**
+     * Should raise a server-side exception because of faulty inputs.
+     
     public void testEchoProcessException() {
         System.out.println("testEchoProcessException");
         String processid = "org.n52.wps.server.algorithm.test.EchoProcess";
 
         RichWPSProvider instance = new RichWPSProvider();
-        try {
-            instance.connect(wpsurl);
-        } catch (Exception ex) {
-            Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         ExecuteRequest request = new ExecuteRequest();
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
-
-        instance.wpsDescribeProcess(request);
+        instance.request((DescribeRequest) request);
         List<IInputSpecifier> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
@@ -233,22 +208,22 @@ public class RichWPSProviderTest extends TestCase {
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
         OutputComplexDataSpecifier outspec;
-        if(outputs.get(0) instanceof OutputComplexDataSpecifier){
+        if (outputs.get(0) instanceof OutputComplexDataSpecifier) {
             outspec = (OutputComplexDataSpecifier) outputs.get(0);
-        }else{
+        } else {
             outspec = (OutputComplexDataSpecifier) outputs.get(1);
         }
-        
+
         OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
 
-        instance.wpsExecuteProcess(request);
+        instance.request(request);
 
         assertTrue(request.isException());
         assertNotNull(request.getException());
-    }
+    }*/
 
     /*public void testSimpleBuffer() {
      System.out.println("testSimpleBuffer");
@@ -477,15 +452,16 @@ public class RichWPSProviderTest extends TestCase {
 //        instance.richwpsUndeployProcess(unrequest);
 //        assertEquals(unrequest.isException(), false);
     }
-    
-    public void testGetInputTypes(){
+
+    public void testGetInputTypes() {
         System.out.println("testGetInputTypes");
         String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
         String richwpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
         RichWPSProvider instance = new RichWPSProvider();
+        GetInputTypesRequest request = new GetInputTypesRequest(wpsurl, richwpsurl);
         try {
-            instance.connect(wpsurl, richwpsurl);
-            List formats = instance.richwpsGetInputTypes(wpsurl);
+            instance.request(request);
+            List formats = request.getFormats();
             System.out.println(formats);
             assertNotNull(formats);
         } catch (Exception ex) {
@@ -493,15 +469,16 @@ public class RichWPSProviderTest extends TestCase {
             fail();
         }
     }
-    
-    public void testGetOutputTypes(){
+
+    public void testGetOutputTypes() {
         System.out.println("testGetOutputTypes");
         String wpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/WebProcessingService";
         String richwpsurl = "http://richwps.edvsz.hs-osnabrueck.de/lkn/RichWPS";
         RichWPSProvider instance = new RichWPSProvider();
+        GetOutputTypesRequest request = new GetOutputTypesRequest(wpsurl, richwpsurl);
         try {
-            instance.connect(wpsurl, richwpsurl);
-            List formats = instance.richwpsGetOutputTypes(wpsurl);
+            instance.request(request);
+            List formats = request.getFormats();
             System.out.println(formats);
             assertNotNull(formats);
         } catch (Exception ex) {

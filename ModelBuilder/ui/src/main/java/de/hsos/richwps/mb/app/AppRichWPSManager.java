@@ -23,7 +23,6 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import de.hsos.richwps.mb.exception.GraphToRequestTransformationException;
-import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import java.io.File;
 import java.io.FileReader;
@@ -213,8 +212,7 @@ public class AppRichWPSManager {
         //perform request
         RichWPSProvider instance = new RichWPSProvider();
         try {
-            instance.connect(wpsendpoint, richwpsendpoint);
-            instance.richwpsDeployProcess(request);
+            instance.request(request);
 
             if (request.isException()) {
                 this.error = true;
@@ -228,21 +226,16 @@ public class AppRichWPSManager {
 
             AppEventService service = AppEventService.getInstance();
             service.fireAppEvent(AppConstants.DEPLOY_SUCCESS, AppConstants.INFOTAB_ID_SERVER);
-               JOptionPane.showMessageDialog(null,
-                        AppConstants.DEPLOY_SUCCESS,
-                        AppConstants.DEPLOY_SUCCESS,
-                        JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    AppConstants.DEPLOY_SUCCESS,
+                    AppConstants.DEPLOY_SUCCESS,
+                    JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
             this.error = true;
             this.deployingModelFailed("An error occured while deployment.");
             Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
             return;
-        }
-        try {
-            instance.disconnect();
-        } catch (Exception ex) {
-            //noop
         }
     }
 
@@ -318,7 +311,7 @@ public class AppRichWPSManager {
 
         return request;
     }
-    
+
     public ProfileRequest getProfileRequest() {
         //load information from model.
         final GraphModel model = this.graph.getGraphModel();
@@ -402,25 +395,19 @@ public class AppRichWPSManager {
 
         if (RichWPSProvider.hasProcess(auri, identifier)) {
             String wpsendpoint = "";
-            String wpstendpoint = "";
+            String richwpsendpoint = "";
             if (RichWPSProvider.isWPSEndpoint(auri)) {
                 wpsendpoint = auri;
-                wpstendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+                richwpsendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
             } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
-                wpstendpoint = auri;
+                richwpsendpoint = auri;
                 wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
             }
             RichWPSProvider provider = new RichWPSProvider();
             try {
-                provider.connect(wpsendpoint, wpstendpoint);
-
-                UndeployRequest request = new UndeployRequest(wpsendpoint, wpstendpoint, identifier);
+                UndeployRequest request = new UndeployRequest(wpsendpoint, richwpsendpoint, identifier);
                 provider.request(request);
-                try {
-                    provider.disconnect();
-                } catch (Exception ex) {
-                    //noop
-                }
+                
                 AppEventService service = AppEventService.getInstance();
                 service.fireAppEvent(AppConstants.UNDEPLOY_SUCCESS, AppConstants.INFOTAB_ID_SERVER);
 
@@ -510,7 +497,7 @@ public class AppRichWPSManager {
             request.addOutput(specifier);
         }
     }
-    
+
     private void defineInputsOutputs(ProfileRequest request) throws GraphToRequestTransformationException {
 
         // Transform global inputs

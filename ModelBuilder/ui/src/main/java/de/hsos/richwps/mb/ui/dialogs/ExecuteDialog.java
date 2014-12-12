@@ -132,7 +132,7 @@ public class ExecuteDialog extends ADialog {
             this.request = new ExecuteRequest(req);
         }
 
-        try {
+        /*try {
             this.provider.connect(this.request.getEndpoint());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
@@ -140,7 +140,7 @@ public class ExecuteDialog extends ADialog {
             appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
             Logger.log(this.getClass(), "showProcessSelection()", ex);
             return;
-        }
+        }*/
         this.processesselectionpanel = new ProcessPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -388,7 +388,7 @@ public class ExecuteDialog extends ADialog {
         //make sure the client cache is emptied.
         if (provider != null) {
             try {
-                provider.disconnect();
+                /*provider.disconnect();*/
                 this.request = new ExecuteRequest();
             } catch (Exception ex) {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);

@@ -48,8 +48,11 @@ public class ExecuteModelDialog extends ADialog {
         this.request.setIdentifier(processid);
         this.provider = new RichWPSProvider();
         try {
-            this.provider.disconnect();
-            this.provider.connect(request.getEndpoint());
+            if (!RichWPSProvider.isWPSEndpoint(serverid)) {
+                JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
+                AppEventService appservice = AppEventService.getInstance();
+                appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
             AppEventService appservice = AppEventService.getInstance();
@@ -244,7 +247,6 @@ public class ExecuteModelDialog extends ADialog {
         //make sure the client cache is emptied.
         if (provider != null) {
             try {
-                provider.disconnect();
                 this.request = new ExecuteRequest();
             } catch (Exception ex) {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);

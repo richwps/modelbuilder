@@ -20,6 +20,7 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
@@ -186,15 +187,16 @@ public class MainTreeViewController extends AbstractTreeViewController {
         //Perform discovery.
         try {
             IRichWPSProvider provider = new RichWPSProvider();
-            provider.connect(uri);
-            List<String> processes = provider.wpsGetAvailableProcesses(uri);
+            GetProcessesRequest request = new GetProcessesRequest(uri);
+            provider.request(request);
+            List<String> processes = request.getProcesses();
 
             for (String processid : processes) {
 
                 DescribeRequest pd = new DescribeRequest();
                 pd.setEndpoint(uri);
                 pd.setIdentifier(processid);
-                provider.wpsDescribeProcess(pd);
+                provider.request(pd);
 
                 ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
                 //TRICKY

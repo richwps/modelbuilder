@@ -101,14 +101,7 @@ public class UndeployDialog extends ADialog {
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
 
-        try {
-            this.provider.connect(this.desc_request.getEndpoint());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
-            AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log(this.getClass(), "showProcessSelection()", ex);
-        }
+        
         this.processesselectionpanel = new ProcessPanel(this.provider, this.desc_request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -137,8 +130,7 @@ public class UndeployDialog extends ADialog {
 
         //perform the request
         try {
-            this.provider.connect(this.desc_request.getServerId(), endp);
-            this.provider.richwpsUndeployProcess(undeploy_request);
+            this.provider.request(undeploy_request);
         } catch (Exception ex) {
             Logger.log(this.getClass(), "performUndeploy()", ex);
             String msg = AppConstants.UNDEPLOY_FAILURE
@@ -173,7 +165,6 @@ public class UndeployDialog extends ADialog {
             //make sure the client cache is emptied.
             if (provider != null) {
                 try {
-                    provider.disconnect();
                     this.desc_request = new DescribeRequest();
                 } catch (Exception ex) {
                     Logger.log(this.getClass(), "performUndeploy()", ex);
@@ -277,7 +268,6 @@ public class UndeployDialog extends ADialog {
         //make sure the client cache is emptied.
         if (provider != null) {
             try {
-                provider.disconnect();
                 this.desc_request = new DescribeRequest();
             } catch (Exception ex) {
                 Logger.log(this.getClass(), "abortButtonActionPerformed()", ex);

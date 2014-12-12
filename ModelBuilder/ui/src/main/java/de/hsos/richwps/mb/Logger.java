@@ -55,7 +55,7 @@ public class Logger {
      * @param o
      */
     public static void log(Class source, String locator,Object o) {
-        String oString = (null == o) ? "null" : source.getName()+"::"+locator+"::\t"+o.toString();
+        String oString = (null == o) ? "null" : source.getSimpleName()+"::"+locator+"\t"+o.toString();
         Logger.log(oString);
         /*String micro = (new Long(System.nanoTime())).toString();*/
         /*System.err.println(micro.substring(0, 6) + ": " + oString);
