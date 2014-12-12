@@ -22,14 +22,6 @@ public interface IRichWPSProvider {
     public static final String DEFAULT_RICHWPS_ENDPOINT = "/RichWPS";
     public static final String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
 
-    /**
-     * Describes a process, via wps:DescribeRequest()-Request.
-     *
-     * @param request ExecuteRequest with endpoint and processid.
-
-     
-    public void wpsDescribeProcess(ExecuteRequest perform);*/
-
     public String wpsPreviewExecuteProcess(ExecuteRequest request);
 
     public String richwpsPreviewUndeployProcess(UndeployRequest request);
