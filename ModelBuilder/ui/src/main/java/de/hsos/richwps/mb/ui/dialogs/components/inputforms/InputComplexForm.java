@@ -2,10 +2,6 @@ package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import javax.swing.border.TitledBorder;
-import net.opengis.wps.x100.ComplexDataCombinationsType;
-import net.opengis.wps.x100.ComplexDataDescriptionType;
-import static net.opengis.wps.x100.DescriptionType.type;
 
 /**
  *
@@ -14,7 +10,6 @@ import static net.opengis.wps.x100.DescriptionType.type;
 public class InputComplexForm extends javax.swing.JPanel {
 
     private String id;
-    private ComplexDataDescriptionType[] subtypes_;
     private InputComplexDataSpecifier specifier;
     private boolean isMandatory = false;
 
@@ -50,7 +45,6 @@ public class InputComplexForm extends javax.swing.JPanel {
                         + "<br/>Encoding: " + aencoding + "</html>";
                 this.selectType.addItem(line);
             }
-
         }
 
         //FIXME
@@ -69,13 +63,17 @@ public class InputComplexForm extends javax.swing.JPanel {
         this.occurs.setText(occurstxt);
     }
     
-     public String getTitle() {
+    /**
+     * Returns a title for this form.
+     * @return title.
+     */
+    public String getTitle() {
         String title="";
         if (this.specifier.getMinOccur() == 0) {
-            title = "(OPTIONAL) " + this.specifier.getIdentifier();
+            title = "ComplexData " + this.specifier.getIdentifier();
             this.isMandatory = false;
         } else {
-            title = "(MANDATORY) " + this.specifier.getIdentifier();
+            title = "ComplexData " + this.specifier.getIdentifier()+" (required)";;
         }
         return title;
     }

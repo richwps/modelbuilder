@@ -115,14 +115,17 @@ public class InputBBoxForm extends javax.swing.JPanel {
         }
     }
 
-    
+      /**
+     * Returns a title for this form.
+     * @return title.
+     */
      public String getTitle() {
         String title="";
         if (this.specifier.getMinOccur() == 0) {
-            title = "(OPTIONAL) " + this.specifier.getIdentifier();
+            title = "BBox " + this.specifier.getIdentifier();
             this.isMandatory = false;
         } else {
-            title = "(MANDATORY) " + this.specifier.getIdentifier();
+            title = "BBox " + this.specifier.getIdentifier()+" (required)";
         }
         return title;
     }

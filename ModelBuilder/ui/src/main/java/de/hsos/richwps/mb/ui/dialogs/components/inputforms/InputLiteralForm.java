@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
-import javax.swing.border.TitledBorder;
 
 /**
  *
@@ -22,11 +21,11 @@ public class InputLiteralForm extends javax.swing.JPanel {
     public InputLiteralForm(InputLiteralDataSpecifier specifier) {
         initComponents();
         this.specifier = specifier;
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
-        String datatype = this.specifier.getType();
-        String defaultvalue = this.specifier.getDefaultvalue();
+        final String theidentifier = specifier.getIdentifier();
+        final String theabstract = specifier.getAbstract();
+        final String thetitel = specifier.getTitle();
+        final String datatype = this.specifier.getType();
+        final String defaultvalue = this.specifier.getDefaultvalue();
         //FIXME
         this.id = theidentifier;
         //this.identifier.setText(theidentifier+ "("+datatype+"):");
@@ -34,7 +33,7 @@ public class InputLiteralForm extends javax.swing.JPanel {
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
 
-        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
+        final String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
         if (this.specifier.getMinOccur() == 0) {
             this.isMandatory = false;
         } else {
@@ -46,13 +45,18 @@ public class InputLiteralForm extends javax.swing.JPanel {
         this.value.setText(defaultvalue);
     }
 
+    /**
+     * Returns a title for this form.
+     *
+     * @return title.
+     */
     public String getTitle() {
-        String title="";
+        String title = "";
         if (this.specifier.getMinOccur() == 0) {
-            title = "(OPTIONAL) " + this.specifier.getIdentifier();
+            title = "LiteralData " + this.specifier.getIdentifier();
             this.isMandatory = false;
         } else {
-            title = "(MANDATORY) " + this.specifier.getIdentifier();
+            title = "LiteralData " + this.specifier.getIdentifier() + " (required)";
         }
         return title;
     }

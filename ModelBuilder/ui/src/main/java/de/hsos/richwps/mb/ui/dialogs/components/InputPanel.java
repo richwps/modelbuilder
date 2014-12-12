@@ -19,6 +19,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpec
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +32,15 @@ import layout.TableLayout;
  *
  * @author dalcacer
  * @version 0.0.3
+ * @see InputBBoxForm
+ * @see InputLiteralForm
+ * @see InputComlexForm
  */
 public class InputPanel extends APanel {
 
-    /**List of displayable inputs.*/
+    /**
+     * List of displayable input forms.
+     */
     private List<TitledComponent> panels;
     /**
      * Connection to RichWPS server.
@@ -55,7 +61,7 @@ public class InputPanel extends APanel {
     }
 
     /**
-     * Creates new form ExecutePanel
+     * Creates new form InputPanel
      *
      * @param provider
      * @param request
@@ -73,12 +79,12 @@ public class InputPanel extends APanel {
 
         if (request instanceof TestRequest) {
             //noop
-        }else if (request instanceof ProfileRequest) {
+        } else if (request instanceof ProfileRequest) {
             //noop
-        }else {
+        } else {
             //update the perform-object only if necessary 
             if (!request.isLoaded()) {
-                this.provider.perform((DescribeRequest)this.request);
+                this.provider.perform((DescribeRequest) this.request);
             }
         }
         this.prepare();
@@ -112,6 +118,11 @@ public class InputPanel extends APanel {
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
+                if (pan.isMandatory()) {
+                    tc.setTitleFontColor(Color.BLACK);
+                } else {
+                    tc.setTitleFontColor(Color.GRAY);
+                }
                 tc.setTitleBold();
                 this.panels.add(tc);
             } else if (specifier instanceof InputComplexDataSpecifier) {
@@ -126,6 +137,11 @@ public class InputPanel extends APanel {
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
+                if (pan.isMandatory()) {
+                    tc.setTitleFontColor(Color.BLACK);
+                } else {
+                    tc.setTitleFontColor(Color.GRAY);
+                }
                 tc.setTitleBold();
                 this.panels.add(tc);
 
@@ -140,6 +156,11 @@ public class InputPanel extends APanel {
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
+                if (pan.isMandatory()) {
+                    tc.setTitleFontColor(Color.BLACK);
+                } else {
+                    tc.setTitleFontColor(Color.GRAY);
+                }
                 tc.setTitleBold();
                 this.panels.add(tc);
             }
@@ -167,9 +188,7 @@ public class InputPanel extends APanel {
         size[0] = new double[]{TableLayout.FILL};
 
         double innersize[] = new double[panels.size()];
-        for (int i = 0;
-                i < panels.size();
-                i++) {
+        for (int i = 0; i < panels.size(); i++) {
             innersize[i] = TableLayout.PREFERRED;
         }
         size[1] = innersize;
@@ -264,7 +283,7 @@ public class InputPanel extends APanel {
                             + pan.getSpecifier().getIdentifier());
                     break;
                 } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
-                    //nothing to do
+                    //noop
                 } else {
                     InputBoundingBoxDataArgument param;
                     param = new InputBoundingBoxDataArgument(specifier, pan.getText());

@@ -31,11 +31,14 @@ import layout.TableLayout;
  *
  * @author dalcacer
  * @version 0.0.2
+ * @see OutputBBoxForm
+ * @see OutputLiteralForm
+ * @see OutputComplexForm
  */
 public class OutputPanel extends APanel {
 
     /**
-     * List of displayable outputs.
+     * List of displayable output forms.
      */
     private List<TitledComponent> panels;
     /**
@@ -75,12 +78,12 @@ public class OutputPanel extends APanel {
 
         if (request instanceof TestRequest) {
             //noop
-        }else if (request instanceof ProfileRequest) {
+        } else if (request instanceof ProfileRequest) {
             //noop
         } else {
             //update only if necessary 
             if (!request.isLoaded()) {
-                this.provider.perform((DescribeRequest)this.request);
+                this.provider.perform((DescribeRequest) this.request);
             }
         }
         this.prepare();
