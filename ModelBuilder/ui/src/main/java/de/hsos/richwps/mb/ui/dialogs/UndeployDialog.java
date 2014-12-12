@@ -97,7 +97,7 @@ public class UndeployDialog extends ADialog {
         this.previewButton.setVisible(true);
         this.nextButton.setVisible(true);
 
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
 
@@ -119,18 +119,18 @@ public class UndeployDialog extends ADialog {
         if (!this.currentPanel.isValidInput()) {
             return;
         }
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
 
-//prepare the request
+//prepare the perform
         String endp = desc_request.getServerId();
         endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
         this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
 
-        //perform the request
+        //perform the perform
         try {
-            this.provider.request(undeploy_request);
+            this.provider.perform(undeploy_request);
         } catch (Exception ex) {
             Logger.log(this.getClass(), "performUndeploy()", ex);
             String msg = AppConstants.UNDEPLOY_FAILURE

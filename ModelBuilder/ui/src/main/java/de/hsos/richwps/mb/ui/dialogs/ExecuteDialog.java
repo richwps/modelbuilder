@@ -55,7 +55,7 @@ public class ExecuteDialog extends ADialog {
      */
     private ResultPanel resultpanel;
     /**
-     * The final request that is parameterized and executed.
+     * The final perform that is parameterized and executed.
      */
     private ExecuteRequest request;
 
@@ -125,7 +125,7 @@ public class ExecuteDialog extends ADialog {
         this.loadButton.setVisible(false);
         this.previewButton.setVisible(false);
 
-        //refresh the request
+        //refresh the perform
         if (!isBackAction) {
             this.currentPanel.updateRequest();
             DescribeRequest req = (DescribeRequest) this.currentPanel.getRequest();
@@ -133,7 +133,7 @@ public class ExecuteDialog extends ADialog {
         }
 
         /*try {
-            this.provider.connect(this.request.getEndpoint());
+            this.provider.connect(this.perform.getEndpoint());
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
             AppEventService appservice = AppEventService.getInstance();
@@ -203,7 +203,7 @@ public class ExecuteDialog extends ADialog {
         this.loadButton.setVisible(false);
         this.previewButton.setVisible(true);
 
-        //refresh the request
+        //refresh the perform
         if (!isBackAction) {
             this.currentPanel.updateRequest();
             this.request = (ExecuteRequest) this.currentPanel.getRequest();
@@ -232,11 +232,11 @@ public class ExecuteDialog extends ADialog {
         this.loadButton.setVisible(false);
         this.previewButton.setVisible(false);
 
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (ExecuteRequest) this.currentPanel.getRequest();
 
-        //in case the request was already used.
+        //in case the perform was already used.
         if (request.isLoaded()) {
             this.request.flushException();
             this.request.flushResults();
@@ -426,7 +426,7 @@ public class ExecuteDialog extends ADialog {
             try {
                 this.currentPanel.updateRequest();
                 this.request = (ExecuteRequest) this.currentPanel.getRequest();
-                //in case the request was already used.
+                //in case the perform was already used.
                 if (request.isLoaded()) {
                     this.request.flushException();
                     this.request.flushResults();

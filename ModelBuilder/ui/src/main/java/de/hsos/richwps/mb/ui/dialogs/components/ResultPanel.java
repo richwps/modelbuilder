@@ -223,7 +223,7 @@ public class ResultPanel extends APanel {
 
         @Override
         public void run() {
-            this.provider.request(this.request);
+            this.provider.perform(this.request);
             this.parent.update(this.request);
         }
     }

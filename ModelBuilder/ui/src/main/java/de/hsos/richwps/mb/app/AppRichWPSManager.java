@@ -209,10 +209,10 @@ public class AppRichWPSManager {
             return;
         }
 
-        //perform request
+        //perform perform
         RichWPSProvider instance = new RichWPSProvider();
         try {
-            instance.request(request);
+            instance.perform(request);
 
             if (request.isException()) {
                 this.error = true;
@@ -406,7 +406,7 @@ public class AppRichWPSManager {
             RichWPSProvider provider = new RichWPSProvider();
             try {
                 UndeployRequest request = new UndeployRequest(wpsendpoint, richwpsendpoint, identifier);
-                provider.request(request);
+                provider.perform(request);
                 
                 AppEventService service = AppEventService.getInstance();
                 service.fireAppEvent(AppConstants.UNDEPLOY_SUCCESS, AppConstants.INFOTAB_ID_SERVER);

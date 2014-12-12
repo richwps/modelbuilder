@@ -84,7 +84,7 @@ public class RichWPSProviderTest extends TestCase {
          expResult.add("org.envirocar.wps.TrackToCSVProcess");
          expResult.add("org.envirocar.wps.HarvestAllTracksProcess");*/
         GetProcessesRequest procrequest = new GetProcessesRequest(wpsurl);
-        instance.request(procrequest);
+        instance.perform(procrequest);
         List<String> result = procrequest.getProcesses();
         assertNotSame(new ArrayList<String>(), result); //not empty!
     }
@@ -101,7 +101,7 @@ public class RichWPSProviderTest extends TestCase {
         ExecuteRequest request = new ExecuteRequest();
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
-        instance.request((DescribeRequest) request);
+        instance.perform((DescribeRequest) request);
         List<IInputSpecifier> inputs = request.getInputs();
         assertEquals(3, inputs.size()); //3 with BBOX support
         assertEquals("ComplexInputData", ((IInputSpecifier) inputs.get(0)).getIdentifier());
@@ -125,7 +125,7 @@ public class RichWPSProviderTest extends TestCase {
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
 
-        instance.request((DescribeRequest) request);
+        instance.perform((DescribeRequest) request);
         List<IInputSpecifier> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
@@ -163,7 +163,7 @@ public class RichWPSProviderTest extends TestCase {
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
 
-        instance.request(request);
+        instance.perform(request);
 
         HashMap<String, Object> theResults = request.getResults();
         assertNotNull(theResults);
@@ -178,11 +178,11 @@ public class RichWPSProviderTest extends TestCase {
 
         RichWPSProvider instance = new RichWPSProvider();
 
-        ExecuteRequest request = new ExecuteRequest();
-        request.setEndpoint(wpsurl);
-        request.setIdentifier(processid);
-        instance.request((DescribeRequest) request);
-        List<IInputSpecifier> inputs = request.getInputs();
+        ExecuteRequest perform = new ExecuteRequest();
+        perform.setEndpoint(wpsurl);
+        perform.setIdentifier(processid);
+        instance.perform((DescribeRequest) perform);
+        List<IInputSpecifier> inputs = perform.getInputs();
 
         assertEquals(2, inputs.size());
         InputComplexDataSpecifier geomSpec;
@@ -203,10 +203,10 @@ public class RichWPSProviderTest extends TestCase {
         arg2.setMimeType("text/xml");
         ins.put("literalInput", arg1);
         ins.put("complexInput", arg2);
-        request.setInputArguments(ins);
+        perform.setInputArguments(ins);
 
         HashMap<String, IOutputArgument> outs = new HashMap();
-        List<IOutputSpecifier> outputs = request.getOutputs();
+        List<IOutputSpecifier> outputs = perform.getOutputs();
         OutputComplexDataSpecifier outspec;
         if (outputs.get(0) instanceof OutputComplexDataSpecifier) {
             outspec = (OutputComplexDataSpecifier) outputs.get(0);
@@ -219,10 +219,10 @@ public class RichWPSProviderTest extends TestCase {
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
 
-        instance.request(request);
+        instance.perform(perform);
 
-        assertTrue(request.isException());
-        assertNotNull(request.getException());
+        assertTrue(perform.isException());
+        assertNotNull(perform.getException());
     }*/
 
     /*public void testSimpleBuffer() {
@@ -236,12 +236,12 @@ public class RichWPSProviderTest extends TestCase {
      Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
      }
 
-     ExecuteRequest request = new ExecuteRequest();
-     request.setEndpoint(wpsurl);
-     request.setIdentifier(processid);
+     ExecuteRequest perform = new ExecuteRequest();
+     perform.setEndpoint(wpsurl);
+     perform.setIdentifier(processid);
 
-     instance.wpsDescribeProcess(request);
-     List<IInputSpecifier> inputs = request.getInputs();
+     instance.wpsDescribeProcess(perform);
+     List<IInputSpecifier> inputs = perform.getInputs();
 
      assertEquals(2, inputs.size());
      InputComplexDataSpecifier geomSpec;
@@ -258,23 +258,23 @@ public class RichWPSProviderTest extends TestCase {
      InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "10");
      InputComplexDataArgument arg2 = new InputComplexDataArgument(geomSpec);
      arg2.setAsReference(true);
-     arg2.setURL("http://map.ices.dk/geoserver/sf/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sf:roads&maxFeatures=50");
+     arg2.setURL("http://map.ices.dk/geoserver/sf/ows?service=WFS&version=1.0.0&perform=GetFeature&typeName=sf:roads&maxFeatures=50");
      arg2.setMimeType("text/xml");
      ins.put("width", arg1);
      ins.put("data", arg2);
-     request.setInputArguments(ins);
+     perform.setInputArguments(ins);
 
      HashMap<String, IOutputArgument> outs = new HashMap();
-     List<IOutputSpecifier> outputs = request.getOutputs();
+     List<IOutputSpecifier> outputs = perform.getOutputs();
      OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
      OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
      outarg.setAsReference(true);
      outarg.setMimetype("text/html");
      outs.put("result", outarg);
 
-     instance.wpsExecuteProcess(request);
+     instance.wpsExecuteProcess(perform);
 
-     HashMap<String, Object> theResults = request.getResults();
+     HashMap<String, Object> theResults = perform.getResults();
      assertNotNull(theResults);
      }*/
     private IInputSpecifier createComplexDataInput() {
@@ -360,15 +360,15 @@ public class RichWPSProviderTest extends TestCase {
      Logger.getLogger(RichWPSProviderTest.class.getName()).log(Level.SEVERE, null, ex);
      }
 
-     DeployRequest request = new DeployRequest("localhost", "test", "test", "1.0", RichWPSProvider.deploymentProfile);
-     request.addInput(this.createComplexDataInput());
-     request.addInput(this.createLiteralDataInput());
-     request.addOutput(this.createComplexDataOutput());
-     request.addOutput(this.createLiteralDataOutput());
-     request.setExecutionUnit("var.identifier = in.identifier\n" +
+     DeployRequest perform = new DeployRequest("localhost", "test", "test", "1.0", RichWPSProvider.deploymentProfile);
+     perform.addInput(this.createComplexDataInput());
+     perform.addInput(this.createLiteralDataInput());
+     perform.addOutput(this.createComplexDataOutput());
+     perform.addOutput(this.createLiteralDataOutput());
+     perform.setExecutionUnit("var.identifier = in.identifier\n" +
      "bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n" +
      "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea");
-     instance.richwpsDeployProcess(request);
+     instance.richwpsDeployProcess(perform);
      }*/
     private IInputSpecifier createComplexDataInput1() {
         InputComplexDataSpecifier specifier;
@@ -437,15 +437,15 @@ public class RichWPSProviderTest extends TestCase {
 //        }
 //
 //        System.out.println("performing deploy");
-//        DeployRequest request = new DeployRequest(wpsurl, richwpsurl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
-//        request.addInput(this.createComplexDataInput1());
-//        request.addInput(this.createLiteralDataInput1());
-//        request.addOutput(this.createComplexDataOutput1());
-//        request.setExecutionUnit("var.identifier = in.identifier\n"
+//        DeployRequest perform = new DeployRequest(wpsurl, richwpsurl, "Testprocess", "A title", "2", RichWPSProvider.deploymentProfile);
+//        perform.addInput(this.createComplexDataInput1());
+//        perform.addInput(this.createLiteralDataInput1());
+//        perform.addOutput(this.createComplexDataOutput1());
+//        perform.setExecutionUnit("var.identifier = in.identifier\n"
 //                + "bind process lkn.macrophyte.selectReportingArea to local/lkn.macrophyte.selectReportingArea\n"
 //                + "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea ");
-//        instance.richwpsDeployProcess(request);
-//        assertEquals(request.isException(), false);
+//        instance.richwpsDeployProcess(perform);
+//        assertEquals(perform.isException(), false);
 //
 //        System.out.println("performing undeploy");
 //        UndeployRequest unrequest = new UndeployRequest(wpsurl, richwpsurl, "Testprocess");
@@ -460,7 +460,7 @@ public class RichWPSProviderTest extends TestCase {
         RichWPSProvider instance = new RichWPSProvider();
         GetInputTypesRequest request = new GetInputTypesRequest(wpsurl, richwpsurl);
         try {
-            instance.request(request);
+            instance.perform(request);
             List formats = request.getFormats();
             System.out.println(formats);
             assertNotNull(formats);
@@ -477,7 +477,7 @@ public class RichWPSProviderTest extends TestCase {
         RichWPSProvider instance = new RichWPSProvider();
         GetOutputTypesRequest request = new GetOutputTypesRequest(wpsurl, richwpsurl);
         try {
-            instance.request(request);
+            instance.perform(request);
             List formats = request.getFormats();
             System.out.println(formats);
             assertNotNull(formats);

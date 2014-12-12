@@ -115,7 +115,7 @@ public class RichWPSProvider implements IRichWPSProvider {
     }
 
     /**
-     * Performs a request.
+     * Performs a perform.
      *
      * @param request IRequest.
      * @see IRequest
@@ -129,7 +129,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @see GetOutputTypesRequest
      */
     @Override
-    public void request(IRequest request) {
+    public void perform(IRequest request) {
 
         final String givenendpoint = request.getEndpoint();
 
@@ -295,7 +295,7 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
         builder.setComplexTypesOnly(true);
-        // request supported types
+        // perform supported types
         Object responseObject = null;
         try {
             responseObject = richwps.getSupportedTypes(request.getServerId(), builder.build());
@@ -336,7 +336,7 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
         builder.setComplexTypesOnly(true);
-        // request supported types
+        // perform supported types
         Object responseObject = null;
         try {
             responseObject = richwps.getSupportedTypes(request.getServerId(), builder.build());
@@ -567,7 +567,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             //FIXME
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-            //this.richwps.connect(request.getEndpoint(), endp);
+            //this.richwps.connect(perform.getEndpoint(), endp);
             Object response = this.richwps.undeploy(endp, builder.getUndeploydocument());
 
             if (response == null) {
@@ -702,7 +702,7 @@ public class RichWPSProvider implements IRichWPSProvider {
             Logger.log(RichWPSProvider.class, "hasProcess", "Unable to connect to " + auri + " " + ex);
         }
         GetProcessesRequest request = new GetProcessesRequest(auri);
-        provider.request(request);
+        provider.perform(request);
         List<String> processes = request.getProcesses();
         return processes.contains(processid);
     }

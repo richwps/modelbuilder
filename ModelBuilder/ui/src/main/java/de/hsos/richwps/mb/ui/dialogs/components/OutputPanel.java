@@ -80,7 +80,7 @@ public class OutputPanel extends APanel {
         } else {
             //update only if necessary 
             if (!request.isLoaded()) {
-                this.provider.request((DescribeRequest)this.request);
+                this.provider.perform((DescribeRequest)this.request);
             }
         }
         this.prepare();

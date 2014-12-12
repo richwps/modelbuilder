@@ -101,7 +101,7 @@ public class TestModelDialog extends ADialog {
         this.previewButton.setVisible(true);
         this.nextButton.setVisible(true);
 
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
 
@@ -129,10 +129,10 @@ public class TestModelDialog extends ADialog {
         this.nextButton.setVisible(false);
         this.previewButton.setVisible(false);
 
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
-        //in case the request was allready used.
+        //in case the perform was allready used.
         this.request.flushException();
         this.request.flushResults();
 

@@ -99,7 +99,7 @@ public class ProfileModelDialog extends ADialog {
         this.previewButton.setVisible(true);
         this.nextButton.setVisible(true);
 
-        //refresh the request
+        //refresh the perform
         if (!isBackAction) {
             this.currentPanel.updateRequest();
         }
@@ -124,10 +124,10 @@ public class ProfileModelDialog extends ADialog {
         this.nextButton.setVisible(false);
         this.previewButton.setVisible(false);
 
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (ProfileRequest) this.currentPanel.getRequest();
-        //in case the request was allready used.
+        //in case the perform was allready used.
         this.request.flushException();
         this.request.flushResults();
 
@@ -263,7 +263,7 @@ public class ProfileModelDialog extends ADialog {
         this.currentPanel.updateRequest();
         this.request = (ProfileRequest) this.currentPanel.getRequest();
         //FIXME        
-        //String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
+        //String requeststr = this.provider.richwpsPreviewTestProcess(this.perform);
         String requeststr = "Not, yet.";
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");

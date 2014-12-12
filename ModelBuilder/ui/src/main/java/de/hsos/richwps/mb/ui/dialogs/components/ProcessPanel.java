@@ -38,7 +38,7 @@ public class ProcessPanel extends APanel {
         this.provider = provider;
         GetProcessesRequest procrequest = new GetProcessesRequest(wpsurl);
         try {
-            this.provider.request(procrequest);
+            this.provider.perform(procrequest);
             this.processes = procrequest.getProcesses();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Unable to load processes.");

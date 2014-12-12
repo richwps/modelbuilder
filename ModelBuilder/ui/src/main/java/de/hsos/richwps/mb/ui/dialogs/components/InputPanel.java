@@ -76,9 +76,9 @@ public class InputPanel extends APanel {
         }else if (request instanceof ProfileRequest) {
             //noop
         }else {
-            //update the request-object only if necessary 
+            //update the perform-object only if necessary 
             if (!request.isLoaded()) {
-                this.provider.request((DescribeRequest)this.request);
+                this.provider.perform((DescribeRequest)this.request);
             }
         }
         this.prepare();
@@ -90,7 +90,7 @@ public class InputPanel extends APanel {
      */
     @Override
     public void prepare() {
-        //check the request for correctness
+        //check the perform for correctness
         if (this.request.getInputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load inputs from "
                     + "process description.",
@@ -152,7 +152,7 @@ public class InputPanel extends APanel {
      */
     @Override
     public void visualize() {
-        //check the request for correctness
+        //check the perform for correctness
         if (this.request.getInputs().isEmpty()) {
             JOptionPane optionPane = new JOptionPane("Unable to load inputs from "
                     + "process description.",

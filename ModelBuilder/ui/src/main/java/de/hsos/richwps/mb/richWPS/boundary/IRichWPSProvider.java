@@ -3,7 +3,10 @@ package de.hsos.richwps.mb.richWPS.boundary;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetInputTypesRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetOutputTypesRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 
@@ -23,9 +26,9 @@ public interface IRichWPSProvider {
      * Describes a process, via wps:DescribeRequest()-Request.
      *
      * @param request ExecuteRequest with endpoint and processid.
-     *
+
      
-    public void wpsDescribeProcess(ExecuteRequest request);*/
+    public void wpsDescribeProcess(ExecuteRequest perform);*/
 
     public String wpsPreviewExecuteProcess(ExecuteRequest request);
 
@@ -34,7 +37,7 @@ public interface IRichWPSProvider {
     public String richwpsPreviewTestProcess(TestRequest request);
 
     /**
-     * Performs a request.
+     * Performs a perform.
      *
      * @param request IRequest.
      * @see IRequest
@@ -47,6 +50,6 @@ public interface IRichWPSProvider {
      * @see GetInputTypesRequest
      * @see GetOutputTypesRequest
      */
-    public void request(IRequest request);
+    public void perform(IRequest request);
 
 }

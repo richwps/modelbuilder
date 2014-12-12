@@ -104,7 +104,7 @@ public class ExecuteModelDialog extends ADialog {
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(true);
 
-        //refresh the request
+        //refresh the perform
         if (!isBackAction) {
             this.currentPanel.updateRequest();
             this.request = (ExecuteRequest) this.currentPanel.getRequest();
@@ -134,11 +134,11 @@ public class ExecuteModelDialog extends ADialog {
         this.nextButton.setVisible(false);
         this.previewButton.setVisible(false);
 
-        //refresh the request
+        //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (ExecuteRequest) this.currentPanel.getRequest();
 
-        //in case the request was allready used.
+        //in case the perform was allready used.
         this.request.flushException();
         this.request.flushResults();
 
