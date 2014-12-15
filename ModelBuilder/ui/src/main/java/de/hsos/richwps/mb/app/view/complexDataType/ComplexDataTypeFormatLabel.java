@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -32,6 +33,9 @@ public class ComplexDataTypeFormatLabel extends JPanel {
     protected Icon disabledDefaultFormat = UIManager.getIcon(AppConstants.ICON_FAVOURITE_DISABLED_KEY);
     protected Icon deselectedFormat = UIManager.getIcon(AppConstants.ICON_CHECK_DISABLED_KEY);
 
+    protected Color supportedBgColor = new Color(180, 236, 175);
+    protected Color defaultBgColor = new Color(255, 234, 170);
+    
     protected Color iconLabelBgColor = new Color(1f, 1f, 1f, 0f);
     protected Color iconLabelHighlightBgColor = UiHelper.deriveColor(AppConstants.SELECTION_BG_COLOR, 30);
 
@@ -123,11 +127,13 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         chooseDefaultLabel.setBackground(iconLabelBgColor);
         chooseDefaultLabel.setBorder(emptyBorder);
         chooseDefaultLabel.addMouseListener(defaultAdapter);
+        chooseDefaultLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         setSupportedLabel = new JLabelWithBackground();
         setSupportedLabel.setBackground(new Color(1f, 1f, 1f, 0f));
         setSupportedLabel.setBorder(emptyBorder);
         setSupportedLabel.addMouseListener(supportedAdapter);
+        setSupportedLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         formatLabel = new JLabelWithBackground();
         formatLabel.setBackground(new Color(1f, 1f, 1f, 0f));
@@ -138,12 +144,12 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         Border outer = new ColorBorder(AppConstants.SELECTION_BG_COLOR, 0, 0, 1, 0);
         setBorder(outer);
 
-        setLayout(new TableLayout(new double[][]{{TableLayout.PREFERRED, 1d, TableLayout.PREFERRED, 1d, TableLayout.FILL}, {TableLayout.PREFERRED}}));
-        add(chooseDefaultLabel, "0 0");
+        setLayout(new TableLayout(new double[][]{{TableLayout.FILL, 1d, TableLayout.PREFERRED, 1d, TableLayout.PREFERRED}, {TableLayout.PREFERRED}}));
+        add(formatLabel, "0 0");
         add(new JLabelWithBackground(AppConstants.SELECTION_BG_COLOR), "1 0");
         add(setSupportedLabel, "2 0");
         add(new JLabelWithBackground(AppConstants.SELECTION_BG_COLOR), "3 0");
-        add(formatLabel, "4 0");
+        add(chooseDefaultLabel, "4 0");
 
         update();
     }
@@ -168,10 +174,13 @@ public class ComplexDataTypeFormatLabel extends JPanel {
             formatLabel.setText(text);
         }
 
+        Color formatBgColor = this.iconLabelBgColor;
+        
         // Highlight selected supported format.
         if (isSupportedFormat) {
             setSupportedLabel.setIcon(supportedFormat);
             setSupportedLabel.setToolTipText(AppConstants.COMPLEX_FORMAT_TOOLTIP_SUPPORTEDFORMAT);
+            formatBgColor = this.supportedBgColor;
 
         } else {
             setSupportedLabel.setIcon(deselectedFormat);
@@ -183,12 +192,14 @@ public class ComplexDataTypeFormatLabel extends JPanel {
         if (isDefaultFormat) {
             chooseDefaultLabel.setIcon(defaultFormat);
             chooseDefaultLabel.setToolTipText(AppConstants.COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT);
+            formatBgColor = this.defaultBgColor;
 
         } else {
             chooseDefaultLabel.setIcon(disabledDefaultFormat);
             chooseDefaultLabel.setToolTipText(AppConstants.COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT_DESELECTED);
         }
 
+        this.formatLabel.setBackground(formatBgColor);
     }
 
     public void setIsSupportedFormat(boolean isSupportedFormat) {

@@ -265,7 +265,7 @@ public class AppConstants {
     /**
      * ToolTipText for selected supported formats.
      */
-    public static String COMPLEX_FORMAT_TOOLTIP_SUPPORTEDFORMAT_DESELECTED = "Click to add support for this format.";
+    public static String COMPLEX_FORMAT_TOOLTIP_SUPPORTEDFORMAT_DESELECTED = "Click to add as supported format.";
 
     /**
      * ToolTipText for selected default format.

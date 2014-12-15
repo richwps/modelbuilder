@@ -5,7 +5,6 @@ import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import de.hsos.richwps.mb.ui.MbDialog;
-import static de.hsos.richwps.mb.ui.MbDialog.BTN_ID_BACK;
 import static de.hsos.richwps.mb.ui.MbDialog.BTN_ID_CANCEL;
 import static de.hsos.richwps.mb.ui.MbDialog.BTN_ID_OK;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -45,7 +44,7 @@ class ComplexDataTypeFrame extends MbDialog {
             }
         });
 
-        getContentPane().setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {300}}));
+        getContentPane().setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {430}}));
         getContentPane().add(new JScrollPane(formatsList), "0 0");
 
         setResizable(true);
