@@ -8,9 +8,11 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.BoundingBoxResultRenderer;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import layout.TableLayout;
+import net.opengis.ows.x11.BoundingBoxType;
+import net.opengis.wps.x100.OutputDataType;
 
 /**
  * Dialog panel for result visualisation.
@@ -127,6 +131,26 @@ public class ResultPanel extends APanel {
                 tc.setTitleBold();
                 tc.fold();
                 this.panels.add(tc);
+            } else if (argument instanceof OutputBoundingBoxDataArgument) {
+                OutputDataType[] odts = (OutputDataType[]) results.get(key);
+                
+                OutputBoundingBoxDataArgument _argument;
+                _argument = (OutputBoundingBoxDataArgument) argument;
+                String identifier = (_argument.getSpecifier()).getIdentifier();
+                
+                for(OutputDataType odt : odts) {
+                    BoundingBoxResultRenderer pan;
+                    
+                    BoundingBoxType bbData;
+                    bbData = odt.getData().getBoundingBoxData();
+                    pan = new BoundingBoxResultRenderer(identifier,bbData);
+                    TitledComponent tc;
+                    tc = new TitledComponent(identifier, pan, 
+                            TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                    tc.setTitleBold();;
+                    tc.fold();
+                    this.panels.add(tc);
+                }
             }
         }
     }

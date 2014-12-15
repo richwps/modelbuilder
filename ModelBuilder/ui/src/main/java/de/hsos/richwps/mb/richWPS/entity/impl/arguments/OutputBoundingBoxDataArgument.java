@@ -33,7 +33,7 @@ public class OutputBoundingBoxDataArgument implements IOutputArgument {
      *
      * @return
      */
-    public OutputBoundingBoxDataSpecifier getSepcifier(){
+    public OutputBoundingBoxDataSpecifier getSpecifier(){
         return this.specifier;
     }
 }

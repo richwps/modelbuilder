@@ -94,6 +94,19 @@ public class WPSHelper {
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);
                             Logger.log(this.getClass(), "analyseResponse", "the size " + binding.getPayload().size());
                         }
+                    } else if (o instanceof OutputBoundingBoxDataArgument) {
+                        //Currently returns the BoundingBoxData when used with
+                        //*.test.MultipleComplexInAndOutputsDummyTestClass
+                        
+                        OutputBoundingBoxDataArgument argument;
+                        argument = (OutputBoundingBoxDataArgument) o;
+                        ExecuteResponseDocument.ExecuteResponse exResp;
+                        exResp = response.getExecuteResponse();
+                        if("Process successful".equals(exResp.getStatus().getProcessSucceeded())) {
+                            OutputDataType[] outputArray;
+                            outputArray = exResp.getProcessOutputs().getOutputArray();
+                            request.addResult(key, outputArray);
+                        }
                     }
                 }
             } catch (WPSClientException e) {

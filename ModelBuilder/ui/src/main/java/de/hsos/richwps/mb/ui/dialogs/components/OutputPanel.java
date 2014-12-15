@@ -220,6 +220,7 @@ public class OutputPanel extends APanel {
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
             }
+            
         }
         this.request.setOutputArguments(theoutputs);
     }
