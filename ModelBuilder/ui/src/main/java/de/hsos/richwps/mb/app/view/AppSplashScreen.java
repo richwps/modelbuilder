@@ -30,12 +30,17 @@ public class AppSplashScreen extends JWindow {
     private final JLabel progLabel;
     private final JLabel splashLabel;
 
+    private boolean xmasEgg = false;
+
     public AppSplashScreen() {
         // Message Label
         msgLabel = new JLabel();
         msgLabel.setFont(msgLabel.getFont().deriveFont(Font.ITALIC));
         msgLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
         int msgLabelHeight = 20;
+
+        long time = System.currentTimeMillis() / 1000;
+        xmasEgg = 1418947261 < time && time < 1420066799;
 
         // Progress bar
         progLabel = new JLabel(" ") {
@@ -50,7 +55,11 @@ public class AppSplashScreen extends JWindow {
         int progLabelHeight = 2;
 
         // Splash image
-        Icon splashImage = new ImageIcon(AppConstants.SPLASH_BG);
+        String imageUrl = AppConstants.SPLASH_BG;
+        if (xmasEgg) {
+            imageUrl = imageUrl.replace("bg", "bg_x");
+        }
+        Icon splashImage = new ImageIcon(imageUrl);
         splashLabel = new JLabelWithBackground(splashImage, "", SwingConstants.CENTER);
         splashLabel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 
@@ -105,12 +114,13 @@ public class AppSplashScreen extends JWindow {
         }
         Color color = new Color(r, g, 0);
         progLabel.setBackground(color);
-        splashLabel.setBackground(new Color(r, g, 0));
-        
-        // TODO remove after christmas...
-        try {
-            Thread.sleep(200);
-        } catch (InterruptedException ex) {
+
+        if (this.xmasEgg) {
+            splashLabel.setBackground(new Color(r, g, 0));
+            try {
+                Thread.sleep(400);
+            } catch (InterruptedException ex) {
+            }
         }
     }
 
