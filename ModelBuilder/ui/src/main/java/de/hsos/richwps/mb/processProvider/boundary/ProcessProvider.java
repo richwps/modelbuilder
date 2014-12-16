@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.processProvider.boundary;
 
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
@@ -28,7 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Connects to the semantic proxy and receives/provides a list of available
+ * Connects to the SemanticProxy and receives/provides a list of available
  * processes.
  *
  * @author dziegenh
@@ -110,15 +111,15 @@ public class ProcessProvider {
 
     protected void fireSpReceiveExceptionAsAppEvent(Exception ex) {
         String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, ex.getClass().getSimpleName(), ex.getMessage());
-        AppEventService.getInstance().fireAppEvent(msg, this);
+        AppEventService.getInstance().fireAppEvent(msg, this, AppEvent.PRIORITY.URGENT);
     }
 
     public void clear() {
         if (null != spClient) {
             spClient.clearCache();
-            getServerProvider().clearCache();
             this.net = null;
         }
+        getServerProvider().clearCache();
     }
 
     /**
@@ -318,9 +319,9 @@ public class ProcessProvider {
     }
 
     /**
-     * Returns a list containing matching processes. The list is empty if no
-     * processes were found. If any error occurs, null is returned and the
-     * exception message is shown in the SP InfoTab.
+     * Returns a list containing matching SemanticProxy processes. The list is
+     * empty if no processes were found. If any error occurs, null is returned
+     * and the exception message is shown in the SP InfoTab.
      *
      * @param query
      * @return
@@ -350,9 +351,25 @@ public class ProcessProvider {
         return this.publisher;
     }
 
+    /**
+     * Published the given process at the currently connected SemanticProxy. If
+     * the process endpoint doesn't exist at the SP, it will also be published.
+     *
+     * @param process
+     * @throws Exception
+     */
     public void publishProcess(ProcessEntity process) throws Exception {
-        WPS[] wpss = getServerProvider().getWPSs();
-        getPublisher().publishProcess(wpss, process);
+        WPS wps = getServerProvider().getSpWpsByEndpoint(process.getServer());
+
+        // endpoint not existing at SP -> publish it and get the new WPS
+        if (null == wps) {
+            getPublisher().publishWps(process.getServer());
+            clear(); // force requesting WPSs
+            connect(spUrl);
+            wps = getServerProvider().getSpWpsByEndpoint(process.getServer());
+        }
+
+        getPublisher().publishProcess(wps, process);
     }
 
     public void setProcessMetricProvider(ProcessMetricProvider metricProvider) {

@@ -409,6 +409,8 @@ public class AppActionHandler implements IAppActionHandler {
 
         try {
             app.getProcessProvider().publishProcess(process);
+            doReloadProcesses();
+            
             tabMsg = AppConstants.SEMANTICPROXY_PUBLISH_SUCCESS;
             
         } catch (Exception ex) {

@@ -132,8 +132,8 @@ public class ServerProvider {
         return servers;
     }
 
-    public WPS getSpWpsByEndpoint(String serverEndpoint) throws RDFException {
-        return ServerProvider.getSpWpsByEndpoint(this.wpss, serverEndpoint);
+    public WPS getSpWpsByEndpoint(String serverEndpoint) throws Exception {
+        return ServerProvider.getSpWpsByEndpoint(this.getWPSs(), serverEndpoint);
     }
 
     public static WPS getSpWpsByEndpoint(WPS[] wpss, String serverEndpoint) throws RDFException {

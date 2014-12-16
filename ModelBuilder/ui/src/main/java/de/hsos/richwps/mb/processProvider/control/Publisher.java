@@ -1,37 +1,62 @@
 package de.hsos.richwps.mb.processProvider.control;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.sp.client.InternalSPException;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
 import de.hsos.richwps.sp.client.ows.posttypes.PostProcess;
 import de.hsos.richwps.sp.client.ows.posttypes.PostWPS;
+import java.net.URL;
 
 /**
+ * Provides methods for publishing at the SemanticProxy.
  *
  * @author dziegenh
  */
 public class Publisher {
 
-    public void publishProcess(WPS[] spWpss, ProcessEntity process) throws Exception {
+    /**
+     * Tries to post the given process at the SemanticProxy via the SPClient.
+     *
+     * @param wps the SP's WPS to which the process should be added.
+     * @param process the ModelBuilder's process which should be published.
+     * @throws Exception
+     */
+    public void publishProcess(WPS wps, ProcessEntity process) throws Exception {
 
-        String server = process.getServer();
-        WPS wps = ServerProvider.getSpWpsByEndpoint(spWpss, server);
-        PostWPS postWps = new PostWPS();
+        PostWPS processPostWps = new PostWPS(wps.getRDFID());
+        PostProcess postProcess = EntityConverter.createSpProcess(processPostWps, process);
 
-        // TODO handle non-existing WPS ! (->postWps())
-        if (null == wps) {
-//                PostWPS postWPS = new PostWPS();
-//                postWPS.setEndpoint(new URL(server));
-//                postWPS.setRichWPSEndpoint(new URL(wps.getRichWPSEndpoint()));
+        try {
+            SPClient.getInstance().postProcess(postProcess);
 
-        } else {
-            postWps.setRdfId(wps.getRDFID());
+            // FIXME create a unique exception for posting already published processes 
+            //  - OR - 
+            // integrate hasProcess(WPS, id) at SPClient in order to distinguish postProcess and updateProcess
+        } catch (InternalSPException ispex) {
+            if (ispex.getMessage().contains("A process with this WPS and identifier is already registered")) {
+                // FIXME won't work (see SP ticket #1)
+                SPClient.getInstance().updateProcess(postProcess);
+            } else {
+                throw ispex;
+            }
         }
+    }
 
-        PostProcess postProcess = EntityConverter.createSpProcess(postWps, process);
-
-        SPClient.getInstance().postProcess(postProcess);
+    /**
+     * Tries to post a WPS for the given endpoint at the SemanticProxy via the
+     * SPClient.
+     *
+     * @param server the endpoint for the WPS.
+     * @throws Exception
+     */
+    public void publishWps(String server) throws Exception {
+        PostWPS postWPS = new PostWPS();
+        postWPS.setEndpoint(new URL(server));
+        String richWps = server.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        postWPS.setRichWPSEndpoint(new URL(richWps));
+        SPClient.getInstance().postWPS(postWPS);
     }
 
 }
