@@ -58,14 +58,14 @@ class SemanticProxyTabs extends JTabbedPane {
         if (!searchResultTabs.containsKey(query)) {
 
             // create and add tab
-            tab = new SpSearchresultTab(query, interactionComponents);
+            final SpSearchresultTab theTab = new SpSearchresultTab(query, interactionComponents);
             if (appHasModel) {
-                tab.initDnd();
+                theTab.initDnd();
             }
 
-            searchResultTabs.put(query, tab);
-            addTab(query, tab);
-            final int tabIndex = indexOfComponent(tab);
+            searchResultTabs.put(query, theTab);
+            addTab(query, theTab);
+            final int tabIndex = indexOfComponent(theTab);
 
             final SpTabTitle tabTitle = new SpTabTitle(this, query, query);
             tabComponent = tabTitle;
@@ -76,9 +76,10 @@ class SemanticProxyTabs extends JTabbedPane {
             tabTitle.addClickListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    setSelectedIndex(tabIndex);
+                    setSelectedIndex(indexOfComponent(theTab));
                 }
             });
+            tab = theTab;
 
         } else {
 
