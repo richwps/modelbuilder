@@ -1,12 +1,15 @@
 package de.hsos.richwps.mb.app.view;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -25,6 +28,7 @@ public class AppSplashScreen extends JWindow {
 
     private final JLabel msgLabel;
     private final JLabel progLabel;
+    private final JLabel splashLabel;
 
     public AppSplashScreen() {
         // Message Label
@@ -47,7 +51,7 @@ public class AppSplashScreen extends JWindow {
 
         // Splash image
         Icon splashImage = new ImageIcon(AppConstants.SPLASH_BG);
-        JLabel splashLabel = new JLabel("", splashImage, SwingConstants.CENTER);
+        splashLabel = new JLabelWithBackground(splashImage, "", SwingConstants.CENTER);
         splashLabel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1));
 
         // Main Layout
@@ -99,7 +103,15 @@ public class AppSplashScreen extends JWindow {
             r = 255 - (int) (255 * 2 * (p - .5));
             g = 255;
         }
-        progLabel.setBackground(new Color(r, g, 0));
+        Color color = new Color(r, g, 0);
+        progLabel.setBackground(color);
+        splashLabel.setBackground(new Color(r, g, 0));
+        
+        // TODO remove after christmas...
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException ex) {
+        }
     }
 
     /**

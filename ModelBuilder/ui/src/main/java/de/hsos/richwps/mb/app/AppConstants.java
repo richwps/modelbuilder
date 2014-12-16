@@ -56,7 +56,7 @@ public class AppConstants {
      */
     public final static String RES_IMAGES_DIR = RESOURCES_DIR + FSEP + "images";
 
-    public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg.png";
+    public static String SPLASH_BG = RES_IMAGES_DIR + FSEP + "splash_bg_x.png"; //"splash_bg.png";
 
     public final static String SEMANTICPROXY_DEFAULT_URL = "http://richwps.edvsz.hs-osnabrueck.de/semanticproxy";
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. Please check the configuration.";
