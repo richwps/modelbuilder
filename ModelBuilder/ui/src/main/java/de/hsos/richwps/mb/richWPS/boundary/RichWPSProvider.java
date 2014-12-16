@@ -203,8 +203,12 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public String wpsPreviewExecuteProcess(ExecuteRequest request) {
         final WPSHelper helper = new WPSHelper();
-        String severid = request.getEndpoint();
+        String serverid = request.getEndpoint();
         String processid = request.getIdentifier();
+        try{
+        this.connect(serverid);
+        }catch (Exception e){
+        }
 
         HashMap theinputs = request.getInputArguments();
         HashMap theoutputs = request.getOutputArguments();
@@ -219,8 +223,8 @@ public class RichWPSProvider implements IRichWPSProvider {
         try {
             execute = executeBuilder.getExecute();
             execute.getExecute().setService("WPS");
+            this.disconnect();
             return execute.toString();
-
         } catch (Exception e) {
             Logger.log(this.getClass(), "wpsPreviewExecuteProcess()", processid + ", " + e);
         }
