@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.entity.IOwsObject;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;

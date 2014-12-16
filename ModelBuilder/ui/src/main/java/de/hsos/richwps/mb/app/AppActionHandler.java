@@ -10,11 +10,14 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
+import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -134,12 +137,12 @@ public class AppActionHandler implements IAppActionHandler {
 
             getGraphView().newGraph(remote);
             app.getFrame().resetGraphViewTitle();
-            
+
             // override "changes saved" status
             app.setCurrentModelFilename(".");
             app.setChangesSaved(true);
             app.setCurrentModelFilename(null);
-            
+
             app.modelLoaded();
         }
     }
@@ -363,7 +366,7 @@ public class AppActionHandler implements IAppActionHandler {
         app.showTestModel();
     }
 
-        private void doProfileModel() {
+    private void doProfileModel() {
         app.showProfileModel();
     }
 
@@ -400,6 +403,31 @@ public class AppActionHandler implements IAppActionHandler {
     private void doPublish() {
         Graph graph = app.getGraphView().getGraph();
         ProcessEntity process = graph.getRepresentingProcess();
-        app.getProcessProvider().publishProcess(process);
+
+        String tabMsg;
+        AppEvent.PRIORITY eventPrio = AppEvent.PRIORITY.DEFAULT;
+
+        try {
+            app.getProcessProvider().publishProcess(process);
+            tabMsg = AppConstants.SEMANTICPROXY_PUBLISH_SUCCESS;
+            
+        } catch (Exception ex) {
+
+            // Format error message
+            tabMsg = String.format(
+                    AppConstants.SEMANTICPROXY_PUBLISH_ERROR_DETAILLED,
+                    ex.getClass().getSimpleName(),
+                    ex.getMessage());
+
+            eventPrio = AppEvent.PRIORITY.URGENT;
+
+            String msg
+                    = AppConstants.SEMANTICPROXY_PUBLISH_ERROR
+                    + "\n\t"
+                    + AppConstants.SEE_LOGGING_TABS;
+            app.showErrorMessage(msg);
+        }
+
+        AppEventService.getInstance().fireAppEvent(tabMsg, app.getProcessProvider(), eventPrio);
     }
 }

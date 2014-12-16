@@ -62,6 +62,9 @@ public class AppConstants {
     public final static String SEMANTICPROXY_NOT_REACHABLE = "SemanticProxy is not reachable. Please check the configuration.";
     public final static String SEMANTICPROXY_RECEIVE_ERROR = "An error occured while receiving from SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
     public final static String SEMANTICPROXY_CANNOT_CREATE_CLIENT = "Error while creating SemanticProxy client! Please check the SemanticProxy preferences.";
+    final static String SEMANTICPROXY_PUBLISH_SUCCESS = "The process has successfully been published at the SemanticProxy.";
+    final static String SEMANTICPROXY_PUBLISH_ERROR = "An error occured while publishing the process at SemanticProxy.";
+    final static String SEMANTICPROXY_PUBLISH_ERROR_DETAILLED = "An error occured while publishing the process at SemanticProxy.\n\tError type: '%s'\n\tError message: '%s'";
 
     // Dialoges
     public final static String DIALOG_BTN_CLOSE = "Close";
@@ -108,7 +111,6 @@ public class AppConstants {
     public final static String DEPLOY_SUCCESS = "Deployment performed successfully.";
     public final static String DEPLOY_FAILURE = "Deployment failed.";
 
-    
     //Execute Dialog
     public final static String EXECUTE_DIALOG_TITLE = "Execute a remote process";
 
@@ -129,7 +131,6 @@ public class AppConstants {
     //Profile Dialog
     public final static String PROFILE_THIS_DIALOG_TITLE = "Profile the opend model";
 
-    
     //Execute/Undeployerror Dialog
     public final static String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
     public final static String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
@@ -256,12 +257,12 @@ public class AppConstants {
      * If not null, this locale will be set globally as default.
      */
     static Locale DEFAULT_LOCALE = null;
-    
+
     /**
      * ToolTipText for selected supported formats.
      */
     public static String COMPLEX_FORMAT_TOOLTIP_SUPPORTEDFORMAT = "Supported format. Click to remove support for this format.";
-    
+
     /**
      * ToolTipText for selected supported formats.
      */
@@ -271,7 +272,7 @@ public class AppConstants {
      * ToolTipText for selected default format.
      */
     public static String COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT = "Current default format.";
-    
+
     /**
      * ToolTipText for deselected default format.
      */

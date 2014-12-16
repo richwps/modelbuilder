@@ -74,7 +74,6 @@ public class ProcessProvider {
      */
     public boolean connect(String url) throws Exception {
         this.spUrl = url;
-        
 
         try {
             //init SP client
@@ -351,16 +350,8 @@ public class ProcessProvider {
         return this.publisher;
     }
 
-    public void publishProcess(ProcessEntity process) {
-        WPS[] wpss = null;
-
-        try {
-            wpss = getServerProvider().getWPSs();
-        } catch (Exception ex) {
-            // TODO handle exception
-            Logger.log(ex);
-        }
-
+    public void publishProcess(ProcessEntity process) throws Exception {
+        WPS[] wpss = getServerProvider().getWPSs();
         getPublisher().publishProcess(wpss, process);
     }
 

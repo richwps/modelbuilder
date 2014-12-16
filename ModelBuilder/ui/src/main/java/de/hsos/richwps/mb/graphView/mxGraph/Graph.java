@@ -14,11 +14,6 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
-import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_ABSTRACT;
-import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
-import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER;
-import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_TITLE;
-import static de.hsos.richwps.mb.graphView.mxGraph.GraphModel.PROPERTIES_KEY_OWS_VERSION;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.LinkedList;
@@ -628,12 +623,11 @@ public class Graph extends mxGraph {
         // add ports
         for (ProcessPort aPort : ports) {
             ProcessPort derived = aPort.clone();
-            derived.setGlobal(false);
 
             if (aPort.isGlobalInput()) {
-                process.addInputPort(aPort);
+                process.addInputPort(derived);
             } else if (aPort.isGlobalOutput()) {
-                process.addOutputPort(aPort);
+                process.addOutputPort(derived);
             }
         }
 

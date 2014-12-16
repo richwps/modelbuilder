@@ -60,7 +60,7 @@ public class ProcessPort extends OwsObjectWithProperties {
             updateDescriptionProperty(datatype);
         }
 
-        if (isGlobalInput()) {
+        if (isGlobalInput() || isFlowInput()) {
             hasMinMaxOccurs = true;
 
             if (!owsGroup.hasProperty(PROPERTY_KEY_MINOCCURS)) {

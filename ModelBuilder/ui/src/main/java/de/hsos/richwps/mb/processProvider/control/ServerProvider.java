@@ -28,7 +28,7 @@ public class ServerProvider {
     public void clearCache() {
         this.wpss = null;
     }
-    
+
     public WPS[] getWPSs() throws Exception {
         if (null == this.wpss) {
             this.wpss = net.getWPSs();
@@ -130,5 +130,19 @@ public class ServerProvider {
         }
 
         return servers;
+    }
+
+    public WPS getSpWpsByEndpoint(String serverEndpoint) throws RDFException {
+        return ServerProvider.getSpWpsByEndpoint(this.wpss, serverEndpoint);
+    }
+
+    public static WPS getSpWpsByEndpoint(WPS[] wpss, String serverEndpoint) throws RDFException {
+        for (WPS aWps : wpss) {
+            if (aWps.getEndpoint().equals(serverEndpoint)) {
+                return aWps;
+            }
+        }
+
+        return null;
     }
 }

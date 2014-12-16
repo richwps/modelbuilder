@@ -140,11 +140,13 @@ public class ProcessEntity extends OwsObjectWithProperties {
     }
 
     public void addInputPort(ProcessPort port) {
+//        port.setGlobal(false);
         port.setFlowInput(true);
         inputPorts.add(port);
     }
 
     public void addOutputPort(ProcessPort port) {
+//        port.setGlobal(false);
         port.setFlowOutput(true);
         outputPorts.add(port);
     }
