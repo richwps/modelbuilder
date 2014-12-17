@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.monitor.boundary;
 
+import de.hsos.ecs.richwps.wpsmonitor.boundary.restful.metric.MeasuredValue;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClient;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientFactory;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsMetricResource;
@@ -57,16 +58,16 @@ public class ProcessMetricProvider {
 
                 // add metric values to sub group as properties
                 //TODO adjust API usage.
-                /*for (Map.Entry<String, Number> aMetricValue : aMetric.getValue()..getData().entrySet()) {
-
-                 // create property
-                 String propertyName = translateMonitorKey(aMetricValue.getKey());
-                 String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
-                 String propertyValue = aMetricValue.getValue().toString();
-                 Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
-
-                 subGroup.addObject(property);
-                 }*/
+                for (Map.Entry<String, MeasuredValue> aMetricValue : aMetric.getValue().getValues().entrySet()) {
+//
+//                 // create property
+                    String propertyName = translateMonitorKey(aMetricValue.getKey());
+                    String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
+                    String propertyValue = aMetricValue.getValue().toString();
+                    Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
+//
+                    subGroup.addObject(property);
+                }
                 groups.addObject(subGroup);
             }
         } catch (Exception ex) {

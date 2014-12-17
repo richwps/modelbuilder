@@ -358,7 +358,7 @@ public class App {
     void modelLoaded() {
         getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
-
+        
         getPropertiesView().clearPropertyCache();
 
         if (hasSubTreeView()) {
