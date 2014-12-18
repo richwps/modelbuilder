@@ -1,16 +1,19 @@
 package de.hsos.richwps.mb.processProvider.control;
 
+import com.sun.javafx.font.Metrics;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
-import de.hsos.richwps.sp.client.ows.gettypes.WPS;
+import de.hsos.richwps.sp.client.ows.gettypes.Input;
+import de.hsos.richwps.sp.client.ows.gettypes.Output;
 import de.hsos.richwps.sp.client.ows.posttypes.PostBoundingBoxData;
 import de.hsos.richwps.sp.client.ows.posttypes.PostComplexData;
 import de.hsos.richwps.sp.client.ows.posttypes.PostComplexDataCombination;
@@ -21,8 +24,8 @@ import de.hsos.richwps.sp.client.ows.posttypes.PostOutput;
 import de.hsos.richwps.sp.client.ows.posttypes.PostProcess;
 import de.hsos.richwps.sp.client.ows.posttypes.PostQoSTarget;
 import de.hsos.richwps.sp.client.ows.posttypes.PostWPS;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  *
@@ -85,12 +88,6 @@ public class EntityConverter {
             postPort.setIdentifier(aPort.getOwsIdentifier());
             postPort.setTitle(aPort.getOwsTitle());
 
-            value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
-            postPort.setMaxOcc((int) value);
-
-            value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
-            postPort.setMinOcc((int) value);
-
             // TODO what about max mb ?
             // value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
             // ...
@@ -123,7 +120,7 @@ public class EntityConverter {
         // add empty array to prevent null pointer exception...
         // the target values are to be set via the MB's QoS tool
         postProcess.setQosTargets(new ArrayList<PostQoSTarget>());
-        
+
         return postProcess;
     }
 
@@ -147,9 +144,9 @@ public class EntityConverter {
 
                 spComplexDatatype.setSupportedFormats(spSupportedFormats);
                 spComplexDatatype.setDefaultFormat(createSpDatatypeComplexFormat(datatype.getDefaultFormat()));
-                
+
                 spDatatype = spComplexDatatype;
-                
+
                 break;
 
             case BOUNDING_BOX:
@@ -178,4 +175,65 @@ public class EntityConverter {
         return spDatatype;
     }
 
+    public static ProcessPort createProcessInput(Input spInput) throws Exception {
+        ProcessPortDatatype datatype = EntityConverter.getDatatype(spInput.getInputFormChoice());
+
+        ProcessPort inPort = new ProcessPort(datatype);
+        inPort.setOwsIdentifier(spInput.getIdentifier());
+        inPort.setOwsAbstract(spInput.getAbstract());
+        inPort.setOwsTitle(spInput.getTitle());
+
+        Collection<? extends IObjectWithProperties> properties = inPort.getProperties();
+        for (IObjectWithProperties aPropertyObject : properties) {
+
+            if (aPropertyObject instanceof Property) {
+
+                Property aProperty = (Property) aPropertyObject;
+                String aKey = aProperty.getPropertiesObjectName();
+
+                switch (aKey) {
+                    case ProcessPort.PROPERTY_KEY_MINOCCURS:
+                        aProperty.setValue(spInput.getMinOccurs());
+                        break;
+
+                    case ProcessPort.PROPERTY_KEY_MAXOCCURS:
+                        aProperty.setValue(spInput.getMaxOccurs());
+                        break;
+
+                    case ProcessPort.PROPERTY_KEY_MAXMB:
+                        // TODO max MB ??
+                        break;
+                }
+            }
+
+        }
+
+        return inPort;
+    }
+
+    public static ProcessPort createProcessOutput(Output spOutput) throws Exception {
+        ProcessPortDatatype datatype = EntityConverter.getDatatype(spOutput.getOutputFormChoice());
+
+        ProcessPort inPort = new ProcessPort(datatype);
+        inPort.setOwsIdentifier(spOutput.getIdentifier());
+        inPort.setOwsAbstract(spOutput.getAbstract());
+        inPort.setOwsTitle(spOutput.getTitle());
+
+        Collection<? extends IObjectWithProperties> properties = inPort.getProperties();
+        for (IObjectWithProperties aPropertyObject : properties) {
+
+            if (aPropertyObject instanceof Property) {
+
+                Property aProperty = (Property) aPropertyObject;
+                String aKey = aProperty.getPropertiesObjectName();
+
+                switch (aKey) {
+                    // currently no additional properties.
+                }
+            }
+
+        }
+
+        return inPort;
+    }
 }

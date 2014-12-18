@@ -14,10 +14,10 @@ public class ProcessPort extends OwsObjectWithProperties {
     public static String TOOLTIP_STYLE_INPUT = "";
     public static String TOOLTIP_STYLE_OUTPUT = "";
 
-    public static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
-    public static String PROPERTY_KEY_MINOCCURS = "Min occurs";
-    public static String PROPERTY_KEY_MAXOCCURS = "Max occurs";
-    public static String PROPERTY_KEY_MAXMB = "Max MB";
+    public final static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
+    public final static String PROPERTY_KEY_MINOCCURS = "Min occurs";
+    public final static String PROPERTY_KEY_MAXOCCURS = "Max occurs";
+    public final static String PROPERTY_KEY_MAXMB = "Max MB";
 
     public static String COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX = "Datatype description complex";
     public static String COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL = "Datatype description literal";
@@ -45,6 +45,25 @@ public class ProcessPort extends OwsObjectWithProperties {
         updateDescriptionProperty(processPortDatatype);
     }
 
+    public static Property createPortProperty(final String propertyKey) {
+        Property created = null;
+
+        switch (propertyKey) {
+            case PROPERTY_KEY_MINOCCURS:
+                created = new Property<Integer>(PROPERTY_KEY_MINOCCURS, Property.COMPONENT_TYPE_INTEGER, null);
+                break;
+
+            case PROPERTY_KEY_MAXOCCURS:
+                created = new Property<Integer>(PROPERTY_KEY_MAXOCCURS, Property.COMPONENT_TYPE_INTEGER, null);
+                break;
+                
+            case PROPERTY_KEY_MAXMB:
+                created = new Property<Integer>(PROPERTY_KEY_MAXMB, Property.COMPONENT_TYPE_INTEGER, null);
+                break;
+        }
+        return created;
+    }
+
     @Override
     protected void createProperties(String owsIdentifier) {
         super.createProperties(owsIdentifier);
@@ -53,7 +72,6 @@ public class ProcessPort extends OwsObjectWithProperties {
         boolean hasMaxMb = false;
 
         // create missing properties if necessary
-        
         if (!owsGroup.hasProperty(PROPERTY_KEY_DATATYPEDESCRIPTION)) {
             Property descriptionProperty = new Property<>(PROPERTY_KEY_DATATYPEDESCRIPTION, (IDataTypeDescription) null, global);
             owsGroup.addObject(descriptionProperty);
@@ -64,24 +82,23 @@ public class ProcessPort extends OwsObjectWithProperties {
             hasMinMaxOccurs = true;
 
             if (!owsGroup.hasProperty(PROPERTY_KEY_MINOCCURS)) {
-                owsGroup.addObject(new Property<Integer>(PROPERTY_KEY_MINOCCURS, Property.COMPONENT_TYPE_INTEGER, null));
+                owsGroup.addObject(createPortProperty(PROPERTY_KEY_MINOCCURS));
             }
 
             if (!owsGroup.hasProperty(PROPERTY_KEY_MAXOCCURS)) {
-                owsGroup.addObject(new Property<Integer>(PROPERTY_KEY_MAXOCCURS, Property.COMPONENT_TYPE_INTEGER, null));
+                owsGroup.addObject(createPortProperty(PROPERTY_KEY_MAXOCCURS));
             }
 
             if (ProcessPortDatatype.COMPLEX.equals(this.datatype)) {
                 hasMaxMb = true;
 
                 if (!owsGroup.hasProperty(PROPERTY_KEY_MAXMB)) {
-                    owsGroup.addObject(new Property<Integer>(PROPERTY_KEY_MAXMB, Property.COMPONENT_TYPE_INTEGER, null));
+                    owsGroup.addObject(createPortProperty(PROPERTY_KEY_MAXMB));
                 }
             }
         }
 
         // remove eventually existing properties if they do not apply to this port+
-        
         if (!hasMinMaxOccurs) {
             owsGroup.removeProperty(PROPERTY_KEY_MINOCCURS);
             owsGroup.removeProperty(PROPERTY_KEY_MAXOCCURS);
@@ -265,7 +282,6 @@ public class ProcessPort extends OwsObjectWithProperties {
             }
 
             // TODO update capacity after refactoring! #48
-            
             // length of vars + 4 characters for datatype + size of "<html></html>" tags + size of "<b></b>" tags + size of "<i></i>" tags + size of "<br>" tags
             int sbCapacity = getOwsTitle().length() + getOwsIdentifier().length() + getOwsAbstract().length() + 1 + 13 + 7 + 7 + 8; // TODO add size of port texts!
             StringBuilder sb = new StringBuilder(sbCapacity);

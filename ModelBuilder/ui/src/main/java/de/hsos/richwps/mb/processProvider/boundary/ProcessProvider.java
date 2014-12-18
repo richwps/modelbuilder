@@ -153,14 +153,17 @@ public class ProcessProvider {
 
         ProcessEntity process = null;
 
+        // find desired process at the desired endpoint (server)
         try {
-            // find desired endpoint (server)
             for (WPS wps : getServerProvider().getWPSs()) {
+
                 try {
+                    // this is the server we are looking for
                     if (server.equals(wps.getEndpoint())) {
 
                         for (Process spProcess : wps.getProcesses()) {
 
+                            // this is the process we are looking for
                             if (spProcess.getIdentifier().equals(identifier)) {
 
                                 // if any error occurs, the "fully loaded" flag will not be set
@@ -171,16 +174,12 @@ public class ProcessProvider {
 
                                 // Map input ports
                                 try {
-                                    for (Input spInput : spProcess.getInputs()) {
-                                        ProcessPortDatatype datatype = EntityConverter.getDatatype(spInput.getInputFormChoice());
-                                        ProcessPort inPort = new ProcessPort(datatype);
-                                        inPort.setOwsIdentifier(spInput.getIdentifier());
-                                        inPort.setOwsAbstract(spInput.getAbstract());
-                                        inPort.setOwsTitle(spInput.getTitle());
 
-                                        // TODO map complex data form (see output form converter)
+                                    for (Input spInput : spProcess.getInputs()) {
+                                        ProcessPort inPort = EntityConverter.createProcessInput(spInput);
                                         process.addInputPort(inPort);
                                     }
+
                                 } catch (Exception ex) {
                                     loadError = true;
                                     fireSpReceiveExceptionAsAppEvent(ex);
@@ -188,30 +187,12 @@ public class ProcessProvider {
 
                                 // Map output ports
                                 try {
-                                    for (Output spOutput : spProcess.getOutputs()) {
-                                        final InAndOutputForm outputFormChoice = spOutput.getOutputFormChoice();
-                                        ProcessPortDatatype datatype = EntityConverter.getDatatype(outputFormChoice);
 
-                                        // TODO move to EntityConverter
-//                                        if(datatype.equals(ProcessPortDatatype.COMPLEX)) {
-//                                            ComplexData complexForm =  (ComplexData) outputFormChoice;
-//                                            
-//                                            // TODO convert defaul format
-//                                            ComplexDataCombination defaultFormat = complexForm.getDefaultFormat();
-//                                            defaultFormat.getEncoding(); // may be null
-//                                            defaultFormat.getSchema();   // may be null
-//                                        
-//                                            // TODO INPUTS: convert MaxMB -> don't convert for outputs !
-//                                            
-//                                            // TODO convert supported formats
-//                                            
-//                                        }
-                                        ProcessPort outPort = new ProcessPort(datatype);
-                                        outPort.setOwsIdentifier(spOutput.getIdentifier());
-                                        outPort.setOwsAbstract(spOutput.getAbstract());
-                                        outPort.setOwsTitle(spOutput.getTitle());
+                                    for (Output spOutput : spProcess.getOutputs()) {
+                                        ProcessPort outPort = EntityConverter.createProcessOutput(spOutput);
                                         process.addOutputPort(outPort);
                                     }
+
                                 } catch (Exception ex) {
                                     loadError = true;
                                     fireSpReceiveExceptionAsAppEvent(ex);
@@ -220,9 +201,10 @@ public class ProcessProvider {
                                 // Add metric properties
                                 getMonitorDataConverter().addProcessMetrics(process);
 
-                                // process found, return to stop search
+                                // if any error occured, the process data is propably not complete
                                 process.setIsFullyLoaded(!loadError);
 
+                                // process found, return to stop search
                                 return process;
                             }
                         }
@@ -278,7 +260,7 @@ public class ProcessProvider {
 
         // handle occured errors
         if (null != errorMsg) {
-            String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, "Exception", errorMsg);
+            String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, errorMsgType, errorMsg);
             AppEventService.getInstance().fireAppEvent(msg, this);
         }
 
