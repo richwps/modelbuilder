@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.control.ProcessEntityTitleComparator;
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral;
@@ -98,6 +99,8 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         // Create and fill Process node
         if (processProvider != null) {
+            ProcessEntityTitleComparator processComparator = new ProcessEntityTitleComparator();
+            
             try {
                 String url = getSpUrlFromConfig();
 
@@ -108,7 +111,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
                     for (WpsServer server : processProvider.getAllServerWithProcesses()) {
                         DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server.getEndpoint());
 
-                        for (ProcessEntity process : server.getProcesses()) {
+                        // sort the server's processes alphabetically by title
+                        List<ProcessEntity> processes = server.getProcesses();
+                        processes.sort(processComparator);
+                        for (ProcessEntity process : processes) {
                             if (clearCache) {
                                 process.setIsFullyLoaded(false);
                             }
