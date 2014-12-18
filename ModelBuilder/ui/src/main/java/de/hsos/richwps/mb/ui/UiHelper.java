@@ -248,4 +248,16 @@ public class UiHelper {
                 alpha);
     }
 
+    /**
+     * Returns the given String or, if it is null, an empty String.
+     * @param string the String
+     * @return the given String or, if it is null, an empty String.
+     */
+    public static String avoidNull(String string) {
+        if(null == string)
+            return "";
+        
+        return string;
+    }
+    
 }
