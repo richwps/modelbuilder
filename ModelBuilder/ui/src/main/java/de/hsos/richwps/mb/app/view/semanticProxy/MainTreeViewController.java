@@ -113,7 +113,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
                         // sort the server's processes alphabetically by title
                         List<ProcessEntity> processes = server.getProcesses();
-                        processes.sort(processComparator);
+                        //processes.sort(processComparator);
                         for (ProcessEntity process : processes) {
                             if (clearCache) {
                                 process.setIsFullyLoaded(false);
