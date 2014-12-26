@@ -11,12 +11,14 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArg
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
@@ -85,7 +87,17 @@ public class WPSHelper {
                         OutputComplexDataArgument argument = (OutputComplexDataArgument) o;
                         if (argument.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
-                            request.addResult(key, httpkvpref);
+                            request.addResult(key, httpkvpref); 
+                            
+                            //Todo: Objectify for instanceof check
+                            /*
+                            URL httpKVPref = new URL(httpkvpref);
+                            
+                            if(httpKVPref.toString().equalsIgnoreCase(httpkvpref)) {
+                            } else {
+                                //...
+                            }
+                            */
                         } else {
                             // FIXME proper analytics for different bindings.
                             // Blocked by broken commons implementation.
@@ -111,7 +123,7 @@ public class WPSHelper {
                 }
             } catch (WPSClientException e) {
                 Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response. " + e.getLocalizedMessage());
-            }
+            } 
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());
