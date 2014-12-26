@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import de.hsos.richwps.mb.ui.dialogs.components.renderer.BoundingBoxResultRenderer;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import layout.TableLayout;
+import net.opengis.ows.x11.BoundingBoxType;
+import net.opengis.wps.x100.OutputDataType;
 
 /**
  * Dialog panel for testresult visualisation.
@@ -75,11 +78,12 @@ public class TestResultPanel extends APanel {
             this.renderResults(request);
         }
     }
-
+    
     private void renderResults(TestRequest request) {
         this.request = (TestRequest) request;
         HashMap results = this.request.getResults();
-        HashMap arguments = this.request.getOutputArguments();
+        //Unused
+        //HashMap arguments = this.request.getOutputArguments();
         java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();
@@ -97,8 +101,8 @@ public class TestResultPanel extends APanel {
         outputsPanel.setLayout(layout);
 
         int i = 0;
-        for (Object key : keys) {
-            String c = "0," + i;
+        for (Object key : keys) { 
+            String c = "0," + i; //Panel constraint x:0 y:i
             String value = (String) results.get(key);
             if (value.contains("http://")) {
                 URIRenderer pan = new URIRenderer(key.toString(), value);
@@ -107,6 +111,28 @@ public class TestResultPanel extends APanel {
                 tc.fold();
                 outputsPanel.add(tc, c);
                 this.panels.add(tc);
+            } else if(results.get(key) instanceof OutputDataType[]) {
+                BoundingBoxResultRenderer pan;
+                
+                net.opengis.wps.x100.OutputDataType odt;
+                odt = (OutputDataType)results.get(key);
+                
+                BoundingBoxType bbData;
+                bbData = odt.getData().getBoundingBoxData();
+                
+                if(bbData!=null) {
+                    pan = new BoundingBoxResultRenderer(key.toString(), bbData);
+                    TitledComponent tc;
+                    tc = new TitledComponent(key.toString(), pan, 
+                            TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+                    tc.setTitleBold();
+                    tc.fold();
+                    outputsPanel.add(tc, c);
+                    this.panels.add(tc);
+                } else {
+                    //TODO: Handle BoundingBox exceptions
+                    //Throw exception BBData missing
+                }
             } else {
                 LiteralRenderer pan = new LiteralRenderer(key.toString(), value);
                 TitledComponent tc = new TitledComponent(key.toString(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
