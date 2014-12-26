@@ -115,7 +115,7 @@ public class AppConstants {
     public final static String EXECUTE_DIALOG_TITLE = "Execute a remote process";
 
     //Execute Dialog
-    public final static String EXECUTE_THIS_DIALOG_TITLE = "Execute the opend model";
+    public final static String EXECUTE_THIS_DIALOG_TITLE = "Execute the opened model";
 
     //Undeploy Dialog
     public final static String DEPLOY_DIALOG_TITLE = "Undeploy a given process";
@@ -126,10 +126,10 @@ public class AppConstants {
     public final static String UNDEPLOY_ERROR_DIALOG_MSG = "An error occured while undeployment. See logs for further information.";
 
     //Test Dialog
-    public final static String TEST_THIS_DIALOG_TITLE = "Test the opend model";
+    public final static String TEST_THIS_DIALOG_TITLE = "Test the opened model";
 
     //Profile Dialog
-    public final static String PROFILE_THIS_DIALOG_TITLE = "Profile the opend model";
+    public final static String PROFILE_THIS_DIALOG_TITLE = "Profile the opened model";
 
     //Execute/Undeployerror Dialog
     public final static String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
