@@ -451,7 +451,10 @@ public class AppRichWPSManager {
                         AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
             }
-
+                
+            //Todo: Exporter is null if initialization failed due to missing 
+            //      identifiers -> NoIdentifierException is thrown but only
+            //      the general error (Unable to create...) is send to the user
             exporter.export(f.getAbsolutePath());
 
             String content = null;
