@@ -40,7 +40,7 @@ public class AppSplashScreen extends JWindow {
         int msgLabelHeight = 20;
 
         long time = System.currentTimeMillis() / 1000;
-        xmasEgg = 1418947261 < time && time < 1420066799;
+        xmasEgg = 1418947261 < time && time < 1421625661;
 
         // Progress bar
         progLabel = new JLabel(" ") {

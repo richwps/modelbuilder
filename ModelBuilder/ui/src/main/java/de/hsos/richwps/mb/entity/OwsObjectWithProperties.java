@@ -165,5 +165,20 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
     public static String getValueForViews(String value) {
         return (null == value || value.isEmpty()) ? "-" : value.trim();
     }
+    
+    /**
+     * Replaces all values by cloning the values of the given object.
+     *
+     * @param other
+     */
+    void copyValuesFrom(OwsObjectWithProperties other) {
+        this.toolTipText = null;
+        this.owsGroup = new PropertyGroup<>(OWS_PROPERTY_GROUP_NAME);
+        
+        for (Property property : other.owsGroup.getProperties()) {
+            IObjectWithProperties propertyClone = (IObjectWithProperties) property.clone();
+            this.setProperty(property.getPropertiesObjectName(), propertyClone);
+        }
+    }
 
 }

@@ -59,13 +59,13 @@ public class ProcessMetricProvider {
                 // add metric values to sub group as properties
                 //TODO adjust API usage.
                 for (Map.Entry<String, MeasuredValue> aMetricValue : aMetric.getValue().getValues().entrySet()) {
-//
-//                 // create property
+
+                    // create property
                     String propertyName = translateMonitorKey(aMetricValue.getKey());
                     String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
                     String propertyValue = aMetricValue.getValue().toString();
                     Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
-//
+
                     subGroup.addObject(property);
                 }
                 groups.addObject(subGroup);

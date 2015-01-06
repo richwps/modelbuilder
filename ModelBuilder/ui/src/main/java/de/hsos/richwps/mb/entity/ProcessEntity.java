@@ -106,9 +106,14 @@ public class ProcessEntity extends OwsObjectWithProperties {
      *
      * @return
      */
-    public boolean isIsFullyLoaded() {
-        return isFullyLoaded;
-    }
+//    public boolean isIsFullyLoaded() {
+//        return isFullyLoaded;
+//    }
+    
+    
+//    public void setIsFullyLoaded(boolean fullyLoaded) {
+//        this.isFullyLoaded = fullyLoaded;
+//    }
 
     public void setInputPorts(LinkedList<ProcessPort> ports) {
         this.inputPorts = ports;
@@ -270,14 +275,37 @@ public class ProcessEntity extends OwsObjectWithProperties {
         return clone;
     }
 
-    public void setIsFullyLoaded(boolean fullyLoaded) {
-        this.isFullyLoaded = fullyLoaded;
-    }
-
     public void setPropertyValue(String propertyKey, Object value) {
         Property property = this.owsGroup.getPropertyObject(propertyKey);
         if (null != property) {
             property.setValue(value);
+        }
+    }
+
+    /**
+     * Replaces all values by cloning the values of the given process.
+     *
+     * @param other
+     */
+    public void copyValuesFrom(ProcessEntity other) {
+        super.copyValuesFrom(other);
+
+        setServer(other.getServer());
+
+        this.inputPorts = new LinkedList<>();
+        this.outputPorts = new LinkedList<>();
+        this.additionalGroups = new HashMap<>();
+
+        for (ProcessPort port : other.getInputPorts()) {
+            this.addInputPort(port.clone());
+        }
+
+        for (ProcessPort port : other.getOutputPorts()) {
+            this.addOutputPort(port.clone());
+        }
+
+        for (Entry<String, PropertyGroup<? extends IObjectWithProperties>> addGroup : other.additionalGroups.entrySet()) {
+            this.setProperty(addGroup.getKey(), addGroup.getValue());
         }
     }
 }

@@ -26,7 +26,7 @@ public class GraphNodeCreator {
      */
     public static mxCell createNodeFromProcess(Graph graph, ProcessEntity process, Point location) {
 
-        process = process.clone();
+//        process = process.clone();
 
         Object parent = graph.getDefaultParent();
         graph.getModel().beginUpdate();

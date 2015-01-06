@@ -117,7 +117,7 @@ public class GraphViewTest {
 
         // CREATE PROCESS
         process = new ProcessEntity(processEntityServer, processEntityIdentifier);
-        process.setIsFullyLoaded(true);
+//        process.setIsFullyLoaded(true);
         process.setOwsAbstract(processEntityAbstract);
         process.setOwsTitle(processEntityTitle);
 

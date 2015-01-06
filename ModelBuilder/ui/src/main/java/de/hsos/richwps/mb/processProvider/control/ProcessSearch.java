@@ -21,6 +21,13 @@ public class ProcessSearch {
         this.translator = translator;
     }
 
+    /**
+     * Searches for the query at SP and returns the resulst as converted SP
+     * Process.
+     *
+     * @param query
+     * @return
+     */
     public List<ProcessEntity> getProcessesByKeyword(String query) {
 
         List<ProcessEntity> processes = new LinkedList<>();

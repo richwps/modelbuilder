@@ -1,23 +1,22 @@
 package de.hsos.richwps.mb.processProvider.boundary;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.control.EntityConverter;
 import de.hsos.richwps.mb.processProvider.control.KeyTranslator;
 import de.hsos.richwps.mb.processProvider.control.MonitorDataConverter;
+import de.hsos.richwps.mb.processProvider.control.ProcessCache;
 import de.hsos.richwps.mb.processProvider.control.ProcessSearch;
 import de.hsos.richwps.mb.processProvider.control.Publisher;
 import de.hsos.richwps.mb.processProvider.control.ServerProvider;
+import de.hsos.richwps.mb.processProvider.entity.ProcessLoadingStatus;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
 import de.hsos.richwps.sp.client.ows.SPClient;
-import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
 import de.hsos.richwps.sp.client.ows.gettypes.Network;
 import de.hsos.richwps.sp.client.ows.gettypes.Output;
@@ -44,6 +43,7 @@ public class ProcessProvider {
     private MonitorDataConverter monitorDataConverter;
     private ServerProvider serverProvider;
     private Publisher publisher;
+    private ProcessCache cache;
 
     private KeyTranslator translator;
 
@@ -64,6 +64,19 @@ public class ProcessProvider {
         }
 
         return translator;
+    }
+
+    /**
+     * Gets the process cache.
+     *
+     * @return
+     */
+    protected ProcessCache getCache() {
+        if (null == this.cache) {
+            this.cache = new ProcessCache();
+        }
+
+        return this.cache;
     }
 
     /**
@@ -120,6 +133,7 @@ public class ProcessProvider {
             this.net = null;
         }
         getServerProvider().clearCache();
+        getCache().resetLoadingStates();
     }
 
     /**
@@ -151,7 +165,12 @@ public class ProcessProvider {
      */
     public ProcessEntity getFullyLoadedProcessEntity(String server, String identifier) {
 
-        ProcessEntity process = null;
+        ProcessEntity process = getCache().getCachedProcess(server, identifier);
+
+        // todo get from cache or add top cache (incl. loading status!)
+        if (getCache().isLoaded(server, identifier)) {
+            return getCache().getCachedProcess(server, identifier);
+        }
 
         // find desired process at the desired endpoint (server)
         try {
@@ -201,8 +220,13 @@ public class ProcessProvider {
                                 // Add metric properties
                                 getMonitorDataConverter().addProcessMetrics(process);
 
+                                // add process to cache or update cached process 
                                 // if any error occured, the process data is propably not complete
-                                process.setIsFullyLoaded(!loadError);
+                                getCache().addProcess(process, !loadError);
+                                process = getCache().getCachedProcess(server, identifier);
+
+                                // trigger toolTipText update
+                                process.setToolTipText(null);
 
                                 // process found, return to stop search
                                 return process;
@@ -244,7 +268,29 @@ public class ProcessProvider {
                     try {
                         WpsServer server = new WpsServer(wps.getEndpoint());
                         for (Process process : wps.getProcesses()) {
-                            ProcessEntity processEntity = EntityConverter.createProcessEntity(process, getTranslator());
+
+                            ProcessEntity processEntity;
+
+                            String processServer = wps.getEndpoint();
+                            String processId = process.getIdentifier();
+
+                            // fully reload process if it has been reset
+                            ProcessLoadingStatus loadingStatus = getCache().getLoadingStatus(processServer, processId);
+                            if (null != loadingStatus && loadingStatus.equals(ProcessLoadingStatus.RESET)) {
+                                processEntity = getFullyLoadedProcessEntity(processServer, processId);
+
+                            } else {
+
+                                // get cached process
+                                processEntity = getCache().getCachedProcess(processServer, processId);
+                            }
+
+                            // not cached: add to cache
+                            if (null == processEntity) {
+                                processEntity = EntityConverter.createProcessEntity(process, getTranslator());
+                                getCache().addProcess(processEntity, false);
+                            }
+
                             server.addProcess(processEntity);
                         }
 
@@ -316,7 +362,25 @@ public class ProcessProvider {
                 throw new SpClientNotAvailableException();
             }
 
-            return getProcessSearch().getProcessesByKeyword(query);
+            List<ProcessEntity> result = new LinkedList<>();
+            List<ProcessEntity> processes = getProcessSearch().getProcessesByKeyword(query);
+
+            // get cached process instances of the found processes
+            for (ProcessEntity process : processes) {
+                String server = process.getServer();
+                String identifier = process.getOwsIdentifier();
+                ProcessEntity cached = getCache().getCachedProcess(server, identifier);
+
+                // if the process is not cached, cache it.
+                if (null == cached) {
+                    cached = process;
+                    getCache().addProcess(process, false);
+                }
+
+                result.add(cached);
+            }
+
+            return result;
 
         } catch (SpClientNotAvailableException ex) {
             fireSpReceiveExceptionAsAppEvent(ex);

@@ -44,11 +44,13 @@ public class TreeView {
                             Object userObject = treenode.getUserObject();
 
                             if (userObject instanceof ProcessEntity) {
+                                // trigger loading update
                                 ProcessEntity process = ((ProcessEntity) userObject);
-                                if (!process.isIsFullyLoaded()) {
-                                    process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
-                                    treenode.setUserObject(process);
-                                }
+                                process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+//                                if (!process.isIsFullyLoaded()) {
+//                                    process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+//                                    treenode.setUserObject(process);
+//                                }
 
                                 return process.getToolTipText();
                             }
