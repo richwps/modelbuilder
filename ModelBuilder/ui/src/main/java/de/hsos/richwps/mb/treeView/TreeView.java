@@ -47,10 +47,6 @@ public class TreeView {
                                 // trigger loading update
                                 ProcessEntity process = ((ProcessEntity) userObject);
                                 process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
-//                                if (!process.isIsFullyLoaded()) {
-//                                    process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
-//                                    treenode.setUserObject(process);
-//                                }
 
                                 return process.getToolTipText();
                             }

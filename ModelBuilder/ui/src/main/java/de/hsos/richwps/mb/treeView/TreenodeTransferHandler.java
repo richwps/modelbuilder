@@ -47,7 +47,7 @@ public class TreenodeTransferHandler extends TransferHandler {
             }
 
             // add all selected treeNodes to the transfer data array
-            List<Object> data = new LinkedList<Object>();
+            List<Object> data = new LinkedList<>();
             for (TreePath selectionPath : selectionPaths) {
                 Object pathComponent = selectionPath.getLastPathComponent();
                 if (pathComponent instanceof DefaultMutableTreeNode) {
@@ -55,11 +55,9 @@ public class TreenodeTransferHandler extends TransferHandler {
 
                     if (null != userObject && userObject instanceof ProcessEntity) {
                         ProcessEntity process = (ProcessEntity) userObject;
-//                        if (!process.isIsFullyLoaded()) {
-                            process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
-                            userObject = process;
-//                            ((DefaultMutableTreeNode) pathComponent).setUserObject(userObject);
-//                        }
+                        // load missing data if possible
+                        process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+                        userObject = process;
                     }
 
                     data.add(userObject);
