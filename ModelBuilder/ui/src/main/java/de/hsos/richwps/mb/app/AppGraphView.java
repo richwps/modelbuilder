@@ -213,6 +213,11 @@ public class AppGraphView extends GraphView {
         GraphModel graphModel = getGraph().getGraphModel();
         ProcessProvider processProvider = app.getProcessProvider();
 
+        // cancel if the process provider is not available
+        if(!processProvider.isConnected()) {
+            return;
+        }
+        
         for (mxCell aCell : processCells) {
             ProcessEntity process = (ProcessEntity) graphModel.getValue(aCell);
 
