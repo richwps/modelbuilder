@@ -268,6 +268,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_EMPTY_KEY, new ImageIcon(iconDir + "empty.png", "empty icon"));
 
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
+        UIManager.put(AppConstants.ICON_LOADING_ANI_KEY, new ImageIcon(iconDir + "720.gif", "loading ani"));
 
         // large icons
         UIManager.put(getLargeIconKey(AppConstants.ICON_NEW_KEY), new ImageIcon(largeIconDir + "document-new-6.png", "largeicon new"));

@@ -27,8 +27,6 @@ public class ProcessEntity extends OwsObjectWithProperties {
 
     public static String toolTipCssForMainContainer;
 
-    private boolean isFullyLoaded;
-
     public ProcessEntity() {
         this("", "");
     }
@@ -101,20 +99,6 @@ public class ProcessEntity extends OwsObjectWithProperties {
         owsGroup.addObject(new Property<>(PROPERTIES_KEY_SERVER, Property.COMPONENT_TYPE_TEXTFIELD, server));
     }
 
-    /**
-     * Indicates that all ports and properties of this process are available.
-     *
-     * @return
-     */
-//    public boolean isIsFullyLoaded() {
-//        return isFullyLoaded;
-//    }
-    
-    
-//    public void setIsFullyLoaded(boolean fullyLoaded) {
-//        this.isFullyLoaded = fullyLoaded;
-//    }
-
     public void setInputPorts(LinkedList<ProcessPort> ports) {
         this.inputPorts = ports;
     }
@@ -145,13 +129,11 @@ public class ProcessEntity extends OwsObjectWithProperties {
     }
 
     public void addInputPort(ProcessPort port) {
-//        port.setGlobal(false);
         port.setFlowInput(true);
         inputPorts.add(port);
     }
 
     public void addOutputPort(ProcessPort port) {
-//        port.setGlobal(false);
         port.setFlowOutput(true);
         outputPorts.add(port);
     }

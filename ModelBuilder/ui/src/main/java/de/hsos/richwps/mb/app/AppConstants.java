@@ -177,6 +177,10 @@ public class AppConstants {
     public final static String ABOUT_DIALOG_BTN_CLOSE = DIALOG_BTN_CLOSE;
 
     /**
+     * The loading screen (dialog) title.
+     */
+    public final static String LOADING_SCREEN_TITLE = "Loading...";
+    /**
      * Number of visible characters of the "recent file" path.
      */
     public static final int RECENT_FILE_VISIBLE_WIDTH = 70;
@@ -446,6 +450,7 @@ public class AppConstants {
 
     public final static String ICON_ABOUT_KEY = "richwps_icon_about";
     public final static String ICON_LOADING_STATUS_KEY = "richwps_icon_loading";
+    public final static String ICON_LOADING_ANI_KEY = "richwps_icon_loading_ani";
     public final static String ICON_EDIT_KEY = "richwps_icon_edit";
     public final static String ICON_ADD_KEY = "richwps_icon_add";
     public final static String ICON_DELETE_KEY = "richwps_icon_delete";

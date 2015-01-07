@@ -9,17 +9,18 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS;
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
+import de.hsos.richwps.mb.app.view.LoadingScreen;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -32,6 +33,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class AppActionHandler implements IAppActionHandler {
 
     private App app;
+    private LoadingScreen loadingFrame;
 
     public AppActionHandler(App app) {
         this.app = app;
@@ -177,38 +179,52 @@ public class AppActionHandler implements IAppActionHandler {
         }
     }
 
-    private boolean loadModelFromFile(String filename) {
-        try {
-            getGraphView().loadGraphFromXml(filename);
-            String previousModelFilename = app.getCurrentModelFilename();
-            app.setCurrentModelFilename(filename);
-            app.getFrame().setGraphViewTitle(filename);
-            app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
-            app.getUndoManager().discardAllEdits();
-            // A new model has been loaded => add change listener
-            app.modelLoaded();
+    private void loadModelFromFile(final String filename) {
 
-            rememberLastDir(new File(filename));
-            rememberLastModelFile(previousModelFilename);
+        // show loading frame
+        loadingFrame = new LoadingScreen(app.getFrame());
+        loadingFrame.setVisible(true);
 
-        } catch (Exception ex) {
-            StringBuilder sb = new StringBuilder(100);
-            sb.append(AppConstants.LOAD_MODEL_FAILED);
-            sb.append("\n");
-            sb.append(AppConstants.SEE_LOGGING_TABS);
-            JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    getGraphView().loadGraphFromXml(filename);
+                    String previousModelFilename = app.getCurrentModelFilename();
+                    app.setCurrentModelFilename(filename);
+                    app.getFrame().setGraphViewTitle(filename);
+                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
+                    app.getUndoManager().discardAllEdits();
+                    // A new model has been loaded => add change listener
+                    app.modelLoaded();
 
-            sb = new StringBuilder(100);
-            sb.append(AppConstants.LOAD_MODEL_FAILED);
-            sb.append("\n");
-            sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
-            AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+                    rememberLastDir(new File(filename));
+                    rememberLastModelFile(previousModelFilename);
 
-            app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
-            return false;
-        }
+                } catch (Exception ex) {
+                    StringBuilder sb = new StringBuilder(100);
+                    sb.append(AppConstants.LOAD_MODEL_FAILED);
+                    sb.append("\n");
+                    sb.append(AppConstants.SEE_LOGGING_TABS);
+                    JOptionPane.showMessageDialog(app.getFrame(), sb.toString());
 
-        return true;
+                    sb = new StringBuilder(100);
+                    sb.append(AppConstants.LOAD_MODEL_FAILED);
+                    sb.append("\n");
+                    sb.append(String.format(AppConstants.ERROR_MSG_IS_FORMAT, ex.getMessage()));
+                    AppEventService.getInstance().fireAppEvent(sb.toString(), getGraphView());
+
+                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
+
+                } finally {
+                    loadingFrame.setVisible(false);
+                    loadingFrame.dispose();
+                }
+            }
+        });
+//                .run();
+
+//        return true;
     }
 
     private void doPreferencesDialog(String tabName) {
@@ -411,9 +427,9 @@ public class AppActionHandler implements IAppActionHandler {
         try {
             app.getProcessProvider().publishProcess(process);
             doReloadProcesses();
-            
+
             tabMsg = AppConstants.SEMANTICPROXY_PUBLISH_SUCCESS;
-            
+
         } catch (Exception ex) {
 
             // Format error message

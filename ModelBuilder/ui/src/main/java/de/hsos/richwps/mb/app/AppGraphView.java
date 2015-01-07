@@ -1,21 +1,31 @@
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.model.mxCell;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
+import de.hsos.richwps.mb.app.view.LoadingScreen;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
+import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JWindow;
+import javax.swing.UIManager;
 
 /**
  * Controlls the graph component and it's interaction with other app components.
@@ -132,8 +142,9 @@ public class AppGraphView extends GraphView {
     }
 
     /**
-     * Add the model's undoable graph edits to the UndoManager. Needs to be
-     * called after a new model has been created or loaded.
+     * Add the model's undoable graph edits to the UndoManager and sets the
+     * correct cell value instances. Needs to be called after a new model has
+     * been created or loaded.
      */
     void modelLoaded() {
         addUndoEventListener(new mxEventSource.mxIEventListener() {
@@ -158,6 +169,9 @@ public class AppGraphView extends GraphView {
             endpointProperty.setValue(loadedEndpointProperty.getValue());
             model.setProperty(loadedEndpointProperty.getPropertiesObjectName(), endpointProperty);
         }
+
+        // set the cells process instances
+        updateProcessCellInstances();
 
         app.setChangesSaved(true);
     }
@@ -191,4 +205,23 @@ public class AppGraphView extends GraphView {
         return this.app;
     }
 
+    /**
+     * Set correct process instances using the ProcessProvider
+     */
+    private void updateProcessCellInstances() {
+        List<mxCell> processCells = getProcessCells();
+        GraphModel graphModel = getGraph().getGraphModel();
+        ProcessProvider processProvider = app.getProcessProvider();
+
+        for (mxCell aCell : processCells) {
+            ProcessEntity process = (ProcessEntity) graphModel.getValue(aCell);
+
+            String server = process.getServer();
+            String identifier = process.getOwsIdentifier();
+
+            ProcessEntity loadedProcess = processProvider.getFullyLoadedProcessEntity(server, identifier);
+
+            graphModel.setValue(aCell, loadedProcess);
+        }
+    }
 }

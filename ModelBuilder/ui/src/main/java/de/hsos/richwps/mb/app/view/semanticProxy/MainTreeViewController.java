@@ -30,6 +30,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifi
 import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,7 +114,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
                         // sort the server's processes alphabetically by title
                         List<ProcessEntity> processes = server.getProcesses();
-                        processes.sort(processComparator);
+                        Collections.sort(processes, processComparator);
                         for (ProcessEntity process : processes) {
                             if (clearCache) {
                                 process.setToolTipText(null);
