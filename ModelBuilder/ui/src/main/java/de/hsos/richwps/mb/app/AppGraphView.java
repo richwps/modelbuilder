@@ -4,9 +4,12 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
-import de.hsos.richwps.mb.app.view.LoadingScreen;
+import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.entity.ProcessPortKey;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
@@ -15,17 +18,14 @@ import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JWindow;
-import javax.swing.UIManager;
 
 /**
  * Controlls the graph component and it's interaction with other app components.
@@ -170,7 +170,7 @@ public class AppGraphView extends GraphView {
             model.setProperty(loadedEndpointProperty.getPropertiesObjectName(), endpointProperty);
         }
 
-        // set the cells process instances
+        // set correct process instances as cell values
         updateProcessCellInstances();
 
         app.setChangesSaved(true);
@@ -206,27 +206,111 @@ public class AppGraphView extends GraphView {
     }
 
     /**
-     * Set correct process instances using the ProcessProvider
+     * Set correct process and port instances using the ProcessProvider
      */
     private void updateProcessCellInstances() {
-        List<mxCell> processCells = getProcessCells();
-        GraphModel graphModel = getGraph().getGraphModel();
+        Graph graph = getGraph();
+        GraphModel graphModel = graph.getGraphModel();
         ProcessProvider processProvider = app.getProcessProvider();
 
-        // cancel if the process provider is not available
-        if(!processProvider.isConnected()) {
-            return;
-        }
-        
+        boolean mappingError = false;
+
+        // update process cell values
+        List<mxCell> processCells = getProcessCells();
         for (mxCell aCell : processCells) {
             ProcessEntity process = (ProcessEntity) graphModel.getValue(aCell);
-
-            String server = process.getServer();
-            String identifier = process.getOwsIdentifier();
-
-            ProcessEntity loadedProcess = processProvider.getFullyLoadedProcessEntity(server, identifier);
+            ProcessEntity loadedProcess = processProvider.getFullyLoadedProcessEntity(process);
 
             graphModel.setValue(aCell, loadedProcess);
+
+            HashMap<ProcessPortKey, ProcessPort> loadedPorts = getProcessPorts(loadedProcess);
+
+            // update the processes' port cells values
+            int childCount = graphModel.getChildCount(aCell);
+            for (int c = 0; c < childCount; c++) {
+                Object aChild = graphModel.getChildAt(aCell, c);
+                Object childValue = graphModel.getValue(aChild);
+
+                // find the port instance for this cell
+                if (null != childValue && childValue instanceof ProcessPort) {
+                    ProcessPort aPort = (ProcessPort) childValue;
+
+                    ProcessPortKey key = new ProcessPortKey();
+                    key.setOwsIdentifier(aPort.getOwsIdentifier());
+                    key.setDatatype(aPort.getDatatype());
+                    key.setInput(aPort.isFlowInput());
+
+                    // mapping error: no port instance found
+                    if (!loadedPorts.containsKey(key)) {
+                        String msg = AppConstants.LOAD_MODEL_MAPPING_ERROR_UNKNOWNPORT;
+                        msg += String.format(
+                                AppConstants.LOAD_MODEL_MAPPING_ERROR_FORMAT,
+                                aPort.getOwsIdentifier(),
+                                loadedProcess.getOwsIdentifier(),
+                                loadedProcess.getServer()
+                        );
+                        msg = msg + '\n';
+
+                        AppEventService.getInstance().fireAppEvent(msg, AppConstants.INFOTAB_ID_EDITOR, AppEvent.PRIORITY.URGENT);
+
+                        mappingError = true;
+
+                    } else {
+                        
+                        graphModel.setValue(aChild, loadedPorts.get(key));
+                        
+                        // remove port instance from map to identity unmapped ports
+                        loadedPorts.remove(key);
+                    }
+                }
+            }
+
+            // mapping error: unmapped port instances
+            for (ProcessPort aPort : loadedPorts.values()) {
+                mappingError = true;
+
+                // show mapping error msg
+                String msg = AppConstants.LOAD_MODEL_MAPPING_ERROR_MISSINGPORT;
+                msg += String.format(
+                        AppConstants.LOAD_MODEL_MAPPING_ERROR_FORMAT,
+                        aPort.getOwsIdentifier(),
+                        loadedProcess.getOwsIdentifier(),
+                        loadedProcess.getServer()
+                );
+                msg = msg + '\n';
+                AppEventService.getInstance().fireAppEvent(msg, AppConstants.INFOTAB_ID_EDITOR, AppEvent.PRIORITY.URGENT);
+            }
         }
+
+        if (mappingError) {
+            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.LOAD_MODEL_MAPPING_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private HashMap<ProcessPortKey, ProcessPort> getProcessPorts(ProcessEntity process) {
+        HashMap<ProcessPortKey, ProcessPort> result = new HashMap<>();
+
+        List<ProcessPort> inputs = process.getInputPorts();
+        List<ProcessPort> outputs = process.getOutputPorts();
+
+        for (ProcessPort aPort : inputs) {
+            ProcessPortKey key = new ProcessPortKey();
+            key.setOwsIdentifier(aPort.getOwsIdentifier());
+            key.setDatatype(aPort.getDatatype());
+            key.setInput(aPort.isFlowInput());
+
+            result.put(key, aPort);
+        }
+
+        for (ProcessPort aPort : outputs) {
+            ProcessPortKey key = new ProcessPortKey();
+            key.setOwsIdentifier(aPort.getOwsIdentifier());
+            key.setDatatype(aPort.getDatatype());
+            key.setInput(aPort.isFlowInput());
+
+            result.put(key, aPort);
+        }
+
+        return result;
     }
 }

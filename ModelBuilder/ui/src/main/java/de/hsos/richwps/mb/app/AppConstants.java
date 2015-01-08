@@ -415,6 +415,27 @@ public class AppConstants {
     public final static String ERROR_MSG_IS_FORMAT = "Error message is '%s'.";
 
     /**
+     * Error dialog message for mapping errors.
+     */
+    public final static String LOAD_MODEL_MAPPING_ERROR = "Errors occured while loading the file's processes.\nSee logging tabs for details.";
+
+    /**
+     * Error message for missing process ports.
+     */
+    public final static String LOAD_MODEL_MAPPING_ERROR_MISSINGPORT = "A port is missing in the file. It is recommended to replace this process with a valid version.";
+
+    /**
+     * Error message for unknown process ports.
+     */
+    public final static String LOAD_MODEL_MAPPING_ERROR_UNKNOWNPORT = "Unknown port found in model file:";
+
+    /**
+     * Formatable error message String for outputing a process port (Port-Id,
+     * Process-ID, Server-URL).
+     */
+    public final static String LOAD_MODEL_MAPPING_ERROR_FORMAT = "\n\tPort\t'%s'\n\tProcess\t'%s'\n\tServer\t'%s'";
+
+    /**
      * ToolTips
      */
     public final static int TOOLTIP_DISMISS_DELAY = Integer.MAX_VALUE;

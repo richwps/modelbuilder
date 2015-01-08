@@ -26,7 +26,7 @@ public class LoadingScreen extends JWindow {
         super(parent);
         setType(Type.POPUP);
 //        setSize(new Dimension(300, 200));
-//        setLocation(parent.getLocation());
+        setLocation(parent.getLocation());
         setSize(parent.getSize());
         setOpacity(.8f);
         
