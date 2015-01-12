@@ -9,13 +9,12 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS;
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
-import de.hsos.richwps.mb.app.view.LoadingScreen;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
-import de.hsos.richwps.mb.ui.UiHelper;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -33,7 +32,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class AppActionHandler implements IAppActionHandler {
 
     private App app;
-    private LoadingScreen loadingFrame;
 
     public AppActionHandler(App app) {
         this.app = app;
@@ -181,9 +179,8 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void loadModelFromFile(final String filename) {
 
-        // show loading frame
-        loadingFrame = new LoadingScreen(app.getFrame());
-        loadingFrame.setVisible(true);
+        // show loading cursor
+        app.getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -217,14 +214,10 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(false);
 
                 } finally {
-                    loadingFrame.setVisible(false);
-                    loadingFrame.dispose();
+                    app.getFrame().setCursor(Cursor.getDefaultCursor());
                 }
             }
         });
-//                .run();
-
-//        return true;
     }
 
     private void doPreferencesDialog(String tabName) {

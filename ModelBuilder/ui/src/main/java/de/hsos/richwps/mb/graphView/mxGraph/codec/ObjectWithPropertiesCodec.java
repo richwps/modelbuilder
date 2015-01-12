@@ -9,6 +9,7 @@ import de.hsos.richwps.mb.properties.Property;
 import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -32,15 +33,15 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
     @Override
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
         Object decoded = super.afterDecode(dec, node, obj);
-        
-        if(decoded instanceof OwsObjectWithProperties) {
+
+        if (decoded instanceof OwsObjectWithProperties) {
             OwsObjectWithProperties owsObject = (OwsObjectWithProperties) decoded;
             owsObject.setToolTipText(null);
         }
-        
+
         return decoded;
     }
-    
+
     @Override
     public Object decode(mxCodec dec, Node node, Object into) {
         Object decoded = super.decode(dec, node, into);
@@ -48,7 +49,7 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
         // properties: create property with generic type depending on component type
         if (decoded instanceof Property) {
             Property property = (Property) decoded;
-
+            
             // instantiate property depending on component type
             if (null != property.getComponentType()) {
                 if (property.getComponentType().equals(Property.COMPONENT_TYPE_INTEGER)) {
@@ -56,17 +57,22 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
                     intProperty.setComponentType(property.getComponentType());
                     intProperty.setEditable(property.isEditable());
                     intProperty.setIsTransient(property.isTransient());
-                    
+
                     // TODO parse possible values from String to Integer !
 //                    intProperty.setPossibleValues(property.getPossibleValues());
                     
                     try {
-                        intProperty.setValue(Integer.parseInt((String) property.getValue()));
-                    } catch(NumberFormatException ex)  {
+                        // no value in attribute: avoid nullpointer by leaving the default value
+                        if (null != property.getValue()) {
+                            intProperty.setValue(Integer.parseInt((String) property.getValue()));
+                        }
+                        
+                    } catch (NumberFormatException ex) {
                         // just don't use value if it can't be parsed
                         Logger.log("Property value can't be parsed for COMPONENT_TYPE_INTEGER.");
+                        intProperty.setValue(null);
                     }
-                    
+
                     decoded = intProperty;
                 }
             }

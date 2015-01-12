@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.monitor.boundary;
 import de.hsos.ecs.richwps.wpsmonitor.boundary.restful.metric.MeasuredValue;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClient;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientFactory;
+import de.hsos.ecs.richwps.wpsmonitor.client.exception.WpsMonitorClientCreateException;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsMetricResource;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
 import de.hsos.richwps.mb.Logger;
@@ -12,6 +13,7 @@ import de.hsos.richwps.mb.ui.UiHelper;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Integrates the RichWPS Monitor Client.
@@ -20,14 +22,15 @@ import java.util.Map;
  */
 public class ProcessMetricProvider {
 
-    private final WpsMonitorClient client;
+    private WpsMonitorClient client;
 
     private final HashMap<String, String> translations;
 
     private String mainPropertyGroupName = "monitor data";
+    private final String url;
 
     public ProcessMetricProvider(String url) throws Exception {
-        client = new WpsMonitorClientFactory().create(new URL(url));
+        this.url = url;
         translations = new HashMap<>();
     }
 
@@ -44,10 +47,23 @@ public class ProcessMetricProvider {
      * @return
      */
     public PropertyGroup getProcessMetric(String server, String identifier) {
-
+        
         // create property group containing all metrics
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
         groups.setPropertiesObjectName(this.mainPropertyGroupName);
+        
+        // connect to monitor
+        if (null == client) {
+            try {
+                client = new WpsMonitorClientFactory().create(new URL(url));
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(ProcessMetricProvider.class.getName()).log(Level.SEVERE, null, ex);
+            
+                client = null;
+                
+                return groups;
+            }
+        }
 
         try {
             WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
@@ -74,6 +90,10 @@ public class ProcessMetricProvider {
             // ignore as usually thrown if process is not monitored;
             // the empty group indicates non-monitored processes.
             Logger.log("monitor client exception: " + ex);
+            
+            // force client recreation
+            client = null;
+
         }
 
         return groups;
