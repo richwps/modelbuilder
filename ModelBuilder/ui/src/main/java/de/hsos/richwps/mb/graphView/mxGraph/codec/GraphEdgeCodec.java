@@ -36,11 +36,11 @@ public class GraphEdgeCodec extends mxCellCodec {
         if(o instanceof GraphEdge) {
             GraphEdge edge = (GraphEdge) o;
             
-            Node sourceNode = mxcdc.encode(edge.getSourcePortCell());
-            node.appendChild(sourceNode);
-
-            Node targetNode = mxcdc.encode(edge.getTargetPortCell());
-            node.appendChild(targetNode);
+//            Node sourceNode = mxcdc.encode(edge.getSourcePortCell());
+//            node.appendChild(sourceNode);
+//
+//            Node targetNode = mxcdc.encode(edge.getTargetPortCell());
+//            node.appendChild(targetNode);
         }
 
         return result;

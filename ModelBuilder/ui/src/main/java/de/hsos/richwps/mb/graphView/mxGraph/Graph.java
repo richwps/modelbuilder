@@ -602,6 +602,11 @@ public class Graph extends mxGraph {
         return mxGraphStructure.getGraphComponents(ag).length;
     }
 
+    /**
+     * Creates a process entity similar to a black box of the graph's model.
+     *
+     * @return
+     */
     public ProcessEntity getRepresentingProcess() {
         // get process data
         String server = (String) getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);

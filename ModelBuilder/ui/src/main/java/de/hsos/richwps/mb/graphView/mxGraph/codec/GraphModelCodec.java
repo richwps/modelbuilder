@@ -39,6 +39,7 @@ public class GraphModelCodec extends mxModelCodec {
     @Override
     public Node beforeDecode(mxCodec dec, Node node, Object into) {
 
+        CellCodec.reset();
         ProcessPortCodec.reset();
 
         if (node instanceof Element) {
@@ -91,6 +92,13 @@ public class GraphModelCodec extends mxModelCodec {
     }
 
     @Override
+    public Object afterDecode(mxCodec dec, Node node, Object obj) {
+        return super.afterDecode(dec, node, obj); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+
+    @Override
     protected void encodeObject(mxCodec mxcdc, Object o, Node node) {
         super.encodeObject(mxcdc, o, node);
 
@@ -98,6 +106,7 @@ public class GraphModelCodec extends mxModelCodec {
 
             // reset temporary port ID list etc.
             ProcessPortCodec.reset();
+            CellCodec.reset();
 
             // encode properties as array
             GraphModel model = (GraphModel) o;

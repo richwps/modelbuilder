@@ -106,8 +106,8 @@ public class GraphView extends JPanel {
      * Removes local process ports from the current selection.
      */
     protected void removePortSelection() {
-        for(Object cell : getGraph().getSelectionCells()) {
-            if(getGraph().getGraphModel().isLocalPort(cell)) {
+        for (Object cell : getGraph().getSelectionCells()) {
+            if (getGraph().getGraphModel().isLocalPort(cell)) {
                 getGraph().removeSelectionCell(cell);
             }
         }
@@ -182,15 +182,15 @@ public class GraphView extends JPanel {
      */
     public void selectCellByValue(Object value) {
 //        if (value instanceof GraphModel) {
-            getGraph().clearSelection();
+        getGraph().clearSelection();
 //        } else {
-            Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
-            for (Object cell : cells) {
-                Object cellValue = getGraph().getGraphModel().getValue(cell);
-                if (value.equals(cellValue)) {
-                    getGraph().setSelectionCell(cell);
-                }
+        Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
+        for (Object cell : cells) {
+            Object cellValue = getGraph().getGraphModel().getValue(cell);
+            if (value.equals(cellValue)) {
+                getGraph().setSelectionCell(cell);
             }
+        }
 //        }
     }
 
@@ -417,7 +417,7 @@ public class GraphView extends JPanel {
     public void deleteSelectedCells() {
         getGraph().removeCells(getGraph().getSelectionCells());
     }
-    
+
     /**
      * Arrangens the modelling elements (cells) using a custom LayoutManager.
      */
@@ -430,6 +430,31 @@ public class GraphView extends JPanel {
      */
     public void selectAll() {
         getGraph().selectAll();
+    }
+
+    /**
+     * Creates clones of the selected elements and adds them to the model.
+     */
+    public void duplicateSelection() {
+        Object[] selection = getSelection();
+        for (Object anObject : selection) {
+            Object cellValue = getGraph().getModel().getValue(anObject);
+            Point location = getEmptyCellLocation(new Point(0, 0));
+
+            // create process
+            if (cellValue instanceof ProcessEntity) {
+                // don't clone the process, there must be only one instance of each process
+                GraphNodeCreator.createNodeFromProcess(getGraph(), (ProcessEntity) cellValue, location);
+
+            // create port
+            } else if (cellValue instanceof ProcessPort) {
+                // clone the port because it contains user input values
+                ProcessPort port = (ProcessPort) cellValue;
+                port = port.clone();
+                GraphNodeCreator.createNodeFromPort(getGraph(), port, location);
+
+            }
+        }
     }
 
     /**

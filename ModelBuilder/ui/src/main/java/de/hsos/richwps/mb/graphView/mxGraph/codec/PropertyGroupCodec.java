@@ -4,6 +4,7 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.util.Collection;
 import org.w3c.dom.Element;
@@ -66,14 +67,27 @@ public class PropertyGroupCodec extends mxObjectCodec {
             // create property array for encoding
             IObjectWithProperties[] pArr = new IObjectWithProperties[properties.size()];
             int i = 0;
-            for (IObjectWithProperties property : properties) {
-                pArr[i++] = property;
+            for (IObjectWithProperties aPropertyObject : properties) {
+                if(aPropertyObject instanceof Property) {
+                    Property aProperty = (Property) aPropertyObject;
+                    if(aProperty.getPossibleValuesTransient()) {
+                        aProperty = aProperty.clone();
+                        aProperty.setPossibleValues(null);
+                        aPropertyObject = aProperty;
+                    }
+                }
+                
+                pArr[i++] = aPropertyObject;
             }
 
             Element encode = (Element) encode(enc, pArr);
+            
             // save object name as attribute
             encode.setAttribute(ObjectWithPropertiesCodec.ATTRIBUTE_OBJECTNAME, pGroup.getPropertiesObjectName());
 
+            
+            
+            
             return encode;
         }
 

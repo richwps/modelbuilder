@@ -98,7 +98,7 @@ public class ProcessPort extends OwsObjectWithProperties {
             }
         }
 
-        // remove eventually existing properties if they do not apply to this port+
+        // remove eventually existing properties if they do not apply to this port
         if (!hasMinMaxOccurs) {
             owsGroup.removeProperty(PROPERTY_KEY_MINOCCURS);
             owsGroup.removeProperty(PROPERTY_KEY_MAXOCCURS);

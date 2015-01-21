@@ -70,24 +70,6 @@ public class GraphSetup {
      * Initialises graph-independent codecs, constants etc.
      */
     public static void init() {
-        // register codecs for custom classes
-        mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity");
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.ComplexDataTypeFormat()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionComplex()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral()));
-        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
-        mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
-
-        mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph");
-        mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
-        mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
-        mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph.codec.objects");
-        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup()));
-
-        mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
-        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new Property()));
-        mxCodecRegistry.register(new PropertyGroupCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
-
         // style for selected cells
         mxSwingConstants.VERTEX_SELECTION_COLOR = AppConstants.SELECTION_BG_COLOR;
         mxSwingConstants.VERTEX_SELECTION_STROKE = new BasicStroke(SELECTION_BORDER_WIDTH,

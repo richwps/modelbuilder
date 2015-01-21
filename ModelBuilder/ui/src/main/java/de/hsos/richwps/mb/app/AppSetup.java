@@ -1,5 +1,8 @@
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.io.mxCodecRegistry;
+import com.mxgraph.io.mxObjectCodec;
+import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
@@ -10,6 +13,15 @@ import de.hsos.richwps.mb.appEvents.IAppEventObserver;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.CellCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.ComplexDataTypeFormatCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.ObjectWithPropertiesCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
+import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -57,50 +69,7 @@ public class AppSetup {
 
         splash.showMessageAndProgress("Loading resources", 7);
         {
-            // Load colors
-            String[] bgColorKeys = new String[]{
-                "CheckBoxMenuItem.selectionBackground",
-                "ComboBox.selectionBackground",
-                "EditorPane.selectionBackground",
-                "List.selectionBackground",
-                "Menu.selectionBackground",
-                "MenuItem.selectionBackground",
-                "RadioButtonMenuItem.selectionBackground",
-                "PasswordField.selectionBackground",
-                "ProgressBar.foreground",
-                "ProgressBar.selectionBackground",
-                "Table.selectionBackground",
-                "TextArea.selectionBackground",
-                "TextField.selectionBackground",
-                "TextPane.selectionBackground",
-                "Tree.selectionBackground"
-            };
-            for (String key : bgColorKeys) {
-                UIManager.put(key, AppConstants.SELECTION_BG_COLOR);
-            }
-            String[] fgColorKeys = new String[]{
-                "CheckBoxMenuItem.selectionForeground",
-                "ComboBox.selectionForeground",
-                "EditorPane.selectionForeground",
-                "List.selectionForeground",
-                "Menu.selectionForeground",
-                "MenuItem.selectionForeground",
-                "RadioButtonMenuItem.selectionForeground",
-                "PasswordField.selectionForeground",
-                "ProgressBar.background",
-                "ProgressBar.selectionForeground",
-                "Table.selectionForeground",
-                "TextArea.selectionForeground",
-                "TextField.selectionForeground",
-                "TextPane.selectionForeground",
-                "Tree.selectionForeground"
-            };
-            for (String key : fgColorKeys) {
-                UIManager.put(key, AppConstants.SELECTION_FG_COLOR);
-            }
-
-            // Load icons etc. into UIManager
-            loadIcons();
+            setupUiManager();
 
             // Optional Debug Logging.
             if (debugMode) {
@@ -116,6 +85,7 @@ public class AppSetup {
             // Configure MB components before initialisation
             GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
             GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
+            addGraphCodecs();
 
             // Setup monitor client
             for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
@@ -277,6 +247,77 @@ public class AppSetup {
 
     private static String getLargeIconKey(String iconKey) {
         return AppConstants.LARGE_ICON_PREFIX + iconKey;
+    }
+
+    /**
+     * Register custom mxGraph codecs
+     */
+    private static void addGraphCodecs() {
+        mxCodecRegistry.register(new CellCodec());
+        
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity");
+        mxCodecRegistry.register(new ComplexDataTypeFormatCodec(new de.hsos.richwps.mb.entity.ComplexDataTypeFormat()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionComplex()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral()));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
+        mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
+
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph");
+        mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
+        mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
+        
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph.codec.objects");
+        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup()));
+
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
+        mxCodecRegistry.register(new ObjectWithPropertiesCodec(new Property()));
+        mxCodecRegistry.register(new PropertyGroupCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
+    }
+
+    private static void setupUiManager() {
+        // Load colors
+        String[] bgColorKeys = new String[]{
+            "CheckBoxMenuItem.selectionBackground",
+            "ComboBox.selectionBackground",
+            "EditorPane.selectionBackground",
+            "List.selectionBackground",
+            "Menu.selectionBackground",
+            "MenuItem.selectionBackground",
+            "RadioButtonMenuItem.selectionBackground",
+            "PasswordField.selectionBackground",
+            "ProgressBar.foreground",
+            "ProgressBar.selectionBackground",
+            "Table.selectionBackground",
+            "TextArea.selectionBackground",
+            "TextField.selectionBackground",
+            "TextPane.selectionBackground",
+            "Tree.selectionBackground"
+        };
+        for (String key : bgColorKeys) {
+            UIManager.put(key, AppConstants.SELECTION_BG_COLOR);
+        }
+        String[] fgColorKeys = new String[]{
+            "CheckBoxMenuItem.selectionForeground",
+            "ComboBox.selectionForeground",
+            "EditorPane.selectionForeground",
+            "List.selectionForeground",
+            "Menu.selectionForeground",
+            "MenuItem.selectionForeground",
+            "RadioButtonMenuItem.selectionForeground",
+            "PasswordField.selectionForeground",
+            "ProgressBar.background",
+            "ProgressBar.selectionForeground",
+            "Table.selectionForeground",
+            "TextArea.selectionForeground",
+            "TextField.selectionForeground",
+            "TextPane.selectionForeground",
+            "Tree.selectionForeground"
+        };
+        for (String key : fgColorKeys) {
+            UIManager.put(key, AppConstants.SELECTION_FG_COLOR);
+        }
+        
+        loadIcons();
     }
 
 }

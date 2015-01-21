@@ -13,6 +13,7 @@ import de.hsos.richwps.mb.entity.ProcessPortKey;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
@@ -66,6 +67,13 @@ public class AppGraphView extends GraphView {
                     case 65:
                         if (0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
                             selectAll();
+                        }
+                        break;
+
+                    // Duplicate selected
+                    case 68:
+                        if (0 < (e.getModifiers() & KeyEvent.CTRL_MASK)) {
+                            duplicateSelection();
                         }
                         break;
 
@@ -126,9 +134,7 @@ public class AppGraphView extends GraphView {
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
         // add property for endpoint selection
-        String propertyEndpointName = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
-        String propertyEndpointType = Property.COMPONENT_TYPE_DROPDOWN;
-        endpointProperty = new Property(propertyEndpointName, propertyEndpointType, null, true);
+        endpointProperty = createEndpointProperty();
         getGraph().getGraphModel().addProperty(endpointProperty);
 
         init = true;
@@ -136,9 +142,19 @@ public class AppGraphView extends GraphView {
 
     public void newGraph(String remote) {
         Graph graph = super.newGraph();
-        String remotePropertyKey = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
-        Property remoteProperty = new Property(remotePropertyKey, Property.COMPONENT_TYPE_TEXTFIELD, remote);
-        graph.getGraphModel().addProperty(remoteProperty);
+        endpointProperty = createEndpointProperty();
+        graph.getGraphModel().addProperty(endpointProperty);
+    }
+
+    protected Property createEndpointProperty() {
+        String propertyEndpointName = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
+        String propertyEndpointType = Property.COMPONENT_TYPE_DROPDOWN;
+        Property endpointProperty = new Property(propertyEndpointName, propertyEndpointType, null, true);
+
+        // don't persist the list of endpoints
+        endpointProperty.setPossibleValuesTransient(true);
+
+        return endpointProperty;
     }
 
     /**
@@ -256,9 +272,9 @@ public class AppGraphView extends GraphView {
                         mappingError = true;
 
                     } else {
-                        
+
                         graphModel.setValue(aChild, loadedPorts.get(key));
-                        
+
                         // remove port instance from map to identity unmapped ports
                         loadedPorts.remove(key);
                     }

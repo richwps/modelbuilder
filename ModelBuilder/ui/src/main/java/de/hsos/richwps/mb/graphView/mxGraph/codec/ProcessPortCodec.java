@@ -3,9 +3,6 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 import com.mxgraph.io.mxCodec;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,21 +15,7 @@ import org.w3c.dom.Node;
  */
 public class ProcessPortCodec extends ObjectWithPropertiesCodec {
 
-    /**
-     * Name of the (xml) attribute holding the port id.
-     */
-    private final String ATTR_PORT_ID = "port_id";
-
-    /**
-     * Contains IDs of encoded ports to prevent dublicate encodings.
-     */
-    private static List<ProcessPort> encodedPorts = new LinkedList<>();
-
-    /**
-     * Maps port IDs to decoded ports to re-assign port the right instances to
-     * the model elements.
-     */
-    private static HashMap<String, ProcessPort> decodedPorts;
+    public static final String ATTR_DATATYPE = "datatype";
 
     public ProcessPortCodec(Object template) {
         super(template);
@@ -41,7 +24,7 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
     public ProcessPortCodec(Object template, String[] exclude, String[] idrefs, Map<String, String> mapping) {
         super(template, exclude, idrefs, mapping);
     }
-    
+
     @Override
     protected void decodeAttribute(mxCodec dec, Node attr, Object obj) {
 
@@ -56,10 +39,6 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
             }
         }
     }
-    
-    public static boolean hasBeenEncoded(ProcessPort port) {
-        return encodedPorts.contains(port);
-    }
 
     @Override
     protected void decodeChild(mxCodec dec, Node child, Object obj) {
@@ -69,92 +48,11 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
         }
     }
 
-    public static final String ATTR_DATATYPE = "datatype";
-
-    public static void reset() {
-        encodedPorts.clear();
-        decodedPorts = new HashMap<>();
-    }
-
-    @Override
-    public Object afterDecode(mxCodec dec, Node node, Object obj) {
-        obj = super.afterDecode(dec, node, obj);
-
-        // identify non-global process ports
-        Node idNode = node.getAttributes().getNamedItem(ATTR_PORT_ID);
-        if (idNode != null) {
-            String id = idNode.getNodeValue();
-
-            if (obj instanceof ProcessPort) {
-                ProcessPort port = decodedPorts.get(id);
-
-                // a) port already decoded: return existing instance
-                if (port != null) {
-                    return port;
-
-                    // b) first time port is decoded: save instance
-                } else {
-                    port = (ProcessPort) obj;
-
-                    port.setToolTipText(null);
-                    decodedPorts.put(id, port);
-                }
-            }
-        }
-
-        return obj;
-    }
-
-    @Override
-    public Object beforeEncode(mxCodec enc, Object obj, Node node) {
-
-        // add port id to node
-        if (obj instanceof ProcessPort) {
-            ProcessPort port = (ProcessPort) obj;
-
-            // a) existing ID (=port already encoded)
-            if (encodedPorts.contains(port)) {
-                int id = encodedPorts.indexOf(obj);
-                Element nodeEl = (Element) node;
-                nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
-                return obj;
-
-                // b) create new ID (=port is to be encoded)
-            } else {
-                int id = encodedPorts.size(); // current node will be the next list entry
-                Element nodeEl = (Element) node;
-                nodeEl.setAttribute(ATTR_PORT_ID, "" + id);
-                port.setToolTipText("");
-            }
-        }
-
-        return super.beforeEncode(enc, obj, node);
-    }
-
-    @Override
-    public Node afterEncode(mxCodec enc, Object obj, Node node) {
-        if (obj instanceof ProcessPort) {
-            ProcessPort port = (ProcessPort) obj;
-
-            if (!encodedPorts.contains(port)) {
-                encodedPorts.add(port);
-            }
-        }
-
-        return super.afterEncode(enc, obj, node);
-    }
-
-    @Override
-    public Node encode(mxCodec enc, Object obj) {
-        Node node = super.encode(enc, obj);
-        return node;
-    }
-
     @Override
     protected void encodeValue(mxCodec enc, Object obj, String fieldname, Object value, Node node) {
         if (obj instanceof ProcessPort) {
             // don't encode port (value) again...
-            if (encodedPorts.contains(obj)) {
+            if (hasBeenEncoded((ProcessPort) obj)) {
                 return;
             }
 
@@ -170,4 +68,20 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
         super.encodeValue(enc, obj, fieldname, value, node);
     }
 
+    @Override
+    public Node beforeDecode(mxCodec dec, Node node, Object obj) {
+        // compatibility hook for older models without reference ids:
+        // set id as reference_id
+        Element nodeEl = (Element) node;
+        String refAttr = nodeEl.getAttribute(ATTR_REFERENCE_ID);
+        if(null == refAttr || refAttr.isEmpty()) {
+            String id = nodeEl.getAttribute("port_id");
+            nodeEl.setAttribute(ATTR_REFERENCE_ID, id);
+        }
+        
+        return super.beforeDecode(dec, node, obj);
+    }
+
+    
+    
 }

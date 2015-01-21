@@ -37,9 +37,13 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     private String componentType;
 
     private boolean editable;
+    
     private Collection<E> possibleValues;
 
+    private boolean possibleValuesTransient = false;
+    
     private transient Collection<IPropertyChangeListener> changeListeners;
+    
     private boolean isTransient = false;
 
     public Property() {
@@ -185,6 +189,14 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     public void addPossibleValue(E value) {
         possibleValues.add(value);
     }
+    
+    public void setPossibleValuesTransient(boolean possibleValuesTransient) {
+        this.possibleValuesTransient = possibleValuesTransient;
+    }
+
+    public boolean getPossibleValuesTransient() {
+        return possibleValuesTransient;
+    }
 
     public Property<E> clone() {
         Property<E> clone = new Property<>(propertiesObjectName);
@@ -204,6 +216,7 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         clone.setEditable(editable);
         clone.setIsTransient(isTransient);
         clone.setComponentType(componentType);
+        clone.setPossibleValuesTransient(possibleValuesTransient);
 
         for (E pVal : possibleValues) {
             clone.addPossibleValue(pVal);
