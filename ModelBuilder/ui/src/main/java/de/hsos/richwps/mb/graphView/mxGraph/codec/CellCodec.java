@@ -92,18 +92,9 @@ public class CellCodec extends mxCellCodec {
                 Element nodeEl = (Element) node;
 
                 // remove already encoded children
-                final NodeList childNodes = nodeEl.getChildNodes();
-                for (int i = 0; i < childNodes.getLength(); i++) {
-                    nodeEl.removeChild(childNodes.item(i));
-                }
-
-                // remove already encoded attributes
-                NamedNodeMap attributes = nodeEl.getAttributes();
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    final String nodeName = attributes.item(i).getNodeName();
-                    if (!nodeName.equals(ATTR_REFERENCE_ID)) {
-                        nodeEl.removeAttribute(nodeName);
-                    }
+                NodeList childNodes = nodeEl.getChildNodes();
+                while (childNodes.getLength() > 0) {
+                    nodeEl.removeChild(childNodes.item(0));
                 }
             }
 

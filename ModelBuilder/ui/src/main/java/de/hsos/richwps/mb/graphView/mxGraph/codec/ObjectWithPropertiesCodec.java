@@ -4,7 +4,6 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
-import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import java.util.HashMap;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * Encoding and decoding of objects with properties.

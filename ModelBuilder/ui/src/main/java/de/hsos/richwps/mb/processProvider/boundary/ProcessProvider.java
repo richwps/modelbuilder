@@ -15,6 +15,7 @@ import de.hsos.richwps.mb.processProvider.control.Publisher;
 import de.hsos.richwps.mb.processProvider.control.ServerProvider;
 import de.hsos.richwps.mb.processProvider.entity.ProcessLoadingStatus;
 import de.hsos.richwps.mb.processProvider.entity.WpsServer;
+import de.hsos.richwps.mb.processProvider.exception.ProcessMetricProviderNotAvailable;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
@@ -26,6 +27,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Connects to the SemanticProxy and receives/provides a list of available
@@ -97,7 +100,7 @@ public class ProcessProvider {
             spClient.clearCache();
         } catch (Exception ex) {
             net = null;
-            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_NOT_REACHABLE, this);
+            AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_NOT_REACHABLE, this, AppEvent.PRIORITY.URGENT);
             return false;
         }
 
@@ -145,9 +148,14 @@ public class ProcessProvider {
      * @return
      */
     public ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process) {
-        process = process.clone();
+        final ProcessEntity cachedProcess = getCache().getCachedProcess(process.getServer(), process.getOwsIdentifier());
+
+        if (null == cachedProcess) {
+            getCache().addProcess(process, false);
+        }
 
         ProcessEntity loadedProcess = getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
+
         if (null != loadedProcess) {
             process = loadedProcess;
         }
@@ -165,85 +173,113 @@ public class ProcessProvider {
      */
     public ProcessEntity getFullyLoadedProcessEntity(String server, String identifier) {
 
-        ProcessEntity process = getCache().getCachedProcess(server, identifier);
-
-        // todo get from cache or add top cache (incl. loading status!)
+        // already loaded: return cached process.
         if (getCache().isLoaded(server, identifier)) {
             return getCache().getCachedProcess(server, identifier);
         }
 
-        // find desired process at the desired endpoint (server)
+        // get full or partially loaded process from cache.
+        ProcessEntity process = getCache().getCachedProcess(server, identifier);
+
+        // if any error occurs, the "fully loaded" flag will not be set
+        boolean loadError = false;
+
+        boolean spAvailable = false;
         try {
-            for (WPS wps : getServerProvider().getWPSs()) {
-
-                try {
-                    // this is the server we are looking for
-                    if (server.equals(wps.getEndpoint())) {
-
-                        for (Process spProcess : wps.getProcesses()) {
-
-                            // this is the process we are looking for
-                            if (spProcess.getIdentifier().equals(identifier)) {
-
-                                // if any error occurs, the "fully loaded" flag will not be set
-                                boolean loadError = false;
-
-                                // Map process attributes
-                                process = EntityConverter.createProcessEntity(spProcess, getTranslator());
-
-                                // Map input ports
-                                try {
-
-                                    for (Input spInput : spProcess.getInputs()) {
-                                        ProcessPort inPort = EntityConverter.createProcessInput(spInput);
-                                        process.addInputPort(inPort);
-                                    }
-
-                                } catch (Exception ex) {
-                                    loadError = true;
-                                    fireSpReceiveExceptionAsAppEvent(ex);
-                                }
-
-                                // Map output ports
-                                try {
-
-                                    for (Output spOutput : spProcess.getOutputs()) {
-                                        ProcessPort outPort = EntityConverter.createProcessOutput(spOutput);
-                                        process.addOutputPort(outPort);
-                                    }
-
-                                } catch (Exception ex) {
-                                    loadError = true;
-                                    fireSpReceiveExceptionAsAppEvent(ex);
-                                }
-
-                                // Add metric properties
-                                getMonitorDataConverter().addProcessMetrics(process);
-
-                                // add process to cache or update cached process 
-                                // if any error occured, the process data is propably not complete
-                                getCache().addProcess(process, !loadError);
-                                process = getCache().getCachedProcess(server, identifier);
-
-                                // trigger toolTipText update
-                                process.setToolTipText(null);
-
-                                // process found, return to stop search
-                                return process;
-                            }
-                        }
-
-                    }
-                } catch (Exception ex) {
-                    fireSpReceiveExceptionAsAppEvent(ex);
-                }
-            }
+            spAvailable = isConnected() || connect(spUrl);
 
         } catch (Exception ex) {
-            fireSpReceiveExceptionAsAppEvent(ex);
+            // ignore
         }
 
-        return null;
+        // SP not available and process not cached -> return null.
+        if (!spAvailable) {
+            if (null == process) {
+                return null;
+            }
+
+        } else { // SP available: get process from SP 
+
+            // find desired process at the desired endpoint (server)
+            try {
+
+                for (WPS wps : getServerProvider().getWPSs()) {
+
+                    try {
+                        // this is the server we are looking for
+                        if (server.equals(wps.getEndpoint())) {
+
+                            for (Process spProcess : wps.getProcesses()) {
+
+                                // this is the process we are looking for
+                                if (spProcess.getIdentifier().equals(identifier)) {
+
+                                    // Map process attributes
+                                    process = EntityConverter.createProcessEntity(spProcess, getTranslator());
+
+                                    // Map input ports
+                                    try {
+
+                                        for (Input spInput : spProcess.getInputs()) {
+                                            ProcessPort inPort = EntityConverter.createProcessInput(spInput);
+                                            process.addInputPort(inPort);
+                                        }
+
+                                    } catch (Exception ex) {
+                                        loadError = true;
+                                        fireSpReceiveExceptionAsAppEvent(ex);
+                                    }
+
+                                    // Map output ports
+                                    try {
+
+                                        for (Output spOutput : spProcess.getOutputs()) {
+                                            ProcessPort outPort = EntityConverter.createProcessOutput(spOutput);
+                                            process.addOutputPort(outPort);
+                                        }
+
+                                    } catch (Exception ex) {
+                                        loadError = true;
+                                        fireSpReceiveExceptionAsAppEvent(ex);
+                                    }
+
+                                }
+                            }
+
+                        }
+                    } catch (Exception ex) {
+                        fireSpReceiveExceptionAsAppEvent(ex);
+                    }
+                }
+
+            } catch (Exception ex) {
+                fireSpReceiveExceptionAsAppEvent(ex);
+            }
+        }
+
+        // nothing loaded: return null
+        if (null == process) {
+            return null;
+        }
+
+        // Add metric properties if available
+        try {
+            getMonitorDataConverter().addProcessMetrics(process);
+
+        } catch (ProcessMetricProviderNotAvailable ex) {
+            // ignore
+        }
+
+        // add process to cache or update cached process 
+        // if any error occured, the process data is propably not complete
+        getCache().addProcess(process, !loadError);
+        process = getCache().getCachedProcess(server, identifier);
+
+        // trigger toolTipText update
+        process.setToolTipText(null);
+
+        // process found, return to stop search
+        return process;
     }
 
     public Collection<WpsServer> getAllServerWithProcesses() {

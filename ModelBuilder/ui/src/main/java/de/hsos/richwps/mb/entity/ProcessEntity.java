@@ -270,6 +270,10 @@ public class ProcessEntity extends OwsObjectWithProperties {
      * @param other
      */
     public void copyValuesFrom(ProcessEntity other) {
+        if (System.identityHashCode(this) == System.identityHashCode(other)) {
+            return;
+        }
+
         super.copyValuesFrom(other);
 
         setServer(other.getServer());
