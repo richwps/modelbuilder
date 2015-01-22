@@ -43,4 +43,9 @@ public class GraphEdge extends mxCell {
         return sourcePortCell + " - " + targetPortCell;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }

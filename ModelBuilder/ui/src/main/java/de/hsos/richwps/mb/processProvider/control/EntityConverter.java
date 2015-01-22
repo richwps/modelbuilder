@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.processProvider.control;
 
-
 import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -179,6 +178,7 @@ public class EntityConverter {
         ProcessPortDatatype datatype = EntityConverter.getDatatype(spInput.getInputFormChoice());
 
         ProcessPort inPort = new ProcessPort(datatype);
+        inPort.setGlobal(false);
         inPort.setOwsIdentifier(spInput.getIdentifier());
         inPort.setOwsAbstract(spInput.getAbstract());
         inPort.setOwsTitle(spInput.getTitle());
@@ -214,12 +214,13 @@ public class EntityConverter {
     public static ProcessPort createProcessOutput(Output spOutput) throws Exception {
         ProcessPortDatatype datatype = EntityConverter.getDatatype(spOutput.getOutputFormChoice());
 
-        ProcessPort inPort = new ProcessPort(datatype);
-        inPort.setOwsIdentifier(spOutput.getIdentifier());
-        inPort.setOwsAbstract(spOutput.getAbstract());
-        inPort.setOwsTitle(spOutput.getTitle());
+        ProcessPort outPort = new ProcessPort(datatype);
+        outPort.setGlobal(false);
+        outPort.setOwsIdentifier(spOutput.getIdentifier());
+        outPort.setOwsAbstract(spOutput.getAbstract());
+        outPort.setOwsTitle(spOutput.getTitle());
 
-        Collection<? extends IObjectWithProperties> properties = inPort.getProperties();
+        Collection<? extends IObjectWithProperties> properties = outPort.getProperties();
         for (IObjectWithProperties aPropertyObject : properties) {
 
             if (aPropertyObject instanceof Property) {
@@ -234,6 +235,6 @@ public class EntityConverter {
 
         }
 
-        return inPort;
+        return outPort;
     }
 }

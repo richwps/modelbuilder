@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.dsl;
 
+import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.dsl.api.Writer;
 import de.hsos.richwps.dsl.api.elements.*;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.xtext.GrammarUtil;
 
 /**
  * Exports a graph to DSL notation.
@@ -54,6 +56,8 @@ public class Exporter {
      */
     private Workflow workflow;
 
+    private HashMap<String, String> owsmap = new HashMap<String, String>();
+
     /**
      * Constructs a new Exporter.
      *
@@ -86,7 +90,29 @@ public class Exporter {
 
         Writer writer = new Writer();
 
-        createUniqueIdentifiers(graph.getAllFlowOutputPorts());
+        long uniqueId = 0;
+
+        for (mxCell portCell : this.graph.getAllFlowOutputCells()) {
+            ProcessPort port = (ProcessPort) this.graph.getModel().getValue(portCell);
+            port = port.clone();
+            this.graph.getModel().setValue(portCell, port);
+            String owsidentifier = port.getOwsIdentifier();
+
+            String hashed = owsidentifier + "_" + (uniqueId++);
+            port.setOwsIdentifier(hashed);
+            this.owsmap.put(hashed, owsidentifier);
+        }
+
+        for (mxCell portCell : this.graph.getAllFlowInputCells()) {
+            ProcessPort port = (ProcessPort) this.graph.getModel().getValue(portCell);
+            port = port.clone();
+            this.graph.getModel().setValue(portCell, port);
+            String owsidentifier = port.getOwsIdentifier();
+
+            String hashed = owsidentifier + "_" + (uniqueId++);
+            port.setOwsIdentifier(hashed);
+            this.owsmap.put(hashed, owsidentifier);
+        }
 
         // Topological sort is used to resolve dependencies
         TopologicalSorter sorter = new TopologicalSorter();
@@ -112,11 +138,11 @@ public class Exporter {
             }
         }
         //write out all bindings 
-        for(Binding b:this.bindings){
+        for (Binding b : this.bindings) {
             this.workflow.add(b);
         }
         //write out all executes
-        for(Execute e:this.executes){
+        for (Execute e : this.executes) {
             this.workflow.add(e);
         }
         //finally write out the workflow
@@ -168,7 +194,6 @@ public class Exporter {
             //String uniqueInIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
             // OWS Identifier is the original port identifier
             //String owsInIdentifier = uniqueInIdentifier.split(" ")[0];
-
             // ... same for out identifiers
             //String uniqueOutIdentifier = getUniqueIdentifier(target.getOwsIdentifier());
             String owsOutIdentifier = getOwsIdentifier(target.getOwsIdentifier());

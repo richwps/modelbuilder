@@ -1,18 +1,20 @@
 package de.hsos.richwps.mb.graphView.mxGraph;
 
+import com.google.common.collect.HashBiMap;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The model for the RichWPS graph. Extends the underlying mxGraphModel.
@@ -20,6 +22,7 @@ import java.util.List;
  * @author dziegenh
  */
 public class GraphModel extends mxGraphModel implements IObjectWithProperties {
+
     public static final String PROPERTIES_KEY_OWS_IDENTIFIER = "Identifier ";
     public static final String PROPERTIES_KEY_OWS_ABSTRACT = "Abstract";
     public static final String PROPERTIES_KEY_OWS_ENDPOINT = "Endpoint";
@@ -185,6 +188,72 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         GraphModel clone = new GraphModel();
         try {
             clone.mergeChildren((mxCell) getRoot(), (mxICell) clone.getRoot(), true);
+
+            Map<String, Object> allCells = clone.getCells();
+
+            for (Object child : allCells.values()) {
+                Object[] incomingEdges = getIncomingEdges(clone, child);
+                Object[] outgoingEdges = getOutgoingEdges(clone, child);
+
+                // process cells: update source/target ports of connected edges
+                if (clone.isProcess(child)) {
+                    Object[] portCells = getChildVertices(clone, child);
+
+                    // update port cell of incoming edges.
+                    for (Object incoming : incomingEdges) {
+                        if (incoming instanceof GraphEdge) {
+                            GraphEdge edge = (GraphEdge) incoming;
+                            mxCell target = edge.getTargetPortCell();
+
+                            for (Object portCell : portCells) {
+                                ProcessPort targetValue = (ProcessPort) clone.getValue(target);
+                                ProcessPort portCellValue = (ProcessPort) clone.getValue(portCell);
+
+                                if (targetValue.equals(portCellValue)) {
+                                    edge.setTargetPortCell((mxCell) portCell);
+                                }
+                            }
+                        }
+                    }
+
+                    // update port cell of outgoing edges.
+                    for (Object outgoing : outgoingEdges) {
+                        if (outgoing instanceof GraphEdge) {
+                            GraphEdge edge = (GraphEdge) outgoing;
+                            mxCell source = edge.getSourcePortCell();
+
+                            for (Object portCell : portCells) {
+                                ProcessPort sourceValue = (ProcessPort) clone.getValue(source);
+                                ProcessPort portCellValue = (ProcessPort) clone.getValue(portCell);
+
+                                if (sourceValue.equals(portCellValue)) {
+                                    edge.setSourcePortCell((mxCell) portCell);
+                                }
+                            }
+                        }
+                    }
+
+                    // global ports: update source/target of connected edges
+                } else if (clone.isGlobalPort(child)) {
+
+                    // update global port cell of incoming edges.
+                    for (Object incoming : incomingEdges) {
+                        if (incoming instanceof GraphEdge) {
+                            GraphEdge edge = (GraphEdge) incoming;
+                            edge.setTargetPortCell((mxCell) child);
+                        }
+                    }
+
+                    // update global port cell of outgoing edges.
+                    for (Object outgoing : outgoingEdges) {
+                        if (outgoing instanceof GraphEdge) {
+                            GraphEdge edge = (GraphEdge) outgoing;
+                            edge.setSourcePortCell((mxCell) child);
+                        }
+                    }
+                }
+            }
+
         } catch (CloneNotSupportedException ex) {
             Logger.log("GraphModel: clone not supported!! " + ex);
         }
@@ -261,6 +330,32 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     @Override
     public boolean isTransient() {
         return false;
+    }
+
+    List<mxCell> getAllFlowOutputCells() {
+        List<mxCell> outputs = new LinkedList<>();
+
+        Map<String, Object> cells = getCells();
+        for (Object cell : cells.values()) {
+            if (isFlowOutput(cell)) {
+                outputs.add((mxCell) cell);
+            }
+        }
+
+        return outputs;
+    }
+
+    List<mxCell> getAllFlowInputCells() {
+        List<mxCell> inputs = new LinkedList<>();
+
+        Map<String, Object> cells = getCells();
+        for (Object cell : cells.values()) {
+            if (isFlowInput(cell)) {
+                inputs.add((mxCell) cell);
+            }
+        }
+
+        return inputs;
     }
 
 }

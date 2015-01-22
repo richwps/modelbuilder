@@ -5,6 +5,7 @@ import com.mxgraph.analysis.mxGraphProperties;
 import com.mxgraph.analysis.mxGraphStructure;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;
@@ -566,23 +567,29 @@ public class Graph extends mxGraph {
     public List<ProcessPort> getAllFlowOutputPorts() {
         List<ProcessPort> outputs = new LinkedList<>();
 
-        Object[] cells = getChildCells(getDefaultParent());
-        for (Object cell : cells) {
-            Object value = getGraphModel().getValue(cell);
-            if (value instanceof ProcessPort) {
-                ProcessPort port = (ProcessPort) value;
-                if (port.isFlowOutput()) {
-                    outputs.add(port);
-                }
-            } else if (value instanceof ProcessEntity) {
-                ProcessEntity process = (ProcessEntity) value;
-                for (ProcessPort port : process.getOutputPorts()) {
-                    outputs.add(port);
-                }
-            }
+        for (mxCell cell : getAllFlowOutputCells()) {
+            outputs.add((ProcessPort) cell.getValue());
         }
 
         return outputs;
+    }
+
+    public List<ProcessPort> getAllFlowInputPorts() {
+        List<ProcessPort> inputs = new LinkedList<>();
+
+        for (mxCell cell : getAllFlowInputCells()) {
+            inputs.add((ProcessPort) cell.getValue());
+        }
+
+        return inputs;
+    }
+
+    public List<mxCell> getAllFlowInputCells() {
+        return getGraphModel().getAllFlowInputCells();
+    }
+
+    public List<mxCell> getAllFlowOutputCells() {
+        return getGraphModel().getAllFlowOutputCells();
     }
 
     public static double getAbsoluteCellX(mxCell cell) {

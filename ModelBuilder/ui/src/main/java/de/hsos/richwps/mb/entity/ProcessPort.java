@@ -2,6 +2,7 @@ package de.hsos.richwps.mb.entity;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.properties.Property;
+import java.util.Objects;
 
 /**
  * A port entitiy can either be global (model-wide) or local (part of a
@@ -56,7 +57,7 @@ public class ProcessPort extends OwsObjectWithProperties {
             case PROPERTY_KEY_MAXOCCURS:
                 created = new Property<Integer>(PROPERTY_KEY_MAXOCCURS, Property.COMPONENT_TYPE_INTEGER, null);
                 break;
-                
+
             case PROPERTY_KEY_MAXMB:
                 created = new Property<Integer>(PROPERTY_KEY_MAXMB, Property.COMPONENT_TYPE_INTEGER, null);
                 break;
@@ -319,6 +320,35 @@ public class ProcessPort extends OwsObjectWithProperties {
         clone.setGlobal(global);
 
         return clone;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (null == obj || !(obj instanceof ProcessPort)) {
+            return false;
+        }
+
+        ProcessPort other = (ProcessPort) obj;
+
+        return other.datatype.equals(this.datatype)
+                && other.flowInput == this.flowInput
+                && other.global == this.global
+                && other.getOwsAbstract().equals(this.getOwsAbstract())
+                && other.getOwsIdentifier().equals(this.getOwsIdentifier())
+                && other.getOwsTitle().equals(this.getOwsTitle());
+
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 13 * hash + Objects.hashCode(this.datatype);
+        hash = 13 * hash + (this.flowInput ? 1 : 0);
+        hash = 13 * hash + (this.global ? 1 : 0);
+        hash = 13 * hash + Objects.hashCode(getOwsAbstract());
+        hash = 13 * hash + Objects.hashCode(getOwsIdentifier());
+        hash = 13 * hash + Objects.hashCode(getOwsTitle());
+        return hash;
     }
 
 }
