@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.app.view.preferences;
 import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.PerstistableComboBox;
+import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -18,9 +19,11 @@ public class PreferencesProcessSources extends AbstractPreferencesTab {
 
     // Semantic Proxy
     private static final String urlKey = AppConfig.CONFIG_KEYS.SEMANTICPROXY_S_URL.name();
-    private static final String urlCountKey = AppConfig.CONFIG_KEYS.SEMANTICPROXY_I_URL_COUNT.name();
+    
     private JComboBox<String> urlField;
+    
     private JButton deleteButton;
+    
     private final PerstistableComboBox fieldPanel;
 
     // Managed remotes
@@ -41,6 +44,7 @@ public class PreferencesProcessSources extends AbstractPreferencesTab {
         deleteButton.setText(null);
         deleteButton.setIcon(UIManager.getIcon(AppConstants.ICON_DELETE_KEY));
         deleteButton.setToolTipText("Delete selected URL");
+        deleteButton.setPreferredSize(new Dimension(20, 20));
 
         urlField = fieldPanel.getComboBox();
         urlField.setEditable(true);

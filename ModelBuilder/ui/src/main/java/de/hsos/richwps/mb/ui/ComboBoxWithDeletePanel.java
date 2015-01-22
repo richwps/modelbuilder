@@ -27,9 +27,9 @@ public class ComboBoxWithDeletePanel<E> extends JPanel {
         createComboBox();
         createDeleteButton();
 
-        setLayout(new TableLayout(new double[][]{{TableLayout.FILL, TableLayout.PREFERRED}, {TableLayout.PREFERRED}}));
+        setLayout(new TableLayout(new double[][]{{TableLayout.FILL, 2.f, TableLayout.PREFERRED}, {TableLayout.PREFERRED}}));
         add(comboBox, "0 0");
-        add(deleteButton, "1 0");
+        add(deleteButton, "2 0");
     }
 
     private void createComboBox() {
