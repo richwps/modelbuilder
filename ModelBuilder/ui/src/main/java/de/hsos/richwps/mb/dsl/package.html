@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Exporter</h1>
+        Exports a given graph to ROLA-notation.
+        <p>
+            <b>HandleInputCell</b>
+        Deals with direct connections between In- and Outputcells.
+        <pre>
+         [L]
+          |
+         [L]
+        </pre>
+    </p>
+    <p>
+        <b>HandleOutputCell</b>
+    <pre>
+            [....]
+            [C][L]
+                |            
+               [L]
+    </pre>
+</p>
+<p>
+    <b>HandleIngoingProcessCellTransitions</b>
+<pre>
+                [....]
+                [C][L]
+        [C]--       |
+             |  ----
+            [C][L]
+            [....]
+            [C][L]
+</pre>
+</p>
+<p>
+    <b>HandleOutgoingProcessCellTransitions</b>
+<pre>
+         [....]
+         [C][L]
+          |  ---------[L][C]
+          |           [....]
+         [C]
+</pre>
+</p>
+</body>
+</html>

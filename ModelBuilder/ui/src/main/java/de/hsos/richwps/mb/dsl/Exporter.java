@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.xtext.GrammarUtil;
 
 /**
  * Exports a graph to DSL notation.
@@ -26,7 +25,7 @@ import org.eclipse.xtext.GrammarUtil;
  * @author jkovalev
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.4
+ * @version 0.0.5
  */
 public class Exporter {
 
@@ -145,7 +144,7 @@ public class Exporter {
         for (Execute e : this.executes) {
             this.workflow.add(e);
         }
-        //finally write out the workflow
+        //finally write out the whole workflow
         writer.create(path, this.workflow);
     }
 
@@ -159,17 +158,22 @@ public class Exporter {
      */
     private void handleInputCell(mxICell input) throws Exception {
 
-        //when global input cell is connected to global output cell, generate assignment.
         for (int i = 0; i < input.getEdgeCount(); i++) {
             if (input.getEdgeAt(i) instanceof GraphEdge) {
                 GraphEdge transition = (GraphEdge) input.getEdgeAt(i);
                 mxICell target = transition.getTargetPortCell();
 
+                //when global input cell is connected to global output cell,
+                //generate assignment.
                 if (this.graph.getGraphModel().isGlobalOutputPort(target)) {
                     ProcessPort peout = (ProcessPort) target.getValue();
                     ProcessPort pein = (ProcessPort) input.getValue();
-                    InReference in = new InReference(pein.getOwsIdentifier());
-                    OutReference out = new OutReference(peout.getOwsIdentifier());
+
+                    final String inidentifier = this.truncate(pein.getOwsIdentifier());
+                    final String outidentifier = this.truncate(peout.getOwsIdentifier());
+
+                    InReference in = new InReference(inidentifier);
+                    OutReference out = new OutReference(outidentifier);
                     Assignment as = new Assignment(out, in);
                     this.workflow.add(as);
                 }
@@ -187,22 +191,15 @@ public class Exporter {
         Object[] incoming = graph.getIncomingEdges(output);
         for (Object in : incoming) {
             GraphEdge edge = (GraphEdge) in;
-            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
-            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
+            final ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
+            final ProcessPort outputcell = (ProcessPort) edge.getTargetPortCell().getValue();
 
-            // unique identifier is necessary to distinguish ports with the same owsIdentifier
-            //String uniqueInIdentifier = getUniqueIdentifier(source.getOwsIdentifier());
-            // OWS Identifier is the original port identifier
-            //String owsInIdentifier = uniqueInIdentifier.split(" ")[0];
-            // ... same for out identifiers
-            //String uniqueOutIdentifier = getUniqueIdentifier(target.getOwsIdentifier());
-            String owsOutIdentifier = getOwsIdentifier(target.getOwsIdentifier());
-
-            //String inIdentifier = source.getOwsIdentifier();
-            //String outIdentifier = target.getOwsIdentifier();
-            // Reading varibale from varibale reference map
-            Reference variable = this.variables.get(source.getOwsIdentifier());
+            final String owsOutIdentifier = this.truncate(outputcell.getOwsIdentifier());
             Reference outputReference = new OutReference(owsOutIdentifier);
+
+            //Reading varibale from varibale reference map
+            Reference variable = this.variables.get(source.getOwsIdentifier());
+
             Assignment assignment = new Assignment(outputReference, variable);
             this.workflow.add(assignment);
         }
@@ -228,7 +225,6 @@ public class Exporter {
         handleIngoingProcessCellTransitions(incoming, execute);
         handleOutgoingProcessCellTransitions(outgoing, execute);
         this.executes.add(execute);
-        //this.workflow.add(execute);
     }
 
     /**
@@ -270,9 +266,7 @@ public class Exporter {
 
         if (!this.bindings.contains(bindingA)) {
             this.bindings.add(bindingA);
-            //this.workflow.add(bindingA);
         }
-
         return rolaidentifier;
     }
 
@@ -287,34 +281,32 @@ public class Exporter {
     private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
 
         for (Object in : incoming) {
-            //For each transition.
+            //for each transition.
             GraphEdge edge = (GraphEdge) in;
-            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
-            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
+            final ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
+            final ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
 
+            //global input to this process
             if (source.isGlobal()) {
-                InReference inref = new InReference(source.getOwsIdentifier());
-                execute.addInput(inref, target.getOwsIdentifier());
-            } else {
+                final String inidentifier = this.truncate(source.getOwsIdentifier());
+                final String wpsinidentifer = this.truncate(target.getOwsIdentifier());
+                InReference inref = new InReference(inidentifier);
+                execute.addInput(inref, wpsinidentifer);
+            } //variable input to this process
+            else {
+
                 // Read variable from reference map
-
-                VarReference variable = null;
-                String unique_src = "";
-                unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
-
-                // lookup variable
-                if (this.variables.containsKey(unique_src)) {
-                    //variable allready declared, lets re-use it.
-                    variable = (VarReference) this.variables.get(unique_src);
-                } else {
-                    //variable does not exist, we need to create it first.
+                final String unique_src = source.getOwsIdentifier();
+                VarReference variable = variable = (VarReference) this.variables.get(unique_src);
+                if (variable == null) {
+                    //variable does not exist, we need to create it.
                     variable = new VarReference(unique_src);
                     this.variables.put(unique_src, variable);
                 }
 
                 transitions.add("ingoing into  " + edge.getTarget().getValue() + " from " + edge.getSource().getValue());
-                String owsin = this.getOwsIdentifier(target.getOwsIdentifier());
-                execute.addInput(variable, owsin);
+                final String wpsinidentifer = this.truncate(target.getOwsIdentifier());
+                execute.addInput(variable, wpsinidentifer);
             }
         }
     }
@@ -331,19 +323,25 @@ public class Exporter {
         List<String> vars = new ArrayList<>();
         for (Object out : outgoing) {
             GraphEdge edge = (GraphEdge) out;
-            ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
-            ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
+            final ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
+            final ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
 
             if (target.isGlobal()) {
-                OutReference outref = new OutReference(this.getUniqueIdentifier(target.getOwsIdentifier()));
-                execute.addOutput(source.getOwsIdentifier(), outref);
+                final String outidentifer = this.truncate(target.getOwsIdentifier());
+                final String wpsoutidentifer = this.truncate(source.getOwsIdentifier());
+                OutReference outref = new OutReference(outidentifer);
+                execute.addOutput(wpsoutidentifer, outref);
             } else {
-                String unique_src = this.getUniqueIdentifier(source.getOwsIdentifier());
-                String owsout = this.getOwsIdentifier(source.getOwsIdentifier());
-                VarReference variable = new VarReference(unique_src);
-                if (!vars.contains(unique_src)) {    //allready set?
+                // Read variable from reference map
+                final String unique_src = source.getOwsIdentifier();
+                final String owsout = this.truncate(source.getOwsIdentifier());
+
+                VarReference unique_variable = new VarReference(unique_src);
+
+                if (!vars.contains(unique_src)) {
                     vars.add(unique_src);
-                    execute.addOutput(owsout, variable);
+                    this.variables.put(unique_src, unique_variable);
+                    execute.addOutput(owsout, unique_variable);
                 }
                 transitions.add("outgoing from " + edge.getSource().getValue() + " to " + edge.getTarget().getValue());
             }
@@ -354,8 +352,16 @@ public class Exporter {
         GraphHandler.createRawIdentifiers(ports);
     }
 
-    private String getOwsIdentifier(String rawIdentifier) {
-        return GraphHandler.getOwsIdentifier(rawIdentifier);
+    /**
+     * Identifier are designed to be unique (name_NUMBER). In order to retain
+     * the common ows:identifer, we need to truncate the _NUMBER.
+     *
+     * @param rawIdentifier
+     * @return
+     */
+    private String truncate(String rawIdentifier) {
+        return rawIdentifier.split("_")[0];
+        //return GraphHandler.getOwsIdentifier(rawIdentifier);
     }
 
     private String getUniqueIdentifier(String rawIdentifier) {
