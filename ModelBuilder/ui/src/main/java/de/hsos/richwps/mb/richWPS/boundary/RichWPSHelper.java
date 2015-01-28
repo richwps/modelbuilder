@@ -17,12 +17,14 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArg
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
 import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import net.opengis.ows.x11.ExceptionReportDocument;
 import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
@@ -166,8 +168,16 @@ public class RichWPSHelper {
                 if (o.getReference() != null) {
                     String key = o.getIdentifier().getStringValue();
                     String value = o.getReference().getHref();
-                    request.addResult(key, value);
+                    URL url;
+                    try {
+                        url = new URL(value);
+                        request.addResult(key, url);
+                    } catch (MalformedURLException ex) {
+                        java.util.logging.Logger.getLogger(RichWPSHelper.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+                
+                //TODO: BoundingBox ?
             }
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
