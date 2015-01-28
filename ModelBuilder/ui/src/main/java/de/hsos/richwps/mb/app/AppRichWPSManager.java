@@ -28,7 +28,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import javax.swing.JOptionPane;
 
@@ -120,21 +122,12 @@ public class AppRichWPSManager {
     }
 
     /**
-     * Delivers the variables that are used within a ROLA-script.
-     *
-     * @return variables the ROLA-script variables.
-     */
-    public String[] getVariables() {
-        return exporter.getVariables();
-    }
-
-    /**
      * Delivers the transitions.
      *
      * @return transitions
      */
-    public List<String> getTransitions() {
-        return exporter.getTransitions();
+    public Map<String, String> getEdges() {
+        return exporter.getEdges();
     }
 
     /**
@@ -407,7 +400,7 @@ public class AppRichWPSManager {
             try {
                 UndeployRequest request = new UndeployRequest(wpsendpoint, richwpsendpoint, identifier);
                 provider.perform(request);
-                
+
                 AppEventService service = AppEventService.getInstance();
                 service.fireAppEvent(AppConstants.UNDEPLOY_SUCCESS, AppConstants.INFOTAB_ID_SERVER);
 
@@ -451,7 +444,7 @@ public class AppRichWPSManager {
                         AppConstants.TMP_FILE_FAILED + " " + e.getLocalizedMessage());
                 return "";
             }
-                
+
             //Todo: Exporter is null if initialization failed due to missing 
             //      identifiers -> NoIdentifierException is thrown but only
             //      the general error (Unable to create...) is send to the user
@@ -596,8 +589,17 @@ public class AppRichWPSManager {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
                         ComplexDataTypeFormat format = description.getDefaultFormat();
                         supportedType.add(format.getMimeType());
-                        supportedType.add(format.getSchema());
-                        supportedType.add(format.getEncoding());
+                        if (format.getSchema().isEmpty()) {
+                            supportedType.add(null);
+                        } else {
+                            supportedType.add(format.getSchema());
+                        }
+
+                        if (format.getEncoding().isEmpty()) {
+                            supportedType.add(null);
+                        } else {
+                            supportedType.add(format.getEncoding());
+                        }
                     }
 
                     supportedTypes.add(supportedType);

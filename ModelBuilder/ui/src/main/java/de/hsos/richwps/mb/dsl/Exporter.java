@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Exports a graph to DSL notation.
+ * Uses a copy of the current graph to create DSL notation.
  *
  * @author jkovalev
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.5
+ * @version 0.0.6
  */
 public class Exporter {
 
@@ -34,7 +34,10 @@ public class Exporter {
      * variables.
      */
     protected Map<String, Reference> variables;
-    protected List<String> transitions;
+    /**
+     * Association variable to edges.
+     */
+    protected HashMap<String, String> edges;
     /**
      * * Extended version of the (JGraphX) mxGraph.
      */
@@ -55,7 +58,8 @@ public class Exporter {
      */
     private Workflow workflow;
 
-    private HashMap<String, String> owsmap = new HashMap<String, String>();
+    private Map<String, String> owsmap = new HashMap<>();
+    private List<mxICell> sorted;
 
     /**
      * Constructs a new Exporter.
@@ -73,22 +77,12 @@ public class Exporter {
         this.variables = new HashMap<>();
         this.bindings = new ArrayList<>();
         this.executes = new ArrayList<>();
-        this.transitions = new ArrayList<>();
+        this.edges = new HashMap<>();
         this.workflow = new Workflow();
+        this.prepareGraph();
     }
 
-    /**
-     * Launches the export and writes results to specifed file.
-     *
-     * @param path file to write to.
-     * @throws Exception
-     */
-    public void export(String path) throws Exception {
-
-        final String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
-
-        Writer writer = new Writer();
-
+    private void prepareGraph() {
         long uniqueId = 0;
 
         for (mxCell portCell : this.graph.getAllFlowOutputCells()) {
@@ -115,7 +109,20 @@ public class Exporter {
 
         // Topological sort is used to resolve dependencies
         TopologicalSorter sorter = new TopologicalSorter();
-        List<mxICell> sorted = sorter.sort(graph);
+        sorted = sorter.sort(graph);
+    }
+
+    /**
+     * Launches the export and writes results to specifed file.
+     *
+     * @param path file to write to.
+     * @throws Exception
+     */
+    public void export(String path) throws Exception {
+
+        final String url = (String) this.graph.getGraphModel().getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+
+        Writer writer = new Writer();
 
         for (mxICell cell : sorted) {
             //handle process.
@@ -164,7 +171,7 @@ public class Exporter {
                 mxICell target = transition.getTargetPortCell();
 
                 //when global input cell is connected to global output cell,
-                //generate assignment.
+                //directly generate assignment.
                 if (this.graph.getGraphModel().isGlobalOutputPort(target)) {
                     ProcessPort peout = (ProcessPort) target.getValue();
                     ProcessPort pein = (ProcessPort) input.getValue();
@@ -222,8 +229,8 @@ public class Exporter {
 
         String rolaidentifier = handleBinding(pe, isLocalBinding);
         Execute execute = new Execute(rolaidentifier);
-        handleIngoingProcessCellTransitions(incoming, execute);
-        handleOutgoingProcessCellTransitions(outgoing, execute);
+        handleIngoingProcessCellEdges(incoming, execute);
+        handleOutgoingProcessCellEdges(outgoing, execute);
         this.executes.add(execute);
     }
 
@@ -271,17 +278,18 @@ public class Exporter {
     }
 
     /**
-     * Handle ingoing process transitions and map given variables to
-     * wps:process:inputs.
+     * Handle ingoing process edges and map given variables to
+     * wps:process:inputs. This method deals with the with-section of an
+     * execute-command.
      *
-     * @param outgoing List of ingoing transitions.
+     * @param outgoing List of ingoing edges.
      * @param execute according execute statement/process.
      * @throws Exception ROLA-exception in case the input is malformed.
      */
-    private void handleIngoingProcessCellTransitions(Object[] incoming, Execute execute) throws Exception {
+    private void handleIngoingProcessCellEdges(Object[] incoming, Execute execute) throws Exception {
 
         for (Object in : incoming) {
-            //for each transition.
+            //for each edge.
             GraphEdge edge = (GraphEdge) in;
             final ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             final ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
@@ -295,33 +303,36 @@ public class Exporter {
             } //variable input to this process
             else {
 
-                // Read variable from reference map
                 final String unique_src = source.getOwsIdentifier();
-                VarReference variable = variable = (VarReference) this.variables.get(unique_src);
-                if (variable == null) {
-                    //variable does not exist, we need to create it.
+                //take variable from memory, or create new one.
+                VarReference variable;
+                if (this.variables.containsKey(unique_src)) {
+                    variable = (VarReference) this.variables.get(unique_src);
+                } else {
                     variable = new VarReference(unique_src);
                     this.variables.put(unique_src, variable);
                 }
 
-                transitions.add("ingoing into  " + edge.getTarget().getValue() + " from " + edge.getSource().getValue());
-                final String wpsinidentifer = this.truncate(target.getOwsIdentifier());
-                execute.addInput(variable, wpsinidentifer);
+                final String owsinidentifier = this.truncate(target.getOwsIdentifier());
+                execute.addInput(variable, owsinidentifier);
             }
-        }
+        }// for
     }
 
     /**
-     * Handle outgoing process transitions and map wps:process:outputs to given
-     * variables or globally available outputs.
+     * Handle outgoing process edges and map wps:process:outputs to given
+     * variables or globally available outputs. This method deals with the
+     * store-section of an execute-command.
      *
-     * @param outgoing List of outgoing transitions.
+     * @param outgoing List of outgoing edges.
      * @param execute according execute statement/process.
      * @throws Exception ROLA-exception in case the output is malformed.
      */
-    private void handleOutgoingProcessCellTransitions(Object[] outgoing, Execute execute) throws Exception {
+    private void handleOutgoingProcessCellEdges(Object[] outgoing, Execute execute) throws Exception {
         List<String> vars = new ArrayList<>();
+
         for (Object out : outgoing) {
+            //for each edge
             GraphEdge edge = (GraphEdge) out;
             final ProcessPort source = (ProcessPort) edge.getSourcePortCell().getValue();
             final ProcessPort target = (ProcessPort) edge.getTargetPortCell().getValue();
@@ -332,24 +343,54 @@ public class Exporter {
                 OutReference outref = new OutReference(outidentifer);
                 execute.addOutput(wpsoutidentifer, outref);
             } else {
-                // Read variable from reference map
+                //
+                // Declare reusable variables for outgoing edges.
+                // e.g. [...] store
+                // output as var.out
+                // output2 as var.out2
+                // [....]
+                // [C][L]
+                //  |   |
+                //  |   ----------
+                //  |            |
+                // [C][L]    [C][L]
+                // [....]    [....]
                 final String unique_src = source.getOwsIdentifier();
-                final String owsout = this.truncate(source.getOwsIdentifier());
 
-                VarReference unique_variable = new VarReference(unique_src);
+                //take variable from memory, or create new one.
+                VarReference variable;
+                if (this.variables.containsKey(unique_src)) {
+                    variable = (VarReference) this.variables.get(unique_src);
+                } else {
+                    variable = new VarReference(unique_src);
+                    this.variables.put(unique_src, variable);
+                }
 
                 if (!vars.contains(unique_src)) {
+                    // avoid redundant declaration if an output is used multiple
+                    // times
+                    //
+                    // [....]
+                    // [C][L]
+                    //  |
+                    //  |----------
+                    //  |         |
+                    // [C][L]    [C][L]
+                    // [....]    [....]
                     vars.add(unique_src);
-                    this.variables.put(unique_src, unique_variable);
-                    execute.addOutput(owsout, unique_variable);
+                    final String owsoutidentifier = this.truncate(source.getOwsIdentifier());
+                    execute.addOutput(owsoutidentifier, variable);
+                    //trace this edge
+                    if (this.edges.containsKey(unique_src)) {
+                        String value = (String) this.edges.get(unique_src);
+                        value += ",from " + edge.getSource().getValue() + " to " + edge.getTarget().getValue();
+                        this.edges.put(unique_src, value);
+                    } else {
+                        this.edges.put(unique_src, "from " + edge.getSource().getValue() + " to " + edge.getTarget().getValue());
+                    }
                 }
-                transitions.add("outgoing from " + edge.getSource().getValue() + " to " + edge.getTarget().getValue());
             }
-        }
-    }
-
-    private void createUniqueIdentifiers(List<ProcessPort> ports) {
-        GraphHandler.createRawIdentifiers(ports);
+        }// for 
     }
 
     /**
@@ -364,16 +405,13 @@ public class Exporter {
         //return GraphHandler.getOwsIdentifier(rawIdentifier);
     }
 
-    private String getUniqueIdentifier(String rawIdentifier) {
-        return GraphHandler.getUniqueIdentifier(rawIdentifier);
-    }
-
-    public String[] getVariables() {
-        String[] strings = this.variables.keySet().toArray(new String[this.variables.size()]);
-        return strings;
-    }
-
-    public List<String> getTransitions() {
-        return this.transitions;
+    /**
+     * Delivers variables associated with edges.
+     *
+     * @return variables associated to edges.
+     */
+    public Map<String, String> getEdges() {
+        System.err.println(this.variables);
+        return this.edges;
     }
 }

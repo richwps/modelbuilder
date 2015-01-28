@@ -68,6 +68,7 @@ public class RichWPSHelper {
                 String mimetype = param.getMimeType();
                 String encoding = param.getEncoding();
                 String schema = param.getSchema();
+
                 builder.addComplexDataReference(key, url, schema, encoding, mimetype);
             } else if (o instanceof InputBoundingBoxDataArgument) {
                 InputBoundingBoxDataArgument param;
@@ -91,6 +92,7 @@ public class RichWPSHelper {
      */
     void setTestProcessOutputs(TestProcessRequestBuilder builder, final HashMap theoutputs) {
         final Set<String> keys = theoutputs.keySet();
+        Logger.log(this.getClass(), "setTestProcessOutputs", keys);
         for (String key : keys) {
             Object o = theoutputs.get(key);
             if (o instanceof OutputLiteralDataArgument) {
@@ -111,6 +113,17 @@ public class RichWPSHelper {
             } else if (o instanceof OutputBoundingBoxDataArgument) {
                 builder.addOutput(key);
             }
+        }
+    }
+
+    /**
+     * Sets requested variables to execute-request.
+     *
+     */
+    void setTestProcessVariables(TestProcessRequestBuilder builder, final List<String> thevariables) {
+
+        for (String key : thevariables) {
+            builder.addOutput(key);
         }
     }
 
@@ -222,8 +235,8 @@ public class RichWPSHelper {
             SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
             ComplexTypesType[] types = response.getSupportedTypesResponse().getSupportedOutputTypes().getComplexTypesArray();
             for (ComplexTypesType type : types) {
-                ComplexDataDescriptionType[] schonwiedertsypes = type.getTypeArray();
-                for (ComplexDataDescriptionType atype : schonwiedertsypes) {
+                ComplexDataDescriptionType[] cddtype = type.getTypeArray();
+                for (ComplexDataDescriptionType atype : cddtype) {
                     List<String> aformat = new LinkedList<>();
                     aformat.add(atype.getMimeType());
                     aformat.add(atype.getSchema());
@@ -254,6 +267,7 @@ public class RichWPSHelper {
         richwpshelper.setTestProcessInputs(builder, theinputs);
         HashMap theoutputs = request.getOutputArguments();
         richwpshelper.setTestProcessOutputs(builder, theoutputs);
+        richwpshelper.setTestProcessVariables(builder, request.getVariables());
         TestProcessDocument testprocessdocument = null;
         Object response = null;
         try {
@@ -311,9 +325,8 @@ public class RichWPSHelper {
             Logger.log(richWPSProvider.getClass(), "richwpsDeployProcess()", "Unable to create " + "deploymentdocument. " + ex);
         }
     }
-    
-    
-     /**
+
+    /**
      * Undeploys a given process.
      *
      * @param request UndeployRequest.

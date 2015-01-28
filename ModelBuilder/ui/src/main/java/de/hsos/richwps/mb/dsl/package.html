@@ -9,8 +9,13 @@
         <h1>Exporter</h1>
         Exports a given graph to ROLA-notation.
         <p>
+            <b>handleProcessCell</b>
+        </p>
+
+        <p>
             <b>HandleInputCell</b>
-        Deals with direct connections between In- and Outputcells.
+            Deals with direct connections between In- and Outputcells.
+            They are handeld as assignments <b>in.</b>xyz = <b>out.</b>xyz.
         <pre>
          [L]
           |
@@ -19,6 +24,8 @@
     </p>
     <p>
         <b>HandleOutputCell</b>
+        Deals with outputs which are produced by processes. Such outputs are
+        handled as assignment: <b>out.</b>xyz = <b>var.</b>xyz.
     <pre>
             [....]
             [C][L]
@@ -27,7 +34,7 @@
     </pre>
 </p>
 <p>
-    <b>HandleIngoingProcessCellTransitions</b>
+    <b>HandleIngoingProcessCellEdges</b>
 <pre>
                 [....]
                 [C][L]
@@ -39,12 +46,13 @@
 </pre>
 </p>
 <p>
-    <b>HandleOutgoingProcessCellTransitions</b>
+    <b>HandleOutgoingProcessCellEdges</b>
 <pre>
          [....]
          [C][L]
-          |  ---------[L][C]
-          |           [....]
+          |  |
+          |  --------[L][C]
+          |          [....]
          [C]
 </pre>
 </p>

@@ -3,15 +3,15 @@ package de.hsos.richwps.mb.ui.dialogs;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.AppRichWPSManager;
-import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.TestResultPanel;
+import de.hsos.richwps.mb.ui.dialogs.components.VariablesPanel;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
@@ -26,11 +26,11 @@ import javax.swing.UIManager;
 public class TestModelDialog extends ADialog {
 
     private InputPanel inputspanel;
+    private VariablesPanel variablespanel;
     private OutputPanel outputsspanel;
     private TestResultPanel resultpanel;
-
     private TestRequest request;
-    private List<String> transitions;
+    private Map<String, String> edges;
 
     /**
      * Creates new form ExecuteModelDialog, starting with the
@@ -48,13 +48,10 @@ public class TestModelDialog extends ADialog {
         this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
         this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
-        this.request.setExecutionUnit(manager.getROLA());
-        this.transitions = manager.getTransitions();
+        //Already set this.request.setExecutionUnit(manager.getROLA());
+        this.edges = manager.getEdges();
 
-        for (String var : manager.getVariables()) {
-            this.request.addVariable("var." + var);
-        }
-
+        
         this.serverids = new ArrayList();
         this.serverids.add(this.request.getServerId());
         this.initComponents();
@@ -87,6 +84,31 @@ public class TestModelDialog extends ADialog {
     }
 
     /**
+     * Switches from processselectionpanel to parameterizeinputspanel.
+     *
+     * @param isBackAction
+     */
+    public void showVariablesPanel(final boolean isBackAction) {
+        this.backButton.setVisible(true);
+        this.nextButton.setVisible(true);
+        this.previewButton.setVisible(false);
+        
+        //refresh the perform
+        this.currentPanel.updateRequest();
+        this.request = (TestRequest) this.currentPanel.getRequest();
+
+        this.variablespanel = new VariablesPanel(this.provider, this.request, this.edges);
+        if (this.currentPanel != null) {
+            this.remove(this.currentPanel);
+            this.currentPanel.setVisible(false);
+        }
+
+        this.add(this.variablespanel);
+        this.pack();
+        this.currentPanel = variablespanel;
+    }
+
+    /**
      * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
     @Override
@@ -111,7 +133,6 @@ public class TestModelDialog extends ADialog {
         this.add(this.outputsspanel);
         this.pack();
         this.currentPanel = outputsspanel;
-
     }
 
     /**
@@ -132,6 +153,7 @@ public class TestModelDialog extends ADialog {
         //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
+        
         //in case the perform was allready used.
         this.request.flushException();
         this.request.flushResults();
@@ -228,6 +250,8 @@ public class TestModelDialog extends ADialog {
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
+            this.showVariablesPanel(isBackAction);
+        } else if (this.currentPanel == this.variablespanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
         } else if (this.currentPanel == this.outputsspanel) {
@@ -257,6 +281,8 @@ public class TestModelDialog extends ADialog {
         final boolean isBackAction = true;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.outputsspanel) {
+            this.showVariablesPanel(isBackAction);
+        } else if (this.currentPanel == this.variablespanel) {
             this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
             this.nextButton.setText(AppConstants.DIALOG_BTN_START);

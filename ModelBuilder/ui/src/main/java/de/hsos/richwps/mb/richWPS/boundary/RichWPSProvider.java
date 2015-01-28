@@ -7,9 +7,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.*;
 import java.util.HashMap;
 import java.util.List;
 import net.opengis.wps.x100.ExecuteDocument;
-import net.opengis.wps.x100.ProcessBriefType;
 import net.opengis.wps.x100.ProcessDescriptionType;
-import net.opengis.wps.x100.ProcessDescriptionsDocument;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.RichWPSClientSession;
@@ -17,14 +15,7 @@ import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import net.opengis.ows.x11.ExceptionReportDocument;
-import net.opengis.wps.x100.ComplexDataDescriptionType;
-import net.opengis.wps.x100.ComplexTypesType;
-import net.opengis.wps.x100.SupportedTypesResponseDocument;
 import net.opengis.wps.x100.TestProcessDocument;
-import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
 import org.n52.wps.client.richwps.TestProcessRequestBuilder;
 
 /**
@@ -205,9 +196,9 @@ public class RichWPSProvider implements IRichWPSProvider {
         final WPSHelper helper = new WPSHelper();
         String serverid = request.getEndpoint();
         String processid = request.getIdentifier();
-        try{
-        this.connect(serverid);
-        }catch (Exception e){
+        try {
+            this.connect(serverid);
+        } catch (Exception e) {
         }
 
         HashMap theinputs = request.getInputArguments();
@@ -251,6 +242,8 @@ public class RichWPSProvider implements IRichWPSProvider {
 
             HashMap theoutputs = request.getOutputArguments();
             richwpsHelper.setTestProcessOutputs(builder, theoutputs);
+
+            richwpsHelper.setTestProcessVariables(builder, request.getVariables());
 
             TestProcessDocument testprocessdocument = null;
             testprocessdocument = builder.getTestdocument();

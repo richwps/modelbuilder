@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.ui.dialogs;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.AppRichWPSManager;
-import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -11,7 +10,8 @@ import de.hsos.richwps.mb.ui.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.ui.dialogs.components.ProfileResultPanel;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
@@ -30,7 +30,7 @@ public class ProfileModelDialog extends ADialog {
     private ProfileResultPanel resultpanel;
 
     private ProfileRequest request;
-    private List<String> transitions;
+    private Map<String,String> transitions;
 
     /**
      * Creates new form ProfileModelDialog, starting with the
@@ -49,11 +49,11 @@ public class ProfileModelDialog extends ADialog {
         this.provider = new RichWPSProvider();
         this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
         this.request.setExecutionUnit(manager.getROLA());
-        this.transitions = manager.getTransitions();
+        this.transitions = manager.getEdges();
 
-        for (String var : manager.getVariables()) {
+        /*for (String var : manager.getVariables()) {
             this.request.addVariable("var." + var);
-        }
+        }*/
 
         this.serverids = new ArrayList();
         this.serverids.add(this.request.getServerId());
