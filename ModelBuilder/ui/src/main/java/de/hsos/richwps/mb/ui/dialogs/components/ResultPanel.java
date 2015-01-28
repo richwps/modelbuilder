@@ -14,6 +14,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgumen
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.BoundingBoxResultRenderer;
 import java.awt.GridBagConstraints;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +115,9 @@ public class ResultPanel extends APanel {
         for (Object key : keys) {
             IOutputArgument argument = (IOutputArgument) arguments.get(key);
             if (argument instanceof OutputComplexDataArgument) {
-                String uri = (String) results.get(key);
+                URL httpKVPref = (URL) results.get(key);
+                String uri = httpKVPref.toString();
+                //String uri = (String) results.get(key);
                 OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
                 URIRenderer pan = new URIRenderer(identifier, uri);
@@ -123,10 +126,10 @@ public class ResultPanel extends APanel {
                 tc.fold();
                 this.panels.add(tc);
             } else if (argument instanceof OutputLiteralDataArgument) {
-                String value = (String) results.get(key);
+                String literalDataAsString = (String) results.get(key);
                 OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
                 String identifier = (_argument.getSepcifier()).getIdentifier();
-                LiteralRenderer pan = new LiteralRenderer(identifier, value);
+                LiteralRenderer pan = new LiteralRenderer(identifier, literalDataAsString);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
