@@ -545,12 +545,10 @@ public class App {
             try {
                 actionProvider = new AppActionProvider(actionHandler);
             } catch (Exception ex) {
-
-                // TODO move strings to app constants
                 JOptionPane.showMessageDialog(
                         null,
-                        "Can't create app actions. ModelBuilder will now exit.",
-                        "ERROR",
+                        AppConstants.CREATE_APP_ACTION_FAIL,
+                        AppConstants.CREATE_APP_ACTION_FAIL_TITLE,
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }

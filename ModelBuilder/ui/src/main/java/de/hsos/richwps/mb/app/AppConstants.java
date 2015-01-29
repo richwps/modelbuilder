@@ -321,6 +321,11 @@ public class AppConstants {
         {INFOTAB_ID_EDITOR, "Model"},
         {INFOTAB_ID_SEMANTICPROXY, "SemanticProxy"},
         {INFOTAB_ID_SERVER, "RichWPS-Server"},};
+    
+    //getActionProvider
+    public static final String CREATE_APP_ACTION_FAIL = "Can't create app actions. ModelBuilder will now exit.";
+    public static final String CREATE_APP_ACTION_FAIL_TITLE = "ERROR";
+    
 
     /**
      * Sets a visible String caption and an icon for the app actions.
