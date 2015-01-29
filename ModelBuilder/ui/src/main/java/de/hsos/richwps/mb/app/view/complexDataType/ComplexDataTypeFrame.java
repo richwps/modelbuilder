@@ -95,7 +95,7 @@ class ComplexDataTypeFrame extends MbDialog {
         if (visible) {
 //            Dimension cSize = formatsList.getPreferredSize();
             Dimension size = getSize();
-            size.width = 500;
+            size.width = 600;
             size.height = 500;
             setSize(size);
             UiHelper.centerToWindow(this, parent);
