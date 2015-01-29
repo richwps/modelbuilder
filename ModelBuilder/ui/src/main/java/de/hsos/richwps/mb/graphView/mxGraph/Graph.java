@@ -5,7 +5,6 @@ import com.mxgraph.analysis.mxGraphProperties;
 import com.mxgraph.analysis.mxGraphStructure;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
-import com.mxgraph.model.mxICell;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxRectangle;
 import com.mxgraph.util.mxUndoableEdit;

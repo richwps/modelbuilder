@@ -331,6 +331,7 @@ public class AppConstants {
         {AppActionProvider.APP_ACTIONS.UNDO.name(), "Undo", AppConstants.ICON_UNDO_KEY}, //  Undo action for the UndoManager.
         {AppActionProvider.APP_ACTIONS.REDO.name(), "Redo", AppConstants.ICON_REDO_KEY}, // Redo action for the UndoManager.
         {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout", AppConstants.ICON_LAYOUT_KEY}, // Action for layouting the graph.
+        {AppActionProvider.APP_ACTIONS.ADD_PORTS.name(), "Add missing ports", AppConstants.ICON_ADDPORTS_KEY}, // Action for adding global ports to unconnected local ports.
         {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy", AppConstants.ICON_DEPLOY_KEY}, // Action for starting the deployment.
         {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy", AppConstants.ICON_UNDEPLOY_KEY}, //  Action for starting the undeployment.
         {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process", AppConstants.ICON_UNDEPLOY_ANY_KEY},
@@ -454,6 +455,7 @@ public class AppConstants {
     public final static String ICON_UNDO_KEY = "rwps_icon_undo";
     public final static String ICON_REDO_KEY = "rwps_icon_redo";
     public final static String ICON_LAYOUT_KEY = "rwps_icon_layout";
+    public final static String ICON_ADDPORTS_KEY = "rwps_icon_addports";
     public final static String ICON_INFO_KEY = "richwps_icon_info";
     public final static String ICON_RELOAD_KEY = "richwps_icon_reload";
     public final static String ICON_MANAGE_REMOTE = "richwps_icon_manageremote";

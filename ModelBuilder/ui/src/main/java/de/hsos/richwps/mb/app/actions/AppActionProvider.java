@@ -18,7 +18,7 @@ public class AppActionProvider {
         // FILE
         NEW_MODEL, LOAD_MODEL, SAVE_MODEL, SAVE_MODEL_AS, OPEN_RECENT_FILE, EXIT_APP,
         // EDIT
-        UNDO, REDO, DO_LAYOUT, SHOW_PREFERENCES,
+        UNDO, REDO, DO_LAYOUT, ADD_PORTS, SHOW_PREFERENCES,
         // TOOLS
         EXECUTE,
         EXECUTE_ANY,

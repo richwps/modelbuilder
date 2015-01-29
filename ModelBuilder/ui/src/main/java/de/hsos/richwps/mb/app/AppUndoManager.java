@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.model.mxGeometry;
+import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxGraphModel.mxChildChange;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxUndoableEdit;
@@ -59,7 +61,13 @@ public class AppUndoManager extends MbUndoManager {
 
                             model = app.getGraphView().getGraph().getModel();
 
-                            editCell = ((mxChildChange) editAction.getChanges().get(0)).getChild();
+                            mxUndoableEdit.mxUndoableChange firstChange = editAction.getChanges().get(0);
+                            if (firstChange instanceof mxChildChange) {
+                                editCell = ((mxChildChange) editAction.getChanges().get(0)).getChild();
+                            } else if (firstChange instanceof mxGraphModel.mxGeometryChange) {
+                                editCell = ((mxGraphModel.mxGeometryChange) editAction.getChanges().get(0)).getCell();
+                            }
+
                             editCellParent = model.getParent(editCell);
 
                             if (app.hasSubTreeView()) {

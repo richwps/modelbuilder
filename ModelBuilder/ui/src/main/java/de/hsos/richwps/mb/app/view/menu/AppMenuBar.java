@@ -125,6 +125,7 @@ public class AppMenuBar extends JMenuBar {
             modelMenu = new JMenu(getMenuItemCaption(MENUS.MODEL));
 
             createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.DO_LAYOUT);
+            createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.ADD_PORTS);
             modelMenu.addSeparator();
             createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.PREVIEW_ROLA);
             createAndAddMenuItem(modelMenu, AppActionProvider.APP_ACTIONS.DEPLOY);

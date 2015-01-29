@@ -136,15 +136,21 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         return p1.getDatatype().equals(p2.getDatatype());
     }
 
-    boolean isOutputPortUsed(Object o, Graph graph) {
+    /**
+     * 
+     * @param port
+     * @param graph if not null, the model of this graph is used
+     * @return 
+     */
+    public boolean isOutputPortUsed(Object port, Graph graph) {
         Object parent;
 
         GraphModel model = (GraphModel) ((null == graph) ? this : graph.getModel());
 
-        if (model.isGlobalPort(o)) {
-            parent = o;
+        if (model.isGlobalPort(port)) {
+            parent = port;
         } else {
-            parent = model.getParent(o);
+            parent = model.getParent(port);
         }
 
         Object[] sourceOutgoingEdges = mxGraphModel.getOutgoingEdges(model, parent);
@@ -152,7 +158,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
             if (out instanceof GraphEdge) {
                 GraphEdge outEdge = (GraphEdge) out;
                 mxCell sourcePort = outEdge.getSourcePortCell();
-                if (null != sourcePort && sourcePort.equals(o)) {
+                if (null != sourcePort && sourcePort.equals(port)) {
                     return true;
                 }
             }
@@ -160,7 +166,13 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         return false;
     }
 
-    boolean isInputPortUsed(Object o, Graph graph) {
+    /**
+     * 
+     * @param o
+     * @param graph if not null, the model of this graph is used
+     * @return 
+     */
+    public boolean isInputPortUsed(Object o, Graph graph) {
         Object parent;
 
         GraphModel model = (GraphModel) ((null == graph) ? this : graph.getModel());
@@ -181,6 +193,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
                 }
             }
         }
+        
         return false;
     }
 

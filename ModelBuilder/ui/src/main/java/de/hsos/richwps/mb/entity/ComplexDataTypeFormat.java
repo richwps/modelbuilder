@@ -122,7 +122,7 @@ public class ComplexDataTypeFormat implements Serializable {
         if (null == val2) {
             val2 = "";
         }
-
+        
         return val1.equals(val2);
     }
 

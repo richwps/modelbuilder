@@ -2,13 +2,13 @@ package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
-import com.mxgraph.view.mxGraph;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
@@ -446,7 +446,7 @@ public class GraphView extends JPanel {
                 // don't clone the process, there must be only one instance of each process
                 GraphNodeCreator.createNodeFromProcess(getGraph(), (ProcessEntity) cellValue, location);
 
-            // create port
+                // create port
             } else if (cellValue instanceof ProcessPort) {
                 // clone the port because it contains user input values
                 ProcessPort port = (ProcessPort) cellValue;
@@ -466,4 +466,63 @@ public class GraphView extends JPanel {
         getGraph().clearSelection();
         getGraph().setSelectionCells(cells);
     }
+
+    /**
+     * Creates and connects a global port for every non-connected local process
+     * port.
+     */
+    public void addMissingGlobalPorts() {
+        final GraphModel model = getGraph().getGraphModel();
+
+        model.beginUpdate();
+
+        List<mxCell> processCells = getProcessCells();
+        for (mxCell aCell : processCells) {
+            int childCount = aCell.getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                mxCell aPortCell = (mxCell) aCell.getChildAt(i);
+
+                // check prot cell connections
+                boolean unused = true;
+                if (model.isFlowInput(aPortCell)) {
+                    unused = !model.isInputPortUsed(aPortCell, null);
+                } else {
+                    unused = !model.isOutputPortUsed(aPortCell, null);
+                }
+
+                // port cell must not have any connections
+                if (unused) {
+
+                    mxGeometry aPortGeom = aPortCell.getGeometry();
+                    ProcessPort aPort = (ProcessPort) getGraph().getModel().getValue(aPortCell);
+
+                    // create the global cell's value
+                    ProcessPort aGlobalPort = aPort.clone();
+                    aGlobalPort.setGlobal(true);
+                    aGlobalPort.setFlowInput(!aGlobalPort.isFlowInput());
+
+                    // compute the global cell's location
+                    double portAbsoluteX = aCell.getGeometry().getX() + aPortGeom.getOffset().getX();
+                    double portAbsoluteY = aCell.getGeometry().getY() - aPortGeom.getOffset().getY();
+                    double globalX = portAbsoluteX + (aPortGeom.getWidth() - GraphSetup.GLOBAL_PORT_WIDTH) / 2;
+                    Point cellLocation = new Point((int) globalX, (int) portAbsoluteY);
+                    if (aPort.isFlowInput()) { // global port location above port
+                        cellLocation.y -= 2 * GraphSetup.GLOBAL_PORT_HEIGHT;
+
+                    } else { // global port location below port
+                        cellLocation.y += GraphSetup.PROCESS_PORT_HEIGHT + 2 * GraphSetup.GLOBAL_PORT_HEIGHT;
+                    }
+
+                    // create global port cell
+                    mxCell globalPortCell = GraphNodeCreator.createNodeFromPort(getGraph(), aGlobalPort, cellLocation);
+
+                    // connect global and local port cells
+                    getGraph().insertEdge(aCell.getParent(), null, null, aPortCell, globalPortCell);
+                }
+            }
+        }
+
+        getGraph().getModel().endUpdate();
+    }
+
 }

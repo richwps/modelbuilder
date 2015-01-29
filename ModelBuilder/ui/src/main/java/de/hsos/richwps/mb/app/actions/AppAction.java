@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.app.actions;
 
 import de.hsos.richwps.mb.app.App;
-import de.hsos.richwps.mb.app.view.menu.AppMenuBar;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;

@@ -14,12 +14,9 @@ public class ModellingToolbar extends JToolBar {
     public ModellingToolbar(AppActionProvider actionProvider) {
         setFloatable(false);
 
-//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDO));
-//        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.REDO));
-
         if (!AppConstants.GRAPH_AUTOLAYOUT) {
-//            addSeparator();
             add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DO_LAYOUT));
+            add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.ADD_PORTS));
         }
 
         addSeparator();

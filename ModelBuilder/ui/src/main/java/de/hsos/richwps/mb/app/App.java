@@ -101,10 +101,20 @@ public class App {
         AppSetup.setup(this, debugMode);
     }
 
+    /**
+     * Returns true if the model doesn't have any unsaved changes.
+     *
+     * @return
+     */
     public boolean areChangesSaved() {
         return changesSaved;
     }
 
+    /**
+     * Gets the process metric provider which uses the monitor client.
+     *
+     * @return
+     */
     ProcessMetricProvider getProcessMetricProvider() {
         if (null == processMetricProvider) {
             try {
@@ -142,6 +152,11 @@ public class App {
         return null != file && file.exists();
     }
 
+    /**
+     * Set the changesSaved status of the model.
+     *
+     * @param changesSaved
+     */
     void setChangesSaved(boolean changesSaved) {
         if (currentModelFileExists()) {
             this.changesSaved = changesSaved;
@@ -165,14 +180,30 @@ public class App {
         return undoManager;
     }
 
+    /**
+     * Returns the file name of the current model.
+     *
+     * @return
+     */
     public String getCurrentModelFilename() {
         return currentModelFilename;
     }
 
+    /**
+     * Sets the file name of the current model.
+     *
+     * @param name
+     */
     public void setCurrentModelFilename(String name) {
         this.currentModelFilename = name;
     }
 
+    /**
+     * Returns the process provider which manages the process instances and
+     * data.
+     *
+     * @return
+     */
     ProcessProvider getProcessProvider() {
         if (null == processProvider) {
             processProvider = new ProcessProvider();
@@ -187,6 +218,11 @@ public class App {
         return processProvider;
     }
 
+    /**
+     * Gets the drag and drop transfer handler for process entities.
+     *
+     * @return
+     */
     protected TreenodeTransferHandler getProcessTransferHandler() {
         if (null == processTransferHandler) {
             processTransferHandler = new TreenodeTransferHandler(getProcessProvider());
@@ -195,6 +231,9 @@ public class App {
         return processTransferHandler;
     }
 
+    /**
+     * Sets up the drag and drop components.
+     */
     void initDragAndDrop() {
         getMainTreeView().initDnd();
 
@@ -203,6 +242,11 @@ public class App {
         }
     }
 
+    /**
+     * Returns true if the app has a sub tree view for used modelling elements.
+     *
+     * @return
+     */
     boolean hasSubTreeView() {
         return AppConstants.ENABLE_SUB_TREE_VIEW;
     }
@@ -256,6 +300,9 @@ public class App {
         return getSemanticProxySearch();
     }
 
+    /**
+     * Returns the component for searching the semantic proxy.
+     */
     SementicProxySearch getSemanticProxySearch() {
         if (null == semanticProxySearch) {
             semanticProxySearch = new SementicProxySearch(createSemanticProxyInteractionComponents());
@@ -265,12 +312,21 @@ public class App {
         return semanticProxySearch;
     }
 
+    /**
+     * Creates tree nodes for used processes (if available).
+     */
     public void fillSubTree() {
         if (hasSubTreeView()) {
             getSubTreeView().fillTree();
         }
     }
 
+    /**
+     * Returns the main tree view containing all available processes and
+     * modelling elements.
+     *
+     * @return
+     */
     private MainTreeViewController getMainTreeView() {
         if (null == mainTreeView) {
             mainTreeView = new MainTreeViewController(getPreferencesDialog(), createSemanticProxyInteractionComponents());
@@ -279,6 +335,12 @@ public class App {
         return mainTreeView;
     }
 
+    /**
+     * Gets a Layer DTO containing components for interacting with the semantic
+     * proxy.
+     *
+     * @return
+     */
     private SemanticProxyInteractionComponents createSemanticProxyInteractionComponents() {
         return new SemanticProxyInteractionComponents(
                 getFrame(),
@@ -318,10 +380,20 @@ public class App {
         return mainTreeViewPanel;
     }
 
+    /**
+     * Creates tree nodes for the available processes.
+     *
+     * @param loadRemotes
+     */
     void fillMainTree(boolean loadRemotes) {
         getMainTreeView().fillTree(loadRemotes);
     }
 
+    /**
+     * Gets the dialog for configuring the modelbuilder components.
+     *
+     * @return
+     */
     AppPreferencesDialog getPreferencesDialog() {
         if (null == preferencesDialog) {
             preferencesDialog = new AppPreferencesDialog(frame);
@@ -358,7 +430,7 @@ public class App {
     void modelLoaded() {
         getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
-        
+
         getPropertiesView().clearPropertyCache();
 
         if (hasSubTreeView()) {
@@ -387,12 +459,17 @@ public class App {
 
         // modelling actions
         getActionProvider().getAction(APP_ACTIONS.DO_LAYOUT).setEnabled(!graphIsEmpty);
+        getActionProvider().getAction(APP_ACTIONS.ADD_PORTS).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PREVIEW_ROLA).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
     }
 
+    /**
+     * Updates the status of actions which depent on the model's deployment
+     * status.
+     */
     void updateDeploymentDependentActions() {
         boolean modelDeployed = currentModelIsDeployed();
         getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(modelDeployed);
@@ -400,6 +477,11 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(modelDeployed);
     }
 
+    /**
+     * Checks if the current model is deployed at its endpoint.
+     *
+     * @return
+     */
     boolean currentModelIsDeployed() {
         GraphModel model = getGraphView().getGraph().getGraphModel();
         String serverKey = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
@@ -414,6 +496,11 @@ public class App {
         return false;
     }
 
+    /**
+     * Returns the properties view controller component.
+     *
+     * @return
+     */
     protected PropertiesView getPropertiesView() {
         if (null == propertiesView) {
             propertiesView = new AppPropertiesView(this);
@@ -422,14 +509,29 @@ public class App {
         return propertiesView;
     }
 
+    /**
+     * Returns the properties view Swing component.
+     *
+     * @return
+     */
     public Component getPropertiesViewGui() {
         return getPropertiesView();
     }
 
+    /**
+     * Returns the main modelbuilder frame.
+     *
+     * @return
+     */
     public AppFrame getFrame() {
         return frame;
     }
 
+    /**
+     * Returns the main component for managing application actions.
+     *
+     * @return
+     */
     public AppActionProvider getActionProvider() {
         if (null == actionProvider) {
             AppActionHandler actionHandler = new AppActionHandler(this);
@@ -467,10 +569,21 @@ public class App {
         return "";
     }
 
+    /**
+     * Returns true if the given object is an app action.
+     *
+     * @param source
+     * @return
+     */
     boolean isAppAction(Object source) {
         return getActionProvider().isAppAction(source);
     }
 
+    /**
+     * Returns the component containing tabs for outputting data.
+     *
+     * @return
+     */
     private InfoTabs getInfoTabs() {
         if (null == infoTabs) {
             infoTabs = new AppInfoTabs();
@@ -487,6 +600,9 @@ public class App {
         return getInfoTabs();
     }
 
+    /**
+     * Sets the current model into the properties view.
+     */
     public void updateModelPropertiesView() {
         getPropertiesView().setObjectWithProperties(getGraphView().getGraph().getGraphModel());
     }
@@ -531,8 +647,6 @@ public class App {
                     getMainTreeView().setRemotes(remotes);
                     getGraphView().updateRemotes();
                 }
-
-//                getFrame().setCursor(Cursor.getDefaultCursor());
             }
 
         });
@@ -694,11 +808,19 @@ public class App {
         }
     }
 
+    /**
+     * Opens the about dialog.
+     */
     void showAbout() {
         AboutDialog aboutDialog = new AboutDialog(getFrame());
         aboutDialog.setVisible(true);
     }
 
+    /**
+     * Returns the (complex data) format provider.
+     *
+     * @return
+     */
     FormatProvider getFormatProvider() {
         if (null == formatProvider) {
             formatProvider = new FormatProvider(AppConstants.FORMATS_CSV_FILE);

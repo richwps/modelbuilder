@@ -199,6 +199,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_UNDO_KEY, new ImageIcon(iconDir + "arrow-undo.png", "undo icon"));
         UIManager.put(AppConstants.ICON_REDO_KEY, new ImageIcon(iconDir + "arrow-redo.png", "redo icon"));
         UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
+        UIManager.put(AppConstants.ICON_ADDPORTS_KEY, new ImageIcon(iconDir + "zoom-fit-height.png", "addports icon"));
 
         // Tools Menu Icons
         // Help Menu Icons

@@ -70,6 +70,9 @@ public class AppActionHandler implements IAppActionHandler {
             case DO_LAYOUT:
                 doLayout();
                 break;
+            case ADD_PORTS:
+                addPorts();
+                break;
             case PREVIEW_ROLA:
                 doPreview();
                 break;
@@ -441,5 +444,13 @@ public class AppActionHandler implements IAppActionHandler {
         }
 
         AppEventService.getInstance().fireAppEvent(tabMsg, app.getProcessProvider(), eventPrio);
+    }
+
+    /**
+     * Creates and connects a global port for every non-connected local process
+     * port.
+     */
+    private void addPorts() {
+        app.getGraphView().addMissingGlobalPorts();
     }
 }

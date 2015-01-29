@@ -8,23 +8,23 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.ProcessPortKey;
+import de.hsos.richwps.mb.graphView.GraphNodeCreator;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
-import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -182,9 +182,26 @@ public class AppGraphView extends GraphView {
 
         updateRemotes();
 
-        if (null != loadedEndpointProperty) {
-            endpointProperty.setValue(loadedEndpointProperty.getValue());
-            model.setProperty(loadedEndpointProperty.getPropertiesObjectName(), endpointProperty);
+        if (null != loadedEndpointProperty && null != loadedEndpointProperty.getValue()) {
+            String loadedValue = loadedEndpointProperty.getValue().toString();
+
+            Collection endpoints = endpointProperty.getPossibleValues();
+
+            // no endpoints set: create new list containing the loaded endpoint
+            if (null == endpoints) {
+                LinkedList<String> newEndpoints = new LinkedList<>();
+                newEndpoints.add(loadedValue);
+                endpointProperty.setPossibleValues(newEndpoints);
+
+                // endoints exist but don't contain the loaded endpoint: add it
+            } else if (!endpoints.contains(loadedValue)) {
+                endpoints = new LinkedList<>(endpoints);
+                endpoints.add(loadedValue);
+                endpointProperty.setPossibleValues(endpoints);
+            }
+
+            endpointProperty.setValue(loadedValue);
+            model.setProperty(endpointProperty.getPropertiesObjectName(), endpointProperty);
         }
 
         // set correct process instances as cell values
@@ -330,4 +347,5 @@ public class AppGraphView extends GraphView {
 
         return result;
     }
+
 }
