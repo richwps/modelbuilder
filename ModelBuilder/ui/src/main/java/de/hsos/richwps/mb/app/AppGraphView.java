@@ -144,17 +144,18 @@ public class AppGraphView extends GraphView {
         Graph graph = super.newGraph();
         endpointProperty = createEndpointProperty();
         graph.getGraphModel().addProperty(endpointProperty);
+        endpointProperty.setValue(remote);
     }
 
     protected Property createEndpointProperty() {
         String propertyEndpointName = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
         String propertyEndpointType = Property.COMPONENT_TYPE_DROPDOWN;
-        Property endpointProperty = new Property(propertyEndpointName, propertyEndpointType, null, true);
+        Property property = new Property(propertyEndpointName, propertyEndpointType, null, true);
 
         // don't persist the list of endpoints
-        endpointProperty.setPossibleValuesTransient(true);
+        property.setPossibleValuesTransient(true);
 
-        return endpointProperty;
+        return property;
     }
 
     /**
