@@ -118,8 +118,14 @@ public class App {
     ProcessMetricProvider getProcessMetricProvider() {
         if (null == processMetricProvider) {
             try {
-                // TODO create settings
-                processMetricProvider = new ProcessMetricProvider(AppConstants.MONITOR_DEFAULT_URL);
+                
+                // get URL from config
+                String key = AppConfig.CONFIG_KEYS.MONITOR_S_URL.name();
+                String defUrl = AppConstants.MONITOR_DEFAULT_URL;
+                String confUrl = AppConfig.getConfig().get(key, defUrl);
+                
+                processMetricProvider = new ProcessMetricProvider(confUrl);
+                
             } catch (MalformedURLException ex) {
                 showErrorMessage(ex.getMessage());
             } catch (Exception ex) {

@@ -32,7 +32,8 @@ public class AppConfig {
         HTTPPROXY_S_HOST,
         HTTPPROXY_S_PORT,
         REMOTES_S_URL, 
-        REMOTES_B_DISCOVER_ON_START
+        REMOTES_B_DISCOVER_ON_START, 
+        MONITOR_S_URL
     }
 
     private static final String APP_CONFIG = "richwps/modelbuilder";

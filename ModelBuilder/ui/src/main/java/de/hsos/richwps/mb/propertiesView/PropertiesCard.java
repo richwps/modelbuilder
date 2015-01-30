@@ -90,8 +90,7 @@ class PropertiesCard extends JScrollPane {
     }
 
     protected void adjustContentPanelSize() {
-        // FIXME find a better way...
-//        createContentPanel();
+        // TODO find a way to adjust the components' widths
     }
 
     private void createContentPanel() {

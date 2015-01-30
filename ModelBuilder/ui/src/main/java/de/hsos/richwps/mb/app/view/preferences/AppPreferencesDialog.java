@@ -94,6 +94,9 @@ public class AppPreferencesDialog extends MbDialog {
                 case HTTPPROXY:
                     tab = new PreferencesHttpProxy();
                     break;
+                case MONITOR:
+                    tab = new PreferencesMonitor();
+                    break;
             }
 
             // only add existing tabs (=no empty tabs)

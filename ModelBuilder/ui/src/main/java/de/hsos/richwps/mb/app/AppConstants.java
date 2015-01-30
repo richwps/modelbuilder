@@ -247,7 +247,7 @@ public class AppConstants {
 
     static String FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED = "A process with identifier '%s' is already deployed at '%s'";
 
-    static final String MONITOR_DEFAULT_URL = "http://localhost:1111";
+    public static final String MONITOR_DEFAULT_URL = "http://localhost:1111";
 
     /**
      * ProcessProvider translations for views.
@@ -285,17 +285,21 @@ public class AppConstants {
     public enum PREFERENCES_TAB {
 
         PROCESSSOURCES,
-        HTTPPROXY
+        HTTPPROXY,
+        MONITOR
     }
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
         {PREFERENCES_TAB.PROCESSSOURCES.name(), "Process Sources"},
-        {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},};
+        {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},
+        {PREFERENCES_TAB.MONITOR.name(), "Monitor"},
+    };
     // SP preferences
     public final static String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
     // Http proxy preferences
     public final static String PREFERENCES_TAB_HTTP_HOST_LABEL = "Proxy host:";
     public final static String PREFERENCES_TAB_HTTP_PORT_LABEL = "Proxy port:";
-
+    // Monitor preferences
+    public final static String PREFERENCES_TAB_MONITOR_URL_LABEL = "<html>Monitor URL:<br />(e.g. http://localhost:1111)</html>";
     /**
      * Main MB Frame
      */
