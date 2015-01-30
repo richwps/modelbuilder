@@ -48,11 +48,11 @@ class PropertiesCard extends JScrollPane {
         this.propertiesView = view;
 
         // setup Scrollbars
-        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         getHorizontalScrollBar().addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                adjustContentPanelSize();
+//                adjustContentPanelSize();
             }
         });
 
@@ -67,6 +67,8 @@ class PropertiesCard extends JScrollPane {
             // reset content panel as otherwise some visual glitches appear
             public void componentResized(ComponentEvent e) {
                 adjustContentPanelSize();
+//                getViewport().setViewPosition(new Point(0, 0));
+
             }
         });
 
@@ -89,13 +91,12 @@ class PropertiesCard extends JScrollPane {
 
     protected void adjustContentPanelSize() {
         // FIXME find a better way...
-        createContentPanel();
+//        createContentPanel();
     }
 
     private void createContentPanel() {
         contentPanel.removeAll();
         createPropertyPanel(objectWithProperties, contentPanel);
-        contentPanel.setPreferredSize(AppConstants.PROPERTIES_PANEL_PREFERRED_SIZE);
     }
 
     private JPanel createPropertyPanel(IObjectWithProperties objectWithProperties, JPanel propertyPanel) {
