@@ -181,7 +181,7 @@ public class AppGraphView extends GraphView {
         Property loadedEndpointProperty = getModelEndpointProperty(model.getProperties());
 
         updateRemotes();
-
+        
         if (null != loadedEndpointProperty && null != loadedEndpointProperty.getValue()) {
             String loadedValue = loadedEndpointProperty.getValue().toString();
 

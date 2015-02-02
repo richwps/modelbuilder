@@ -3,11 +3,22 @@ package de.hsos.richwps.mb.treeView;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.WpsServer;
+import de.hsos.richwps.mb.entity.WpsServerSource;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
@@ -23,7 +34,6 @@ import javax.swing.tree.TreeSelectionModel;
 public class TreeView {
 
     private JTree tree;
-
 
     public TreeView(TreeNode root, final ProcessProvider processProvider) {
 
@@ -49,6 +59,19 @@ public class TreeView {
                                 process = processProvider.getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
 
                                 return process.getToolTipText();
+
+                            } else if (userObject instanceof WpsServer) {
+                                WpsServer server = (WpsServer) userObject;
+                                WpsServerSource source = server.getSource();
+                                if (null == source) {
+                                    source = WpsServerSource.UNKNOWN;
+                                }
+
+                                StringBuilder sb = new StringBuilder();
+                                sb.append("Processes source: ");
+                                sb.append(source.toString());
+
+                                return sb.toString();
                             }
                         }
                     }
@@ -72,13 +95,73 @@ public class TreeView {
 
                 }
 
-                return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus); //To change body of generated methods, choose Tools | Templates.
+                return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus);
             }
 
         };
         tree.setRootVisible(false);
         tree.setDragEnabled(true);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!SwingUtilities.isRightMouseButton(e)) {
+                    return;
+                }
+
+                TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+                if (null == path) {
+                    return;
+                }
+                tree.setSelectionPath(path);
+
+                Object last = path.getLastPathComponent();
+                if (!(last instanceof DefaultMutableTreeNode)) {
+                    return;
+                }
+
+                JPopupMenu contextmenu = createContextMenu((DefaultMutableTreeNode) last, e);
+                contextmenu.show(tree, e.getX(), e.getY());
+            }
+
+        });
+
+    }
+
+    /**
+     * Creates the right-click context menu depending on the underlying tree
+     * node.
+     *
+     * @param node
+     * @param e
+     * @return
+     */
+    protected JPopupMenu createContextMenu(DefaultMutableTreeNode node, MouseEvent e) {
+        JPopupMenu contextmenu = new JPopupMenu();
+        Object userObject = node.getUserObject();
+        final String copyText;
+        if (null == userObject) {
+            copyText = null;
+        } else {
+            copyText = userObject.toString();
+        }
+
+        JMenuItem copyItem = new JMenuItem(AppConstants.COPY_TEXT_TO_CLIPBOARD);
+        if (null == copyText) {
+            copyItem.setEnabled(false);
+        } else {
+            copyItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Clipboard clipBoard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipBoard.setContents(new StringSelection(copyText), null);
+                }
+            });
+        }
+        contextmenu.add(copyItem);
+
+        return contextmenu;
     }
 
     /**

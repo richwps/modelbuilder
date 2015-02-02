@@ -2,14 +2,18 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.TreeView;
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
+import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -83,7 +87,20 @@ public class AppTreeFactory {
         TreeView treeView = new TreeView(root, processProvider);
         treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider));
         treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
-        DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer();
+        DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
+
+            @Override
+            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                JLabel component = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                if(value instanceof WpsServer) {
+                    component.setIcon(openIcon);
+                }
+                
+                return component;
+            }
+            
+        };
+                
         cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
         cellRenderer.setLeafIcon(UIManager.getIcon(AppConstants.ICON_PROCESS_KEY));
         treeView.getGui().setCellRenderer(cellRenderer);

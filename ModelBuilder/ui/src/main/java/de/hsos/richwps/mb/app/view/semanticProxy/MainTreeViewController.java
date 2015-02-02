@@ -15,7 +15,7 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.processProvider.entity.WpsServer;
+import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -101,16 +101,20 @@ public class MainTreeViewController extends AbstractTreeViewController {
         // Create and fill Process node
         if (processProvider != null) {
             ProcessEntityTitleComparator processComparator = new ProcessEntityTitleComparator();
-            
-            try {
-                String url = getSpUrlFromConfig();
 
-                boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(url);
+            try {
+                String spConfigUrl = getSpUrlFromConfig();
+
+                boolean connected = processProvider.isConnected() && processProvider.getUrl().equals(spConfigUrl);
+                if (!connected) {
+                    connected = processProvider.connect(spConfigUrl);
+                }
+
                 int receivedServers = 0;
 
-                if (connected || processProvider.connect(url)) {
+//                if (connected || processProvider.connect(url)) {
                     for (WpsServer server : processProvider.getAllServerWithProcesses()) {
-                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server.getEndpoint());
+                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
 
                         // sort the server's processes alphabetically by title
                         List<ProcessEntity> processes = server.getProcesses();
@@ -124,11 +128,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
                         processesNode.add(serverNode);
                         receivedServers++;
                     }
-                }
+//                }
 
-                if (!connected) {
-                    AppEventService.getInstance().fireAppEvent("Received " + receivedServers + " servers from '" + url + "'.", processProvider);
-                }
+                int numRemotes = getProcessProvider().getPersistedRemotes().length;
+                sendReceiveResultMessage(receivedServers, connected, numRemotes);
 
             } catch (Exception ex) {
                 // Inform user when SP client can't be created
@@ -169,17 +172,15 @@ public class MainTreeViewController extends AbstractTreeViewController {
         // add all child nodes to root
         root.add(insAndOuts);
         root.add(processesNode);
-        
+
 // download services are currently not available
 //        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
 //        downloadServices.add(new DefaultMutableTreeNode(""));
 //        root.add(downloadServices);
-
         // adds persisted remote servers
-        if (clearCache) {
-            setRemotes(processProvider.getPersistedRemotes(), true);
-        }
-
+//        if (clearCache) {
+//            setRemotes(processProvider.getPersistedRemotes(), true);
+//        }
         updateUI();
     }
 
@@ -188,154 +189,103 @@ public class MainTreeViewController extends AbstractTreeViewController {
      *
      * @param uri (WPS-endpoint).
      */
-    public MutableTreeNode addNode(String uri) {
-        // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
-        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
-        //Perform discovery.
-        try {
-            IRichWPSProvider provider = new RichWPSProvider();
-            GetProcessesRequest request = new GetProcessesRequest(uri);
-            provider.perform(request);
-            List<String> processes = request.getProcesses();
+//    public MutableTreeNode addNode(String uri) {
+//        // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
+//        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
+//        //Perform discovery.
+//        try {
+//            IRichWPSProvider provider = new RichWPSProvider();
+//            GetProcessesRequest request = new GetProcessesRequest(uri);
+//            provider.perform(request);
+//            List<String> processes = request.getProcesses();
+//
+//            for (String processid : processes) {
+//
+//                DescribeRequest pd = new DescribeRequest();
+//                pd.setEndpoint(uri);
+//                pd.setIdentifier(processid);
+//                provider.perform(pd);
+//
+//                ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
+//                //TRICKY
+//                if (pd.getAbstract() != null) {
+//                    pe.setOwsAbstract(pd.getAbstract());
+//                } else {
+//                    pe.setOwsAbstract("");
+//                }
+//
+//                pe.setOwsTitle(pd.getTitle());
+//                //FIXME pe.setOwsVersion
+//                this.transformInputs(pd, pe);
+//                this.transformOutputs(pd, pe);
+//
+//                // load metric properties
+//                pe = getProcessProvider().getFullyLoadedProcessEntity(pe);
+//
+//                serverNode.add(new DefaultMutableTreeNode(pe));
+//            }
+//            processesNode.add(serverNode);
+//            this.updateUI();
+//        } catch (Exception e) {
+//            Logger.log("Debug:\n error occured " + e);
+//        }
+//
+//        return serverNode;
+//    }
+//    public void setRemotes(String[] remotes) {
+//        this.setRemotes(remotes, false);
+//    }
+//    void setRemotes(String[] remotes, boolean addExistingNodes) {
+//
+//        // clone currently used remote nodes to identify removed nodes
+//        LinkedList<String> unusedNodes = new LinkedList<>(remoteNodes.keySet());
+//        unusedNodes = (LinkedList<String>) unusedNodes.clone();
+//
+//        for (String remote : remotes) {
+//            if (!remoteNodes.containsKey(remote) || addExistingNodes) {
+//                MutableTreeNode node = addNode(remote);
+//                remoteNodes.put(remote, node);
+//
+//                unusedNodes.remove(remote);
+//            }
+//        }
+//
+//        for (String unusedNodeKey : unusedNodes) {
+//            MutableTreeNode unusedNode = remoteNodes.get(unusedNodeKey);
+//
+//            if (null != unusedNode && processesNode.isNodeChild(unusedNode)) {
+//                processesNode.remove(remoteNodes.get(unusedNodeKey));
+//            }
+//
+//            remoteNodes.remove(unusedNodeKey);
+//        }
+//
+//        updateUI();
+//    }
+    private void sendReceiveResultMessage(int numReceived, boolean spConnected, int numRemotes) {
+        StringBuilder msgSb = new StringBuilder();
+        msgSb.append("Received ")
+                .append(numReceived)
+                .append(" server endpoint");
 
-            for (String processid : processes) {
-
-                DescribeRequest pd = new DescribeRequest();
-                pd.setEndpoint(uri);
-                pd.setIdentifier(processid);
-                provider.perform(pd);
-
-                ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
-                //TRICKY
-                if (pd.getAbstract() != null) {
-                    pe.setOwsAbstract(pd.getAbstract());
-                } else {
-                    pe.setOwsAbstract("");
-                }
-
-                pe.setOwsTitle(pd.getTitle());
-                //FIXME pe.setOwsVersion
-                this.transformInputs(pd, pe);
-                this.transformOutputs(pd, pe);
-
-                // load metric properties
-                pe = getProcessProvider().getFullyLoadedProcessEntity(pe);
-
-                serverNode.add(new DefaultMutableTreeNode(pe));
-            }
-            processesNode.add(serverNode);
-            this.updateUI();
-        } catch (Exception e) {
-            Logger.log("Debug:\n error occured " + e);
+        if (1 != numReceived) {
+            msgSb.append("s");
         }
 
-        return serverNode;
-    }
-
-    /**
-     * Transforms DescribeRequest Inputs to ProcessEntity ProcessPorts.
-     *
-     * @param pd ProcessDescription with IInputSpecifier.
-     * @param pe ProcessEntity with ProcessPorts.
-     */
-    private void transformInputs(DescribeRequest pd, ProcessEntity pe) {
-
-        for (IInputSpecifier specifier : pd.getInputs()) {
-            if (specifier instanceof InputComplexDataSpecifier) {
-                InputComplexDataSpecifier complex = (InputComplexDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.COMPLEX);
-                pp.setOwsIdentifier(complex.getIdentifier());
-                pp.setOwsTitle(complex.getTitle());
-                pp.setOwsAbstract(complex.getAbstract());
-                //FIXME pp.setVersion 
-                List<String> defaulttype = complex.getDefaultType();
-                String encoding = defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
-                String mimetype = defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
-                String schema = defaulttype.get(InputComplexDataSpecifier.schema_IDX);
-                ComplexDataTypeFormat format = new ComplexDataTypeFormat(mimetype, schema, encoding);
-                IDataTypeDescription typedesc = new DataTypeDescriptionComplex(format);
-                pp.setDataTypeDescription(typedesc);
-                pe.addInputPort(pp);
-            } else if (specifier instanceof InputLiteralDataSpecifier) {
-                InputLiteralDataSpecifier literal = (InputLiteralDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.LITERAL);
-                pp.setOwsIdentifier(literal.getIdentifier());
-                pp.setOwsTitle(literal.getTitle());
-                pp.setOwsAbstract(literal.getAbstract());
-                pp.setDataTypeDescription(new DataTypeDescriptionLiteral(literal.getDefaultvalue()));
-                pe.addInputPort(pp);
-            } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
-                //TODO
-            }
-        }
-    }
-
-    /**
-     * Transforms DescribeRequest Outputs to ProcessEntity ProcessPorts.
-     *
-     * @param pd DescribeRequest with IOutputSpecifier.
-     * @param pe ProcessEntity with ProcessPorts.
-     */
-    private void transformOutputs(DescribeRequest pd, ProcessEntity pe) {
-
-        for (IOutputSpecifier specifier : pd.getOutputs()) {
-            if (specifier instanceof OutputComplexDataSpecifier) {
-                OutputComplexDataSpecifier complex = (OutputComplexDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.COMPLEX);
-                pp.setOwsIdentifier(complex.getIdentifier());
-                pp.setOwsTitle(complex.getTitle());
-                pp.setOwsAbstract(complex.getAbstract());
-                //FIXME pp.setVersion 
-                List<String> defaulttype = complex.getDefaultType();
-                String encoding = defaulttype.get(OutputComplexDataSpecifier.encoding_IDX);
-                String mimetype = defaulttype.get(OutputComplexDataSpecifier.mimetype_IDX);
-                String schema = defaulttype.get(OutputComplexDataSpecifier.schema_IDX);
-                ComplexDataTypeFormat format = new ComplexDataTypeFormat(mimetype, schema, encoding);
-                IDataTypeDescription typedesc = new DataTypeDescriptionComplex(format);
-                pp.setDataTypeDescription(typedesc);
-                pe.addOutputPort(pp);
-            } else if (specifier instanceof OutputLiteralDataSpecifier) {
-                OutputLiteralDataSpecifier literal = (OutputLiteralDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.LITERAL);
-                pp.setOwsIdentifier(literal.getIdentifier());
-                pp.setOwsTitle(literal.getTitle());
-                pp.setOwsAbstract(literal.getAbstract());
-                pe.addInputPort(pp);
-            } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
-                //TODO
-            }
-        }
-    }
-
-    public void setRemotes(String[] remotes) {
-        this.setRemotes(remotes, false);
-    }
-
-    void setRemotes(String[] remotes, boolean addExistingNodes) {
-
-        // clone currently used remote nodes to identify removed nodes
-        LinkedList<String> unusedNodes = new LinkedList<>(remoteNodes.keySet());
-        unusedNodes = (LinkedList<String>) unusedNodes.clone();
-
-        for (String remote : remotes) {
-            if (!remoteNodes.containsKey(remote) || addExistingNodes) {
-                MutableTreeNode node = addNode(remote);
-                remoteNodes.put(remote, node);
-
-                unusedNodes.remove(remote);
+        if (spConnected) {
+            msgSb.append(" from SemanticProxy");
+            
+            if (0 < numRemotes) {
+                msgSb.append(" and");
             }
         }
 
-        for (String unusedNodeKey : unusedNodes) {
-            MutableTreeNode unusedNode = remoteNodes.get(unusedNodeKey);
-
-            if (null != unusedNode && processesNode.isNodeChild(unusedNode)) {
-                processesNode.remove(remoteNodes.get(unusedNodeKey));
-            }
-
-            remoteNodes.remove(unusedNodeKey);
+        if (0 < numRemotes) {
+            msgSb.append(" from managed remote servers");
         }
 
-        updateUI();
+        msgSb.append(".");
+
+        AppEventService.getInstance().fireAppEvent(msgSb.toString(), AppConstants.INFOTAB_ID_SEMANTICPROXY);
     }
 }

@@ -5,16 +5,18 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.WpsServerSource;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.control.EntityConverter;
 import de.hsos.richwps.mb.processProvider.control.KeyTranslator;
+import de.hsos.richwps.mb.processProvider.control.ManagedRemoteDiscovery;
 import de.hsos.richwps.mb.processProvider.control.MonitorDataConverter;
 import de.hsos.richwps.mb.processProvider.control.ProcessCache;
 import de.hsos.richwps.mb.processProvider.control.ProcessSearch;
 import de.hsos.richwps.mb.processProvider.control.Publisher;
 import de.hsos.richwps.mb.processProvider.control.ServerProvider;
 import de.hsos.richwps.mb.processProvider.entity.ProcessLoadingStatus;
-import de.hsos.richwps.mb.processProvider.entity.WpsServer;
+import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.ProcessMetricProviderNotAvailable;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
 import de.hsos.richwps.sp.client.ows.SPClient;
@@ -25,10 +27,12 @@ import de.hsos.richwps.sp.client.ows.gettypes.Process;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.attribute.HashAttributeSet;
 
 /**
  * Connects to the SemanticProxy and receives/provides a list of available
@@ -283,8 +287,9 @@ public class ProcessProvider {
     }
 
     public Collection<WpsServer> getAllServerWithProcesses() {
-        LinkedList<WpsServer> servers = new LinkedList<>();
+        HashMap<String, WpsServer> servers = new HashMap<>();
 
+//        LinkedList<WpsServer> servers = new LinkedList<>();
         // indicate error occurences but don't abort loading servers.
         // (errors are handled after the loading is done)
         String errorMsg = null;
@@ -303,6 +308,8 @@ public class ProcessProvider {
                 for (WPS wps : wpss) {
                     try {
                         WpsServer server = new WpsServer(wps.getEndpoint());
+                        server.setSource(WpsServerSource.SEMANTIC_PROXY);
+
                         for (Process process : wps.getProcesses()) {
 
                             ProcessEntity processEntity;
@@ -330,7 +337,8 @@ public class ProcessProvider {
                             server.addProcess(processEntity);
                         }
 
-                        servers.add(server);
+//                        servers.add(server);
+                        servers.put(server.getEndpoint(), server);
 
                     } catch (Exception ex) {
                         errorMsg = ex.getMessage();
@@ -340,13 +348,47 @@ public class ProcessProvider {
             }
         }
 
-        // handle occured errors
+        // handle occured SP errors
         if (null != errorMsg) {
             String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, errorMsgType, errorMsg);
             AppEventService.getInstance().fireAppEvent(msg, this);
         }
 
-        return servers;
+        // add servers and processes from managed remote servers
+        String[] persistedRemotes = getServerProvider().getPersistedRemotes();
+        for (String aPersistedRemote : persistedRemotes) {
+            WpsServer server = new WpsServer(aPersistedRemote);
+
+            WpsServer existingServer = servers.get(aPersistedRemote);
+
+//            if (null != existingServer) {
+            // TODO add missing processes to existing node
+//            existingServer.setSource(WpsServerSource.MIXED);
+//            } else {
+            server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
+
+            if (null == existingServer) {
+                existingServer = new WpsServer(aPersistedRemote);
+                existingServer.setSource(WpsServerSource.MANAGED_REMOTE);
+
+            } else {
+                existingServer.setSource(WpsServerSource.MIXED);
+            }
+
+//                WpsServer loadedServer = new WpsServer(aPersistedRemote);
+            for (ProcessEntity aProcess : server.getProcesses()) {
+                ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
+                if (!existingServer.getProcesses().contains(loadedProcess)) {
+                    existingServer.addProcess(loadedProcess);
+                }
+            }
+
+            servers.put(aPersistedRemote, existingServer);
+//        }
+
+        }
+
+        return servers.values();
     }
 
     /**

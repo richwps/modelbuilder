@@ -648,7 +648,8 @@ public class App {
             public void windowClosed(WindowEvent e) {
                 String[] remotes = dialog.getRemotes();
                 if (null != remotes) {
-                    getMainTreeView().setRemotes(remotes);
+//                    getMainTreeView().setRemotes(remotes);
+                    getMainTreeView().fillTree(true);
                     getGraphView().updateRemotes();
                 }
             }

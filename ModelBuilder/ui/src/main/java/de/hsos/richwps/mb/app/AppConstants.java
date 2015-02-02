@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.io.File;
 import java.util.Locale;
+import javax.swing.Icon;
 
 /**
  * Collection of app-wide constant values.
@@ -281,6 +282,11 @@ public class AppConstants {
      * ToolTipText for deselected default format.
      */
     public static String COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT_DESELECTED = "Click to set as the default supported format";
+    
+    /**
+     * Text for copy to clipboard actions, eg menu items.
+     */
+    public static String COPY_TEXT_TO_CLIPBOARD = "Copy text to clipboard";
 
     public enum PREFERENCES_TAB {
 

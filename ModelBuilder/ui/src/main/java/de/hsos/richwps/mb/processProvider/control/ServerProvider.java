@@ -112,6 +112,12 @@ public class ServerProvider {
         return loadedItems.toArray(new String[]{});
     }
 
+    /**
+     * Returns all known server endpoints. The sources are the SemanticProxy and
+     * managed remotes.
+     *
+     * @return
+     */
     public String[] getAllServers() {
         Collection<String> spServers = getAllServersFromSemanticProxy();
         String[] remotes = getPersistedRemotes();
