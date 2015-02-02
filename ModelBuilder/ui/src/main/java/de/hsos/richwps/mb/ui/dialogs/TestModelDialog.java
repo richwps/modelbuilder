@@ -186,7 +186,6 @@ public class TestModelDialog extends ADialog {
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Test opend model");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));

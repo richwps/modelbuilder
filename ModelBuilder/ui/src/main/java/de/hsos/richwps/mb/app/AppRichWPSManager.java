@@ -589,17 +589,17 @@ public class AppRichWPSManager {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
                         ComplexDataTypeFormat format = description.getDefaultFormat();
                         supportedType.add(format.getMimeType());
-                        if (format.getSchema().isEmpty()) {
+                        /*if (format.getSchema().isEmpty()) {
                             supportedType.add(null);
-                        } else {
+                        } else {*/
                             supportedType.add(format.getSchema());
-                        }
+                        //}
 
-                        if (format.getEncoding().isEmpty()) {
+                        /*if (format.getEncoding().isEmpty()) {
                             supportedType.add(null);
-                        } else {
+                        } else {*/
                             supportedType.add(format.getEncoding());
-                        }
+                        //}
                     }
 
                     supportedTypes.add(supportedType);

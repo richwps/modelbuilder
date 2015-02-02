@@ -58,7 +58,6 @@ public class Exporter {
      */
     private Workflow workflow;
 
-    private Map<String, String> owsmap = new HashMap<>();
     private List<mxICell> sorted;
 
     /**
@@ -93,7 +92,6 @@ public class Exporter {
 
             String hashed = owsidentifier + "_" + (uniqueId++);
             port.setOwsIdentifier(hashed);
-            this.owsmap.put(hashed, owsidentifier);
         }
 
         for (mxCell portCell : this.graph.getAllFlowInputCells()) {
@@ -104,7 +102,6 @@ public class Exporter {
 
             String hashed = owsidentifier + "_" + (uniqueId++);
             port.setOwsIdentifier(hashed);
-            this.owsmap.put(hashed, owsidentifier);
         }
 
         // Topological sort is used to resolve dependencies
@@ -411,7 +408,6 @@ public class Exporter {
      * @return variables associated to edges.
      */
     public Map<String, String> getEdges() {
-        System.err.println(this.variables);
         return this.edges;
     }
 }

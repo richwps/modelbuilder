@@ -92,7 +92,6 @@ public class RichWPSHelper {
      */
     void setTestProcessOutputs(TestProcessRequestBuilder builder, final HashMap theoutputs) {
         final Set<String> keys = theoutputs.keySet();
-        Logger.log(this.getClass(), "setTestProcessOutputs", keys);
         for (String key : keys) {
             Object o = theoutputs.get(key);
             if (o instanceof OutputLiteralDataArgument) {
@@ -120,10 +119,10 @@ public class RichWPSHelper {
      * Sets requested variables to execute-request.
      *
      */
-    void setTestProcessVariables(TestProcessRequestBuilder builder, final List<String> thevariables) {
-
-        for (String key : thevariables) {
+    void setTestProcessVariables(TestProcessRequestBuilder builder, final List<String> variables) {
+        for (String key : variables) {
             builder.addOutput(key);
+            builder.setAsReference(key, true);
         }
     }
 
