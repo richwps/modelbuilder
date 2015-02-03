@@ -49,11 +49,10 @@ public class ProcessProvider {
     private Publisher publisher;
     private ProcessCache cache;
 
-    
     private KeyTranslator translator;
 
     private boolean managedRemotesEnabled = true;
-    
+
     /**
      * Constructor, creates the SP client.
      */
@@ -359,31 +358,34 @@ public class ProcessProvider {
         }
 
         // add servers and processes from managed remote servers
-        String[] persistedRemotes = getServerProvider().getPersistedRemotes();
-        for (String aPersistedRemote : persistedRemotes) {
-            WpsServer server = new WpsServer(aPersistedRemote);
+        if (isManagedRemotesEnabled()) {
 
-            WpsServer existingServer = servers.get(aPersistedRemote);
+            String[] persistedRemotes = getServerProvider().getPersistedRemotes();
+            for (String aPersistedRemote : persistedRemotes) {
+                WpsServer server = new WpsServer(aPersistedRemote);
 
-            server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
+                WpsServer existingServer = servers.get(aPersistedRemote);
 
-            if (null == existingServer) {
-                existingServer = new WpsServer(aPersistedRemote);
-                existingServer.setSource(WpsServerSource.MANAGED_REMOTE);
+                server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
 
-            } else {
-                existingServer.setSource(WpsServerSource.MIXED);
-            }
+                if (null == existingServer) {
+                    existingServer = new WpsServer(aPersistedRemote);
+                    existingServer.setSource(WpsServerSource.MANAGED_REMOTE);
 
-            for (ProcessEntity aProcess : server.getProcesses()) {
-                ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
-                if (!existingServer.getProcesses().contains(loadedProcess)) {
-                    existingServer.addProcess(loadedProcess);
+                } else {
+                    existingServer.setSource(WpsServerSource.MIXED);
                 }
+
+                for (ProcessEntity aProcess : server.getProcesses()) {
+                    ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
+                    if (!existingServer.getProcesses().contains(loadedProcess)) {
+                        existingServer.addProcess(loadedProcess);
+                    }
+                }
+
+                servers.put(aPersistedRemote, existingServer);
+
             }
-
-            servers.put(aPersistedRemote, existingServer);
-
         }
 
         return servers.values();
@@ -505,5 +507,5 @@ public class ProcessProvider {
     public boolean isManagedRemotesEnabled() {
         return managedRemotesEnabled;
     }
-    
+
 }
