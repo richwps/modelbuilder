@@ -85,11 +85,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
     }
 
     @Override
-    void fillTree() {
-        fillTree(true);
-    }
-
-    public void fillTree(boolean clearCache) {
+    public void fillTree() {
 
         ProcessProvider processProvider = getProcessProvider();
 
@@ -112,23 +108,18 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
                 int receivedServers = 0;
 
-//                if (connected || processProvider.connect(url)) {
-                    for (WpsServer server : processProvider.getAllServerWithProcesses()) {
-                        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
+                for (WpsServer server : processProvider.getAllServerWithProcesses()) {
+                    DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(server);
 
-                        // sort the server's processes alphabetically by title
-                        List<ProcessEntity> processes = server.getProcesses();
-                        Collections.sort(processes, processComparator);
-                        for (ProcessEntity process : processes) {
-                            if (clearCache) {
-                                process.setToolTipText(null);
-                            }
-                            serverNode.add(new DefaultMutableTreeNode(process));
-                        }
-                        processesNode.add(serverNode);
-                        receivedServers++;
+                    // sort the server's processes alphabetically by title
+                    List<ProcessEntity> processes = server.getProcesses();
+                    Collections.sort(processes, processComparator);
+                    for (ProcessEntity process : processes) {
+                        serverNode.add(new DefaultMutableTreeNode(process));
                     }
-//                }
+                    processesNode.add(serverNode);
+                    receivedServers++;
+                }
 
                 int numRemotes = getProcessProvider().getPersistedRemotes().length;
                 sendReceiveResultMessage(receivedServers, connected, numRemotes);
@@ -177,91 +168,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
 //        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
 //        downloadServices.add(new DefaultMutableTreeNode(""));
 //        root.add(downloadServices);
-        // adds persisted remote servers
-//        if (clearCache) {
-//            setRemotes(processProvider.getPersistedRemotes(), true);
-//        }
+     
         updateUI();
     }
 
-    /**
-     * Adds a node to the maintree.
-     *
-     * @param uri (WPS-endpoint).
-     */
-//    public MutableTreeNode addNode(String uri) {
-//        // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
-//        DefaultMutableTreeNode serverNode = new DefaultMutableTreeNode(uri);
-//        //Perform discovery.
-//        try {
-//            IRichWPSProvider provider = new RichWPSProvider();
-//            GetProcessesRequest request = new GetProcessesRequest(uri);
-//            provider.perform(request);
-//            List<String> processes = request.getProcesses();
-//
-//            for (String processid : processes) {
-//
-//                DescribeRequest pd = new DescribeRequest();
-//                pd.setEndpoint(uri);
-//                pd.setIdentifier(processid);
-//                provider.perform(pd);
-//
-//                ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
-//                //TRICKY
-//                if (pd.getAbstract() != null) {
-//                    pe.setOwsAbstract(pd.getAbstract());
-//                } else {
-//                    pe.setOwsAbstract("");
-//                }
-//
-//                pe.setOwsTitle(pd.getTitle());
-//                //FIXME pe.setOwsVersion
-//                this.transformInputs(pd, pe);
-//                this.transformOutputs(pd, pe);
-//
-//                // load metric properties
-//                pe = getProcessProvider().getFullyLoadedProcessEntity(pe);
-//
-//                serverNode.add(new DefaultMutableTreeNode(pe));
-//            }
-//            processesNode.add(serverNode);
-//            this.updateUI();
-//        } catch (Exception e) {
-//            Logger.log("Debug:\n error occured " + e);
-//        }
-//
-//        return serverNode;
-//    }
-//    public void setRemotes(String[] remotes) {
-//        this.setRemotes(remotes, false);
-//    }
-//    void setRemotes(String[] remotes, boolean addExistingNodes) {
-//
-//        // clone currently used remote nodes to identify removed nodes
-//        LinkedList<String> unusedNodes = new LinkedList<>(remoteNodes.keySet());
-//        unusedNodes = (LinkedList<String>) unusedNodes.clone();
-//
-//        for (String remote : remotes) {
-//            if (!remoteNodes.containsKey(remote) || addExistingNodes) {
-//                MutableTreeNode node = addNode(remote);
-//                remoteNodes.put(remote, node);
-//
-//                unusedNodes.remove(remote);
-//            }
-//        }
-//
-//        for (String unusedNodeKey : unusedNodes) {
-//            MutableTreeNode unusedNode = remoteNodes.get(unusedNodeKey);
-//
-//            if (null != unusedNode && processesNode.isNodeChild(unusedNode)) {
-//                processesNode.remove(remoteNodes.get(unusedNodeKey));
-//            }
-//
-//            remoteNodes.remove(unusedNodeKey);
-//        }
-//
-//        updateUI();
-//    }
     private void sendReceiveResultMessage(int numReceived, boolean spConnected, int numRemotes) {
         StringBuilder msgSb = new StringBuilder();
         msgSb.append("Received ")
@@ -274,7 +184,7 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         if (spConnected) {
             msgSb.append(" from SemanticProxy");
-            
+
             if (0 < numRemotes) {
                 msgSb.append(" and");
             }

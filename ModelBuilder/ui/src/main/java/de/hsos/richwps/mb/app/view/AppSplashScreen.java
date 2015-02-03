@@ -24,6 +24,8 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
+
+
 public class AppSplashScreen extends JWindow {
 
     private final JLabel msgLabel;
@@ -79,7 +81,7 @@ public class AppSplashScreen extends JWindow {
         setBounds(x, y, w, h + msgLabelHeight);
 
         // Show SplashScreen
-        showProgess(0);
+        progress(0);
         setVisible(true);
     }
 
@@ -97,7 +99,7 @@ public class AppSplashScreen extends JWindow {
      *
      * @param percent must be between 0 and 100
      */
-    public void showProgess(int percent) {
+    private void progress(int percent) {
         // Ensure limits
         percent = Math.max(0, percent);
         percent = Math.min(100, percent);
@@ -122,6 +124,15 @@ public class AppSplashScreen extends JWindow {
             } catch (InterruptedException ex) {
             }
         }
+    }
+
+    /**
+     * Updates the progress bar.
+     *
+     * @param percent must be between 0 and 100
+     */
+    public void showProgess(int percent) {
+        progress(percent);
     }
 
     /**

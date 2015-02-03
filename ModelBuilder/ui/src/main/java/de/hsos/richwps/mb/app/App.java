@@ -333,7 +333,7 @@ public class App {
      *
      * @return
      */
-    private MainTreeViewController getMainTreeView() {
+    MainTreeViewController getMainTreeView() {
         if (null == mainTreeView) {
             mainTreeView = new MainTreeViewController(getPreferencesDialog(), createSemanticProxyInteractionComponents());
         }
@@ -384,15 +384,6 @@ public class App {
         }
 
         return mainTreeViewPanel;
-    }
-
-    /**
-     * Creates tree nodes for the available processes.
-     *
-     * @param loadRemotes
-     */
-    void fillMainTree(boolean loadRemotes) {
-        getMainTreeView().fillTree(loadRemotes);
     }
 
     /**
@@ -648,8 +639,7 @@ public class App {
             public void windowClosed(WindowEvent e) {
                 String[] remotes = dialog.getRemotes();
                 if (null != remotes) {
-//                    getMainTreeView().setRemotes(remotes);
-                    getMainTreeView().fillTree(true);
+                    getMainTreeView().fillTree();
                     getGraphView().updateRemotes();
                 }
             }

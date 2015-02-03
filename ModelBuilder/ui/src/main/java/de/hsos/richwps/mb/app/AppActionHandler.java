@@ -364,7 +364,7 @@ public class AppActionHandler implements IAppActionHandler {
     private void doReloadProcesses() {
         app.getPropertiesView().clearPropertyCache();
         app.getProcessProvider().clear();
-        app.fillMainTree(true);
+        app.getMainTreeView().fillTree();
     }
 
     private void doExecute() {

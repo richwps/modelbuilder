@@ -14,6 +14,11 @@ public class AppEventService {
     private HashMap<Object, String> sourceCommands;
 
     /**
+     * Commands contained in this list will not fire events.
+     */
+    private LinkedList<String> disabledCommands;
+
+    /**
      * Singleton instance.
      */
     private static AppEventService instance;
@@ -27,7 +32,8 @@ public class AppEventService {
      * Hidden for singleton use.
      */
     private AppEventService() {
-        observers = new LinkedList<IAppEventObserver>();
+        observers = new LinkedList<>();
+        disabledCommands = new LinkedList<>();
     }
 
     private HashMap<Object, String> getSourceCommands() {
@@ -108,9 +114,36 @@ public class AppEventService {
      * @param e
      */
     public void fireAppEvent(AppEvent e) {
+        if (!isCommandEnabled(e.getCommand())) {
+            return;
+        }
+
         for (IAppEventObserver observer : observers) {
             observer.eventOccured(e);
         }
     }
 
+    public boolean isCommandEnabled(String command) {
+        return !this.disabledCommands.contains(command);
+    }
+
+    /**
+     * Only enabled commands can fire app events. Initially, commands are
+     * enabled.
+     *
+     * @param command
+     * @param enabled
+     */
+    public void setCommandEnabled(String command, boolean enabled) {
+
+        if (enabled) {
+
+            if (!this.disabledCommands.contains(command)) {
+                this.disabledCommands.add(command);
+            }
+
+        } else {
+            this.disabledCommands.remove(command);
+        }
+    }
 }

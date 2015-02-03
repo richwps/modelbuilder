@@ -141,11 +141,16 @@ public class AppSetup {
 
         splash.showMessageAndProgress("Requesting processes", 60);
         {
-            // connect to SP and fill tree with services etc. received from SP
+            // connect to SP and fill tree with services etc. received from SP and managed remotes
             String loadRemotesKey = AppConfig.CONFIG_KEYS.REMOTES_B_DISCOVER_ON_START.name();
             boolean loadRemotesDefault = AppConstants.PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT;
             boolean loadRemotes = AppConfig.getConfig().getBoolean(loadRemotesKey, loadRemotesDefault);
-            app.fillMainTree(loadRemotes);
+            app.getProcessProvider().setManagedRemotesEnabled(loadRemotes);
+
+            app.getMainTreeView().fillTree();
+            
+            // after startup, remotes are always loaded
+            app.getProcessProvider().setManagedRemotesEnabled(true);
 
             AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_SERVER, AppConstants.INFOTAB_ID_SERVER);
         }

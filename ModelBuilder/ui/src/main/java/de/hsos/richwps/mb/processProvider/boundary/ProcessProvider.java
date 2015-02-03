@@ -30,9 +30,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.print.attribute.HashAttributeSet;
 
 /**
  * Connects to the SemanticProxy and receives/provides a list of available
@@ -52,8 +49,11 @@ public class ProcessProvider {
     private Publisher publisher;
     private ProcessCache cache;
 
+    
     private KeyTranslator translator;
 
+    private boolean managedRemotesEnabled = true;
+    
     /**
      * Constructor, creates the SP client.
      */
@@ -289,11 +289,13 @@ public class ProcessProvider {
     public Collection<WpsServer> getAllServerWithProcesses() {
         HashMap<String, WpsServer> servers = new HashMap<>();
 
-//        LinkedList<WpsServer> servers = new LinkedList<>();
         // indicate error occurences but don't abort loading servers.
         // (errors are handled after the loading is done)
         String errorMsg = null;
         String errorMsgType = null;
+
+        // temporary disable "SP not available" messages to avoid msg flooding
+        AppEventService.getInstance().setCommandEnabled(AppConstants.INFOTAB_ID_SEMANTICPROXY, false);
 
         if (null != net) {
             WPS[] wpss = null;
@@ -337,7 +339,6 @@ public class ProcessProvider {
                             server.addProcess(processEntity);
                         }
 
-//                        servers.add(server);
                         servers.put(server.getEndpoint(), server);
 
                     } catch (Exception ex) {
@@ -347,6 +348,9 @@ public class ProcessProvider {
                 }
             }
         }
+
+        // re-enable command (see above)
+        AppEventService.getInstance().setCommandEnabled(AppConstants.INFOTAB_ID_SEMANTICPROXY, true);
 
         // handle occured SP errors
         if (null != errorMsg) {
@@ -361,10 +365,6 @@ public class ProcessProvider {
 
             WpsServer existingServer = servers.get(aPersistedRemote);
 
-//            if (null != existingServer) {
-            // TODO add missing processes to existing node
-//            existingServer.setSource(WpsServerSource.MIXED);
-//            } else {
             server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
 
             if (null == existingServer) {
@@ -375,7 +375,6 @@ public class ProcessProvider {
                 existingServer.setSource(WpsServerSource.MIXED);
             }
 
-//                WpsServer loadedServer = new WpsServer(aPersistedRemote);
             for (ProcessEntity aProcess : server.getProcesses()) {
                 ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
                 if (!existingServer.getProcesses().contains(loadedProcess)) {
@@ -384,7 +383,6 @@ public class ProcessProvider {
             }
 
             servers.put(aPersistedRemote, existingServer);
-//        }
 
         }
 
@@ -500,4 +498,12 @@ public class ProcessProvider {
         getMonitorDataConverter().setMetricProvider(metricProvider);
     }
 
+    public void setManagedRemotesEnabled(boolean enabled) {
+        this.managedRemotesEnabled = enabled;
+    }
+
+    public boolean isManagedRemotesEnabled() {
+        return managedRemotesEnabled;
+    }
+    
 }
