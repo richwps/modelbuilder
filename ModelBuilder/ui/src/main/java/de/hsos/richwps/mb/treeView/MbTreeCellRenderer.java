@@ -1,9 +1,9 @@
 package de.hsos.richwps.mb.treeView;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServer;
 import java.awt.Component;
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.UIManager;
@@ -46,14 +46,24 @@ public class MbTreeCellRenderer extends DefaultTreeCellRenderer {
                     }
                 }
 
+                if(nodeValue instanceof String) {
+                    String nodeText = (String) nodeValue;
+                    if(nodeText.equals(AppConstants.TREE_INTERFACEOBJECTS_NAME)) {
+                        label.setIcon(UIManager.getIcon(portIconBaseKey + "s"));
+                    }
+                    else if(nodeText.equals(AppConstants.TREE_PROCESSES_NAME)) {
+                        label.setIcon(UIManager.getIcon(AppConstants.ICON_PROCESSES_KEY));
+                    }
+                }
+                
                 if (nodeValue instanceof ProcessPort) {
                     ProcessPort port = (ProcessPort) nodeValue;
 
                     String type;
                     if (port.isGlobalInput()) {
-                        type = "in_";
+                        type = "_in_";
                     } else {
-                        type = "out_";
+                        type = "_out_";
                     }
 
                     String datatype = port.toString().toLowerCase();

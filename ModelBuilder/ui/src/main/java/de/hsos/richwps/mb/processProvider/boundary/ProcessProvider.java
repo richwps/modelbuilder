@@ -143,6 +143,14 @@ public class ProcessProvider {
     }
 
     /**
+     * Resets the loading status of all cached processes. Future process loading
+     * request will reload all data.
+     */
+    public void resetProcessLoadingStates() {
+        getCache().resetLoadingStates();
+    }
+
+    /**
      * Returns a fully loaded process that matches the endpoint and ows
      * identifier. If an error occurs while loading the process, a partially
      * loaded process is returned.
@@ -374,9 +382,9 @@ public class ProcessProvider {
 
             // only discover manged remotes if it is enabled
             if (isManagedRemotesEnabled()) {
-                
+
                 server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
-                
+
                 for (ProcessEntity aProcess : server.getProcesses()) {
                     ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
                     if (!existingServer.getProcesses().contains(loadedProcess)) {

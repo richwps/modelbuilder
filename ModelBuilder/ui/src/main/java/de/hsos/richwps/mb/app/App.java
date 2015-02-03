@@ -118,14 +118,14 @@ public class App {
     ProcessMetricProvider getProcessMetricProvider() {
         if (null == processMetricProvider) {
             try {
-                
+
                 // get URL from config
                 String key = AppConfig.CONFIG_KEYS.MONITOR_S_URL.name();
                 String defUrl = AppConstants.MONITOR_DEFAULT_URL;
                 String confUrl = AppConfig.getConfig().get(key, defUrl);
-                
+
                 processMetricProvider = new ProcessMetricProvider(confUrl);
-                
+
             } catch (MalformedURLException ex) {
                 showErrorMessage(ex.getMessage());
             } catch (Exception ex) {
@@ -394,6 +394,28 @@ public class App {
     AppPreferencesDialog getPreferencesDialog() {
         if (null == preferencesDialog) {
             preferencesDialog = new AppPreferencesDialog(frame);
+
+            preferencesDialog.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    // get persisted configuration value.
+                    String key = AppConfig.CONFIG_KEYS.MONITOR_S_URL.name();
+                    String defaultValue = AppConstants.MONITOR_DEFAULT_URL;
+                    String confUrl = AppConfig.getConfig().get(key, defaultValue);
+
+                    // get currently used value.
+                    String monitorUrl = getProcessMetricProvider().getMonitorUrl();
+
+                    // update curently used value if the config has changed.
+                    if (!confUrl.equals(monitorUrl)) {
+                        getProcessMetricProvider().setMonitorUrl(confUrl);
+                        
+                        // force reloading monitor data
+                        getProcessProvider().resetProcessLoadingStates();
+                        getMainTreeView().fillTree();
+                    }
+                }
+            });
         }
 
         return preferencesDialog;

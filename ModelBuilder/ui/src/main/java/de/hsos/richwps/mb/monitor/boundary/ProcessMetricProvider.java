@@ -26,7 +26,7 @@ public class ProcessMetricProvider {
     private final HashMap<String, String> translations;
 
     private String mainPropertyGroupName = "monitor data";
-    private final String url;
+    private String url;
 
     public ProcessMetricProvider(String url) throws Exception {
         this.url = url;
@@ -46,20 +46,20 @@ public class ProcessMetricProvider {
      * @return
      */
     public PropertyGroup getProcessMetric(String server, String identifier) {
-        
+
         // create property group containing all metrics
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
         groups.setPropertiesObjectName(this.mainPropertyGroupName);
-        
+
         // connect to monitor
         if (null == client) {
             try {
                 client = new WpsMonitorClientFactory().create(new URL(url));
             } catch (Exception ex) {
                 java.util.logging.Logger.getLogger(ProcessMetricProvider.class.getName()).log(Level.SEVERE, null, ex);
-            
+
                 client = null;
-                
+
                 return groups;
             }
         }
@@ -88,7 +88,7 @@ public class ProcessMetricProvider {
             // ignore as usually thrown if process is not monitored;
             // the empty group indicates non-monitored processes.
             Logger.log("monitor client exception: " + ex);
-            
+
             // force client recreation
             client = null;
 
@@ -122,6 +122,26 @@ public class ProcessMetricProvider {
 
         // else: return with uppered first character
         return UiHelper.upperFirst(key);
+    }
+
+    /**
+     * Sets the given url for future process metric calls and forces the a
+     * client recreation.
+     *
+     * @param url
+     */
+    public void setMonitorUrl(String url) {
+        this.url = url;
+        this.client = null;
+    }
+
+    /**
+     * Returns the monitor URL that the client uses to connect.
+     *
+     * @return
+     */
+    public String getMonitorUrl() {
+        return this.url;
     }
 
 }

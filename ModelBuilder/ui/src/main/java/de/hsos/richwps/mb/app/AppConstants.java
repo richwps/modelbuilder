@@ -477,7 +477,9 @@ public class AppConstants {
     public final static String ICON_PUBLISH = "richwps_icon_propagate";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
-    public final static String ICON_PORT_BASE_KEY = "richwps_icon_port_";
+    public final static String ICON_PROCESSES_KEY = "richwps_icon_processes";
+    public final static String ICON_PORTS_KEY = "richwps_icon_ports";
+    public final static String ICON_PORT_BASE_KEY = "richwps_icon_port";
     public final static String ICON_PORT_OUT_L_KEY = "richwps_icon_port_out_l";
     public final static String ICON_PORT_OUT_B_KEY = "richwps_icon_port_out_b";
     public final static String ICON_PORT_OUT_C_KEY = "richwps_icon_port_out_c";
