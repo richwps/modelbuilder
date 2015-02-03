@@ -5,6 +5,7 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import de.hsos.richwps.mb.treeView.MbTreeCellRenderer;
 import de.hsos.richwps.mb.treeView.TreeView;
 import java.awt.Component;
 import java.awt.Point;
@@ -18,6 +19,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
 
 /**
  * Enables graph node creation on double clicking tree nodes.
@@ -29,7 +31,7 @@ class TreeViewMouseAdapter extends MouseAdapter {
     private GraphView graphView;
     private TreeView treeView;
     private ProcessProvider processProvider;
-    
+
     TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider) {
         this.graphView = graphView;
         this.treeView = treeView;
@@ -87,24 +89,12 @@ public class AppTreeFactory {
         TreeView treeView = new TreeView(root, processProvider);
         treeView.getGui().addMouseListener(new TreeViewMouseAdapter(graphView, treeView, processProvider));
         treeView.getGui().setBorder(new EmptyBorder(2, 2, 2, 2));
-        DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
 
-            @Override
-            public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                JLabel component = (JLabel) super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-                if(value instanceof WpsServer) {
-                    component.setIcon(openIcon);
-                }
-                
-                return component;
-            }
-            
-        };
-                
+        MbTreeCellRenderer cellRenderer = (MbTreeCellRenderer) treeView.getGui().getCellRenderer();
         cellRenderer.setBackgroundSelectionColor(AppConstants.SELECTION_BG_COLOR);
         cellRenderer.setLeafIcon(UIManager.getIcon(AppConstants.ICON_PROCESS_KEY));
-        treeView.getGui().setCellRenderer(cellRenderer);
-
+        cellRenderer.setPortIconBaseKey(AppConstants.ICON_PORT_BASE_KEY);
+        
         return treeView;
     }
 

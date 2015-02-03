@@ -228,6 +228,13 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_PUBLISH, new ImageIcon(iconDir + "database-go.png", "publish icon"));
 
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));
+        UIManager.put(AppConstants.ICON_PORT_OUT_L_KEY, new ImageIcon(iconDir + "port_out_l.png", "port out L icon"));
+        UIManager.put(AppConstants.ICON_PORT_OUT_C_KEY, new ImageIcon(iconDir + "port_out_c.png", "port out B icon"));
+        UIManager.put(AppConstants.ICON_PORT_OUT_B_KEY, new ImageIcon(iconDir + "port_out_b.png", "port out C icon"));
+        UIManager.put(AppConstants.ICON_PORT_IN_L_KEY, new ImageIcon(iconDir + "port_in_l.png", "port in L icon"));
+        UIManager.put(AppConstants.ICON_PORT_IN_C_KEY, new ImageIcon(iconDir + "port_in_c.png", "port in B icon"));
+        UIManager.put(AppConstants.ICON_PORT_IN_B_KEY, new ImageIcon(iconDir + "port_in_b.png", "port in C icon"));
+        
         UIManager.put(AppConstants.ICON_EDIT_KEY, new ImageIcon(iconDir + "edit-3.png", "edit icon"));
         UIManager.put(AppConstants.ICON_ADD_KEY, new ImageIcon(iconDir + "list-add-6.png", "add icon"));
         UIManager.put(AppConstants.ICON_DELETE_KEY, new ImageIcon(iconDir + "edit-delete-7.png", "delete icon"));

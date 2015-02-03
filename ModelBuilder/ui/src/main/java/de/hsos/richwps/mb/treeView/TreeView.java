@@ -6,7 +6,6 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.entity.WpsServerSource;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -20,6 +19,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -103,6 +103,7 @@ public class TreeView {
         tree.setDragEnabled(true);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
 
+        // context menu trigger
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -124,9 +125,10 @@ public class TreeView {
                 JPopupMenu contextmenu = createContextMenu((DefaultMutableTreeNode) last, e);
                 contextmenu.show(tree, e.getX(), e.getY());
             }
-
         });
 
+        // set customn tree cell renderer
+        tree.setCellRenderer(new MbTreeCellRenderer());
     }
 
     /**

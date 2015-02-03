@@ -145,20 +145,28 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         // Create node with interface objects like global inputs and outputs
         DefaultMutableTreeNode insAndOuts = new DefaultMutableTreeNode(AppConstants.TREE_INTERFACEOBJECTS_NAME);
+        
         // inputs
         ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+        ProcessPort bIn = new ProcessPort(ProcessPortDatatype.BOUNDING_BOX, true);
         cIn.setGlobalOutput(false);
         lIn.setGlobalOutput(false);
+        bIn.setGlobalOutput(false);
         insAndOuts.add(new DefaultMutableTreeNode(cIn));
         insAndOuts.add(new DefaultMutableTreeNode(lIn));
+        insAndOuts.add(new DefaultMutableTreeNode(bIn));
+        
         // Outputs
         ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
         ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
+        ProcessPort bOut = new ProcessPort(ProcessPortDatatype.BOUNDING_BOX, true);
         cOut.setGlobalOutput(true);
         lOut.setGlobalOutput(true);
+        bOut.setGlobalOutput(true);
         insAndOuts.add(new DefaultMutableTreeNode(cOut));
         insAndOuts.add(new DefaultMutableTreeNode(lOut));
+        insAndOuts.add(new DefaultMutableTreeNode(bOut));
 
         // add all child nodes to root
         root.add(insAndOuts);

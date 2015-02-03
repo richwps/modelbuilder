@@ -358,34 +358,35 @@ public class ProcessProvider {
         }
 
         // add servers and processes from managed remote servers
-        if (isManagedRemotesEnabled()) {
+        String[] persistedRemotes = getServerProvider().getPersistedRemotes();
+        for (String aPersistedRemote : persistedRemotes) {
+            WpsServer server = new WpsServer(aPersistedRemote);
 
-            String[] persistedRemotes = getServerProvider().getPersistedRemotes();
-            for (String aPersistedRemote : persistedRemotes) {
-                WpsServer server = new WpsServer(aPersistedRemote);
+            WpsServer existingServer = servers.get(aPersistedRemote);
 
-                WpsServer existingServer = servers.get(aPersistedRemote);
+            if (null == existingServer) {
+                existingServer = new WpsServer(aPersistedRemote);
+                existingServer.setSource(WpsServerSource.MANAGED_REMOTE);
 
+            } else {
+                existingServer.setSource(WpsServerSource.MIXED);
+            }
+
+            // only discover manged remotes if it is enabled
+            if (isManagedRemotesEnabled()) {
+                
                 server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
-
-                if (null == existingServer) {
-                    existingServer = new WpsServer(aPersistedRemote);
-                    existingServer.setSource(WpsServerSource.MANAGED_REMOTE);
-
-                } else {
-                    existingServer.setSource(WpsServerSource.MIXED);
-                }
-
+                
                 for (ProcessEntity aProcess : server.getProcesses()) {
                     ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
                     if (!existingServer.getProcesses().contains(loadedProcess)) {
                         existingServer.addProcess(loadedProcess);
                     }
                 }
-
-                servers.put(aPersistedRemote, existingServer);
-
             }
+
+            servers.put(aPersistedRemote, existingServer);
+
         }
 
         return servers.values();
