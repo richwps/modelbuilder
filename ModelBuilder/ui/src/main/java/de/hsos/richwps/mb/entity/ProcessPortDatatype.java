@@ -15,7 +15,7 @@ public enum ProcessPortDatatype {
 
     @Override
     public String toString() {
-        return UiHelper.upperFirst(name());
+        return UiHelper.createStringForViews(name());
     }
 
     /**

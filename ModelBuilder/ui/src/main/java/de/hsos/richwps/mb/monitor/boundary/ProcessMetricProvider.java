@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.monitor.boundary;
 import de.hsos.ecs.richwps.wpsmonitor.boundary.restful.metric.MeasuredValue;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClient;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientFactory;
-import de.hsos.ecs.richwps.wpsmonitor.client.exception.WpsMonitorClientCreateException;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsMetricResource;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
 import de.hsos.richwps.mb.Logger;
@@ -73,7 +72,6 @@ public class ProcessMetricProvider {
                 PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(translateMonitorKey(aMetric.getKey()));
 
                 // add metric values to sub group as properties
-                //TODO adjust API usage.
                 for (Map.Entry<String, MeasuredValue> aMetricValue : aMetric.getValue().getValues().entrySet()) {
 
                     // create property
