@@ -227,9 +227,10 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_MANAGE_REMOTE, new ImageIcon(iconDir + "database-gear.png", "manage remotes icon"));
         UIManager.put(AppConstants.ICON_PUBLISH, new ImageIcon(iconDir + "database-go.png", "publish icon"));
 
+        // TreeNode Icons
         UIManager.put(AppConstants.ICON_PROCESS_KEY, new ImageIcon(iconDir + "process.png", "process icon"));
-        UIManager.put(AppConstants.ICON_PROCESSES_KEY, new ImageIcon(iconDir + "processes.png", "processes icon"));
-        UIManager.put(AppConstants.ICON_PORTS_KEY, new ImageIcon(iconDir + "ports.png", "ports icon"));
+        UIManager.put(AppConstants.ICON_PROCESSES_KEY, new ImageIcon(iconDir + "tree_processes.png", "processes icon"));
+        UIManager.put(AppConstants.ICON_PORTS_KEY, new ImageIcon(iconDir + "tree_ports.png", "ports icon"));
         UIManager.put(AppConstants.ICON_PORT_OUT_L_KEY, new ImageIcon(iconDir + "port_out_l.png", "port out L icon"));
         UIManager.put(AppConstants.ICON_PORT_OUT_C_KEY, new ImageIcon(iconDir + "port_out_c.png", "port out B icon"));
         UIManager.put(AppConstants.ICON_PORT_OUT_B_KEY, new ImageIcon(iconDir + "port_out_b.png", "port out C icon"));
