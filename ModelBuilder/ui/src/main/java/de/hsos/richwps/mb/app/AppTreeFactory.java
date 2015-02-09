@@ -2,24 +2,18 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.MbTreeCellRenderer;
 import de.hsos.richwps.mb.treeView.TreeView;
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.TreeCellRenderer;
 
 /**
  * Enables graph node creation on double clicking tree nodes.
@@ -28,9 +22,9 @@ import javax.swing.tree.TreeCellRenderer;
  */
 class TreeViewMouseAdapter extends MouseAdapter {
 
-    private GraphView graphView;
-    private TreeView treeView;
-    private ProcessProvider processProvider;
+    private final GraphView graphView;
+    private final TreeView treeView;
+    private final ProcessProvider processProvider;
 
     TreeViewMouseAdapter(GraphView graphView, TreeView treeView, ProcessProvider processProvider) {
         this.graphView = graphView;

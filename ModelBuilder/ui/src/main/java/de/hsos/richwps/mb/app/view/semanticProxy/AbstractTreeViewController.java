@@ -13,10 +13,14 @@ import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceAdapter;
 import java.awt.dnd.DragSourceDropEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
+import java.util.Iterator;
 import java.util.TooManyListenersException;
 import java.util.logging.Level;
 import javax.swing.JFrame;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.TransferHandler;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -28,11 +32,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public abstract class AbstractTreeViewController {
 
-//    protected final App app;
     private TreeView treeView;
-    
+
     private GraphDropTargetAdapter dropTargetAdapter;
-    
+
     private final GraphView graphView;
     private final ProcessProvider processProvider;
     private final Component graphDndProxy;
@@ -80,7 +83,7 @@ public abstract class AbstractTreeViewController {
     protected JFrame getParent() {
         return parent;
     }
-    
+
     /**
      * Initialises drag-and-drop mechanism for TreeView nodes.
      */
@@ -94,11 +97,21 @@ public abstract class AbstractTreeViewController {
                     if (null != dropTargetAdapter) {
                         return;
                     }
+
+                    // cancel if the event was NOT triggered by the left mouse button.
+                    Iterator<InputEvent> dgeIterator = dge.iterator();
+                    while (dgeIterator.hasNext()) {
+                        InputEvent next = dgeIterator.next();
+                        if (next instanceof MouseEvent
+                                && !SwingUtilities.isLeftMouseButton((MouseEvent) next)) {
+                            return;
+                        }
+                    }
+
                     getGraphDndProxy().setVisible(true);
                     dropTargetAdapter = new GraphDropTargetAdapter(getParent(), getProcessProvider(), getGraphView(), getGraphDndProxy());
                     dropTargetAdapter.getDropTarget().removeDropTargetListener(dropTargetAdapter);
                     dropTargetAdapter.getDropTarget().addDropTargetListener(dropTargetAdapter);
-                                        
 
                 } catch (TooManyListenersException ex) {
                     java.util.logging.Logger.getLogger(App.class
@@ -106,7 +119,7 @@ public abstract class AbstractTreeViewController {
                 }
             }
         });
-        
+
         // deactivate graph drop target when dragging ends
         DragSource.getDefaultDragSource().addDragSourceListener(new DragSourceAdapter() {
             @Override
