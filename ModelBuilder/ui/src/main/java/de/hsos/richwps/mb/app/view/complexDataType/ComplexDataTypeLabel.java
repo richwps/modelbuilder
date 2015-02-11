@@ -1,9 +1,9 @@
 package de.hsos.richwps.mb.app.view.complexDataType;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.IDataTypeDescriptionChangeListener;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescriptionChangeListener;
 import de.hsos.richwps.mb.propertiesView.PropertyCardsConfig;
 import java.awt.Dimension;
 import java.awt.Point;

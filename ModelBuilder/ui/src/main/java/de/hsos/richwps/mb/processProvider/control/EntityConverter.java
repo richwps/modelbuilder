@@ -1,11 +1,13 @@
 package de.hsos.richwps.mb.processProvider.control;
 
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.control.ProcessPortFactory;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
@@ -177,8 +179,7 @@ public class EntityConverter {
     public static ProcessPort createProcessInput(Input spInput) throws Exception {
         ProcessPortDatatype datatype = EntityConverter.getDatatype(spInput.getInputFormChoice());
 
-        ProcessPort inPort = new ProcessPort(datatype);
-        inPort.setGlobal(false);
+        ProcessPort inPort = ProcessPortFactory.createLocalInputPort(datatype);
         inPort.setOwsIdentifier(spInput.getIdentifier());
         inPort.setOwsAbstract(spInput.getAbstract());
         inPort.setOwsTitle(spInput.getTitle());
@@ -192,15 +193,15 @@ public class EntityConverter {
                 String aKey = aProperty.getPropertiesObjectName();
 
                 switch (aKey) {
-                    case ProcessPort.PROPERTY_KEY_MINOCCURS:
+                    case ProcessInputPort.PROPERTY_KEY_MINOCCURS:
                         aProperty.setValue(spInput.getMinOccurs());
                         break;
 
-                    case ProcessPort.PROPERTY_KEY_MAXOCCURS:
+                    case ProcessInputPort.PROPERTY_KEY_MAXOCCURS:
                         aProperty.setValue(spInput.getMaxOccurs());
                         break;
 
-                    case ProcessPort.PROPERTY_KEY_MAXMB:
+                    case ComplexDataInput.PROPERTY_KEY_MAXMB:
                         // TODO max MB ??
                         break;
                 }
@@ -214,8 +215,7 @@ public class EntityConverter {
     public static ProcessPort createProcessOutput(Output spOutput) throws Exception {
         ProcessPortDatatype datatype = EntityConverter.getDatatype(spOutput.getOutputFormChoice());
 
-        ProcessPort outPort = new ProcessPort(datatype);
-        outPort.setGlobal(false);
+        ProcessPort outPort = ProcessPortFactory.createLocalOutputPort(datatype);
         outPort.setOwsIdentifier(spOutput.getIdentifier());
         outPort.setOwsAbstract(spOutput.getAbstract());
         outPort.setOwsTitle(spOutput.getTitle());

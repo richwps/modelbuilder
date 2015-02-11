@@ -1,13 +1,13 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentLiteralDataType;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ProcessEntity;
-import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
@@ -119,7 +119,7 @@ public class AppPropertiesView extends PropertiesView {
     public void setObjectWithProperties(IObjectWithProperties object) {
 
         String uomName = ProcessProviderConfig.QOS_TARGET_UOM;
-        
+
         // collect QoS target subgroups in order to style them later
         qosTargetSubGroups = new LinkedList<>();
         String qosGroup = ProcessProviderConfig.QOS_TARGETS_GROUP;
@@ -131,16 +131,16 @@ public class AppPropertiesView extends PropertiesView {
                 for (IObjectWithProperties property : aProperty.getProperties()) {
                     if (property instanceof PropertyGroup) {
                         qosTargetSubGroups.add(property.getPropertiesObjectName());
-                        
+
                         // create components for QoS Values
                         PropertyGroup<Property> qosSubGroup = (PropertyGroup) property;
                         Property uomProperty = qosSubGroup.getPropertyObject(uomName);
-                        
-                        for(Property subGroupProperty : qosSubGroup.getProperties()) {
+
+                        for (Property subGroupProperty : qosSubGroup.getProperties()) {
                             String propertyName = subGroupProperty.getPropertiesObjectName();
-                            if(!propertyName.equals(uomName)) {
+                            if (!propertyName.equals(uomName)) {
                                 AbstractPropertyComponent qosComponent = getComponentFor(subGroupProperty);
-                                if(qosComponent instanceof PropertyTextFieldDouble) {
+                                if (qosComponent instanceof PropertyTextFieldDouble) {
                                     PropertyTextFieldDouble textField = (PropertyTextFieldDouble) qosComponent;
                                     textField.setValueViewFormat("%.2f " + uomProperty.getValue());
                                 }
@@ -167,10 +167,10 @@ public class AppPropertiesView extends PropertiesView {
 
         AbstractPropertyComponent component;
 
-        if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_COMPLEX)) {
+        if (property.getComponentType().equals(ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
             component = createPropertyComplexDataTypeFormat(property);
 
-        } else if (property.getComponentType().equals(ProcessPort.COMPONENTTYPE_DATATYPEDESCRIPTION_LITERAL)) {
+        } else if (property.getComponentType().equals(LiteralInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
             component = new PropertyComponentLiteralDataType(property);
 
         } else {
@@ -183,7 +183,7 @@ public class AppPropertiesView extends PropertiesView {
             component.addPropertyChangedByUIListener(propertyUIChangeListener);
             propertyComponentsListeningTo.add(component);
         }
-        
+
         if (addToCache) {
             // add created component to cache
             this.componentCache.put(property, component);

@@ -1,14 +1,21 @@
 package de.hsos.richwps.mb.processProvider.control;
 
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral;
-import de.hsos.richwps.mb.entity.IDataTypeDescription;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral;
+import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.WpsServer;
+import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
+import de.hsos.richwps.mb.entity.ports.BoundingBoxOutput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
+import de.hsos.richwps.mb.entity.ports.LiteralOutput;
+import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -79,16 +86,15 @@ public class ManagedRemoteDiscovery {
      * @param pd ProcessDescription with IInputSpecifier.
      * @param pe ProcessEntity with ProcessPorts.
      */
-    private static void transformInputs(DescribeRequest pd, ProcessEntity pe) {
+    private static void transformInputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
         for (IInputSpecifier specifier : pd.getInputs()) {
             if (specifier instanceof InputComplexDataSpecifier) {
                 InputComplexDataSpecifier complex = (InputComplexDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                ProcessPort pp = new ComplexDataInput();
                 pp.setOwsIdentifier(complex.getIdentifier());
                 pp.setOwsTitle(complex.getTitle());
                 pp.setOwsAbstract(complex.getAbstract());
-                //FIXME pp.setVersion 
                 List<String> defaulttype = complex.getDefaultType();
                 String encoding = defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
                 String mimetype = defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
@@ -100,7 +106,7 @@ public class ManagedRemoteDiscovery {
 
             } else if (specifier instanceof InputLiteralDataSpecifier) {
                 InputLiteralDataSpecifier literal = (InputLiteralDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.LITERAL);
+                ProcessPort pp = new LiteralInput();
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
                 pp.setOwsAbstract(literal.getAbstract());
@@ -108,7 +114,14 @@ public class ManagedRemoteDiscovery {
                 pe.addInputPort(pp);
 
             } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
-                //TODO
+                InputBoundingBoxDataSpecifier literal = (InputBoundingBoxDataSpecifier) specifier;
+                ProcessPort pp = new BoundingBoxInput();
+                pp.setOwsIdentifier(literal.getIdentifier());
+                pp.setOwsTitle(literal.getTitle());
+                pp.setOwsAbstract(literal.getAbstract());
+                // TODO set datatype description
+//                pp.setDataTypeDescription(new DataTypeDescriptionLiteral(literal.getDefaultvalue()));
+                pe.addInputPort(pp);
             }
         }
     }
@@ -119,16 +132,15 @@ public class ManagedRemoteDiscovery {
      * @param pd DescribeRequest with IOutputSpecifier.
      * @param pe ProcessEntity with ProcessPorts.
      */
-    private static void transformOutputs(DescribeRequest pd, ProcessEntity pe) {
+    private static void transformOutputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
         for (IOutputSpecifier specifier : pd.getOutputs()) {
             if (specifier instanceof OutputComplexDataSpecifier) {
                 OutputComplexDataSpecifier complex = (OutputComplexDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.COMPLEX);
+                ProcessPort pp = new ComplexDataOutput();
                 pp.setOwsIdentifier(complex.getIdentifier());
                 pp.setOwsTitle(complex.getTitle());
                 pp.setOwsAbstract(complex.getAbstract());
-                //FIXME pp.setVersion 
                 List<String> defaulttype = complex.getDefaultType();
                 String encoding = defaulttype.get(OutputComplexDataSpecifier.encoding_IDX);
                 String mimetype = defaulttype.get(OutputComplexDataSpecifier.mimetype_IDX);
@@ -140,14 +152,22 @@ public class ManagedRemoteDiscovery {
 
             } else if (specifier instanceof OutputLiteralDataSpecifier) {
                 OutputLiteralDataSpecifier literal = (OutputLiteralDataSpecifier) specifier;
-                ProcessPort pp = new ProcessPort(ProcessPortDatatype.LITERAL);
+                ProcessPort pp = new LiteralOutput();
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
                 pp.setOwsAbstract(literal.getAbstract());
                 pe.addInputPort(pp);
 
             } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
-                //TODO
+
+                OutputBoundingBoxDataSpecifier literal = (OutputBoundingBoxDataSpecifier) specifier;
+                ProcessPort pp = new BoundingBoxOutput();
+                pp.setOwsIdentifier(literal.getIdentifier());
+                pp.setOwsTitle(literal.getTitle());
+                pp.setOwsAbstract(literal.getAbstract());
+
+                // TODO set datatype description
+                pe.addInputPort(pp);
             }
         }
     }

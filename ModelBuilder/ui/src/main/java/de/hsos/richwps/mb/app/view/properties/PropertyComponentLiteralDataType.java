@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.app.view.properties;
 
-import de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextField;
 

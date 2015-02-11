@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.processProvider.boundary;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import java.io.BufferedReader;
 import java.io.File;

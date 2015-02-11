@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.entity;
+package de.hsos.richwps.mb.entity.datatypes;
 
 import java.io.Serializable;
 import java.util.Objects;

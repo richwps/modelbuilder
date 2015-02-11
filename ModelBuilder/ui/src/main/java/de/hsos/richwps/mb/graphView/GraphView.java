@@ -498,8 +498,6 @@ public class GraphView extends JPanel {
 
                     // create the global cell's value
                     ProcessPort aGlobalPort = aPort.clone();
-                    aGlobalPort.setGlobal(true);
-                    aGlobalPort.setFlowInput(!aGlobalPort.isFlowInput());
 
                     // compute the global cell's location
                     double portAbsoluteX = aCell.getGeometry().getX() + aPortGeom.getOffset().getX();

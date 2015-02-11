@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app;
 
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
@@ -9,7 +10,6 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortKey;
-import de.hsos.richwps.mb.graphView.GraphNodeCreator;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
@@ -18,7 +18,6 @@ import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -296,6 +295,14 @@ public class AppGraphView extends GraphView {
                         // remove port instance from map to identity unmapped ports
                         loadedPorts.remove(key);
                     }
+                    
+                    
+                } else if(null == childValue) {
+                    // no cell value => use next fitting port
+                    mxGeometry geom = graphModel.getGeometry(aChild);
+                    System.out.println(geom.getY());
+                    
+                    
                 }
             }
 

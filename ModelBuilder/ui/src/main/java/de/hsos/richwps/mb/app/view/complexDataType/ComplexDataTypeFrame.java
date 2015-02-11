@@ -1,8 +1,8 @@
 package de.hsos.richwps.mb.app.view.complexDataType;
 
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import de.hsos.richwps.mb.ui.MbDialog;
 import static de.hsos.richwps.mb.ui.MbDialog.BTN_ID_CANCEL;

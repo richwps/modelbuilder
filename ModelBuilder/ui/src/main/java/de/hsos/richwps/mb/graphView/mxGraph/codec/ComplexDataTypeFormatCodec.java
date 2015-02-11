@@ -2,7 +2,7 @@ package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCellCodec;
 import com.mxgraph.io.mxCodec;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

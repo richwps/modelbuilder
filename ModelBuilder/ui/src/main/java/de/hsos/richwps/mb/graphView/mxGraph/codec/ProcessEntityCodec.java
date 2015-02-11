@@ -61,6 +61,15 @@ public class ProcessEntityCodec extends ObjectWithPropertiesCodec {
     }
 
     @Override
+    public Object decode(mxCodec dec, Node node, Object into) {
+        Object decoded = super.decode(dec, node, into);
+        
+        return decoded;
+    }
+
+    
+    
+    @Override
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
         if (null != obj && obj instanceof ProcessEntity) {
             ((ProcessEntity) obj).setToolTipText(null);

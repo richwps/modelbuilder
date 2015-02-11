@@ -6,12 +6,17 @@
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
+import de.hsos.richwps.mb.entity.ports.LiteralOutput;
+import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import java.awt.Point;
 import java.io.File;
 import java.util.LinkedList;
@@ -73,7 +78,7 @@ public class GraphViewTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws IllegalDatatypeDescriptionException {
         filename = "testmodel.xml";
 
         instance = new GraphView();
@@ -121,22 +126,21 @@ public class GraphViewTest {
         process.setOwsTitle(processEntityTitle);
 
         // CREATE IN PORT
-        inPort1 = new ProcessPort(inPort1Datatype);
+        inPort1 = new BoundingBoxInput();
         inPort1.setOwsIdentifier(inPort1Identifier);
         inPort1.setOwsAbstract(inPort1Abstract);
         inPort1.setOwsTitle(inPort1Title);
         process.addInputPort(inPort1);
 
         // CREATE OUT PORT
-        outPort1 = new ProcessPort(outPort1Datatype);
+        outPort1 = new LiteralOutput();
         outPort1.setOwsIdentifier(outPort1Identifier);
         outPort1.setOwsAbstract(outPort1Abstract);
         outPort1.setOwsTitle(outPort1Title);
         process.addOutputPort(outPort1);
 
         // CREATE GLOBAL OUT
-        globalOut1 = new ProcessPort(globalOutPort1Datatype, true);
-        globalOut1.setGlobalOutput(true);
+        globalOut1 = new ComplexDataOutput(true);
         globalOut1.setOwsIdentifier(globalOutPort1Identifier);
         globalOut1.setOwsAbstract(globalOutPort1Abstract);
         globalOut1.setOwsTitle(globalOutPort1Title);

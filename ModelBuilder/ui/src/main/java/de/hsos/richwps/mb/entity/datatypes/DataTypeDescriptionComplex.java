@@ -1,6 +1,7 @@
-package de.hsos.richwps.mb.entity;
+package de.hsos.richwps.mb.entity.datatypes;
 
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import java.io.Serializable;
 import java.util.LinkedList;

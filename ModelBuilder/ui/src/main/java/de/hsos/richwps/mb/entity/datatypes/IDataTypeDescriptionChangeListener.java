@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.entity;
+package de.hsos.richwps.mb.entity.datatypes;
 
 /**
  * Can be implemented in order to be notified if a port's complex datatype

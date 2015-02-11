@@ -11,6 +11,12 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.entity.WpsServer;
+import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
+import de.hsos.richwps.mb.entity.ports.BoundingBoxOutput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
+import de.hsos.richwps.mb.entity.ports.LiteralOutput;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
@@ -127,28 +133,16 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         // Create node with interface objects like global inputs and outputs
         DefaultMutableTreeNode insAndOuts = new DefaultMutableTreeNode(AppConstants.TREE_INTERFACEOBJECTS_NAME);
-        
+
         // inputs
-        ProcessPort cIn = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-        ProcessPort lIn = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-        ProcessPort bIn = new ProcessPort(ProcessPortDatatype.BOUNDING_BOX, true);
-        cIn.setGlobalOutput(false);
-        lIn.setGlobalOutput(false);
-        bIn.setGlobalOutput(false);
-        insAndOuts.add(new DefaultMutableTreeNode(cIn));
-        insAndOuts.add(new DefaultMutableTreeNode(lIn));
-        insAndOuts.add(new DefaultMutableTreeNode(bIn));
-        
+        insAndOuts.add(new DefaultMutableTreeNode(new ComplexDataInput(true)));
+        insAndOuts.add(new DefaultMutableTreeNode( new LiteralInput(true)));
+        insAndOuts.add(new DefaultMutableTreeNode(new BoundingBoxInput(true)));
+
         // Outputs
-        ProcessPort cOut = new ProcessPort(ProcessPortDatatype.COMPLEX, true);
-        ProcessPort lOut = new ProcessPort(ProcessPortDatatype.LITERAL, true);
-        ProcessPort bOut = new ProcessPort(ProcessPortDatatype.BOUNDING_BOX, true);
-        cOut.setGlobalOutput(true);
-        lOut.setGlobalOutput(true);
-        bOut.setGlobalOutput(true);
-        insAndOuts.add(new DefaultMutableTreeNode(cOut));
-        insAndOuts.add(new DefaultMutableTreeNode(lOut));
-        insAndOuts.add(new DefaultMutableTreeNode(bOut));
+        insAndOuts.add(new DefaultMutableTreeNode(new ComplexDataOutput(true)));
+        insAndOuts.add(new DefaultMutableTreeNode(new LiteralOutput(true)));
+        insAndOuts.add(new DefaultMutableTreeNode(new BoundingBoxOutput(true)));
 
         // add all child nodes to root
         root.add(insAndOuts);
@@ -158,7 +152,6 @@ public class MainTreeViewController extends AbstractTreeViewController {
 //        DefaultMutableTreeNode downloadServices = new DefaultMutableTreeNode(AppConstants.TREE_DOWNLOADSERVICES_NAME);
 //        downloadServices.add(new DefaultMutableTreeNode(""));
 //        root.add(downloadServices);
-     
         updateUI();
     }
 

@@ -148,7 +148,7 @@ public class AppSetup {
             app.getProcessProvider().setManagedRemotesEnabled(loadRemotes);
 
             app.getMainTreeView().fillTree();
-            
+
             // after startup, remotes are always loaded
             app.getProcessProvider().setManagedRemotesEnabled(true);
 
@@ -237,7 +237,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_PORT_IN_L_KEY, new ImageIcon(iconDir + "port_in_l.png", "port in L icon"));
         UIManager.put(AppConstants.ICON_PORT_IN_C_KEY, new ImageIcon(iconDir + "port_in_c.png", "port in B icon"));
         UIManager.put(AppConstants.ICON_PORT_IN_B_KEY, new ImageIcon(iconDir + "port_in_b.png", "port in C icon"));
-        
+
         UIManager.put(AppConstants.ICON_EDIT_KEY, new ImageIcon(iconDir + "edit-3.png", "edit icon"));
         UIManager.put(AppConstants.ICON_ADD_KEY, new ImageIcon(iconDir + "list-add-6.png", "add icon"));
         UIManager.put(AppConstants.ICON_DELETE_KEY, new ImageIcon(iconDir + "edit-delete-7.png", "delete icon"));
@@ -270,24 +270,36 @@ public class AppSetup {
      */
     private static void addGraphCodecs() {
         mxCodecRegistry.register(new CellCodec());
-        
+
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity");
-        mxCodecRegistry.register(new ComplexDataTypeFormatCodec(new de.hsos.richwps.mb.entity.ComplexDataTypeFormat()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionComplex()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.DataTypeDescriptionLiteral()));
-        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ProcessPort()));
         mxCodecRegistry.register(new ProcessEntityCodec(new de.hsos.richwps.mb.entity.ProcessEntity()));
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity.datatypes");
+        mxCodecRegistry.register(new ComplexDataTypeFormatCodec(new de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex()));
+        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral()));
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity.ports");
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.BoundingBoxInput()));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.BoundingBoxOutput()));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.ComplexDataInput()));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.ComplexDataOutput()));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.LiteralInput()));
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.LiteralOutput()));
 
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph");
         mxCodecRegistry.register(new GraphEdgeCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphEdge()));
         mxCodecRegistry.register(new GraphModelCodec(new de.hsos.richwps.mb.graphView.mxGraph.GraphModel()));
-        
+
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.graphView.mxGraph.codec.objects");
         mxCodecRegistry.register(new ObjectWithPropertiesCodec(new de.hsos.richwps.mb.graphView.mxGraph.codec.objects.tmpPropertyGroup()));
 
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.properties");
         mxCodecRegistry.register(new ObjectWithPropertiesCodec(new Property()));
         mxCodecRegistry.register(new PropertyGroupCodec(new de.hsos.richwps.mb.properties.PropertyGroup<>()));
+
+        // COMPABILITY SUPPORT FOR OLDER MODEL VERSIONS
+        mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity.oldVersions");
+        mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.oldVersions.ProcessPort()));
+
     }
 
     private static void setupUiManager() {
@@ -332,7 +344,7 @@ public class AppSetup {
         for (String key : fgColorKeys) {
             UIManager.put(key, AppConstants.SELECTION_FG_COLOR);
         }
-        
+
         loadIcons();
     }
 

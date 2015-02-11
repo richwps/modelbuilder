@@ -5,10 +5,12 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.dsl.Exporter;
 import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.IDataTypeDescription;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
@@ -28,7 +30,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -556,8 +557,8 @@ public class AppRichWPSManager {
                 if (literalSpecifier.getTitle().equals("")) {
                     literalSpecifier.setTitle(literalSpecifier.getIdentifier());
                 }
-                Integer maxl = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
-                Integer minl = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
+                Integer maxl = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
+                Integer minl = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
                 literalSpecifier.setMinOccur(minl);
                 literalSpecifier.setMaxOccur(maxl);
                 literalSpecifier.setType(("xs:string"));
@@ -574,11 +575,11 @@ public class AppRichWPSManager {
                     complexSpecifier.setTitle(complexSpecifier.getIdentifier());
                 }
 
-                Integer maxc = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXOCCURS);
-                Integer minc = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MINOCCURS);
+                Integer maxc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
+                Integer minc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
                 complexSpecifier.setMinOccur(minc);
                 complexSpecifier.setMaxOccur(maxc);
-                Integer mb = (Integer) port.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
+                Integer mb = (Integer) port.getPropertyValue(ComplexDataInput.PROPERTY_KEY_MAXMB);
                 complexSpecifier.setMaximumMegabytes(mb);
                 try {
                     List<List> supportedTypes = new ArrayList<>();

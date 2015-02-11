@@ -1,8 +1,8 @@
 package de.hsos.richwps.mb.app.view.complexDataType;
 
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import java.awt.Color;

@@ -2,9 +2,9 @@ package de.hsos.richwps.mb.app.view.properties;
 
 import de.hsos.richwps.mb.app.view.complexDataType.ComplexDataTypeLabel;
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.IDataTypeDescriptionChangeListener;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescriptionChangeListener;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;

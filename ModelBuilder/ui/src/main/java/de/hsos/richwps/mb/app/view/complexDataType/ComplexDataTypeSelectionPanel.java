@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.app.view.complexDataType;
 
-import de.hsos.richwps.mb.entity.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
+import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import java.util.Arrays;
 import java.util.LinkedList;

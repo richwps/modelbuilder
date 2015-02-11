@@ -171,7 +171,7 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
      *
      * @param other
      */
-    void copyValuesFrom(OwsObjectWithProperties other) {
+    public void copyValuesFrom(OwsObjectWithProperties other) {
         if (System.identityHashCode(this) == System.identityHashCode(other)) {
             return;
         }

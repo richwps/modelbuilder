@@ -1,8 +1,6 @@
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.canvas.mxGraphics2DCanvas;
-import com.mxgraph.io.mxCodecRegistry;
-import com.mxgraph.io.mxObjectCodec;
 import com.mxgraph.swing.handler.mxRubberband;
 import com.mxgraph.swing.util.mxSwingConstants;
 import com.mxgraph.util.mxConstants;
@@ -11,14 +9,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdgeShape;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphModelCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.ObjectWithPropertiesCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
-import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.layout.GraphWorkflowLayout;
-import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.BasicStroke;
 import java.awt.Color;

@@ -1,4 +1,6 @@
-package de.hsos.richwps.mb.entity;
+package de.hsos.richwps.mb.entity.datatypes;
+
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 
 /**
  *
