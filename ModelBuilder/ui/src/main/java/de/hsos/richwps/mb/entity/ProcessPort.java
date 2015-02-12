@@ -22,7 +22,7 @@ public abstract class ProcessPort extends OwsObjectWithProperties {
 
     private boolean flowInput;
 
-    protected boolean global;
+    private boolean global;
 
     public ProcessPort() {
         this(null, false);
