@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -16,7 +16,7 @@ import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
  *
  * @author caduevel
  */
-public class OutputBoundingBoxDataDescription implements IOutputSpecifier {
+public class OutputBoundingBoxDataDescription implements IOutputValue {
 
     /**
      * Unambiguous identifier or name of a process, input, or output, unique for

@@ -5,9 +5,9 @@ import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBBoxForm;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputLiteralForm;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputComplexForm;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
@@ -105,7 +105,7 @@ public class InputPanel extends APanel {
             return;
         }
 
-        for (IInputSpecifier specifier : this.request.getInputs()) {
+        for (IInputDescription specifier : this.request.getInputs()) {
             if (specifier instanceof InputLiteralDataDescription) {
 
                 InputLiteralForm pan;
@@ -221,7 +221,7 @@ public class InputPanel extends APanel {
      */
     @Override
     public void updateRequest() {
-        HashMap<String, IInputArgument> theinputs = new HashMap<>();
+        HashMap<String, IInputValue> theinputs = new HashMap<>();
 
         for (TitledComponent panel : this.panels) {
 

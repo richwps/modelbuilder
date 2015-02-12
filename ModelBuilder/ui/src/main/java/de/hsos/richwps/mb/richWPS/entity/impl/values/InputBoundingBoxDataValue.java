@@ -1,13 +1,13 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 
 /**
  *
  * @author caduevel
  */
-public class InputBoundingBoxDataValue implements IInputArgument {
+public class InputBoundingBoxDataValue implements IInputValue {
 
     private InputBoundingBoxDataDescription specifier;
 

@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import java.util.Objects;
 import net.opengis.wps.x100.OutputDescriptionType;
 import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
@@ -12,7 +12,7 @@ import org.n52.wps.io.data.binding.literal.LiteralStringBinding;
  *
  * @author dalcacer
  */
-public class OutputLiteralDataDescription implements IOutputSpecifier {
+public class OutputLiteralDataDescription implements IOutputValue {
 
     private String identifier;
 

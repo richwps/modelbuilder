@@ -1,9 +1,9 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
@@ -30,11 +30,11 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
     /**
      * List of actual process inputs before execution.
      */
-    private HashMap<String, IInputArgument> actualinputs;
+    private HashMap<String, IInputValue> actualinputs;
     /**
      * List of actual, requested process outputs before execution.
      */
-    private HashMap<String, IOutputArgument> actualoutputs;
+    private HashMap<String, IOutputDescription> actualoutputs;
     /**
      * The actual results.
      */
@@ -71,7 +71,7 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @return
      */
-    public HashMap<String, IInputArgument> getInputArguments() {
+    public HashMap<String, IInputValue> getInputArguments() {
         return this.actualinputs;
     }
 
@@ -79,7 +79,7 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @param arguments
      */
-    public void setInputArguments(HashMap<String, IInputArgument> arguments) {
+    public void setInputArguments(HashMap<String, IInputValue> arguments) {
         this.actualinputs = arguments;
     }
 
@@ -87,7 +87,7 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @return
      */
-    public HashMap<String, IOutputArgument> getOutputArguments() {
+    public HashMap<String, IOutputDescription> getOutputArguments() {
         return this.actualoutputs;
     }
 
@@ -95,7 +95,7 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @param arguments
      */
-    public void setOutputArguments(HashMap<String, IOutputArgument> arguments) {
+    public void setOutputArguments(HashMap<String, IOutputDescription> arguments) {
         this.actualoutputs = arguments;
     }
 
@@ -141,13 +141,13 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
     @Override
     public void addInput(final InputDescriptionType description) {
         if (description.getComplexData() != null) {
-            IInputSpecifier aninput = new InputComplexDataDescription(description);
+            IInputDescription aninput = new InputComplexDataDescription(description);
             this.availableinputs.add(aninput);
         } else if (description.getLiteralData() != null) {
-            IInputSpecifier aninput = new InputLiteralDataDescription(description);
+            IInputDescription aninput = new InputLiteralDataDescription(description);
             this.availableinputs.add(aninput);
         } else if (description.getBoundingBoxData() != null) {
-            IInputSpecifier aninput = new InputBoundingBoxDataDescription(description);
+            IInputDescription aninput = new InputBoundingBoxDataDescription(description);
             this.availableinputs.add(aninput);
         }
     }
@@ -160,13 +160,13 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
     @Override
     public void addOutput(final OutputDescriptionType description) {
         if (description.getComplexOutput() != null) {
-            IOutputSpecifier anoutput = new OutputComplexDataDescription(description);
+            IOutputValue anoutput = new OutputComplexDataDescription(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getLiteralOutput() != null) {
-            IOutputSpecifier anoutput = new OutputLiteralDataDescription(description);
+            IOutputValue anoutput = new OutputLiteralDataDescription(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getBoundingBoxOutput() != null) {
-            IOutputSpecifier anoutput = new OutputBoundingBoxDataDescription(description);
+            IOutputValue anoutput = new OutputBoundingBoxDataDescription(description);
             this.availableoutputs.add(anoutput);
         }
     }

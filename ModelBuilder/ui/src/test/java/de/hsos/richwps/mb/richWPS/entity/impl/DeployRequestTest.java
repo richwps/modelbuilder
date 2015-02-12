@@ -1,8 +1,8 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
@@ -42,7 +42,7 @@ public class DeployRequestTest {
     public void tearDown() {
     }
 
-    private IInputSpecifier createComplexDataInput() {
+    private IInputDescription createComplexDataInput() {
         InputComplexDataDescription specifier;
         specifier = new InputComplexDataDescription();
         specifier.setIdentifier("aabb input.");
@@ -67,7 +67,7 @@ public class DeployRequestTest {
         return specifier;
     }
 
-    private IInputSpecifier createLiteralDataInput() {
+    private IInputDescription createLiteralDataInput() {
         InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
@@ -79,7 +79,7 @@ public class DeployRequestTest {
         return specifier;
     }
 
-    private IOutputSpecifier createComplexDataOutput() {
+    private IOutputValue createComplexDataOutput() {
         OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
@@ -100,7 +100,7 @@ public class DeployRequestTest {
         return specifier;
     }
 
-    private IOutputSpecifier createLiteralDataOutput() {
+    private IOutputValue createLiteralDataOutput() {
         OutputLiteralDataDescription specifier = new OutputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");

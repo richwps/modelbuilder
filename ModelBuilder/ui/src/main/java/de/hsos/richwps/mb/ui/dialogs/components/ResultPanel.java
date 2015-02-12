@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.ui.dialogs.components.renderer.ExceptionRenderer;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.LiteralRenderer;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.URIRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
@@ -113,7 +113,7 @@ public class ResultPanel extends APanel {
         outputsPanel.setLayout(layout);
 
         for (Object key : keys) {
-            IOutputArgument argument = (IOutputArgument) arguments.get(key);
+            IOutputDescription argument = (IOutputDescription) arguments.get(key);
             if (argument instanceof OutputComplexDataValue) {
                 URL httpKVPref = (URL) results.get(key);
                 String uri = httpKVPref.toString();

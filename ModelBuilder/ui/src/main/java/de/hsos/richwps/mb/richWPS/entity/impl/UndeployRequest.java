@@ -1,8 +1,8 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.util.List;
 
@@ -124,12 +124,12 @@ public class UndeployRequest implements IRequest {
     }
 
     @Override
-    public List<IInputSpecifier> getInputs() {
+    public List<IInputDescription> getInputs() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<IOutputSpecifier> getOutputs() {
+    public List<IOutputValue> getOutputs() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

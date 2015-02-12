@@ -102,17 +102,17 @@ public class RichWPSProviderTest extends TestCase {
         request.setEndpoint(wpsurl);
         request.setIdentifier(processid);
         instance.perform((DescribeRequest) request);
-        List<IInputSpecifier> inputs = request.getInputs();
+        List<IInputDescription> inputs = request.getInputs();
         assertEquals(3, inputs.size()); //3 with BBOX support
-        assertEquals("ComplexInputData", ((IInputSpecifier) inputs.get(0)).getIdentifier());
-        assertEquals("LiteralInputData", ((IInputSpecifier) inputs.get(1)).getIdentifier());
-        assertEquals("BBOXInputData", ((IInputSpecifier) inputs.get(2)).getIdentifier());
+        assertEquals("ComplexInputData", ((IInputDescription) inputs.get(0)).getIdentifier());
+        assertEquals("LiteralInputData", ((IInputDescription) inputs.get(1)).getIdentifier());
+        assertEquals("BBOXInputData", ((IInputDescription) inputs.get(2)).getIdentifier());
 
-        List<IOutputSpecifier> outputs = request.getOutputs();
+        List<IOutputValue> outputs = request.getOutputs();
         assertEquals(3, outputs.size()); //3 with BBOX support
-        assertEquals("ComplexOutputData", ((IOutputSpecifier) outputs.get(0)).getIdentifier());
-        assertEquals("LiteralOutputData", ((IOutputSpecifier) outputs.get(1)).getIdentifier());
-        assertEquals("BBOXOutputData", ((IOutputSpecifier) outputs.get(2)).getIdentifier());
+        assertEquals("ComplexOutputData", ((IOutputValue) outputs.get(0)).getIdentifier());
+        assertEquals("LiteralOutputData", ((IOutputValue) outputs.get(1)).getIdentifier());
+        assertEquals("BBOXOutputData", ((IOutputValue) outputs.get(2)).getIdentifier());
     }
 
     public void testEchoProcess() {
@@ -126,7 +126,7 @@ public class RichWPSProviderTest extends TestCase {
         request.setIdentifier(processid);
 
         instance.perform((DescribeRequest) request);
-        List<IInputSpecifier> inputs = request.getInputs();
+        List<IInputDescription> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
         InputComplexDataDescription geomSpec;
@@ -139,7 +139,7 @@ public class RichWPSProviderTest extends TestCase {
             literalSpec = (InputLiteralDataDescription) inputs.get(0);
         }
 
-        HashMap<String, IInputArgument> ins = new HashMap<>();
+        HashMap<String, IInputValue> ins = new HashMap<>();
         InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "Hello World.");
         InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
         arg2.setAsReference(true);
@@ -149,8 +149,8 @@ public class RichWPSProviderTest extends TestCase {
         ins.put("complexInput", arg2);
         request.setInputArguments(ins);
 
-        HashMap<String, IOutputArgument> outs = new HashMap();
-        List<IOutputSpecifier> outputs = request.getOutputs();
+        HashMap<String, IOutputDescription> outs = new HashMap();
+        List<IOutputValue> outputs = request.getOutputs();
         OutputComplexDataDescription outspec;
         if (outputs.get(0) instanceof OutputComplexDataDescription) {
             outspec = (OutputComplexDataDescription) outputs.get(0);
@@ -195,7 +195,7 @@ public class RichWPSProviderTest extends TestCase {
             literalSpec = (InputLiteralDataDescription) inputs.get(0);
         }
 
-        HashMap<String, IInputArgument> ins = new HashMap<>();
+        HashMap<String, IInputValue> ins = new HashMap<>();
         InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "Hello World.");
         InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
         arg2.setAsReference(true);
@@ -205,7 +205,7 @@ public class RichWPSProviderTest extends TestCase {
         ins.put("complexInput", arg2);
         perform.setInputArguments(ins);
 
-        HashMap<String, IOutputArgument> outs = new HashMap();
+        HashMap<String, IOutputDescription> outs = new HashMap();
         List<IOutputSpecifier> outputs = perform.getOutputs();
         OutputComplexDataDescription outspec;
         if (outputs.get(0) instanceof OutputComplexDataDescription) {
@@ -254,7 +254,7 @@ public class RichWPSProviderTest extends TestCase {
      literalSpec = (InputLiteralDataDescription) inputs.get(0);
      }
 
-     HashMap<String, IInputArgument> ins = new HashMap<>();
+     HashMap<String, IInputValue> ins = new HashMap<>();
      InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "10");
      InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
      arg2.setAsReference(true);
@@ -264,7 +264,7 @@ public class RichWPSProviderTest extends TestCase {
      ins.put("data", arg2);
      perform.setInputArguments(ins);
 
-     HashMap<String, IOutputArgument> outs = new HashMap();
+     HashMap<String, IOutputDescription> outs = new HashMap();
      List<IOutputSpecifier> outputs = perform.getOutputs();
      OutputComplexDataDescription outspec = (OutputComplexDataDescription) outputs.get(0);
      OutputComplexDataValue outarg = new OutputComplexDataValue(outspec);
@@ -277,7 +277,7 @@ public class RichWPSProviderTest extends TestCase {
      HashMap<String, Object> theResults = perform.getResults();
      assertNotNull(theResults);
      }*/
-    private IInputSpecifier createComplexDataInput() {
+    private IInputDescription createComplexDataInput() {
         InputComplexDataDescription specifier;
         specifier = new InputComplexDataDescription();
         specifier.setIdentifier("aabb input.");
@@ -305,7 +305,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    private IInputSpecifier createLiteralDataInput() {
+    private IInputDescription createLiteralDataInput() {
         InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
@@ -317,7 +317,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    private IOutputSpecifier createComplexDataOutput() {
+    private IOutputValue createComplexDataOutput() {
         OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
@@ -341,7 +341,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    private IOutputSpecifier createLiteralDataOutput() {
+    private IOutputValue createLiteralDataOutput() {
         OutputLiteralDataDescription specifier = new OutputLiteralDataDescription();
         specifier.setIdentifier("identifier");
         specifier.setTitle("");
@@ -370,7 +370,7 @@ public class RichWPSProviderTest extends TestCase {
      "execute local/lkn.macrophyte.selectReportingArea with var.reportingareas as in.reportingareas var.identifier as in.areaname  store out.selectedarea as var.out.selectedarea");
      instance.richwpsDeployProcess(perform);
      }*/
-    private IInputSpecifier createComplexDataInput1() {
+    private IInputDescription createComplexDataInput1() {
         InputComplexDataDescription specifier;
         specifier = new InputComplexDataDescription();
         specifier.setIdentifier("reportingareas");
@@ -393,7 +393,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    private IInputSpecifier createLiteralDataInput1() {
+    private IInputDescription createLiteralDataInput1() {
         InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("identifier");
         specifier.setTitle("");
@@ -405,7 +405,7 @@ public class RichWPSProviderTest extends TestCase {
         return specifier;
     }
 
-    private IOutputSpecifier createComplexDataOutput1() {
+    private IOutputValue createComplexDataOutput1() {
         OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("selectedarea");
         specifier.setTitle("");

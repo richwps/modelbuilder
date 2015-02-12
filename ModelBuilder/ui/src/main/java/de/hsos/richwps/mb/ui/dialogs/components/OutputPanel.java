@@ -7,8 +7,8 @@ import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputLiteralForm;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
@@ -103,7 +103,7 @@ public class OutputPanel extends APanel {
             return;
         }
 
-        for (IOutputSpecifier specifier : this.request.getOutputs()) {
+        for (IOutputValue specifier : this.request.getOutputs()) {
             if (specifier instanceof OutputLiteralDataDescription) {
                 OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataDescription) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
@@ -178,7 +178,7 @@ public class OutputPanel extends APanel {
      */
     @Override
     public void updateRequest() {
-        HashMap<String, IOutputArgument> theoutputs = new HashMap<>();
+        HashMap<String, IOutputDescription> theoutputs = new HashMap<>();
 
         for (TitledComponent panel : this.panels) {
 

@@ -40,13 +40,13 @@ public interface IRequest extends Serializable {
      *
      * @return
      */
-    public List<IInputSpecifier> getInputs();
+    public List<IInputDescription> getInputs();
 
     /**
      *
      * @return
      */
-    public List<IOutputSpecifier> getOutputs();
+    public List<IOutputValue> getOutputs();
 
     /**
      *

@@ -1,13 +1,13 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 
 /**
  *
  * @author dalcacer
  */
-public class InputComplexDataValue implements IInputArgument {
+public class InputComplexDataValue implements IInputValue {
 
     private InputComplexDataDescription specifier;
 

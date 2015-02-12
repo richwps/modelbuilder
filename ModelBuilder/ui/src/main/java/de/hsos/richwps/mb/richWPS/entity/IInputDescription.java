@@ -1,36 +1,47 @@
 package de.hsos.richwps.mb.richWPS.entity;
 
 import java.io.Serializable;
-import net.opengis.wps.x100.OutputDescriptionType;
+import net.opengis.wps.x100.InputDescriptionType;
 
 /**
  *
  * @author dalcacer
  */
-public interface IOutputSpecifier extends Serializable {
-
+public interface IInputDescription extends Serializable { 
+    
     /**
      *
      * @return
      */
     public String getIdentifier();
-
+    
     /**
      *
      * @return
      */
     public String getAbstract();
-
+    
     /**
      *
      * @return
      */
     public String getTitle();
-
+    
     /**
      *
      * @return
      */
-    public OutputDescriptionType toOutputDescription();
-
+    public int getMinOccur();
+    
+    /**
+     *
+     * @return
+     */
+    public int getMaxOccur();
+    
+    /**
+     *
+     * @return
+     */
+    public InputDescriptionType toInputDescription();
 }

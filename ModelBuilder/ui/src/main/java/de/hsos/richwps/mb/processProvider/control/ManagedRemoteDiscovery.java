@@ -18,8 +18,8 @@ import de.hsos.richwps.mb.entity.ports.LiteralOutput;
 import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
@@ -83,12 +83,12 @@ public class ManagedRemoteDiscovery {
     /**
      * Transforms DescribeRequest Inputs to ProcessEntity ProcessPorts.
      *
-     * @param pd ProcessDescription with IInputSpecifier.
+     * @param pd ProcessDescription with IInputDescription.
      * @param pe ProcessEntity with ProcessPorts.
      */
     private static void transformInputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
-        for (IInputSpecifier specifier : pd.getInputs()) {
+        for (IInputDescription specifier : pd.getInputs()) {
             if (specifier instanceof InputComplexDataDescription) {
                 InputComplexDataDescription complex = (InputComplexDataDescription) specifier;
                 ProcessPort pp = new ComplexDataInput();
@@ -129,12 +129,12 @@ public class ManagedRemoteDiscovery {
     /**
      * Transforms DescribeRequest Outputs to ProcessEntity ProcessPorts.
      *
-     * @param pd DescribeRequest with IOutputSpecifier.
+     * @param pd DescribeRequest with IOutputValue.
      * @param pe ProcessEntity with ProcessPorts.
      */
     private static void transformOutputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
-        for (IOutputSpecifier specifier : pd.getOutputs()) {
+        for (IOutputValue specifier : pd.getOutputs()) {
             if (specifier instanceof OutputComplexDataDescription) {
                 OutputComplexDataDescription complex = (OutputComplexDataDescription) specifier;
                 ProcessPort pp = new ComplexDataOutput();

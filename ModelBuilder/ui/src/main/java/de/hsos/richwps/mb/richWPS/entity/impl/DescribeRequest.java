@@ -2,8 +2,8 @@ package de.hsos.richwps.mb.richWPS.entity.impl;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
@@ -52,11 +52,11 @@ public class DescribeRequest implements IRequest, Serializable {
     /**
      * List of available process inputs and their specification/types.
      */
-    protected List<IInputSpecifier> availableinputs;
+    protected List<IInputDescription> availableinputs;
     /**
      * List of available process outputs and their specification/types.
      */
-    protected List<IOutputSpecifier> availableoutputs;
+    protected List<IOutputValue> availableoutputs;
     /**
      * Exception instead of result.
      */
@@ -135,7 +135,7 @@ public class DescribeRequest implements IRequest, Serializable {
      * @return
      */
     @Override
-    public List<IInputSpecifier> getInputs() {
+    public List<IInputDescription> getInputs() {
         return this.availableinputs;
     }
 
@@ -144,7 +144,7 @@ public class DescribeRequest implements IRequest, Serializable {
      * @return
      */
     @Override
-    public List<IOutputSpecifier> getOutputs() {
+    public List<IOutputValue> getOutputs() {
         return this.availableoutputs;
     }
 
@@ -223,13 +223,13 @@ public class DescribeRequest implements IRequest, Serializable {
      */
     public void addInput(final InputDescriptionType description) {
         if (description.getComplexData() != null) {
-            IInputSpecifier aninput = new InputComplexDataDescription(description);
+            IInputDescription aninput = new InputComplexDataDescription(description);
             this.availableinputs.add(aninput);
         } else if (description.getLiteralData() != null) {
-            IInputSpecifier aninput = new InputLiteralDataDescription(description);
+            IInputDescription aninput = new InputLiteralDataDescription(description);
             this.availableinputs.add(aninput);
         } else if (description.getBoundingBoxData() != null) {
-            IInputSpecifier aninput = new InputBoundingBoxDataDescription(description);
+            IInputDescription aninput = new InputBoundingBoxDataDescription(description);
             this.availableinputs.add(aninput);
         }
     }
@@ -241,13 +241,13 @@ public class DescribeRequest implements IRequest, Serializable {
      */
     public void addOutput(final OutputDescriptionType description) {
         if (description.getComplexOutput() != null) {
-            IOutputSpecifier anoutput = new OutputComplexDataDescription(description);
+            IOutputValue anoutput = new OutputComplexDataDescription(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getLiteralOutput() != null) {
-            IOutputSpecifier anoutput = new OutputLiteralDataDescription(description);
+            IOutputValue anoutput = new OutputLiteralDataDescription(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getBoundingBoxOutput() != null) {
-            IOutputSpecifier anoutput = new OutputBoundingBoxDataDescription(description);
+            IOutputValue anoutput = new OutputBoundingBoxDataDescription(description);
             this.availableoutputs.add(anoutput);
         }
     }

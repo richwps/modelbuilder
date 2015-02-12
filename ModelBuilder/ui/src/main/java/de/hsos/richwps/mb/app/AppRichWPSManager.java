@@ -15,8 +15,8 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
@@ -476,7 +476,7 @@ public class AppRichWPSManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputSpecifier specifier = this.createInputPortSpecifier(port);
+            IInputDescription specifier = this.createInputPortDescription(port);
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -485,8 +485,8 @@ public class AppRichWPSManager {
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputSpecifier specifier = null;
-            specifier = this.createOutputPortSpecifier(port);
+            IOutputValue specifier = null;
+            specifier = this.createOutputPortDescription(port);
 
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
@@ -499,7 +499,7 @@ public class AppRichWPSManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputSpecifier specifier = this.createInputPortSpecifier(port);
+            IInputDescription specifier = this.createInputPortDescription(port);
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -508,8 +508,8 @@ public class AppRichWPSManager {
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputSpecifier specifier = null;
-            specifier = this.createOutputPortSpecifier(port);
+            IOutputValue specifier = null;
+            specifier = this.createOutputPortDescription(port);
 
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
@@ -522,7 +522,7 @@ public class AppRichWPSManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputSpecifier specifier = this.createInputPortSpecifier(port);
+            IInputDescription specifier = this.createInputPortDescription(port);
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
             }
@@ -531,8 +531,8 @@ public class AppRichWPSManager {
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputSpecifier specifier = null;
-            specifier = this.createOutputPortSpecifier(port);
+            IOutputValue specifier = null;
+            specifier = this.createOutputPortDescription(port);
 
             if (null == specifier) {
                 throw new GraphToRequestTransformationException(port);
@@ -541,46 +541,46 @@ public class AppRichWPSManager {
         }
     }
 
-    private IInputSpecifier createInputPortSpecifier(ProcessPort port) {
+    private IInputDescription createInputPortDescription(ProcessPort port) {
         if (null == port || !port.isGlobalInput()) {
             throw new IllegalArgumentException("invalid port (null or not an input)");
         }
 
-        IInputSpecifier specifier = null;
+        IInputDescription thedescription = null;
 
         switch (port.getDatatype()) {
             case LITERAL:
-                InputLiteralDataDescription literalSpecifier = new InputLiteralDataDescription();
-                literalSpecifier.setIdentifier(port.getOwsIdentifier());
-                literalSpecifier.setAbstract(port.getOwsAbstract());
-                literalSpecifier.setTitle(port.getOwsTitle());
-                if (literalSpecifier.getTitle().equals("")) {
-                    literalSpecifier.setTitle(literalSpecifier.getIdentifier());
+                InputLiteralDataDescription literaldescription = new InputLiteralDataDescription();
+                literaldescription.setIdentifier(port.getOwsIdentifier());
+                literaldescription.setAbstract(port.getOwsAbstract());
+                literaldescription.setTitle(port.getOwsTitle());
+                if (literaldescription.getTitle().equals("")) {
+                    literaldescription.setTitle(literaldescription.getIdentifier());
                 }
                 Integer maxl = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
                 Integer minl = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
-                literalSpecifier.setMinOccur(minl);
-                literalSpecifier.setMaxOccur(maxl);
-                literalSpecifier.setType(("xs:string"));
-                literalSpecifier.setDefaultvalue("");
-                specifier = literalSpecifier;
+                literaldescription.setMinOccur(minl);
+                literaldescription.setMaxOccur(maxl);
+                literaldescription.setType(("xs:string"));
+                literaldescription.setDefaultvalue("");
+                thedescription = literaldescription;
                 break;
 
             case COMPLEX:
-                InputComplexDataDescription complexSpecifier = new InputComplexDataDescription();
-                complexSpecifier.setIdentifier(port.getOwsIdentifier());
-                complexSpecifier.setAbstract(port.getOwsAbstract());
-                complexSpecifier.setTitle(port.getOwsTitle());
-                if (complexSpecifier.getTitle().equals("")) {
-                    complexSpecifier.setTitle(complexSpecifier.getIdentifier());
+                InputComplexDataDescription complexdescription = new InputComplexDataDescription();
+                complexdescription.setIdentifier(port.getOwsIdentifier());
+                complexdescription.setAbstract(port.getOwsAbstract());
+                complexdescription.setTitle(port.getOwsTitle());
+                if (complexdescription.getTitle().equals("")) {
+                    complexdescription.setTitle(complexdescription.getIdentifier());
                 }
 
                 Integer maxc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
                 Integer minc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
-                complexSpecifier.setMinOccur(minc);
-                complexSpecifier.setMaxOccur(maxc);
+                complexdescription.setMinOccur(minc);
+                complexdescription.setMaxOccur(maxc);
                 Integer mb = (Integer) port.getPropertyValue(ComplexDataInput.PROPERTY_KEY_MAXMB);
-                complexSpecifier.setMaximumMegabytes(mb);
+                complexdescription.setMaximumMegabytes(mb);
                 try {
                     List<List> supportedTypes = new ArrayList<>();
                     List<String> supportedType = new ArrayList<>();
@@ -591,15 +591,15 @@ public class AppRichWPSManager {
                         ComplexDataTypeFormat format = description.getDefaultFormat();
                         supportedType.add(format.getMimeType());
                         /*if (format.getSchema().isEmpty()) {
-                            supportedType.add(null);
-                        } else {*/
-                            supportedType.add(format.getSchema());
+                         supportedType.add(null);
+                         } else {*/
+                        supportedType.add(format.getSchema());
                         //}
 
                         /*if (format.getEncoding().isEmpty()) {
-                            supportedType.add(null);
-                        } else {*/
-                            supportedType.add(format.getEncoding());
+                         supportedType.add(null);
+                         } else {*/
+                        supportedType.add(format.getEncoding());
                         //}
                     }
 
@@ -608,60 +608,60 @@ public class AppRichWPSManager {
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Supported types for input "
-                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                                + complexdescription.getIdentifier() + " can not be empty.");
                     }
                     if (supportedType.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Default type for input "
-                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                                + complexdescription.getIdentifier() + " can not be empty.");
                     }
 
-                    complexSpecifier.setTypes(supportedTypes);
-                    complexSpecifier.setDefaulttype(supportedType);
+                    complexdescription.setTypes(supportedTypes);
+                    complexdescription.setDefaulttype(supportedType);
                 } catch (Exception ex) {
                     this.error = true;
                     this.computingModelFailed("Definition of supported types/default type for input "
-                            + complexSpecifier.getIdentifier() + " is invalid.");
-                    Logger.log(this.getClass(), "createInputPortSpecifier()", ex.getLocalizedMessage());
+                            + complexdescription.getIdentifier() + " is invalid.");
+                    Logger.log(this.getClass(), "createInputPortDescription()", ex.getLocalizedMessage());
                 }
 
-                specifier = complexSpecifier;
+                thedescription = complexdescription;
                 break;
 
             case BOUNDING_BOX:
                 //TODO
                 break;
         }
-        return specifier;
+        return thedescription;
     }
 
-    private IOutputSpecifier createOutputPortSpecifier(ProcessPort port) {
+    private IOutputValue createOutputPortDescription(ProcessPort port) {
         if (null == port || !port.isGlobalOutput()) {
             throw new IllegalArgumentException("invalid port (null or not an output)");
         }
 
-        IOutputSpecifier specifier = null;
+        IOutputValue thedescription = null;
 
         switch (port.getDatatype()) {
             case LITERAL:
-                OutputLiteralDataDescription literalSpecifier = new OutputLiteralDataDescription();
-                literalSpecifier.setIdentifier(port.getOwsIdentifier());
-                literalSpecifier.setAbstract(port.getOwsAbstract());
-                literalSpecifier.setTitle(port.getOwsTitle());
-                if (literalSpecifier.getTitle().equals("")) {
-                    literalSpecifier.setTitle(literalSpecifier.getIdentifier());
+                OutputLiteralDataDescription literaldescription = new OutputLiteralDataDescription();
+                literaldescription.setIdentifier(port.getOwsIdentifier());
+                literaldescription.setAbstract(port.getOwsAbstract());
+                literaldescription.setTitle(port.getOwsTitle());
+                if (literaldescription.getTitle().equals("")) {
+                    literaldescription.setTitle(literaldescription.getIdentifier());
                 }
-                literalSpecifier.setType(("xs:string"));
-                specifier = literalSpecifier;
+                literaldescription.setType(("xs:string"));
+                thedescription = literaldescription;
                 break;
 
             case COMPLEX:
-                OutputComplexDataDescription complexSpecifier = new OutputComplexDataDescription();
-                complexSpecifier.setIdentifier(port.getOwsIdentifier());
-                complexSpecifier.setTheAbstract(port.getOwsAbstract());
-                complexSpecifier.setTitle(port.getOwsTitle());
-                if (complexSpecifier.getTitle().equals("")) {
-                    complexSpecifier.setTitle(complexSpecifier.getIdentifier());
+                OutputComplexDataDescription complexdescription = new OutputComplexDataDescription();
+                complexdescription.setIdentifier(port.getOwsIdentifier());
+                complexdescription.setTheAbstract(port.getOwsAbstract());
+                complexdescription.setTitle(port.getOwsTitle());
+                if (complexdescription.getTitle().equals("")) {
+                    complexdescription.setTitle(complexdescription.getIdentifier());
                 }
 
                 try {
@@ -683,24 +683,24 @@ public class AppRichWPSManager {
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Supported types for output "
-                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                                + complexdescription.getIdentifier() + " can not be empty.");
                     }
                     if (supportedType.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Default type for output "
-                                + complexSpecifier.getIdentifier() + " can not be empty.");
+                                + complexdescription.getIdentifier() + " can not be empty.");
                     }
 
-                    complexSpecifier.setTypes(supportedTypes);
-                    complexSpecifier.setDefaulttype(supportedType);
+                    complexdescription.setTypes(supportedTypes);
+                    complexdescription.setDefaulttype(supportedType);
                 } catch (Exception ex) {
                     this.error = true;
                     this.computingModelFailed("Definition of supported types/default type for output "
-                            + complexSpecifier.getIdentifier() + " is invalid.");
-                    Logger.log(this.getClass(), "createOutputPortSpecifier()", ex.getLocalizedMessage());
+                            + complexdescription.getIdentifier() + " is invalid.");
+                    Logger.log(this.getClass(), "createOutputPortDescription()", ex.getLocalizedMessage());
                 }
 
-                specifier = complexSpecifier;
+                thedescription = complexdescription;
 
                 break;
 
@@ -708,7 +708,7 @@ public class AppRichWPSManager {
                 break;
         }
 
-        return specifier;
+        return thedescription;
     }
 
     /**

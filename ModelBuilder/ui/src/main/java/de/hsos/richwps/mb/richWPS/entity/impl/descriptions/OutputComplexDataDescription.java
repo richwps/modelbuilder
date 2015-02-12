@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +16,7 @@ import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class OutputComplexDataDescription implements IOutputSpecifier {
+public class OutputComplexDataDescription implements IOutputValue {
 
     
     private String identifier;

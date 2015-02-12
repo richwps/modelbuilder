@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,11 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
     /**
      * List of available process inputs and their specification/types.
      */
-    protected List<IInputSpecifier> inputs;
+    protected List<IInputDescription> inputs;
     /**
      * List of available process outputs and their specification/types.
      */
-    protected List<IOutputSpecifier> outputs;
+    protected List<IOutputValue> outputs;
 
     /**
      * Execution Unit.
@@ -193,7 +193,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      * @return
      */
     @Override
-    public List<IInputSpecifier> getInputs() {
+    public List<IInputDescription> getInputs() {
         return inputs;
     }
 
@@ -201,7 +201,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      *
      * @param inputs
      */
-    public void setInputs(List<IInputSpecifier> inputs) {
+    public void setInputs(List<IInputDescription> inputs) {
         this.inputs = inputs;
     }
 
@@ -209,7 +209,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      *
      * @param specifier
      */
-    public void addInput(IInputSpecifier specifier) {
+    public void addInput(IInputDescription specifier) {
         this.inputs.add(specifier);
     }
     
@@ -218,7 +218,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      * @return
      */
     @Override
-    public List<IOutputSpecifier> getOutputs() {
+    public List<IOutputValue> getOutputs() {
         return outputs;
     }
 
@@ -226,7 +226,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      *
      * @param outputs
      */
-    public void setOutputs(List<IOutputSpecifier> outputs) {
+    public void setOutputs(List<IOutputValue> outputs) {
         this.outputs = outputs;
     }
 
@@ -234,7 +234,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      *
      * @param specifier
      */
-    public void addOutput(IOutputSpecifier specifier) {
+    public void addOutput(IOutputValue specifier) {
         this.outputs.add(specifier);
     }
 
@@ -246,11 +246,11 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      */
     public ProcessDescriptionType toProcessDescriptionType() {
         ProcessDescriptionTypeBuilder description;
-        //Convert outputs from IOutputSpecifier-list to OutputDescriptionType-array.
+        //Convert outputs from IOutputValue-list to OutputDescriptionType-array.
         ProcessDescriptionType.ProcessOutputs ogcoutputs = ProcessDescriptionType.ProcessOutputs.Factory.newInstance();
         OutputDescriptionType[] outputarray = new OutputDescriptionType[this.outputs.size()];
         int i = 0;
-        for (IOutputSpecifier specifier : this.outputs) {
+        for (IOutputValue specifier : this.outputs) {
             OutputDescriptionType atype = specifier.toOutputDescription();
             outputarray[i++] = atype;
         }
@@ -258,8 +258,8 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
         description = new ProcessDescriptionTypeBuilder(this.identifier, this.title, this.processversion, ogcoutputs);
         description.setAbstract(this.theabstract);
 
-        //Convert inputs from IInputSpecifier-list to InputDescriptionType and add them.
-        for (IInputSpecifier specifier : this.inputs) {
+        //Convert inputs from IInputDescription-list to InputDescriptionType and add them.
+        for (IInputDescription specifier : this.inputs) {
             description.addNewInputToDataInputs(specifier.toInputDescription());
         }
 

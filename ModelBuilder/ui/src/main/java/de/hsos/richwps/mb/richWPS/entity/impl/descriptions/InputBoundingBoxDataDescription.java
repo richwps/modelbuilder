@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  *
  * @author caduevel
  */
-public class InputBoundingBoxDataDescription implements IInputSpecifier {
+public class InputBoundingBoxDataDescription implements IInputDescription {
 
     /**
      * Unambiguous identifier or name of a process, input, or output, unique for

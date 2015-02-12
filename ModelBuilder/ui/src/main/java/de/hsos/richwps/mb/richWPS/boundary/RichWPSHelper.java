@@ -2,8 +2,8 @@ package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.Logger;
 import static de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetInputTypesRequest;
@@ -55,7 +55,7 @@ public class RichWPSHelper {
      *
      * @param builder TestProcessRequestBuilder.
      * @param theinputs list of inputs (InputArguments) that should be set.
-     * @see IInputArgument
+     * @see IInputValue
      */
     void setTestProcessInputs(TestProcessRequestBuilder builder, final HashMap theinputs) {
         final Set<String> keys = theinputs.keySet();
@@ -90,7 +90,7 @@ public class RichWPSHelper {
      *
      * @param builder TestProcessRequestBuilder.
      * @param theinputs list of outputs (OutputArgument) that should be set.
-     * @see IOutputArgument
+     * @see IOutputDescription
      */
     void setTestProcessOutputs(TestProcessRequestBuilder builder, final HashMap theoutputs) {
         final Set<String> keys = theoutputs.keySet();

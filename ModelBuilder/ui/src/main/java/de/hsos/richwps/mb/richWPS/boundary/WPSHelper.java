@@ -1,10 +1,10 @@
 package de.hsos.richwps.mb.richWPS.boundary;
 
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
@@ -56,8 +56,8 @@ public class WPSHelper {
      * @param execute 52n execute document.
      * @param description 52n process description.
      * @param responseObject 52n reponse object. Execute-response or exception.
-     * @param request ExecuteRequest with possible inputs (IInputSpecifier) and
-     * outputs (IOutputSpecifier).
+     * @param request ExecuteRequest with possible inputs (IInputDescription) and
+ outputs (IOutputValue).
      */
     public void analyseExecuteResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
         final URL res = this.getClass().getResource("/xml/wps_config.xml");
@@ -142,7 +142,7 @@ public class WPSHelper {
      *
      * @param request with serverid and processid.
      * @return request with list of input specifiers.
-     * @see IInputSpecifier
+     * @see IInputDescription
      */
     void addInputs(DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
@@ -156,7 +156,7 @@ public class WPSHelper {
      * Adds processs outputs to a request.
      *
      * @param request with serverid and processid.
-     * @see IOutputSpecifier
+     * @see IOutputValue
      */
     void addOutputs(DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
@@ -171,7 +171,7 @@ public class WPSHelper {
      *
      * @param executeBuilder 52n executebuilder.
      * @param theinputs list of inputs (InputArguments) that should be set.
-     * @see IInputArgument
+     * @see IInputValue
      */
     void setInputs(ExecuteRequestBuilder executeBuilder, final HashMap theinputs) {
         final Set<String> keys = theinputs.keySet();
@@ -205,7 +205,7 @@ public class WPSHelper {
      *
      * @param executeBuilder 52n executebuilder.
      * @param theinputs list of outputs (OutputArgument) that should be set.
-     * @see IOutputArgument
+     * @see IOutputDescription
      */
     void setOutputs(ExecuteRequestBuilder executeBuilder, final HashMap theoutputs) {
         final Set<String> keys = theoutputs.keySet();

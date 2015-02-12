@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
+import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,12 +65,12 @@ public class GetOutputTypesRequest implements IRequest {
     }
 
     @Override
-    public List<IInputSpecifier> getInputs() {
+    public List<IInputDescription> getInputs() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 
     @Override
-    public List<IOutputSpecifier> getOutputs() {
+    public List<IOutputValue> getOutputs() {
         throw new UnsupportedOperationException("Not supported yet."); 
     }
 

@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class InputComplexDataDescription implements IInputSpecifier {
+public class InputComplexDataDescription implements IInputDescription {
 
     private String identifier;
     private String title;

@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
-import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import java.math.BigInteger;
 import java.util.Objects;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -11,7 +11,7 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class InputLiteralDataDescription implements IInputSpecifier {
+public class InputLiteralDataDescription implements IInputDescription {
 
     private String identifier;
     private String typeReference;

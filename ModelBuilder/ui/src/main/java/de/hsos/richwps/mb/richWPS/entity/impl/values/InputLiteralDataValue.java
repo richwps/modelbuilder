@@ -1,13 +1,13 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
-import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
 
 /**
  *
  * @author dalcacer
  */
-public class InputLiteralDataValue implements IInputArgument {
+public class InputLiteralDataValue implements IInputValue {
 
     private InputLiteralDataDescription specifier;
     private String value;

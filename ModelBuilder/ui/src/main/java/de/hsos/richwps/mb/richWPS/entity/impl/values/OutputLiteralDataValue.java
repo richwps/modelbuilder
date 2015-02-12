@@ -1,13 +1,13 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
-import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 
 /**
  *
  * @author dalcacer
  */
-public class OutputLiteralDataValue implements IOutputArgument{
+public class OutputLiteralDataValue implements IOutputDescription{
 
     
     private OutputLiteralDataDescription specifier;
