@@ -21,7 +21,7 @@ import org.n52.wps.client.richwps.TestProcessRequestBuilder;
 /**
  * Interface to RichWPS enabled servers.
  *
- * @version 0.0.5
+ * @version 0.0.6
  * @author dalcacer
  */
 public class RichWPSProvider implements IRichWPSProvider {
@@ -137,7 +137,12 @@ public class RichWPSProvider implements IRichWPSProvider {
         final RichWPSHelper richwpshelper = new RichWPSHelper();
         final WPSHelper wpshelper = new WPSHelper();
         try {
-            if (request instanceof TestRequest) {
+            if (request instanceof ProfileRequest) {
+                //check TestRequest before Execute and Desscribe, it is a differentiation.
+                Logger.log(this.getClass(), "request()", "performing " + ProfileRequest.class.getSimpleName());
+                this.connect(wpsurl, richwpsurl);
+                richwpshelper.richwpsProfileProcess(this.richwps, (ProfileRequest) request, this);
+            } else if (request instanceof TestRequest) {
                 //check TestRequest before Execute and Desscribe, it is a differentiation.
                 Logger.log(this.getClass(), "request()", "performing " + TestRequest.class.getSimpleName());
                 this.connect(wpsurl, richwpsurl);
@@ -163,9 +168,9 @@ public class RichWPSProvider implements IRichWPSProvider {
                 this.connect(wpsurl);
                 wpshelper.wpsGetAvailableProcesses(this.wps, (GetProcessesRequest) request, this);
             } else if (request instanceof ExecuteRequest) {
-                //check Execute before Describe, it is a differentiation.
+                //check Execute before Describe. It is a differentiation.
                 this.connect(wpsurl);
-                //executes can be used for process discovery/description, too!
+                //Executes can be used for process discovery/description, too!
                 if (((ExecuteRequest) request).isDescribed()) {
                     Logger.log(this.getClass(), "request()", "performing " + ExecuteRequest.class.getSimpleName());
                     wpshelper.wpsExecuteProcess(this.wps, (ExecuteRequest) request, this);

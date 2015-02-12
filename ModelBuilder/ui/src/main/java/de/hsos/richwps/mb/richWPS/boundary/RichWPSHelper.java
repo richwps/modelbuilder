@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetInputTypesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetOutputTypesRequest;
+import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
@@ -31,23 +32,27 @@ import net.opengis.wps.x100.ComplexDataDescriptionType;
 import net.opengis.wps.x100.ComplexTypesType;
 import net.opengis.wps.x100.OutputDataType;
 import net.opengis.wps.x100.ProcessDescriptionType;
+import net.opengis.wps.x100.ProfileProcessDocument;
 import net.opengis.wps.x100.SupportedTypesResponseDocument;
 import net.opengis.wps.x100.TestProcessDocument;
 import net.opengis.wps.x100.TestProcessResponseDocument;
 import net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl;
+import net.opengis.wps.x100.impl.ProfileProcessResponseDocumentImpl;
 import net.opengis.wps.x100.impl.TestProcessResponseDocumentImpl;
 import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
+import org.n52.wps.client.richwps.ProfileProcessRequestBuilder;
 import org.n52.wps.client.richwps.TestProcessRequestBuilder;
 import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 
 /**
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
+// TODO refactor!
 public class RichWPSHelper {
 
     /**
@@ -86,6 +91,41 @@ public class RichWPSHelper {
     }
 
     /**
+     * Sets given inputs to a test-request.
+     *
+     * @param builder TestProcessRequestBuilder.
+     * @param theinputs list of inputs (Inputvalues) that should be set.
+     * @see IInputValue
+     */
+    void setProfileProcessInputs(ProfileProcessRequestBuilder builder, final HashMap theinputs) {
+        final Set<String> keys = theinputs.keySet();
+        for (String key : keys) {
+            Object o = theinputs.get(key);
+            if (o instanceof InputLiteralDataValue) {
+                String value = ((InputLiteralDataValue) o).getValue();
+                builder.addLiteralData(key, value);
+            } else if (o instanceof InputComplexDataValue) {
+                InputComplexDataValue param = (InputComplexDataValue) o;
+                String url = param.getURL();
+                String mimetype = param.getMimeType();
+                String encoding = param.getEncoding();
+                String schema = param.getSchema();
+
+                builder.addComplexDataReference(key, url, schema, encoding, mimetype);
+            } else if (o instanceof InputBoundingBoxDataValue) {
+                InputBoundingBoxDataValue param;
+                param = (InputBoundingBoxDataValue) o;
+                final String crs = param.getCrsType();
+                String[] split = param.getValue().split(",");
+                BigInteger dimension = BigInteger.valueOf(split.length);
+                String[] lower = split[0].split(" ");
+                String[] upper = split[1].split(" ");
+                builder.addBoundingBoxData(key, crs, dimension, Arrays.asList(lower), Arrays.asList(upper));
+            }
+        }
+    }
+
+    /**
      * Sets requested outputs to execute-request.
      *
      * @param builder TestProcessRequestBuilder.
@@ -93,6 +133,38 @@ public class RichWPSHelper {
      * @see IOutputDescription
      */
     void setTestProcessOutputs(TestProcessRequestBuilder builder, final HashMap theoutputs) {
+        final Set<String> keys = theoutputs.keySet();
+        for (String key : keys) {
+            Object o = theoutputs.get(key);
+            if (o instanceof OutputLiteralDataValue) {
+                builder.addOutput(key);
+            } else if (o instanceof OutputComplexDataValue) {
+                OutputComplexDataValue param = (OutputComplexDataValue) o;
+                builder.addOutput(key);
+                boolean asReference = param.isAsReference();
+                String mimetype = param.getMimetype();
+                String encoding = param.getEncoding();
+                String schema = param.getSchema();
+                if (asReference) {
+                    builder.setAsReference(key, true);
+                }
+                builder.setMimeTypeForOutput(mimetype, key);
+                builder.setEncodingForOutput(encoding, key);
+                builder.setSchemaForOutput(schema, key);
+            } else if (o instanceof OutputBoundingBoxDataValue) {
+                builder.addOutput(key);
+            }
+        }
+    }
+
+    /**
+     * Sets requested outputs to execute-request.
+     *
+     * @param builder TestProcessRequestBuilder.
+     * @param theinputs list of outputs (OutputValues) that should be set.
+     * @see IOutputDescription
+     */
+    void setProfileProcessOutputs(ProfileProcessRequestBuilder builder, final HashMap theoutputs) {
         final Set<String> keys = theoutputs.keySet();
         for (String key : keys) {
             Object o = theoutputs.get(key);
@@ -176,9 +248,68 @@ public class RichWPSHelper {
                         java.util.logging.Logger.getLogger(RichWPSHelper.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                
+
                 //TODO: BoundingBox ?
             }
+        } else {
+            ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
+            resultrequest.addException(exception.getExceptionReport().toString());
+            Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response." + "Response is Exception: " + exception.toString());
+            Logger.log(this.getClass(), "analyseResponse", exception.getExceptionReport());
+        }
+    }
+
+    /**
+     * Analyses a given response and add specific results or exception to
+     * request.
+     *
+     * @param profiledocument testprocess document.
+     * @param responseObject reponse object. TestProcess-response or exception.
+     * @param request TestRequest with possible inputs (IInputDescription) and
+     * outputs (IOutputDescription).
+     */
+    public void analyseProfileResponse(ProfileProcessDocument profiledocument, Object responseObject, ProfileRequest request) {
+        final ProcessDescriptionType description = request.toProcessDescriptionType();
+        final URL res = this.getClass().getResource("/xml/wps_config.xml");
+        String file = res.toExternalForm().replace("file:", "");
+
+        WPSClientConfig.getInstance(file);
+        ExecuteRequest resultrequest = request;
+
+        if (responseObject instanceof ProfileProcessDocument) {
+            ProfileProcessDocument response = (ProfileProcessDocument) responseObject;
+            Logger.log(this.getClass(), "analyseResponse", response.toString());
+
+            response.getProfileProcess();
+            /*OutputDataType[] overalloutputs = response.getTestProcessResponse().getProcessOutputs().getOutputArray();
+             Logger.log(this.getClass(), "analyseResponse", overalloutputs);
+
+             //FIXME make use of executeresponseanalyzer
+             for (OutputDataType o : overalloutputs) {
+             if (o.getData() != null) {
+             //we might have a literaldata
+             if (o.getData().getLiteralData() != null) {
+             String key = o.getIdentifier().getStringValue();
+             String value = o.getData().getLiteralData().getStringValue();
+             request.addResult(key, value);
+             }
+             }
+
+             //we might have a complexdata with reference
+             if (o.getReference() != null) {
+             String key = o.getIdentifier().getStringValue();
+             String value = o.getReference().getHref();
+             URL url;
+             try {
+             url = new URL(value);
+             request.addResult(key, url);
+             } catch (MalformedURLException ex) {
+             java.util.logging.Logger.getLogger(RichWPSHelper.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             }
+
+             //TODO: BoundingBox ?
+             }*/
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
             resultrequest.addException(exception.getExceptionReport().toString());
@@ -294,6 +425,48 @@ public class RichWPSHelper {
             } else if (response instanceof TestProcessResponseDocumentImpl) {
                 TestProcessResponseDocumentImpl deplok = (TestProcessResponseDocumentImpl) response;
                 richwpshelper.analyseTestResponse(testprocessdocument, response, request);
+            } else {
+                Logger.log(richWPSProvider.getClass(), "richwpsTestProcess()", "Unknown reponse" + response + ", " + response.getClass());
+            }
+        } catch (WPSClientException ex) {
+            Logger.log(richWPSProvider.getClass(), "richwpsTestProcess()", "Unable to create " + "deploymentdocument. " + ex);
+        }
+    }
+
+    /**
+     * Deploys a new process.
+     *
+     * @param request DeployRequestDTO.
+     * @see DeployRequest
+     */
+    void richwpsProfileProcess(RichWPSClientSession richwps, ProfileRequest request, RichWPSProvider richWPSProvider) {
+        final RichWPSHelper richwpshelper = new RichWPSHelper();
+        ProfileProcessRequestBuilder builder = new ProfileProcessRequestBuilder(request.toProcessDescriptionType());
+        builder.setExecutionUnit(request.getExecutionUnit());
+        builder.setDeploymentProfileName(request.getDeploymentprofile());
+        HashMap theinputs = request.getInputValues();
+        richwpshelper.setProfileProcessInputs(builder, theinputs);
+        HashMap theoutputs = request.getOutputValues();
+        richwpshelper.setProfileProcessOutputs(builder, theoutputs);
+
+        ProfileProcessDocument profileprocessdocument = null;
+        Object response = null;
+        try {
+            String endp = request.getEndpoint();
+            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
+            profileprocessdocument = builder.getProfiledocument();
+            response = richwps.profile(endp, profileprocessdocument);
+            if (response == null) {
+                Logger.log(richWPSProvider.getClass(), "richwpsTestProcess()", "No response");
+                return;
+            }
+            if (response instanceof ExceptionReportDocumentImpl) {
+                ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) response;
+                request.addException(exception.getExceptionReport().toString());
+            } else if (response instanceof ProfileProcessResponseDocumentImpl) {
+                ProfileProcessResponseDocumentImpl deplok = (ProfileProcessResponseDocumentImpl) response;
+                Logger.log(deplok);;
+                //richwpshelper.analyseTestResponse(profileprocessdocument, response, request);
             } else {
                 Logger.log(richWPSProvider.getClass(), "richwpsTestProcess()", "Unknown reponse" + response + ", " + response.getClass());
             }
