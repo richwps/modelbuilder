@@ -17,6 +17,7 @@ public class ModellingToolbar extends JToolBar {
         if (!AppConstants.GRAPH_AUTOLAYOUT) {
             add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.DO_LAYOUT));
             add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.ADD_PORTS));
+            add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS));
         }
 
         addSeparator();

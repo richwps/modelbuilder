@@ -13,8 +13,8 @@ import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionCompone
 import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.ui.dialogs.ExecuteDialog;
-import de.hsos.richwps.mb.ui.dialogs.ExecuteModelDialog;
+import de.hsos.richwps.mb.app.view.dialogs.ExecuteDialog;
+import de.hsos.richwps.mb.app.view.dialogs.ExecuteModelDialog;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
@@ -26,10 +26,9 @@ import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
-import de.hsos.richwps.mb.ui.dialogs.ProfileModelDialog;
-import de.hsos.richwps.mb.ui.dialogs.TestModelDialog;
-
-import de.hsos.richwps.mb.ui.dialogs.UndeployDialog;
+import de.hsos.richwps.mb.app.view.dialogs.ProfileModelDialog;
+import de.hsos.richwps.mb.app.view.dialogs.TestModelDialog;
+import de.hsos.richwps.mb.app.view.dialogs.UndeployDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
 import java.awt.Component;
@@ -409,7 +408,7 @@ public class App {
                     // update curently used value if the config has changed.
                     if (!confUrl.equals(monitorUrl)) {
                         getProcessMetricProvider().setMonitorUrl(confUrl);
-                        
+
                         // force reloading monitor data
                         getProcessProvider().resetProcessLoadingStates();
                         getMainTreeView().fillTree();
@@ -483,6 +482,8 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
+        
+        getActionProvider().getAction(APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
     }
 
     /**

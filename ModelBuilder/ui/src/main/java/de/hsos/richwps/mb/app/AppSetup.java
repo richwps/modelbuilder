@@ -203,8 +203,10 @@ public class AppSetup {
         // Edit Menu Icons
         UIManager.put(AppConstants.ICON_UNDO_KEY, new ImageIcon(iconDir + "arrow-undo.png", "undo icon"));
         UIManager.put(AppConstants.ICON_REDO_KEY, new ImageIcon(iconDir + "arrow-redo.png", "redo icon"));
+        // Modelling
         UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
         UIManager.put(AppConstants.ICON_ADDPORTS_KEY, new ImageIcon(iconDir + "zoom-fit-height.png", "addports icon"));
+        UIManager.put(AppConstants.ICON_PROCESS_REPLACE_KEY, new ImageIcon(iconDir + "process_replace.png", "process replace icon"));
 
         // Tools Menu Icons
         // Help Menu Icons

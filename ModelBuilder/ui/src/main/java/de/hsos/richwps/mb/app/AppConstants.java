@@ -136,6 +136,9 @@ public class AppConstants {
     public static final String PROCESSNOTFOUND_DIALOG_TITLE = "Process not deployed";
     public static final String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
 
+    // Process Replacer Dialog
+    public final  static String PROCESS_REPLACER_DIALOG_TITLE = "Process Replacer";
+    
     //Connectivity errors
     public static final String CONNECT_FAILED = "Unable to connect to selected server.";
     public static final String DIALOG_REQUEST_SENT = "<html>Sending and processing statement.<br/>"
@@ -191,8 +194,8 @@ public class AppConstants {
 
     static final String INPUT_PORT_COLOR_STRING = "bbe8c6";
     static final String OUTPUT_PORT_COLOR_STRING = "cfe1fc";
-    static final Color INPUT_PORT_COLOR = new Color(0xbbe8c6);
-    static final Color OUTPUT_PORT_COLOR = new Color(0xcfe1fc);
+    public static final Color INPUT_PORT_COLOR = new Color(0xbbe8c6);
+    public static final Color OUTPUT_PORT_COLOR = new Color(0xcfe1fc);
 
     static String FORMATS_CSV_FILE_LOAD_ERROR = "Error while loading complex data formats!";
     static String DIALOG_TITLE_ERROR = "An error occured";
@@ -347,6 +350,7 @@ public class AppConstants {
         {AppActionProvider.APP_ACTIONS.REDO.name(), "Redo", AppConstants.ICON_REDO_KEY}, // Redo action for the UndoManager.
         {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout", AppConstants.ICON_LAYOUT_KEY}, // Action for layouting the graph.
         {AppActionProvider.APP_ACTIONS.ADD_PORTS.name(), "Add missing ports", AppConstants.ICON_ADDPORTS_KEY}, // Action for adding global ports to unconnected local ports.
+        {AppActionProvider.APP_ACTIONS.REPLACE_PROCESS.name(), "Replace process", AppConstants.ICON_PROCESS_REPLACE_KEY}, // Action for showing the process replacement tool.
         {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy", AppConstants.ICON_DEPLOY_KEY}, // Action for starting the deployment.
         {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy", AppConstants.ICON_UNDEPLOY_KEY}, //  Action for starting the undeployment.
         {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process", AppConstants.ICON_UNDEPLOY_ANY_KEY},
@@ -477,6 +481,7 @@ public class AppConstants {
     public final static String ICON_PUBLISH = "richwps_icon_propagate";
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
+    public final static String ICON_PROCESS_REPLACE_KEY = "richwps_icon_process_replace";
     public final static String ICON_PROCESSES_KEY = "richwps_icon_processes";
     public final static String ICON_PORTS_KEY = "richwps_icon_ports";
     public final static String ICON_PORT_BASE_KEY = "richwps_icon_port";

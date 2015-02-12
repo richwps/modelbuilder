@@ -10,12 +10,15 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
+import de.hsos.richwps.mb.app.view.dialogs.processReplacer.ProcessReplacer;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -72,6 +75,9 @@ public class AppActionHandler implements IAppActionHandler {
                 break;
             case ADD_PORTS:
                 addPorts();
+                break;
+            case REPLACE_PROCESS:
+                doReplaceProcess();
                 break;
             case PREVIEW_ROLA:
                 doPreview();
@@ -452,5 +458,10 @@ public class AppActionHandler implements IAppActionHandler {
      */
     private void addPorts() {
         app.getGraphView().addMissingGlobalPorts();
+    }
+
+    private void doReplaceProcess() {
+        ProcessReplacer processReplacer = new ProcessReplacer(app.getFrame(), app.getProcessProvider(), app.getGraphView());
+        processReplacer.setVisible(true);
     }
 }

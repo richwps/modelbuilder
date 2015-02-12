@@ -5,6 +5,7 @@ import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
+import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -25,7 +26,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Controlls the graph component and it's interaction with other app components.
@@ -127,6 +131,20 @@ public class AppGraphView extends GraphView {
             }
         });
 
+        addSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                List<ProcessEntity> selectedProcesses = getSelectedProcesses();
+
+                if (1 == selectedProcesses.size()) {
+                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(true);
+
+                } else {
+                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
+                }
+            }
+        });
+
         // register graph components for the event service.
         AppEventService.getInstance().addSourceCommand(AppConstants.INFOTAB_ID_EDITOR, AppConstants.INFOTAB_ID_EDITOR);
         AppEventService.getInstance().addSourceCommand(this, AppConstants.INFOTAB_ID_EDITOR);
@@ -180,7 +198,7 @@ public class AppGraphView extends GraphView {
         Property loadedEndpointProperty = getModelEndpointProperty(model.getProperties());
 
         updateRemotes();
-        
+
         if (null != loadedEndpointProperty && null != loadedEndpointProperty.getValue()) {
             String loadedValue = loadedEndpointProperty.getValue().toString();
 
@@ -248,17 +266,14 @@ public class AppGraphView extends GraphView {
 
         boolean mappingError = false;
 
-        // update process cell values
+        // detect mapping errors
         List<mxCell> processCells = getProcessCells();
         for (mxCell aCell : processCells) {
             ProcessEntity process = (ProcessEntity) graphModel.getValue(aCell);
             ProcessEntity loadedProcess = processProvider.getFullyLoadedProcessEntity(process);
-
-            graphModel.setValue(aCell, loadedProcess);
-
             HashMap<ProcessPortKey, ProcessPort> loadedPorts = getProcessPorts(loadedProcess);
 
-            // update the processes' port cells values
+            // try to map ports
             int childCount = graphModel.getChildCount(aCell);
             for (int c = 0; c < childCount; c++) {
                 Object aChild = graphModel.getChildAt(aCell, c);
@@ -290,19 +305,10 @@ public class AppGraphView extends GraphView {
 
                     } else {
 
-                        graphModel.setValue(aChild, loadedPorts.get(key));
-
                         // remove port instance from map to identity unmapped ports
                         loadedPorts.remove(key);
                     }
-                    
-                    
-                } else if(null == childValue) {
-                    // no cell value => use next fitting port
-                    mxGeometry geom = graphModel.getGeometry(aChild);
-                    System.out.println(geom.getY());
-                    
-                    
+
                 }
             }
 
@@ -325,6 +331,44 @@ public class AppGraphView extends GraphView {
 
         if (mappingError) {
             JOptionPane.showMessageDialog(app.getFrame(), AppConstants.LOAD_MODEL_MAPPING_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
+
+        } else {
+            
+            // no mapping error -> perform process cell values update
+            for (mxCell aCell : processCells) {
+                ProcessEntity process = (ProcessEntity) graphModel.getValue(aCell);
+                ProcessEntity loadedProcess = processProvider.getFullyLoadedProcessEntity(process);
+
+                graphModel.setValue(aCell, loadedProcess);
+
+                HashMap<ProcessPortKey, ProcessPort> loadedPorts = getProcessPorts(loadedProcess);
+
+                // update the processes' port cells values
+                int childCount = graphModel.getChildCount(aCell);
+                for (int c = 0; c < childCount; c++) {
+                    Object aChild = graphModel.getChildAt(aCell, c);
+                    Object childValue = graphModel.getValue(aChild);
+
+                    // find the port instance for this cell
+                    if (null != childValue && childValue instanceof ProcessPort) {
+                        ProcessPort aPort = (ProcessPort) childValue;
+
+                        ProcessPortKey key = new ProcessPortKey();
+                        key.setOwsIdentifier(aPort.getOwsIdentifier());
+                        key.setDatatype(aPort.getDatatype());
+                        key.setInput(aPort.isFlowInput());
+
+                        graphModel.setValue(aChild, loadedPorts.get(key));
+
+                    } else if (null == childValue) {
+                        // TODO no cell value => use next fitting port
+//                        mxGeometry geom = graphModel.getGeometry(aChild);
+//                        System.out.println(geom.getY());
+
+                    }
+                }
+            }
+
         }
     }
 

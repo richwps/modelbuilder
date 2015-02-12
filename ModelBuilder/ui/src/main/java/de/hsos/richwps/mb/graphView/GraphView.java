@@ -20,6 +20,7 @@ import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -35,7 +36,7 @@ public class GraphView extends JPanel {
 
     private Graph graph;
     private mxGraphComponent graphComponent;
-    private LinkedList<ListSelectionListener> selectionListener;
+    private final LinkedList<ListSelectionListener> selectionListener;
     private LinkedList<ModelElementsChangedListener> modelElementsChangeListener;
 
     // there exist no mxGraph-Constants for the following keys :(
@@ -524,4 +525,41 @@ public class GraphView extends JPanel {
         getGraph().getModel().endUpdate();
     }
 
+    /**
+     * Finds a cell by its value.
+     *
+     * @param value
+     * @return
+     */
+    public mxCell getCellByValue(Object value) {
+        final GraphModel model = getGraph().getGraphModel();
+        Map<String, Object> cells = model.getCells();
+        for (Object cell : cells.values()) {
+            Object value1 = model.getValue(cell);
+            if (value1.equals(value)) {
+                return (mxCell) cell;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Finds a cell by its value inside then given parent cell.
+     *
+     * @param value
+     * @return
+     */
+    public mxCell getCellByValue(mxCell parent, Object value) {
+        final GraphModel model = getGraph().getGraphModel();
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            mxCell cell = (mxCell) parent.getChildAt(i);
+            Object value1 = model.getValue(cell);
+            if (value1.equals(value)) {
+                return (mxCell) cell;
+            }
+        }
+
+        return null;
+    }
 }

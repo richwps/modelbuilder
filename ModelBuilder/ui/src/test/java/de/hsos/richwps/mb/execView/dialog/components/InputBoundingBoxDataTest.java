@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
-import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBBoxForm;
+import de.hsos.richwps.mb.app.view.dialogs.components.inputforms.InputBBoxForm;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import org.junit.After;
 import org.junit.AfterClass;

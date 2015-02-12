@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.ui;
 
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Container;
