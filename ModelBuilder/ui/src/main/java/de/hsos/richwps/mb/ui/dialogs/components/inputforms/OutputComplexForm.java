@@ -9,7 +9,8 @@ import net.opengis.wps.x100.ComplexDataDescriptionType;
  */
 public class OutputComplexForm extends javax.swing.JPanel {
 
-    private OutputComplexDataDescription specifier;
+    private OutputComplexDataDescription description
+;
 
     private String id;
     private ComplexDataDescriptionType[] subtypes_;
@@ -20,7 +21,8 @@ public class OutputComplexForm extends javax.swing.JPanel {
      */
     public OutputComplexForm(OutputComplexDataDescription specifier) {
         initComponents();
-        this.specifier = specifier;
+        this.description
+ = specifier;
 
         //SupportedComplexDataType type = description.getComplexOutput();
         String theidentifier = specifier.getIdentifier();
@@ -58,8 +60,9 @@ public class OutputComplexForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputComplexDataDescription getSpecifier() {
-        return this.specifier;
+    public OutputComplexDataDescription getDescription() {
+        return this.description
+;
     }
 
     /**
@@ -85,7 +88,8 @@ public class OutputComplexForm extends javax.swing.JPanel {
      */
     public java.util.List getType() {
         int idx = this.selectType.getSelectedIndex();
-        return specifier.getTypes().get(idx);
+        return description
+.getTypes().get(idx);
     }
 
     /**

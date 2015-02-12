@@ -10,7 +10,7 @@ import javax.swing.border.TitledBorder;
  */
 public class OutputBBoxForm extends javax.swing.JPanel {
 
-    private final OutputBoundingBoxDataDescription specifier;
+    private final OutputBoundingBoxDataDescription description;
 
     private final String id;
 
@@ -21,7 +21,7 @@ public class OutputBBoxForm extends javax.swing.JPanel {
     public OutputBBoxForm(
             final OutputBoundingBoxDataDescription specifier) {
         initComponents();
-        this.specifier = specifier;
+        this.description = specifier;
 
         //SupportedComplexDataType type = description.getComplexOutput();
         String theidentifier = specifier.getIdentifier();
@@ -63,8 +63,8 @@ public class OutputBBoxForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputBoundingBoxDataDescription getSpecifier() {
-        return this.specifier;
+    public OutputBoundingBoxDataDescription getDescription() {
+        return this.description;
     }
 
     /**

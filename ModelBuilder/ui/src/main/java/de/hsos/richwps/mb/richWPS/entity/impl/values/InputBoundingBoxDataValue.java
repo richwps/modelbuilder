@@ -9,7 +9,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataD
  */
 public class InputBoundingBoxDataValue implements IInputValue {
 
-    private InputBoundingBoxDataDescription specifier;
+    private InputBoundingBoxDataDescription description;
 
     /**
      * Comma-seperated Coordinates.
@@ -23,22 +23,22 @@ public class InputBoundingBoxDataValue implements IInputValue {
 
     /**
      *
-     * @param specifier
+     * @param description
      */
     public InputBoundingBoxDataValue(
-            final InputBoundingBoxDataDescription specifier) {
-        this.specifier = specifier;
+            final InputBoundingBoxDataDescription description) {
+        this.description = description;
         this.value = "";
     }
 
     /**
      *
-     * @param specifier
+     * @param description
      * @param value Comma-seperated Coordinates.
      */
     public InputBoundingBoxDataValue(
-            final InputBoundingBoxDataDescription specifier, String value) {
-        this.specifier = specifier;
+            final InputBoundingBoxDataDescription description, String value) {
+        this.description = description;
         this.value = value;
         this.crsType = "";
     }
@@ -57,23 +57,23 @@ public class InputBoundingBoxDataValue implements IInputValue {
      * unique for this server.
      */
     public String getIdentifier() {
-        return this.specifier.getIdentifier();
+        return this.description.getIdentifier();
     }
 
     /**
      *
      * @return
      */
-    public InputBoundingBoxDataDescription getSpecifier() {
-        return specifier;
+    public InputBoundingBoxDataDescription getDescription() {
+        return description;
     }
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public void setSpecifier(InputBoundingBoxDataDescription specifier) {
-        this.specifier = specifier;
+    public void setDescription(InputBoundingBoxDataDescription description) {
+        this.description = description;
     }
 
     /**

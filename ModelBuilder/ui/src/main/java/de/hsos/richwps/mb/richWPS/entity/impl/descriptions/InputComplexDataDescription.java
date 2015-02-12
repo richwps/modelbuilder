@@ -44,7 +44,7 @@ public class InputComplexDataDescription implements IInputDescription {
     public final static int encoding_IDX = 2;
 
     /**
-     * Constructs an empty InputSpecifier.
+     * Constructs an empty InputDescription.
      */
     public InputComplexDataDescription() {
 
@@ -57,7 +57,7 @@ public class InputComplexDataDescription implements IInputDescription {
     }
 
     /**
-     * Constructs a new InputSpecifier for complex data.
+     * Constructs a new InputDescription for complex data.
      *
      * @param description 52n InputDescriptionType.
      */
@@ -288,7 +288,7 @@ public class InputComplexDataDescription implements IInputDescription {
      */
     @Override
     public String toString() {
-        return "InputComplexDataSpecifier{" + " identifier=" + identifier + ", title=" + title + ", theabstract=" + theabstract + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + ", maximumMegabytes=" + maximumMegabytes + ", defaulttype=" + defaulttype + ", types=" + types + '}';
+        return "InputComplexDataDescription{" + " identifier=" + identifier + ", title=" + title + ", theabstract=" + theabstract + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + ", maximumMegabytes=" + maximumMegabytes + ", defaulttype=" + defaulttype + ", types=" + types + '}';
     }
 
     /**

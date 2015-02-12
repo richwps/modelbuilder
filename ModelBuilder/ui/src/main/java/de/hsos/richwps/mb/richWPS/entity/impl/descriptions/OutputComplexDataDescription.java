@@ -44,7 +44,7 @@ public class OutputComplexDataDescription implements IOutputValue {
     private SupportedComplexDataType type;
 
     /**
-     * Constructs a new empty OuputComplexDataSpecifier.
+     * Constructs a new empty OuputComplexDataDescription.
      */
     public OutputComplexDataDescription() {
         this.identifier = "";
@@ -293,7 +293,7 @@ public class OutputComplexDataDescription implements IOutputValue {
      */
     @Override
     public String toString() {
-        return "OutputComplexDataSpecifier{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", types=" + types + ", defaulttype=" + defaulttype + '}';
+        return "OutputComplexDataDescription{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", types=" + types + ", defaulttype=" + defaulttype + '}';
     }
 
 }

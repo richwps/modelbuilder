@@ -10,14 +10,14 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDesc
 public class OutputLiteralDataValue implements IOutputDescription{
 
     
-    private OutputLiteralDataDescription specifier;
+    private OutputLiteralDataDescription description;
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public OutputLiteralDataValue(OutputLiteralDataDescription specifier) {
-        this.specifier = specifier;
+    public OutputLiteralDataValue(OutputLiteralDataDescription description) {
+        this.description = description;
     }
 
     /**
@@ -25,15 +25,15 @@ public class OutputLiteralDataValue implements IOutputDescription{
      * @return
      */
     public String getIdentifier() {
-        return this.specifier.getIdentifier();
+        return this.description.getIdentifier();
     }
     
     /**
      *
      * @return
      */
-    public OutputLiteralDataDescription getSepcifier(){
-        return this.specifier;
+    public OutputLiteralDataDescription getDescription(){
+        return this.description;
     }
     
 }

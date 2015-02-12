@@ -141,7 +141,7 @@ public class WPSHelper {
      * Add processs inputs to a request.
      *
      * @param request with serverid and processid.
-     * @return request with list of input specifiers.
+     * @return request with list of input descriptions.
      * @see IInputDescription
      */
     void addInputs(DescribeRequest request, ProcessDescriptionType process) {

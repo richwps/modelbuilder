@@ -47,7 +47,7 @@ public class OutputBoundingBoxDataDescription implements IOutputValue {
     private List<String> supportedCRS;
 
     /**
-     * Constructs an empty OutputBoundingBoxDataSpecifier.
+     * Constructs an empty OutputBoundingBoxDataDescription.
      */
     public OutputBoundingBoxDataDescription() {
         this.identifier = "";
@@ -58,7 +58,7 @@ public class OutputBoundingBoxDataDescription implements IOutputValue {
     }
 
     /**
-     * Constructs an OutputBoundingBoxDataSpecifier.
+     * Constructs an OutputBoundingBoxDataDescription.
      *
      * @param identifier
      * @param theabstract
@@ -76,7 +76,7 @@ public class OutputBoundingBoxDataDescription implements IOutputValue {
     }
 
     /**
-     * Constructs BoundingBoxDataSpecifier using OutputDescription with BBData.
+     * Constructs BoundingBoxDataDescription using OutputDescription with BBData.
      *
      * @param description
      */
@@ -231,7 +231,7 @@ public class OutputBoundingBoxDataDescription implements IOutputValue {
 
     @Override
     final public String toString() {
-        return "OutputBoundingBoxDataSpecifier{"
+        return "OutputBoundingBoxDataDescription{"
                 + ", identifier=" + identifier + ", title=" + title
                 + ", theabstract=" + theabstract + ", defaultCRS="
                 + defaultCRS + ", supportedCRS=" + supportedCRS + '}';

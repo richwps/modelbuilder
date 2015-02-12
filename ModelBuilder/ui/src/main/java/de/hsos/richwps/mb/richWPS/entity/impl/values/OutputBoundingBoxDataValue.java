@@ -9,15 +9,15 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxData
  */
 public class OutputBoundingBoxDataValue implements IOutputDescription {
 
-    private OutputBoundingBoxDataDescription specifier;
+    private OutputBoundingBoxDataDescription description;
 
     /**
      *
-     * @param specifier
+     * @param description
      */
     public OutputBoundingBoxDataValue(
-            OutputBoundingBoxDataDescription specifier) {
-        this.specifier = specifier;
+            OutputBoundingBoxDataDescription description) {
+        this.description = description;
     }
     
     /**
@@ -26,14 +26,14 @@ public class OutputBoundingBoxDataValue implements IOutputDescription {
      * output, unique for this server.
      */
     public String getIdentifier() {
-        return this.specifier.getIdentifier();
+        return this.description.getIdentifier();
     }
     
     /**
      *
      * @return
      */
-    public OutputBoundingBoxDataDescription getSpecifier(){
-        return this.specifier;
+    public OutputBoundingBoxDataDescription getDescription(){
+        return this.description;
     }
 }

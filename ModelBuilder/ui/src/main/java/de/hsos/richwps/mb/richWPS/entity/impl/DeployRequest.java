@@ -251,10 +251,10 @@ public class DeployRequest implements IRequest {
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public void addInput(IInputDescription specifier) {
-        this.inputs.add(specifier);
+    public void addInput(IInputDescription description) {
+        this.inputs.add(description);
     }
 
     /**
@@ -276,10 +276,10 @@ public class DeployRequest implements IRequest {
 
     /**
      *
-     * @param specifier
+     * @param value
      */
-    public void addOutput(IOutputValue specifier) {
-        this.outputs.add(specifier);
+    public void addOutput(IOutputValue value) {
+        this.outputs.add(value);
     }
 
     /**
@@ -397,8 +397,8 @@ public class DeployRequest implements IRequest {
         ProcessDescriptionType.ProcessOutputs ogcoutputs = ProcessDescriptionType.ProcessOutputs.Factory.newInstance();
         OutputDescriptionType[] outputarray = new OutputDescriptionType[this.outputs.size()];
         int i = 0;
-        for (IOutputValue specifier : this.outputs) {
-            OutputDescriptionType atype = specifier.toOutputDescription();
+        for (IOutputValue value : this.outputs) {
+            OutputDescriptionType atype = value.toOutputDescription();
             outputarray[i++] = atype;
         }
         ogcoutputs.setOutputArray(outputarray);
@@ -406,8 +406,8 @@ public class DeployRequest implements IRequest {
         description.setAbstract(this.theabstract);
 
         //Convert inputs from IInputDescription-list to InputDescriptionType and add them.
-        for (IInputDescription specifier : this.inputs) {
-            description.addNewInputToDataInputs(specifier.toInputDescription());
+        for (IInputDescription desc : this.inputs) {
+            description.addNewInputToDataInputs(desc.toInputDescription());
         }
 
         return description.getPdt();

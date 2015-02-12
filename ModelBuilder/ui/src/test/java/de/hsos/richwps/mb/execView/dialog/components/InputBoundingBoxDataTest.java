@@ -35,7 +35,7 @@ public class InputBoundingBoxDataTest {
     }
 
     /**
-     * Test of getSpecifier method, of class InputBBoxForm.
+     * Test of getDescription method, of class InputBBoxForm.
      */
     @Test
     public void testGetSpecifier() {
@@ -43,7 +43,7 @@ public class InputBoundingBoxDataTest {
         InputBoundingBoxDataDescription spec;
         spec = new InputBoundingBoxDataDescription();
         InputBBoxForm instance = new InputBBoxForm(spec);
-        InputBoundingBoxDataDescription result = instance.getSpecifier();
+        InputBoundingBoxDataDescription result = instance.getDescription();
         assertEquals(spec, result);
     }
 

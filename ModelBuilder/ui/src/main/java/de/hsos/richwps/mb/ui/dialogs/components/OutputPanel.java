@@ -103,22 +103,22 @@ public class OutputPanel extends APanel {
             return;
         }
 
-        for (IOutputValue specifier : this.request.getOutputs()) {
-            if (specifier instanceof OutputLiteralDataDescription) {
-                OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataDescription) specifier);
-                TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+        for (IOutputValue description : this.request.getOutputs()) {
+            if (description instanceof OutputLiteralDataDescription) {
+                OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataDescription) description);
+                TitledComponent tc = new TitledComponent(description.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
-            } else if (specifier instanceof OutputComplexDataDescription) {
-                OutputComplexForm pan = new OutputComplexForm((OutputComplexDataDescription) specifier);
-                TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+            } else if (description instanceof OutputComplexDataDescription) {
+                OutputComplexForm pan = new OutputComplexForm((OutputComplexDataDescription) description);
+                TitledComponent tc = new TitledComponent(description.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
-            } else if (specifier instanceof OutputBoundingBoxDataDescription) {
-                OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataDescription) specifier);
-                TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+            } else if (description instanceof OutputBoundingBoxDataDescription) {
+                OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataDescription) description);
+                TitledComponent tc = new TitledComponent(description.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
@@ -186,8 +186,8 @@ public class OutputPanel extends APanel {
 
                 OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 if (pan.isSelected()) {
-                    OutputComplexDataDescription specifier = pan.getSpecifier();
-                    OutputComplexDataValue argument = new OutputComplexDataValue(specifier);
+                    OutputComplexDataDescription description = pan.getDescription();
+                    OutputComplexDataValue argument = new OutputComplexDataValue(description);
 
                     Boolean asRef = pan.asReference();
                     argument.setAsReference(asRef);
@@ -206,8 +206,8 @@ public class OutputPanel extends APanel {
                 OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
 
                 if (pan.isSelected()) {
-                    OutputLiteralDataDescription specifier = pan.getSpecifier();
-                    OutputLiteralDataValue argument = new OutputLiteralDataValue(specifier);
+                    OutputLiteralDataDescription description = pan.getDescription();
+                    OutputLiteralDataValue argument = new OutputLiteralDataValue(description);
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
 
@@ -215,8 +215,8 @@ public class OutputPanel extends APanel {
                 OutputBBoxForm pan = (OutputBBoxForm) panel.getComponent();
 
                 if (pan.isSelected()) {
-                    OutputBoundingBoxDataDescription specifier = pan.getSpecifier();
-                    OutputBoundingBoxDataValue argument = new OutputBoundingBoxDataValue(specifier);
+                    OutputBoundingBoxDataDescription description = pan.getDescription();
+                    OutputBoundingBoxDataValue argument = new OutputBoundingBoxDataValue(description);
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
             }

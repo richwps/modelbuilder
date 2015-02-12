@@ -88,9 +88,9 @@ public class ManagedRemoteDiscovery {
      */
     private static void transformInputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
-        for (IInputDescription specifier : pd.getInputs()) {
-            if (specifier instanceof InputComplexDataDescription) {
-                InputComplexDataDescription complex = (InputComplexDataDescription) specifier;
+        for (IInputDescription description : pd.getInputs()) {
+            if (description instanceof InputComplexDataDescription) {
+                InputComplexDataDescription complex = (InputComplexDataDescription) description;
                 ProcessPort pp = new ComplexDataInput();
                 pp.setOwsIdentifier(complex.getIdentifier());
                 pp.setOwsTitle(complex.getTitle());
@@ -104,8 +104,8 @@ public class ManagedRemoteDiscovery {
                 pp.setDataTypeDescription(typedesc);
                 pe.addInputPort(pp);
 
-            } else if (specifier instanceof InputLiteralDataDescription) {
-                InputLiteralDataDescription literal = (InputLiteralDataDescription) specifier;
+            } else if (description instanceof InputLiteralDataDescription) {
+                InputLiteralDataDescription literal = (InputLiteralDataDescription) description;
                 ProcessPort pp = new LiteralInput();
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
@@ -113,8 +113,8 @@ public class ManagedRemoteDiscovery {
                 pp.setDataTypeDescription(new DataTypeDescriptionLiteral(literal.getDefaultvalue()));
                 pe.addInputPort(pp);
 
-            } else if (specifier instanceof InputBoundingBoxDataDescription) {
-                InputBoundingBoxDataDescription literal = (InputBoundingBoxDataDescription) specifier;
+            } else if (description instanceof InputBoundingBoxDataDescription) {
+                InputBoundingBoxDataDescription literal = (InputBoundingBoxDataDescription) description;
                 ProcessPort pp = new BoundingBoxInput();
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
@@ -134,9 +134,9 @@ public class ManagedRemoteDiscovery {
      */
     private static void transformOutputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
-        for (IOutputValue specifier : pd.getOutputs()) {
-            if (specifier instanceof OutputComplexDataDescription) {
-                OutputComplexDataDescription complex = (OutputComplexDataDescription) specifier;
+        for (IOutputValue description : pd.getOutputs()) {
+            if (description instanceof OutputComplexDataDescription) {
+                OutputComplexDataDescription complex = (OutputComplexDataDescription) description;
                 ProcessPort pp = new ComplexDataOutput();
                 pp.setOwsIdentifier(complex.getIdentifier());
                 pp.setOwsTitle(complex.getTitle());
@@ -150,17 +150,17 @@ public class ManagedRemoteDiscovery {
                 pp.setDataTypeDescription(typedesc);
                 pe.addOutputPort(pp);
 
-            } else if (specifier instanceof OutputLiteralDataDescription) {
-                OutputLiteralDataDescription literal = (OutputLiteralDataDescription) specifier;
+            } else if (description instanceof OutputLiteralDataDescription) {
+                OutputLiteralDataDescription literal = (OutputLiteralDataDescription) description;
                 ProcessPort pp = new LiteralOutput();
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
                 pp.setOwsAbstract(literal.getAbstract());
                 pe.addInputPort(pp);
 
-            } else if (specifier instanceof OutputBoundingBoxDataDescription) {
+            } else if (description instanceof OutputBoundingBoxDataDescription) {
 
-                OutputBoundingBoxDataDescription literal = (OutputBoundingBoxDataDescription) specifier;
+                OutputBoundingBoxDataDescription literal = (OutputBoundingBoxDataDescription) description;
                 ProcessPort pp = new BoundingBoxOutput();
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());

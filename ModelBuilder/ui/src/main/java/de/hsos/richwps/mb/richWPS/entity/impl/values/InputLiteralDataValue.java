@@ -9,25 +9,25 @@ import de.hsos.richwps.mb.richWPS.entity.IInputValue;
  */
 public class InputLiteralDataValue implements IInputValue {
 
-    private InputLiteralDataDescription specifier;
+    private InputLiteralDataDescription description;
     private String value;
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public InputLiteralDataValue(InputLiteralDataDescription specifier) {
-        this.specifier = specifier;
+    public InputLiteralDataValue(InputLiteralDataDescription description) {
+        this.description = description;
         this.value = "";
     }
 
     /**
      *
-     * @param specifier
+     * @param description
      * @param value
      */
-    public InputLiteralDataValue(InputLiteralDataDescription specifier, String value) {
-        this.specifier = specifier;
+    public InputLiteralDataValue(InputLiteralDataDescription description, String value) {
+        this.description = description;
         this.value = value;
     }
 
@@ -44,7 +44,7 @@ public class InputLiteralDataValue implements IInputValue {
      * @return
      */
     public String getIdentifier() {
-        return this.specifier.getIdentifier();
+        return this.description.getIdentifier();
     }
 
 }

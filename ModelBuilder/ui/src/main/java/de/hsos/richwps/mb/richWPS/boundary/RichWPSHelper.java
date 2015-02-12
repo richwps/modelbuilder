@@ -134,8 +134,8 @@ public class RichWPSHelper {
      *
      * @param testdocument testprocess document.
      * @param responseObject reponse object. TestProcess-response or exception.
-     * @param request TestRequest with possible inputs (IInputSpecifier) and
-     * outputs (IOutputSpecifier).
+     * @param request TestRequest with possible inputs (IInputDescription) and
+     * outputs (IOutputDescription).
      */
     public void analyseTestResponse(TestProcessDocument testdocument, Object responseObject, TestRequest request) {
         final ProcessDescriptionType description = request.toProcessDescriptionType();

@@ -11,21 +11,21 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescr
 public class InputLiteralForm extends javax.swing.JPanel {
 
     private String id;
-    private InputLiteralDataDescription specifier;
+    private InputLiteralDataDescription description;
     private boolean isMandatory = false;
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public InputLiteralForm(InputLiteralDataDescription specifier) {
+    public InputLiteralForm(InputLiteralDataDescription description) {
         initComponents();
-        this.specifier = specifier;
-        final String theidentifier = specifier.getIdentifier();
-        final String theabstract = specifier.getAbstract();
-        final String thetitel = specifier.getTitle();
-        final String datatype = this.specifier.getType();
-        final String defaultvalue = this.specifier.getDefaultvalue();
+        this.description = description;
+        final String theidentifier = description.getIdentifier();
+        final String theabstract = description.getAbstract();
+        final String thetitel = description.getTitle();
+        final String datatype = this.description.getType();
+        final String defaultvalue = this.description.getDefaultvalue();
         //FIXME
         this.id = theidentifier;
         //this.identifier.setText(theidentifier+ "("+datatype+"):");
@@ -33,8 +33,8 @@ public class InputLiteralForm extends javax.swing.JPanel {
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
 
-        final String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
-        if (this.specifier.getMinOccur() == 0) {
+        final String occurstxt = "Min: " + this.description.getMinOccur() + " Max: " + this.description.getMaxOccur();
+        if (this.description.getMinOccur() == 0) {
             this.isMandatory = false;
         } else {
             this.isMandatory = true;
@@ -52,11 +52,11 @@ public class InputLiteralForm extends javax.swing.JPanel {
      */
     public String getTitle() {
         String title = "";
-        if (this.specifier.getMinOccur() == 0) {
-            title = "LiteralData " + this.specifier.getIdentifier();
+        if (this.description.getMinOccur() == 0) {
+            title = "LiteralData " + this.description.getIdentifier();
             this.isMandatory = false;
         } else {
-            title = "LiteralData " + this.specifier.getIdentifier() + " (required)";
+            title = "LiteralData " + this.description.getIdentifier() + " (required)";
         }
         return title;
     }
@@ -68,12 +68,12 @@ public class InputLiteralForm extends javax.swing.JPanel {
      */
     public InputLiteralForm(InputLiteralDataDescription specifier, InputLiteralDataValue argument) {
         initComponents();
-        this.specifier = specifier;
+        this.description = specifier;
         String theidentifier = specifier.getIdentifier();
         String theabstract = specifier.getAbstract();
         String thetitel = specifier.getTitle();
-        String datatype = this.specifier.getType();
-        String defaultvalue = this.specifier.getDefaultvalue();
+        String datatype = this.description.getType();
+        String defaultvalue = this.description.getDefaultvalue();
         //FIXME
         this.id = theidentifier;
         //this.identifier.setText(theidentifier+ "("+datatype+"):");
@@ -81,8 +81,8 @@ public class InputLiteralForm extends javax.swing.JPanel {
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
 
-        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: " + this.specifier.getMaxOccur();
-        if (this.specifier.getMinOccur() == 0) {
+        String occurstxt = "Min: " + this.description.getMinOccur() + " Max: " + this.description.getMaxOccur();
+        if (this.description.getMinOccur() == 0) {
             //this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
@@ -103,8 +103,8 @@ public class InputLiteralForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public InputLiteralDataDescription getSpecifier() {
-        return this.specifier;
+    public InputLiteralDataDescription getDescription() {
+        return this.description;
     }
 
     /**

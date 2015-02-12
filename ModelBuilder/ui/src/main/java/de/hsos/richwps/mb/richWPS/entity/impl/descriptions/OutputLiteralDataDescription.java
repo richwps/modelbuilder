@@ -23,7 +23,7 @@ public class OutputLiteralDataDescription implements IOutputValue {
     private String typereference;
 
     /**
-     * Constructs an empty OutputLiteralDataSpecifier.
+     * Constructs an empty OutputLiteralDataDescription.
      */
     public OutputLiteralDataDescription() {
         this.identifier = "";
@@ -33,7 +33,7 @@ public class OutputLiteralDataDescription implements IOutputValue {
     }
 
     /**
-     * Constructs an OutputLiteralDataSpecifier.
+     * Constructs an OutputLiteralDataDescription.
      *
      * @param identifier
      * @param theabstract
@@ -214,7 +214,7 @@ public class OutputLiteralDataDescription implements IOutputValue {
      */
     @Override
     public String toString() {
-        return "OutputLiteralDataSpecifier{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", typereference=" + typereference + '}';
+        return "OutputLiteralDataDescription{" + "identifier=" + identifier + ", theabstract=" + theabstract + ", title=" + title + ", typereference=" + typereference + '}';
     }
 
 }

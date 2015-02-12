@@ -22,7 +22,7 @@ public class InputLiteralDataDescription implements IInputDescription {
     private int maxOccur = 0;
 
     /**
-     * Constructs an empty InputSpecifier.
+     * Constructs an empty InputDescription.
      */
     public InputLiteralDataDescription() {
         this.identifier = "";
@@ -251,7 +251,7 @@ public class InputLiteralDataDescription implements IInputDescription {
 
     @Override
     public String toString() {
-        return "InputLiteralDataSpecifier{" + "identifier=" + identifier + ", typeReference=" + typeReference + ", title=" + title + ", theabstract=" + theabstract + ", defaultvalue=" + defaultvalue + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + '}';
+        return "InputLiteralDataDescription{" + "identifier=" + identifier + ", typeReference=" + typeReference + ", title=" + title + ", theabstract=" + theabstract + ", defaultvalue=" + defaultvalue + ", minOccur=" + minOccur + ", maxOccur=" + maxOccur + '}';
     }
 
 }

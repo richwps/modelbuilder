@@ -175,37 +175,37 @@ public class VariablesPanel extends APanel {
             if (panel.getComponent() instanceof InputComplexForm) {
                 InputComplexForm pan = (InputComplexForm) panel.getComponent();
                 //this parameter is optional
-                if (pan.getSpecifier().getMinOccur() == 0) {
+                if (pan.getDescription().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this,
                             AppConstants.DIALOG_VALIDATION_MISSING_INPUT
-                            + pan.getSpecifier().getIdentifier());
+                            + pan.getDescription().getIdentifier());
                     return false;
                 }
             } else if (panel.getComponent() instanceof InputLiteralForm) {
                 InputLiteralForm pan = (InputLiteralForm) panel.getComponent();
                 //this parameter is optional
-                if (pan.getSpecifier().getMinOccur() == 0) {
+                if (pan.getDescription().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this,
                             AppConstants.DIALOG_VALIDATION_MISSING_INPUT
-                            + pan.getSpecifier().getIdentifier());
+                            + pan.getDescription().getIdentifier());
                     return false;
                 }
             } else if (panel.getComponent() instanceof InputBBoxForm) {
                 InputBBoxForm pan = (InputBBoxForm) panel.getComponent();
                 //this parameter is optional
-                if (pan.getSpecifier().getMinOccur() == 0) {
+                if (pan.getDescription().getMinOccur() == 0) {
                     return true;
                 }
                 if (pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this,
                             AppConstants.DIALOG_VALIDATION_MISSING_INPUT
-                            + pan.getSpecifier().getIdentifier());
+                            + pan.getDescription().getIdentifier());
                     return false;
                 }
             }

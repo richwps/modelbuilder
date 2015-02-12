@@ -9,7 +9,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDesc
  */
 public class OutputLiteralForm extends javax.swing.JPanel {
 
-    private OutputLiteralDataDescription specifier;
+    private OutputLiteralDataDescription description;
 
     /**
      * Creates new form OutputLiteralData
@@ -17,7 +17,7 @@ public class OutputLiteralForm extends javax.swing.JPanel {
      * @param specifier
      */
     public OutputLiteralForm(final OutputLiteralDataDescription specifier) {
-        this.specifier = specifier;
+        this.description = specifier;
         initComponents();
 
         //SupportedComplexDataType type = description.getComplexOutput();
@@ -34,8 +34,8 @@ public class OutputLiteralForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputLiteralDataDescription getSpecifier() {
-        return this.specifier;
+    public OutputLiteralDataDescription getDescription() {
+        return this.description;
     }
 
     /**

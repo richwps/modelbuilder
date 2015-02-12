@@ -13,7 +13,7 @@ import net.opengis.wps.x100.SupportedCRSsType;
 import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
 
 /**
- * InputSpecifier for BoundingBoxData.
+ * Description for BoundingBoxData.
  *
  * @author caduevel
  */
@@ -58,7 +58,7 @@ public class InputBoundingBoxDataDescription implements IInputDescription {
     private List<String> supportedCRS;
 
     /**
-     * Constructs an empty InputSpecifier.
+     * Constructs an empty InputDescription.
      */
     public InputBoundingBoxDataDescription() {
         this.identifier = "";
@@ -71,7 +71,7 @@ public class InputBoundingBoxDataDescription implements IInputDescription {
     }
 
     /**
-     * Initialize this specifier with a description containing BoundingBoxData.
+     * Initialize this description with a description containing BoundingBoxData.
      *
      * @param desc Inputdescription containing BoundingBoxData.
      */
@@ -230,7 +230,7 @@ public class InputBoundingBoxDataDescription implements IInputDescription {
 
     @Override
     public String toString() {
-        return "InputBoundingBoxDataSpecifier{" + "identifier=" + identifier
+        return "InputBoundingBoxDataDescription{" + "identifier=" + identifier
                 + ", title=" + title + ", theabstract=" + theabstract
                 + ", defaultCRS=" + defaultCRS + ", minOccur=" + minOccur
                 + ", maxOccur=" + maxOccur + ", supportedCRS="

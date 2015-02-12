@@ -476,22 +476,22 @@ public class AppRichWPSManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputDescription specifier = this.createInputPortDescription(port);
-            if (null == specifier) {
+            IInputDescription description = this.createInputPortDescription(port);
+            if (null == description) {
                 throw new GraphToRequestTransformationException(port);
             }
-            request.addInput(specifier);
+            request.addInput(description);
         }
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputValue specifier = null;
-            specifier = this.createOutputPortDescription(port);
+            IOutputValue description = null;
+            description = this.createOutputPortDescription(port);
 
-            if (null == specifier) {
+            if (null == description) {
                 throw new GraphToRequestTransformationException(port);
             }
-            request.addOutput(specifier);
+            request.addOutput(description);
         }
     }
 
@@ -499,22 +499,22 @@ public class AppRichWPSManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputDescription specifier = this.createInputPortDescription(port);
-            if (null == specifier) {
+            IInputDescription description = this.createInputPortDescription(port);
+            if (null == description) {
                 throw new GraphToRequestTransformationException(port);
             }
-            request.addInput(specifier);
+            request.addInput(description);
         }
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputValue specifier = null;
-            specifier = this.createOutputPortDescription(port);
+            IOutputValue description = null;
+            description = this.createOutputPortDescription(port);
 
-            if (null == specifier) {
+            if (null == description) {
                 throw new GraphToRequestTransformationException(port);
             }
-            request.addOutput(specifier);
+            request.addOutput(description);
         }
     }
 
@@ -522,22 +522,22 @@ public class AppRichWPSManager {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
-            IInputDescription specifier = this.createInputPortDescription(port);
-            if (null == specifier) {
+            IInputDescription description = this.createInputPortDescription(port);
+            if (null == description) {
                 throw new GraphToRequestTransformationException(port);
             }
-            request.addInput(specifier);
+            request.addInput(description);
         }
 
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
-            IOutputValue specifier = null;
-            specifier = this.createOutputPortDescription(port);
+            IOutputValue description = null;
+            description = this.createOutputPortDescription(port);
 
-            if (null == specifier) {
+            if (null == description) {
                 throw new GraphToRequestTransformationException(port);
             }
-            request.addOutput(specifier);
+            request.addOutput(description);
         }
     }
 

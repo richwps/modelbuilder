@@ -9,7 +9,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescr
  */
 public class InputComplexDataValue implements IInputValue {
 
-    private InputComplexDataDescription specifier;
+    private InputComplexDataDescription description;
 
     private boolean asReference = false;
 
@@ -30,10 +30,10 @@ public class InputComplexDataValue implements IInputValue {
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public InputComplexDataValue(InputComplexDataDescription specifier) {
-        this.specifier = specifier;
+    public InputComplexDataValue(InputComplexDataDescription description) {
+        this.description = description;
     }
 
     /**
@@ -41,7 +41,7 @@ public class InputComplexDataValue implements IInputValue {
      * @return
      */
     public String getIdentifier() {
-        return this.specifier.getIdentifier();
+        return this.description.getIdentifier();
     }
 
     /**
@@ -88,16 +88,16 @@ public class InputComplexDataValue implements IInputValue {
      *
      * @return
      */
-    public InputComplexDataDescription getSpecifier() {
-        return specifier;
+    public InputComplexDataDescription getDescription() {
+        return description;
     }
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public void setSpecifier(InputComplexDataDescription specifier) {
-        this.specifier = specifier;
+    public void setDescription(InputComplexDataDescription description) {
+        this.description = description;
     }
 
     /**

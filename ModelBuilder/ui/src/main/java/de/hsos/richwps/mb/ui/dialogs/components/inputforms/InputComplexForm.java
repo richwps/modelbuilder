@@ -10,32 +10,32 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescr
 public class InputComplexForm extends javax.swing.JPanel {
 
     private String id;
-    private InputComplexDataDescription specifier;
+    private InputComplexDataDescription description;
     private boolean isMandatory = false;
 
     /**
      * Creates new form ComplexInput
      *
-     * @param specifier the specifier of the complexinputdata.
+     * @param description the description of the complexinputdata.
      */
-    public InputComplexForm(final InputComplexDataDescription specifier) {
+    public InputComplexForm(final InputComplexDataDescription description) {
         initComponents();
-        this.specifier = specifier;
+        this.description = description;
 
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
 
         this.selectType.removeAllItems();
 
-        for (java.util.List type : specifier.getTypes()) {
+        for (java.util.List type : description.getTypes()) {
 
             String amimetype = (String) type.get(InputComplexDataDescription.mimetype_IDX);
             String aschema = (String) type.get(InputComplexDataDescription.schema_IDX);
             String aencoding = (String) type.get(InputComplexDataDescription.encoding_IDX);
             String line = "";
 
-            if (specifier.isDefaultType(type)) {
+            if (description.isDefaultType(type)) {
                 line = "<html><b>" + amimetype + "<br/>Schema: " + aschema
                         + "<br/>Encoding: " + aencoding + "</b></html>";
                 this.selectType.addItem(line);
@@ -53,9 +53,9 @@ public class InputComplexForm extends javax.swing.JPanel {
 
         this.titleValue.setText(thetitel);
         this.abstractValue.setText(theabstract);
-        String occurstxt = "Min: " + this.specifier.getMinOccur()
-                + " Max: " + this.specifier.getMaxOccur();
-        if (this.specifier.getMinOccur() == 0) {
+        String occurstxt = "Min: " + this.description.getMinOccur()
+                + " Max: " + this.description.getMaxOccur();
+        if (this.description.getMinOccur() == 0) {
             this.isMandatory = false;
         } else {
             this.isMandatory = true;
@@ -69,11 +69,11 @@ public class InputComplexForm extends javax.swing.JPanel {
      */
     public String getTitle() {
         String title="";
-        if (this.specifier.getMinOccur() == 0) {
-            title = "ComplexData " + this.specifier.getIdentifier();
+        if (this.description.getMinOccur() == 0) {
+            title = "ComplexData " + this.description.getIdentifier();
             this.isMandatory = false;
         } else {
-            title = "ComplexData " + this.specifier.getIdentifier()+" (required)";;
+            title = "ComplexData " + this.description.getIdentifier()+" (required)";;
         }
         return title;
     }
@@ -82,26 +82,26 @@ public class InputComplexForm extends javax.swing.JPanel {
     /**
      * Creates new form ComplexInput
      *
-     * @param specifier the specifier of the complexinputdata.
+     * @param description the description of the complexinputdata.
      */
-    public InputComplexForm(final InputComplexDataDescription specifier, InputComplexDataValue argument) {
+    public InputComplexForm(final InputComplexDataDescription description, InputComplexDataValue value) {
         initComponents();
-        this.specifier = specifier;
+        this.description = description;
 
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
 
         this.selectType.removeAllItems();
 
-        for (java.util.List type : specifier.getTypes()) {
+        for (java.util.List type : description.getTypes()) {
 
             String amimetype = (String) type.get(InputComplexDataDescription.mimetype_IDX);
             String aschema = (String) type.get(InputComplexDataDescription.schema_IDX);
             String aencoding = (String) type.get(InputComplexDataDescription.encoding_IDX);
             String line = "";
 
-            if (specifier.isDefaultType(type)) {
+            if (description.isDefaultType(type)) {
                 line = "<html><b>" + amimetype + "<br/>Schema: " + aschema
                         + "<br/>Encoding: " + aencoding + "</b></html>";
                 this.selectType.addItem(line);
@@ -120,9 +120,9 @@ public class InputComplexForm extends javax.swing.JPanel {
 
         this.titleValue.setText(thetitel);
         this.abstractValue.setText(theabstract);
-        String occurstxt = "Min: " + this.specifier.getMinOccur()
-                + " Max: " + this.specifier.getMaxOccur();
-        if (this.specifier.getMinOccur() == 0) {
+        String occurstxt = "Min: " + this.description.getMinOccur()
+                + " Max: " + this.description.getMaxOccur();
+        if (this.description.getMinOccur() == 0) {
             //this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
@@ -130,15 +130,15 @@ public class InputComplexForm extends javax.swing.JPanel {
             this.isMandatory = true;
         }
         this.occurs.setText(occurstxt);
-        this.value.setText(argument.getURL());;
+        this.value.setText(value.getURL());;
     }
 
     /**
      *
      * @return
      */
-    public InputComplexDataDescription getSpecifier() {
-        return this.specifier;
+    public InputComplexDataDescription getDescription() {
+        return this.description;
     }
 
     /**
@@ -163,7 +163,7 @@ public class InputComplexForm extends javax.swing.JPanel {
      */
     public java.util.List getMimeType() {
         int idx = this.selectType.getSelectedIndex();
-        return specifier.getTypes().get(idx);
+        return description.getTypes().get(idx);
     }
 
     /**

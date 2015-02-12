@@ -28,6 +28,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 /**
  *
@@ -220,6 +221,7 @@ public class GraphViewTest {
      * Test of loadGraphFromXml method, of class GraphView.
      */
     @Test
+    @Ignore
     public void testLoadGraphFromXml() throws Throwable {
         System.out.println("loadGraphFromXml");
 

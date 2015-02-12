@@ -119,7 +119,7 @@ public class ResultPanel extends APanel {
                 String uri = httpKVPref.toString();
                 //String uri = (String) results.get(key);
                 OutputComplexDataValue _argument = (OutputComplexDataValue) argument;
-                String identifier = (_argument.getSpecifier()).getIdentifier();
+                String identifier = (_argument.getDescription()).getIdentifier();
                 URIRenderer pan = new URIRenderer(identifier, uri);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
@@ -128,7 +128,7 @@ public class ResultPanel extends APanel {
             } else if (argument instanceof OutputLiteralDataValue) {
                 String literalDataAsString = (String) results.get(key);
                 OutputLiteralDataValue _argument = (OutputLiteralDataValue) argument;
-                String identifier = (_argument.getSepcifier()).getIdentifier();
+                String identifier = (_argument.getDescription()).getIdentifier();
                 LiteralRenderer pan = new LiteralRenderer(identifier, literalDataAsString);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
@@ -139,7 +139,7 @@ public class ResultPanel extends APanel {
                 
                 OutputBoundingBoxDataValue _argument;
                 _argument = (OutputBoundingBoxDataValue) argument;
-                String identifier = (_argument.getSpecifier()).getIdentifier();
+                String identifier = (_argument.getDescription()).getIdentifier();
                 
                 for(OutputDataType odt : odts) {
                     BoundingBoxResultRenderer pan;

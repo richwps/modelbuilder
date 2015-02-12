@@ -54,17 +54,17 @@ public class InputBBoxForm extends javax.swing.JPanel {
     private String id;
 
     /**
-     * specifier For usage in InputParameterization.
+     * Description For usage in InputParameterization.
      */
-    private InputBoundingBoxDataDescription specifier;
+    private InputBoundingBoxDataDescription description;
 
     private boolean isMandatory = false;
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public InputBBoxForm(final InputBoundingBoxDataDescription specifier) {
+    public InputBBoxForm(final InputBoundingBoxDataDescription description) {
         initComponents();
 
         InputVerifier verifier = new CoordinateVerifier();
@@ -73,20 +73,20 @@ public class InputBBoxForm extends javax.swing.JPanel {
         this.upperCornerXCoords.setInputVerifier(verifier);
         this.upperCornerYCoords.setInputVerifier(verifier);
 
-        this.specifier = specifier;
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
-        String defaultvalue = this.specifier.getDefaultCRS();
+        this.description = description;
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
+        String defaultvalue = this.description.getDefaultCRS();
 
         this.id = theidentifier;
 
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
 
-        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: "
-                + this.specifier.getMaxOccur();
-        if (this.specifier.getMinOccur() == 0) {
+        String occurstxt = "Min: " + this.description.getMinOccur() + " Max: "
+                + this.description.getMaxOccur();
+        if (this.description.getMinOccur() == 0) {
             this.isMandatory = false;
         } else {
             this.isMandatory = true;
@@ -95,8 +95,8 @@ public class InputBBoxForm extends javax.swing.JPanel {
 
         this.selectType.removeAllItems();
 
-        List<String> suppCRS = specifier.getSupportedCRS();
-        String defaultCRS = specifier.getDefaultCRS();
+        List<String> suppCRS = description.getSupportedCRS();
+        String defaultCRS = description.getDefaultCRS();
 
         //Fill combobox, select defaultCRS
         boolean defaultInSupported = false;
@@ -121,20 +121,20 @@ public class InputBBoxForm extends javax.swing.JPanel {
      */
      public String getTitle() {
         String title="";
-        if (this.specifier.getMinOccur() == 0) {
-            title = "BBox " + this.specifier.getIdentifier();
+        if (this.description.getMinOccur() == 0) {
+            title = "BBox " + this.description.getIdentifier();
             this.isMandatory = false;
         } else {
-            title = "BBox " + this.specifier.getIdentifier()+" (required)";
+            title = "BBox " + this.description.getIdentifier()+" (required)";
         }
         return title;
     }
      
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public InputBBoxForm(final InputBoundingBoxDataDescription specifier, InputBoundingBoxDataValue argument) {
+    public InputBBoxForm(final InputBoundingBoxDataDescription description, InputBoundingBoxDataValue value) {
         initComponents();
 
         InputVerifier verifier = new CoordinateVerifier();
@@ -143,20 +143,20 @@ public class InputBBoxForm extends javax.swing.JPanel {
         this.upperCornerXCoords.setInputVerifier(verifier);
         this.upperCornerYCoords.setInputVerifier(verifier);
 
-        this.specifier = specifier;
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
-        String defaultvalue = this.specifier.getDefaultCRS();
+        this.description = description;
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
+        String defaultvalue = this.description.getDefaultCRS();
 
         this.id = theidentifier;
 
         this.abstractValue.setText(theabstract);
         this.titleValue.setText(thetitel);
 
-        String occurstxt = "Min: " + this.specifier.getMinOccur() + " Max: "
-                + this.specifier.getMaxOccur();
-        if (this.specifier.getMinOccur() == 0) {
+        String occurstxt = "Min: " + this.description.getMinOccur() + " Max: "
+                + this.description.getMaxOccur();
+        if (this.description.getMinOccur() == 0) {
             //this.setBorder(new TitledBorder("(OPTIONAL) " + theidentifier));
             this.isMandatory = false;
         } else {
@@ -167,8 +167,8 @@ public class InputBBoxForm extends javax.swing.JPanel {
 
         this.selectType.removeAllItems();
 
-        List<String> suppCRS = specifier.getSupportedCRS();
-        String defaultCRS = specifier.getDefaultCRS();
+        List<String> suppCRS = description.getSupportedCRS();
+        String defaultCRS = description.getDefaultCRS();
 
         //Fill combobox, select defaultCRS
         boolean defaultInSupported = false;
@@ -185,7 +185,7 @@ public class InputBBoxForm extends javax.swing.JPanel {
             this.selectType.addItem(defaultCRS);
             this.selectType.setSelectedItem(defaultCRS);
         }
-        String coords = argument.getValue();
+        String coords = value.getValue();
         String[] split = coords.split(",");
         String lower[] = split[0].split(" ");
         String upper[] = split[1].split(" ");
@@ -199,8 +199,8 @@ public class InputBBoxForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public InputBoundingBoxDataDescription getSpecifier() {
-        return this.specifier;
+    public InputBoundingBoxDataDescription getDescription() {
+        return this.description;
     }
 
     /**

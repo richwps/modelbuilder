@@ -9,7 +9,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDesc
  */
 public class OutputComplexDataValue implements IOutputDescription {
 
-    private OutputComplexDataDescription specifier;
+    private OutputComplexDataDescription description;
 
     private boolean asReference = false;
     private boolean storeOutput = false;
@@ -25,10 +25,10 @@ public class OutputComplexDataValue implements IOutputDescription {
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public OutputComplexDataValue(OutputComplexDataDescription specifier) {
-        this.specifier = specifier;
+    public OutputComplexDataValue(OutputComplexDataDescription description) {
+        this.description = description;
     }
 
     /**
@@ -36,7 +36,7 @@ public class OutputComplexDataValue implements IOutputDescription {
      * @return
      */
     public String getIdentifier() {
-        return this.specifier.getIdentifier();
+        return this.description.getIdentifier();
     }
 
     /**
@@ -59,16 +59,16 @@ public class OutputComplexDataValue implements IOutputDescription {
      *
      * @return
      */
-    public OutputComplexDataDescription getSpecifier() {
-        return specifier;
+    public OutputComplexDataDescription getDescription() {
+        return description;
     }
 
     /**
      *
-     * @param specifier
+     * @param description
      */
-    public void setSpecifier(OutputComplexDataDescription specifier) {
-        this.specifier = specifier;
+    public void setDescription(OutputComplexDataDescription description) {
+        this.description = description;
     }
 
     /**
