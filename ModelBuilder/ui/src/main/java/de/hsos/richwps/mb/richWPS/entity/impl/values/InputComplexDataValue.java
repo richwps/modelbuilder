@@ -1,15 +1,15 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
+package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 
 /**
  *
  * @author dalcacer
  */
-public class InputComplexDataArgument implements IInputArgument {
+public class InputComplexDataValue implements IInputArgument {
 
-    private InputComplexDataSpecifier specifier;
+    private InputComplexDataDescription specifier;
 
     private boolean asReference = false;
 
@@ -32,7 +32,7 @@ public class InputComplexDataArgument implements IInputArgument {
      *
      * @param specifier
      */
-    public InputComplexDataArgument(InputComplexDataSpecifier specifier) {
+    public InputComplexDataValue(InputComplexDataDescription specifier) {
         this.specifier = specifier;
     }
 
@@ -88,7 +88,7 @@ public class InputComplexDataArgument implements IInputArgument {
      *
      * @return
      */
-    public InputComplexDataSpecifier getSpecifier() {
+    public InputComplexDataDescription getSpecifier() {
         return specifier;
     }
 
@@ -96,7 +96,7 @@ public class InputComplexDataArgument implements IInputArgument {
      *
      * @param specifier
      */
-    public void setSpecifier(InputComplexDataSpecifier specifier) {
+    public void setSpecifier(InputComplexDataDescription specifier) {
         this.specifier = specifier;
     }
 

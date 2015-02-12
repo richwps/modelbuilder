@@ -12,12 +12,12 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputLiteralDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
 import java.util.ArrayList;
@@ -106,14 +106,14 @@ public class InputPanel extends APanel {
         }
 
         for (IInputSpecifier specifier : this.request.getInputs()) {
-            if (specifier instanceof InputLiteralDataSpecifier) {
+            if (specifier instanceof InputLiteralDataDescription) {
 
                 InputLiteralForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputLiteralDataArgument arg = (InputLiteralDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
-                    pan = new InputLiteralForm((InputLiteralDataSpecifier) specifier, arg);
+                    InputLiteralDataValue arg = (InputLiteralDataValue) this.request.getInputArguments().get(specifier.getIdentifier());
+                    pan = new InputLiteralForm((InputLiteralDataDescription) specifier, arg);
                 } else {
-                    pan = new InputLiteralForm((InputLiteralDataSpecifier) specifier);
+                    pan = new InputLiteralForm((InputLiteralDataDescription) specifier);
                 }
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
@@ -125,14 +125,14 @@ public class InputPanel extends APanel {
                 }
                 tc.setTitleBold();
                 this.panels.add(tc);
-            } else if (specifier instanceof InputComplexDataSpecifier) {
+            } else if (specifier instanceof InputComplexDataDescription) {
                 InputComplexForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputComplexDataArgument arg = (InputComplexDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
-                    pan = new InputComplexForm((InputComplexDataSpecifier) specifier, arg);
+                    InputComplexDataValue arg = (InputComplexDataValue) this.request.getInputArguments().get(specifier.getIdentifier());
+                    pan = new InputComplexForm((InputComplexDataDescription) specifier, arg);
 
                 } else {
-                    pan = new InputComplexForm((InputComplexDataSpecifier) specifier);
+                    pan = new InputComplexForm((InputComplexDataDescription) specifier);
                 }
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
@@ -145,13 +145,13 @@ public class InputPanel extends APanel {
                 tc.setTitleBold();
                 this.panels.add(tc);
 
-            } else if (specifier instanceof InputBoundingBoxDataSpecifier) {
+            } else if (specifier instanceof InputBoundingBoxDataDescription) {
                 InputBBoxForm pan;
                 if (this.request.getInputArguments().containsKey(specifier.getIdentifier())) {
-                    InputBoundingBoxDataArgument arg = (InputBoundingBoxDataArgument) this.request.getInputArguments().get(specifier.getIdentifier());
-                    pan = new InputBBoxForm((InputBoundingBoxDataSpecifier) specifier, arg);
+                    InputBoundingBoxDataValue arg = (InputBoundingBoxDataValue) this.request.getInputArguments().get(specifier.getIdentifier());
+                    pan = new InputBBoxForm((InputBoundingBoxDataDescription) specifier, arg);
                 } else {
-                    pan = new InputBBoxForm((InputBoundingBoxDataSpecifier) specifier);
+                    pan = new InputBBoxForm((InputBoundingBoxDataDescription) specifier);
                 }
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
@@ -227,7 +227,7 @@ public class InputPanel extends APanel {
 
             if (panel.getComponent() instanceof InputComplexForm) {
                 InputComplexForm pan = (InputComplexForm) panel.getComponent();
-                InputComplexDataSpecifier specifier = pan.getSpecifier();
+                InputComplexDataDescription specifier = pan.getSpecifier();
 
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, AppConstants.DIALOG_VALIDATION_MISSING_INPUT
@@ -237,13 +237,13 @@ public class InputPanel extends APanel {
                     //nothing to do
                 } else {
                     List type = pan.getMimeType();
-                    String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
-                    String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
-                    String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
+                    String amimetype = (String) type.get(InputComplexDataDescription.mimetype_IDX);
+                    String aschema = (String) type.get(InputComplexDataDescription.schema_IDX);
+                    String aencoding = (String) type.get(InputComplexDataDescription.encoding_IDX);
 
-                    InputComplexDataArgument param = null;
+                    InputComplexDataValue param = null;
                     if (pan.isReference()) {
-                        param = new InputComplexDataArgument(specifier);
+                        param = new InputComplexDataValue(specifier);
                         String url = pan.getText();
                         param.setURL(url);
                     } else {
@@ -262,7 +262,7 @@ public class InputPanel extends APanel {
                 }
             } else if (panel.getComponent() instanceof InputLiteralForm) {
                 InputLiteralForm pan = (InputLiteralForm) panel.getComponent();
-                InputLiteralDataSpecifier specifier = pan.getSpecifier();
+                InputLiteralDataDescription specifier = pan.getSpecifier();
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this,
                             AppConstants.DIALOG_VALIDATION_MISSING_INPUT
@@ -271,12 +271,12 @@ public class InputPanel extends APanel {
                 } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
                     //nothing to do
                 } else {
-                    InputLiteralDataArgument param = new InputLiteralDataArgument(specifier, pan.getText());
+                    InputLiteralDataValue param = new InputLiteralDataValue(specifier, pan.getText());
                     theinputs.put(param.getIdentifier(), param);
                 }
             } else if (panel.getComponent() instanceof InputBBoxForm) {
                 InputBBoxForm pan = (InputBBoxForm) panel.getComponent();
-                InputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
+                InputBoundingBoxDataDescription specifier = pan.getSpecifier();
                 if (pan.isMandatory() & pan.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this,
                             AppConstants.DIALOG_VALIDATION_MISSING_INPUT
@@ -285,8 +285,8 @@ public class InputPanel extends APanel {
                 } else if (!pan.isMandatory() & pan.getText().isEmpty()) {
                     //noop
                 } else {
-                    InputBoundingBoxDataArgument param;
-                    param = new InputBoundingBoxDataArgument(specifier, pan.getText());
+                    InputBoundingBoxDataValue param;
+                    param = new InputBoundingBoxDataValue(specifier, pan.getText());
                     param.setCrsType(pan.getCRS());
                     theinputs.put(param.getIdentifier(), param);
                 }

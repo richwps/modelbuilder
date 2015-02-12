@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputLiteralDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
 
 /**
  *
@@ -11,14 +11,14 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifie
 public class InputLiteralForm extends javax.swing.JPanel {
 
     private String id;
-    private InputLiteralDataSpecifier specifier;
+    private InputLiteralDataDescription specifier;
     private boolean isMandatory = false;
 
     /**
      *
      * @param specifier
      */
-    public InputLiteralForm(InputLiteralDataSpecifier specifier) {
+    public InputLiteralForm(InputLiteralDataDescription specifier) {
         initComponents();
         this.specifier = specifier;
         final String theidentifier = specifier.getIdentifier();
@@ -66,7 +66,7 @@ public class InputLiteralForm extends javax.swing.JPanel {
      * @param specifier
      * @param argument
      */
-    public InputLiteralForm(InputLiteralDataSpecifier specifier, InputLiteralDataArgument argument) {
+    public InputLiteralForm(InputLiteralDataDescription specifier, InputLiteralDataValue argument) {
         initComponents();
         this.specifier = specifier;
         String theidentifier = specifier.getIdentifier();
@@ -103,7 +103,7 @@ public class InputLiteralForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public InputLiteralDataSpecifier getSpecifier() {
+    public InputLiteralDataDescription getSpecifier() {
         return this.specifier;
     }
 

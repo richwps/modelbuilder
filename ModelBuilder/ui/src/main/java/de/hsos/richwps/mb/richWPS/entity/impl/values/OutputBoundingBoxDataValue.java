@@ -1,22 +1,22 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
+package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxDataDescription;
 
 /**
  *
  * @author caduevel
  */
-public class OutputBoundingBoxDataArgument implements IOutputArgument {
+public class OutputBoundingBoxDataValue implements IOutputArgument {
 
-    private OutputBoundingBoxDataSpecifier specifier;
+    private OutputBoundingBoxDataDescription specifier;
 
     /**
      *
      * @param specifier
      */
-    public OutputBoundingBoxDataArgument(
-            OutputBoundingBoxDataSpecifier specifier) {
+    public OutputBoundingBoxDataValue(
+            OutputBoundingBoxDataDescription specifier) {
         this.specifier = specifier;
     }
     
@@ -33,7 +33,7 @@ public class OutputBoundingBoxDataArgument implements IOutputArgument {
      *
      * @return
      */
-    public OutputBoundingBoxDataSpecifier getSpecifier(){
+    public OutputBoundingBoxDataDescription getSpecifier(){
         return this.specifier;
     }
 }

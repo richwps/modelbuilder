@@ -8,9 +8,9 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputLiteralDataValue;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.ui.dialogs.components.renderer.BoundingBoxResultRenderer;
 import java.awt.GridBagConstraints;
@@ -114,31 +114,31 @@ public class ResultPanel extends APanel {
 
         for (Object key : keys) {
             IOutputArgument argument = (IOutputArgument) arguments.get(key);
-            if (argument instanceof OutputComplexDataArgument) {
+            if (argument instanceof OutputComplexDataValue) {
                 URL httpKVPref = (URL) results.get(key);
                 String uri = httpKVPref.toString();
                 //String uri = (String) results.get(key);
-                OutputComplexDataArgument _argument = (OutputComplexDataArgument) argument;
+                OutputComplexDataValue _argument = (OutputComplexDataValue) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
                 URIRenderer pan = new URIRenderer(identifier, uri);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 this.panels.add(tc);
-            } else if (argument instanceof OutputLiteralDataArgument) {
+            } else if (argument instanceof OutputLiteralDataValue) {
                 String literalDataAsString = (String) results.get(key);
-                OutputLiteralDataArgument _argument = (OutputLiteralDataArgument) argument;
+                OutputLiteralDataValue _argument = (OutputLiteralDataValue) argument;
                 String identifier = (_argument.getSepcifier()).getIdentifier();
                 LiteralRenderer pan = new LiteralRenderer(identifier, literalDataAsString);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 this.panels.add(tc);
-            } else if (argument instanceof OutputBoundingBoxDataArgument) {
+            } else if (argument instanceof OutputBoundingBoxDataValue) {
                 OutputDataType[] odts = (OutputDataType[]) results.get(key);
                 
-                OutputBoundingBoxDataArgument _argument;
-                _argument = (OutputBoundingBoxDataArgument) argument;
+                OutputBoundingBoxDataValue _argument;
+                _argument = (OutputBoundingBoxDataValue) argument;
                 String identifier = (_argument.getSpecifier()).getIdentifier();
                 
                 for(OutputDataType odt : odts) {

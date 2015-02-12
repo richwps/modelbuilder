@@ -10,12 +10,12 @@ import de.hsos.richwps.mb.richWPS.entity.impl.GetInputTypesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetOutputTypesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputLiteralDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputLiteralDataValue;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,20 +61,20 @@ public class RichWPSHelper {
         final Set<String> keys = theinputs.keySet();
         for (String key : keys) {
             Object o = theinputs.get(key);
-            if (o instanceof InputLiteralDataArgument) {
-                String value = ((InputLiteralDataArgument) o).getValue();
+            if (o instanceof InputLiteralDataValue) {
+                String value = ((InputLiteralDataValue) o).getValue();
                 builder.addLiteralData(key, value);
-            } else if (o instanceof InputComplexDataArgument) {
-                InputComplexDataArgument param = (InputComplexDataArgument) o;
+            } else if (o instanceof InputComplexDataValue) {
+                InputComplexDataValue param = (InputComplexDataValue) o;
                 String url = param.getURL();
                 String mimetype = param.getMimeType();
                 String encoding = param.getEncoding();
                 String schema = param.getSchema();
 
                 builder.addComplexDataReference(key, url, schema, encoding, mimetype);
-            } else if (o instanceof InputBoundingBoxDataArgument) {
-                InputBoundingBoxDataArgument param;
-                param = (InputBoundingBoxDataArgument) o;
+            } else if (o instanceof InputBoundingBoxDataValue) {
+                InputBoundingBoxDataValue param;
+                param = (InputBoundingBoxDataValue) o;
                 final String crs = param.getCrsType();
                 String[] split = param.getValue().split(",");
                 BigInteger dimension = BigInteger.valueOf(split.length);
@@ -96,10 +96,10 @@ public class RichWPSHelper {
         final Set<String> keys = theoutputs.keySet();
         for (String key : keys) {
             Object o = theoutputs.get(key);
-            if (o instanceof OutputLiteralDataArgument) {
+            if (o instanceof OutputLiteralDataValue) {
                 builder.addOutput(key);
-            } else if (o instanceof OutputComplexDataArgument) {
-                OutputComplexDataArgument param = (OutputComplexDataArgument) o;
+            } else if (o instanceof OutputComplexDataValue) {
+                OutputComplexDataValue param = (OutputComplexDataValue) o;
                 builder.addOutput(key);
                 boolean asReference = param.isAsReference();
                 String mimetype = param.getMimetype();
@@ -111,7 +111,7 @@ public class RichWPSHelper {
                 builder.setMimeTypeForOutput(mimetype, key);
                 builder.setEncodingForOutput(encoding, key);
                 builder.setSchemaForOutput(schema, key);
-            } else if (o instanceof OutputBoundingBoxDataArgument) {
+            } else if (o instanceof OutputBoundingBoxDataValue) {
                 builder.addOutput(key);
             }
         }
@@ -317,6 +317,7 @@ public class RichWPSHelper {
         try {
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
+            Logger.log(richWPSProvider.getClass(), "richwpsDeployProcess", builder.getDeploydocument());
             Object response = richwps.deploy(endp, builder.getDeploydocument());
             if (response == null) {
                 Logger.log(richWPSProvider.getClass(), "richwpsDeployProcess()", "No response");

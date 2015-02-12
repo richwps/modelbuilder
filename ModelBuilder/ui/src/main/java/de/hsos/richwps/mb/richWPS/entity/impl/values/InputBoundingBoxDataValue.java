@@ -1,15 +1,15 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
+package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 
 /**
  *
  * @author caduevel
  */
-public class InputBoundingBoxDataArgument implements IInputArgument {
+public class InputBoundingBoxDataValue implements IInputArgument {
 
-    private InputBoundingBoxDataSpecifier specifier;
+    private InputBoundingBoxDataDescription specifier;
 
     /**
      * Comma-seperated Coordinates.
@@ -25,8 +25,8 @@ public class InputBoundingBoxDataArgument implements IInputArgument {
      *
      * @param specifier
      */
-    public InputBoundingBoxDataArgument(
-            final InputBoundingBoxDataSpecifier specifier) {
+    public InputBoundingBoxDataValue(
+            final InputBoundingBoxDataDescription specifier) {
         this.specifier = specifier;
         this.value = "";
     }
@@ -36,8 +36,8 @@ public class InputBoundingBoxDataArgument implements IInputArgument {
      * @param specifier
      * @param value Comma-seperated Coordinates.
      */
-    public InputBoundingBoxDataArgument(
-            final InputBoundingBoxDataSpecifier specifier, String value) {
+    public InputBoundingBoxDataValue(
+            final InputBoundingBoxDataDescription specifier, String value) {
         this.specifier = specifier;
         this.value = value;
         this.crsType = "";
@@ -64,7 +64,7 @@ public class InputBoundingBoxDataArgument implements IInputArgument {
      *
      * @return
      */
-    public InputBoundingBoxDataSpecifier getSpecifier() {
+    public InputBoundingBoxDataDescription getSpecifier() {
         return specifier;
     }
 
@@ -72,7 +72,7 @@ public class InputBoundingBoxDataArgument implements IInputArgument {
      *
      * @param specifier
      */
-    public void setSpecifier(InputBoundingBoxDataSpecifier specifier) {
+    public void setSpecifier(InputBoundingBoxDataDescription specifier) {
         this.specifier = specifier;
     }
 

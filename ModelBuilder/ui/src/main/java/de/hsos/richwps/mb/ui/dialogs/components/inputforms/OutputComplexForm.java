@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import net.opengis.wps.x100.ComplexDataDescriptionType;
 
 /**
@@ -9,7 +9,7 @@ import net.opengis.wps.x100.ComplexDataDescriptionType;
  */
 public class OutputComplexForm extends javax.swing.JPanel {
 
-    private OutputComplexDataSpecifier specifier;
+    private OutputComplexDataDescription specifier;
 
     private String id;
     private ComplexDataDescriptionType[] subtypes_;
@@ -18,7 +18,7 @@ public class OutputComplexForm extends javax.swing.JPanel {
      * Creates new form OutputsParamPanel
      * @param specifier
      */
-    public OutputComplexForm(OutputComplexDataSpecifier specifier) {
+    public OutputComplexForm(OutputComplexDataDescription specifier) {
         initComponents();
         this.specifier = specifier;
 
@@ -30,9 +30,9 @@ public class OutputComplexForm extends javax.swing.JPanel {
         this.selectType.removeAllItems();
 
         for (java.util.List type : specifier.getTypes()) {
-            String amimetype = (String) type.get(OutputComplexDataSpecifier.mimetype_IDX);
-            String aschema = (String) type.get(OutputComplexDataSpecifier.schema_IDX);
-            String aencoding = (String) type.get(OutputComplexDataSpecifier.encoding_IDX);
+            String amimetype = (String) type.get(OutputComplexDataDescription.mimetype_IDX);
+            String aschema = (String) type.get(OutputComplexDataDescription.schema_IDX);
+            String aencoding = (String) type.get(OutputComplexDataDescription.encoding_IDX);
             String line = "";
 
             if (specifier.isDefaultType(type)){
@@ -58,7 +58,7 @@ public class OutputComplexForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputComplexDataSpecifier getSpecifier() {
+    public OutputComplexDataDescription getSpecifier() {
         return this.specifier;
     }
 

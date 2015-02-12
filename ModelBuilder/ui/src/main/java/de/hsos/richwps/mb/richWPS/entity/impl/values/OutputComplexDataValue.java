@@ -1,15 +1,15 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
+package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 
 /**
  *
  * @author dalcacer
  */
-public class OutputComplexDataArgument implements IOutputArgument {
+public class OutputComplexDataValue implements IOutputArgument {
 
-    private OutputComplexDataSpecifier specifier;
+    private OutputComplexDataDescription specifier;
 
     private boolean asReference = false;
     private boolean storeOutput = false;
@@ -27,7 +27,7 @@ public class OutputComplexDataArgument implements IOutputArgument {
      *
      * @param specifier
      */
-    public OutputComplexDataArgument(OutputComplexDataSpecifier specifier) {
+    public OutputComplexDataValue(OutputComplexDataDescription specifier) {
         this.specifier = specifier;
     }
 
@@ -59,7 +59,7 @@ public class OutputComplexDataArgument implements IOutputArgument {
      *
      * @return
      */
-    public OutputComplexDataSpecifier getSpecifier() {
+    public OutputComplexDataDescription getSpecifier() {
         return specifier;
     }
 
@@ -67,7 +67,7 @@ public class OutputComplexDataArgument implements IOutputArgument {
      *
      * @param specifier
      */
-    public void setSpecifier(OutputComplexDataSpecifier specifier) {
+    public void setSpecifier(OutputComplexDataDescription specifier) {
         this.specifier = specifier;
     }
 

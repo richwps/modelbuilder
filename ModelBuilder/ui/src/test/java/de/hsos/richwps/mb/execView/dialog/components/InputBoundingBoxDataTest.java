@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.execView.dialog.components;
 
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.InputBBoxForm;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,10 +40,10 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testGetSpecifier() {
         System.out.println("getSpecifier");
-        InputBoundingBoxDataSpecifier spec;
-        spec = new InputBoundingBoxDataSpecifier();
+        InputBoundingBoxDataDescription spec;
+        spec = new InputBoundingBoxDataDescription();
         InputBBoxForm instance = new InputBBoxForm(spec);
-        InputBoundingBoxDataSpecifier result = instance.getSpecifier();
+        InputBoundingBoxDataDescription result = instance.getSpecifier();
         assertEquals(spec, result);
     }
 
@@ -53,8 +53,8 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testGetText() {
         System.out.println("getText");
-        InputBoundingBoxDataSpecifier spec;
-        spec = new InputBoundingBoxDataSpecifier();
+        InputBoundingBoxDataDescription spec;
+        spec = new InputBoundingBoxDataDescription();
         InputBBoxForm instance = new InputBBoxForm(spec);
         String expResult = "-2.0"+" "+"-1.0"+","+"3.0"+" "+"4.0";
         String result = instance.getText();
@@ -67,8 +67,8 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testGetCRS() {
         System.out.println("getCRS");
-        InputBoundingBoxDataSpecifier spec;
-        spec = new InputBoundingBoxDataSpecifier();
+        InputBoundingBoxDataDescription spec;
+        spec = new InputBoundingBoxDataDescription();
         InputBBoxForm instance = new InputBBoxForm(spec);
         String expResult = "";
         String result = instance.getCRS();
@@ -81,8 +81,8 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testIsMandatory() {
         System.out.println("isMandatory");
-        InputBoundingBoxDataSpecifier spec;
-        spec = new InputBoundingBoxDataSpecifier();
+        InputBoundingBoxDataDescription spec;
+        spec = new InputBoundingBoxDataDescription();
         InputBBoxForm instance = new InputBBoxForm(spec);
         boolean expResult = false;
         boolean result = instance.isMandatory();

@@ -6,13 +6,13 @@ import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetInputTypesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetOutputTypesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputLiteralDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,19 +129,19 @@ public class RichWPSProviderTest extends TestCase {
         List<IInputSpecifier> inputs = request.getInputs();
 
         assertEquals(2, inputs.size());
-        InputComplexDataSpecifier geomSpec;
-        InputLiteralDataSpecifier literalSpec;
-        if (inputs.get(0) instanceof InputComplexDataSpecifier) {
-            geomSpec = (InputComplexDataSpecifier) inputs.get(0);
-            literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        InputComplexDataDescription geomSpec;
+        InputLiteralDataDescription literalSpec;
+        if (inputs.get(0) instanceof InputComplexDataDescription) {
+            geomSpec = (InputComplexDataDescription) inputs.get(0);
+            literalSpec = (InputLiteralDataDescription) inputs.get(1);
         } else {
-            geomSpec = (InputComplexDataSpecifier) inputs.get(1);
-            literalSpec = (InputLiteralDataSpecifier) inputs.get(0);
+            geomSpec = (InputComplexDataDescription) inputs.get(1);
+            literalSpec = (InputLiteralDataDescription) inputs.get(0);
         }
 
         HashMap<String, IInputArgument> ins = new HashMap<>();
-        InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "Hello World.");
-        InputComplexDataArgument arg2 = new InputComplexDataArgument(geomSpec);
+        InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "Hello World.");
+        InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
         arg2.setAsReference(true);
         arg2.setURL("http://map.ices.dk/geoserver/sf/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=sf:roads&maxFeatures=50");
         arg2.setMimeType("text/xml");
@@ -151,14 +151,14 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = request.getOutputs();
-        OutputComplexDataSpecifier outspec;
-        if (outputs.get(0) instanceof OutputComplexDataSpecifier) {
-            outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        OutputComplexDataDescription outspec;
+        if (outputs.get(0) instanceof OutputComplexDataDescription) {
+            outspec = (OutputComplexDataDescription) outputs.get(0);
         } else {
-            outspec = (OutputComplexDataSpecifier) outputs.get(1);
+            outspec = (OutputComplexDataDescription) outputs.get(1);
         }
 
-        OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
+        OutputComplexDataValue outarg = new OutputComplexDataValue(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
@@ -185,19 +185,19 @@ public class RichWPSProviderTest extends TestCase {
         List<IInputSpecifier> inputs = perform.getInputs();
 
         assertEquals(2, inputs.size());
-        InputComplexDataSpecifier geomSpec;
-        InputLiteralDataSpecifier literalSpec;
-        if (inputs.get(0) instanceof InputComplexDataSpecifier) {
-            geomSpec = (InputComplexDataSpecifier) inputs.get(0);
-            literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+        InputComplexDataDescription geomSpec;
+        InputLiteralDataDescription literalSpec;
+        if (inputs.get(0) instanceof InputComplexDataDescription) {
+            geomSpec = (InputComplexDataDescription) inputs.get(0);
+            literalSpec = (InputLiteralDataDescription) inputs.get(1);
         } else {
-            geomSpec = (InputComplexDataSpecifier) inputs.get(1);
-            literalSpec = (InputLiteralDataSpecifier) inputs.get(0);
+            geomSpec = (InputComplexDataDescription) inputs.get(1);
+            literalSpec = (InputLiteralDataDescription) inputs.get(0);
         }
 
         HashMap<String, IInputArgument> ins = new HashMap<>();
-        InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "Hello World.");
-        InputComplexDataArgument arg2 = new InputComplexDataArgument(geomSpec);
+        InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "Hello World.");
+        InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
         arg2.setAsReference(true);
         arg2.setURL("http://no.domain");
         arg2.setMimeType("text/xml");
@@ -207,14 +207,14 @@ public class RichWPSProviderTest extends TestCase {
 
         HashMap<String, IOutputArgument> outs = new HashMap();
         List<IOutputSpecifier> outputs = perform.getOutputs();
-        OutputComplexDataSpecifier outspec;
-        if (outputs.get(0) instanceof OutputComplexDataSpecifier) {
-            outspec = (OutputComplexDataSpecifier) outputs.get(0);
+        OutputComplexDataDescription outspec;
+        if (outputs.get(0) instanceof OutputComplexDataDescription) {
+            outspec = (OutputComplexDataDescription) outputs.get(0);
         } else {
-            outspec = (OutputComplexDataSpecifier) outputs.get(1);
+            outspec = (OutputComplexDataDescription) outputs.get(1);
         }
 
-        OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
+        OutputComplexDataValue outarg = new OutputComplexDataValue(outspec);
         outarg.setAsReference(true);
         outarg.setMimetype("text/html");
         outs.put("result", outarg);
@@ -244,19 +244,19 @@ public class RichWPSProviderTest extends TestCase {
      List<IInputSpecifier> inputs = perform.getInputs();
 
      assertEquals(2, inputs.size());
-     InputComplexDataSpecifier geomSpec;
-     InputLiteralDataSpecifier literalSpec;
-     if (inputs.get(0) instanceof InputComplexDataSpecifier) {
-     geomSpec = (InputComplexDataSpecifier) inputs.get(0);
-     literalSpec = (InputLiteralDataSpecifier) inputs.get(1);
+     InputComplexDataDescription geomSpec;
+     InputLiteralDataDescription literalSpec;
+     if (inputs.get(0) instanceof InputComplexDataDescription) {
+     geomSpec = (InputComplexDataDescription) inputs.get(0);
+     literalSpec = (InputLiteralDataDescription) inputs.get(1);
      } else {
-     geomSpec = (InputComplexDataSpecifier) inputs.get(1);
-     literalSpec = (InputLiteralDataSpecifier) inputs.get(0);
+     geomSpec = (InputComplexDataDescription) inputs.get(1);
+     literalSpec = (InputLiteralDataDescription) inputs.get(0);
      }
 
      HashMap<String, IInputArgument> ins = new HashMap<>();
-     InputLiteralDataArgument arg1 = new InputLiteralDataArgument(literalSpec, "10");
-     InputComplexDataArgument arg2 = new InputComplexDataArgument(geomSpec);
+     InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "10");
+     InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
      arg2.setAsReference(true);
      arg2.setURL("http://map.ices.dk/geoserver/sf/ows?service=WFS&version=1.0.0&perform=GetFeature&typeName=sf:roads&maxFeatures=50");
      arg2.setMimeType("text/xml");
@@ -266,8 +266,8 @@ public class RichWPSProviderTest extends TestCase {
 
      HashMap<String, IOutputArgument> outs = new HashMap();
      List<IOutputSpecifier> outputs = perform.getOutputs();
-     OutputComplexDataSpecifier outspec = (OutputComplexDataSpecifier) outputs.get(0);
-     OutputComplexDataArgument outarg = new OutputComplexDataArgument(outspec);
+     OutputComplexDataDescription outspec = (OutputComplexDataDescription) outputs.get(0);
+     OutputComplexDataValue outarg = new OutputComplexDataValue(outspec);
      outarg.setAsReference(true);
      outarg.setMimetype("text/html");
      outs.put("result", outarg);
@@ -278,8 +278,8 @@ public class RichWPSProviderTest extends TestCase {
      assertNotNull(theResults);
      }*/
     private IInputSpecifier createComplexDataInput() {
-        InputComplexDataSpecifier specifier;
-        specifier = new InputComplexDataSpecifier();
+        InputComplexDataDescription specifier;
+        specifier = new InputComplexDataDescription();
         specifier.setIdentifier("aabb input.");
         specifier.setTitle("aabb input.");
         specifier.setMinOccur(0);
@@ -306,7 +306,7 @@ public class RichWPSProviderTest extends TestCase {
     }
 
     private IInputSpecifier createLiteralDataInput() {
-        InputLiteralDataSpecifier specifier = new InputLiteralDataSpecifier();
+        InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setAbstract("aabb's abstract");
@@ -318,7 +318,7 @@ public class RichWPSProviderTest extends TestCase {
     }
 
     private IOutputSpecifier createComplexDataOutput() {
-        OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
+        OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setTheAbstract("aabb's abstract");
@@ -342,7 +342,7 @@ public class RichWPSProviderTest extends TestCase {
     }
 
     private IOutputSpecifier createLiteralDataOutput() {
-        OutputLiteralDataSpecifier specifier = new OutputLiteralDataSpecifier();
+        OutputLiteralDataDescription specifier = new OutputLiteralDataDescription();
         specifier.setIdentifier("identifier");
         specifier.setTitle("");
         specifier.setAbstract("identifier {NF/DI}.");
@@ -371,8 +371,8 @@ public class RichWPSProviderTest extends TestCase {
      instance.richwpsDeployProcess(perform);
      }*/
     private IInputSpecifier createComplexDataInput1() {
-        InputComplexDataSpecifier specifier;
-        specifier = new InputComplexDataSpecifier();
+        InputComplexDataDescription specifier;
+        specifier = new InputComplexDataDescription();
         specifier.setIdentifier("reportingareas");
         specifier.setTitle("");
         specifier.setMinOccur(1);
@@ -394,7 +394,7 @@ public class RichWPSProviderTest extends TestCase {
     }
 
     private IInputSpecifier createLiteralDataInput1() {
-        InputLiteralDataSpecifier specifier = new InputLiteralDataSpecifier();
+        InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("identifier");
         specifier.setTitle("");
         specifier.setAbstract("{NF/DI}");
@@ -406,7 +406,7 @@ public class RichWPSProviderTest extends TestCase {
     }
 
     private IOutputSpecifier createComplexDataOutput1() {
-        OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
+        OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("selectedarea");
         specifier.setTitle("");
         specifier.setTheAbstract("");

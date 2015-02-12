@@ -20,10 +20,10 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 import de.hsos.richwps.mb.exception.GraphToRequestTransformationException;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import java.io.File;
@@ -550,7 +550,7 @@ public class AppRichWPSManager {
 
         switch (port.getDatatype()) {
             case LITERAL:
-                InputLiteralDataSpecifier literalSpecifier = new InputLiteralDataSpecifier();
+                InputLiteralDataDescription literalSpecifier = new InputLiteralDataDescription();
                 literalSpecifier.setIdentifier(port.getOwsIdentifier());
                 literalSpecifier.setAbstract(port.getOwsAbstract());
                 literalSpecifier.setTitle(port.getOwsTitle());
@@ -567,7 +567,7 @@ public class AppRichWPSManager {
                 break;
 
             case COMPLEX:
-                InputComplexDataSpecifier complexSpecifier = new InputComplexDataSpecifier();
+                InputComplexDataDescription complexSpecifier = new InputComplexDataDescription();
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
                 complexSpecifier.setAbstract(port.getOwsAbstract());
                 complexSpecifier.setTitle(port.getOwsTitle());
@@ -644,7 +644,7 @@ public class AppRichWPSManager {
 
         switch (port.getDatatype()) {
             case LITERAL:
-                OutputLiteralDataSpecifier literalSpecifier = new OutputLiteralDataSpecifier();
+                OutputLiteralDataDescription literalSpecifier = new OutputLiteralDataDescription();
                 literalSpecifier.setIdentifier(port.getOwsIdentifier());
                 literalSpecifier.setAbstract(port.getOwsAbstract());
                 literalSpecifier.setTitle(port.getOwsTitle());
@@ -656,7 +656,7 @@ public class AppRichWPSManager {
                 break;
 
             case COMPLEX:
-                OutputComplexDataSpecifier complexSpecifier = new OutputComplexDataSpecifier();
+                OutputComplexDataDescription complexSpecifier = new OutputComplexDataDescription();
                 complexSpecifier.setIdentifier(port.getOwsIdentifier());
                 complexSpecifier.setTheAbstract(port.getOwsAbstract());
                 complexSpecifier.setTitle(port.getOwsTitle());

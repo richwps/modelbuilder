@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -17,7 +17,7 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  *
  * @author caduevel
  */
-public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
+public class InputBoundingBoxDataDescription implements IInputSpecifier {
 
     /**
      * Unambiguous identifier or name of a process, input, or output, unique for
@@ -60,7 +60,7 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
     /**
      * Constructs an empty InputSpecifier.
      */
-    public InputBoundingBoxDataSpecifier() {
+    public InputBoundingBoxDataDescription() {
         this.identifier = "";
         this.title = "";
         this.theabstract = "";
@@ -75,7 +75,7 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
      *
      * @param desc Inputdescription containing BoundingBoxData.
      */
-    public InputBoundingBoxDataSpecifier(final InputDescriptionType desc) {
+    public InputBoundingBoxDataDescription(final InputDescriptionType desc) {
         this.identifier = desc.getIdentifier().getStringValue();
 
         if (desc.getAbstract() != null) {
@@ -263,7 +263,7 @@ public class InputBoundingBoxDataSpecifier implements IInputSpecifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final InputBoundingBoxDataSpecifier other = (InputBoundingBoxDataSpecifier) obj;
+        final InputBoundingBoxDataDescription other = (InputBoundingBoxDataDescription) obj;
 
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;

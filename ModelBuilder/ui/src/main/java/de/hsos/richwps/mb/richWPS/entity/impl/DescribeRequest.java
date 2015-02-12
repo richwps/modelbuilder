@@ -1,14 +1,14 @@
 package de.hsos.richwps.mb.richWPS.entity.impl;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -223,13 +223,13 @@ public class DescribeRequest implements IRequest, Serializable {
      */
     public void addInput(final InputDescriptionType description) {
         if (description.getComplexData() != null) {
-            IInputSpecifier aninput = new InputComplexDataSpecifier(description);
+            IInputSpecifier aninput = new InputComplexDataDescription(description);
             this.availableinputs.add(aninput);
         } else if (description.getLiteralData() != null) {
-            IInputSpecifier aninput = new InputLiteralDataSpecifier(description);
+            IInputSpecifier aninput = new InputLiteralDataDescription(description);
             this.availableinputs.add(aninput);
         } else if (description.getBoundingBoxData() != null) {
-            IInputSpecifier aninput = new InputBoundingBoxDataSpecifier(description);
+            IInputSpecifier aninput = new InputBoundingBoxDataDescription(description);
             this.availableinputs.add(aninput);
         }
     }
@@ -241,13 +241,13 @@ public class DescribeRequest implements IRequest, Serializable {
      */
     public void addOutput(final OutputDescriptionType description) {
         if (description.getComplexOutput() != null) {
-            IOutputSpecifier anoutput = new OutputComplexDataSpecifier(description);
+            IOutputSpecifier anoutput = new OutputComplexDataDescription(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getLiteralOutput() != null) {
-            IOutputSpecifier anoutput = new OutputLiteralDataSpecifier(description);
+            IOutputSpecifier anoutput = new OutputLiteralDataDescription(description);
             this.availableoutputs.add(anoutput);
         } else if (description.getBoundingBoxOutput() != null) {
-            IOutputSpecifier anoutput = new OutputBoundingBoxDataSpecifier(description);
+            IOutputSpecifier anoutput = new OutputBoundingBoxDataDescription(description);
             this.availableoutputs.add(anoutput);
         }
     }

@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import net.opengis.wps.x100.InputDescriptionType;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,8 +41,8 @@ public class InputBoundingBoxDataSpecifierTest {
     @Test
     public void testConstruction() {
         System.out.println("testConstruction");
-        InputBoundingBoxDataSpecifier specifier;
-        specifier = new InputBoundingBoxDataSpecifier();
+        InputBoundingBoxDataDescription specifier;
+        specifier = new InputBoundingBoxDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setAbstract("aabb's abstract");
@@ -50,8 +51,8 @@ public class InputBoundingBoxDataSpecifierTest {
         specifier.setDefaultCRS("DefaultCRS");
         
         InputDescriptionType ogctype = specifier.toInputDescription();
-        InputBoundingBoxDataSpecifier specifier2;
-        specifier2 = new InputBoundingBoxDataSpecifier(ogctype);
+        InputBoundingBoxDataDescription specifier2;
+        specifier2 = new InputBoundingBoxDataDescription(ogctype);
         assertEquals(specifier, specifier2);
     }
 }

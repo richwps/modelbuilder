@@ -1,22 +1,22 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.arguments;
+package de.hsos.richwps.mb.richWPS.entity.impl.values;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.IInputArgument;
 
 /**
  *
  * @author dalcacer
  */
-public class InputLiteralDataArgument implements IInputArgument {
+public class InputLiteralDataValue implements IInputArgument {
 
-    private InputLiteralDataSpecifier specifier;
+    private InputLiteralDataDescription specifier;
     private String value;
 
     /**
      *
      * @param specifier
      */
-    public InputLiteralDataArgument(InputLiteralDataSpecifier specifier) {
+    public InputLiteralDataValue(InputLiteralDataDescription specifier) {
         this.specifier = specifier;
         this.value = "";
     }
@@ -26,7 +26,7 @@ public class InputLiteralDataArgument implements IInputArgument {
      * @param specifier
      * @param value
      */
-    public InputLiteralDataArgument(InputLiteralDataSpecifier specifier, String value) {
+    public InputLiteralDataValue(InputLiteralDataDescription specifier, String value) {
         this.specifier = specifier;
         this.value = value;
     }

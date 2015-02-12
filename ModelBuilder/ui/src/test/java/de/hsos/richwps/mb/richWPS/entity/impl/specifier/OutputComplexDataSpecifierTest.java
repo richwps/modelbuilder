@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import java.util.ArrayList;
 import java.util.List;
 import net.opengis.wps.x100.OutputDescriptionType;
@@ -38,12 +38,12 @@ public class OutputComplexDataSpecifierTest {
     }
 
     /**
-     * Test of getIdentifier method, of class OutputComplexDataSpecifier.
+     * Test of getIdentifier method, of class OutputComplexDataDescription.
      */
     @Test
     public void testConstruction() {
         System.out.println("testConstruction");
-        OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
+        OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setTheAbstract("aabb's abstract");
@@ -62,7 +62,7 @@ public class OutputComplexDataSpecifierTest {
         specifier.setDefaulttype(atype);
         
         OutputDescriptionType description = specifier.toOutputDescription();
-        OutputComplexDataSpecifier specifier2 = new OutputComplexDataSpecifier(description);
+        OutputComplexDataDescription specifier2 = new OutputComplexDataDescription(description);
         assertEquals(specifier, specifier2);
     }
     

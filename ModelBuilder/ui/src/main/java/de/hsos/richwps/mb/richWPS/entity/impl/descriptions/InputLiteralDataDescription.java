@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import java.math.BigInteger;
@@ -11,7 +11,7 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class InputLiteralDataSpecifier implements IInputSpecifier {
+public class InputLiteralDataDescription implements IInputSpecifier {
 
     private String identifier;
     private String typeReference;
@@ -24,7 +24,7 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
     /**
      * Constructs an empty InputSpecifier.
      */
-    public InputLiteralDataSpecifier() {
+    public InputLiteralDataDescription() {
         this.identifier = "";
         this.typeReference = "";
         this.title = "";
@@ -38,7 +38,7 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
      *
      * @param description
      */
-    public InputLiteralDataSpecifier(final InputDescriptionType description) {
+    public InputLiteralDataDescription(final InputDescriptionType description) {
         this.identifier = description.getIdentifier().getStringValue();
 
         if (description.getAbstract() != null) {
@@ -224,7 +224,7 @@ public class InputLiteralDataSpecifier implements IInputSpecifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final InputLiteralDataSpecifier other = (InputLiteralDataSpecifier) obj;
+        final InputLiteralDataDescription other = (InputLiteralDataDescription) obj;
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }

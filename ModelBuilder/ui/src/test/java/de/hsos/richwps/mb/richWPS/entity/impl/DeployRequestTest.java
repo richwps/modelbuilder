@@ -3,10 +3,10 @@ package de.hsos.richwps.mb.richWPS.entity.impl;
 import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 import java.util.ArrayList;
 import java.util.List;
 import net.opengis.wps.x100.ProcessDescriptionType;
@@ -43,8 +43,8 @@ public class DeployRequestTest {
     }
 
     private IInputSpecifier createComplexDataInput() {
-        InputComplexDataSpecifier specifier;
-        specifier = new InputComplexDataSpecifier();
+        InputComplexDataDescription specifier;
+        specifier = new InputComplexDataDescription();
         specifier.setIdentifier("aabb input.");
         specifier.setTitle("aabb input.");
         specifier.setMinOccur(0);
@@ -68,7 +68,7 @@ public class DeployRequestTest {
     }
 
     private IInputSpecifier createLiteralDataInput() {
-        InputLiteralDataSpecifier specifier = new InputLiteralDataSpecifier();
+        InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setAbstract("aabb's abstract");
@@ -80,7 +80,7 @@ public class DeployRequestTest {
     }
 
     private IOutputSpecifier createComplexDataOutput() {
-        OutputComplexDataSpecifier specifier = new OutputComplexDataSpecifier();
+        OutputComplexDataDescription specifier = new OutputComplexDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setTheAbstract("aabb's abstract");
@@ -101,7 +101,7 @@ public class DeployRequestTest {
     }
 
     private IOutputSpecifier createLiteralDataOutput() {
-        OutputLiteralDataSpecifier specifier = new OutputLiteralDataSpecifier();
+        OutputLiteralDataDescription specifier = new OutputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setAbstract("aabb's abstract");

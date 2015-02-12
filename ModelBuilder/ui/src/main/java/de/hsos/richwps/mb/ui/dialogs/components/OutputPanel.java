@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputBBoxForm;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputComplexForm;
 import de.hsos.richwps.mb.ui.dialogs.components.inputforms.OutputLiteralForm;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.IOutputArgument;
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
@@ -13,11 +13,11 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputLiteralDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxDataDescription;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,20 +104,20 @@ public class OutputPanel extends APanel {
         }
 
         for (IOutputSpecifier specifier : this.request.getOutputs()) {
-            if (specifier instanceof OutputLiteralDataSpecifier) {
-                OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataSpecifier) specifier);
+            if (specifier instanceof OutputLiteralDataDescription) {
+                OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataDescription) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
-            } else if (specifier instanceof OutputComplexDataSpecifier) {
-                OutputComplexForm pan = new OutputComplexForm((OutputComplexDataSpecifier) specifier);
+            } else if (specifier instanceof OutputComplexDataDescription) {
+                OutputComplexForm pan = new OutputComplexForm((OutputComplexDataDescription) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
-            } else if (specifier instanceof OutputBoundingBoxDataSpecifier) {
-                OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataSpecifier) specifier);
+            } else if (specifier instanceof OutputBoundingBoxDataDescription) {
+                OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataDescription) specifier);
                 TitledComponent tc = new TitledComponent(specifier.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
@@ -186,15 +186,15 @@ public class OutputPanel extends APanel {
 
                 OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 if (pan.isSelected()) {
-                    OutputComplexDataSpecifier specifier = pan.getSpecifier();
-                    OutputComplexDataArgument argument = new OutputComplexDataArgument(specifier);
+                    OutputComplexDataDescription specifier = pan.getSpecifier();
+                    OutputComplexDataValue argument = new OutputComplexDataValue(specifier);
 
                     Boolean asRef = pan.asReference();
                     argument.setAsReference(asRef);
                     List type = pan.getType();
-                    String amimetype = (String) type.get(OutputComplexDataSpecifier.mimetype_IDX);
-                    String aschema = (String) type.get(OutputComplexDataSpecifier.schema_IDX);
-                    String aencoding = (String) type.get(OutputComplexDataSpecifier.encoding_IDX);
+                    String amimetype = (String) type.get(OutputComplexDataDescription.mimetype_IDX);
+                    String aschema = (String) type.get(OutputComplexDataDescription.schema_IDX);
+                    String aencoding = (String) type.get(OutputComplexDataDescription.encoding_IDX);
 
                     argument.setMimetype(amimetype);
                     argument.setSchema(aschema);
@@ -206,8 +206,8 @@ public class OutputPanel extends APanel {
                 OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
 
                 if (pan.isSelected()) {
-                    OutputLiteralDataSpecifier specifier = pan.getSpecifier();
-                    OutputLiteralDataArgument argument = new OutputLiteralDataArgument(specifier);
+                    OutputLiteralDataDescription specifier = pan.getSpecifier();
+                    OutputLiteralDataValue argument = new OutputLiteralDataValue(specifier);
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
 
@@ -215,8 +215,8 @@ public class OutputPanel extends APanel {
                 OutputBBoxForm pan = (OutputBBoxForm) panel.getComponent();
 
                 if (pan.isSelected()) {
-                    OutputBoundingBoxDataSpecifier specifier = pan.getSpecifier();
-                    OutputBoundingBoxDataArgument argument = new OutputBoundingBoxDataArgument(specifier);
+                    OutputBoundingBoxDataDescription specifier = pan.getSpecifier();
+                    OutputBoundingBoxDataValue argument = new OutputBoundingBoxDataValue(specifier);
                     theoutputs.put(argument.getIdentifier(), argument);
                 }
             }

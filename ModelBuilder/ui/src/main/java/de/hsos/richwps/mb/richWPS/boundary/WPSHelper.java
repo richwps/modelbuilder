@@ -8,12 +8,12 @@ import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputLiteralDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.OutputLiteralDataArgument;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputLiteralDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputLiteralDataValue;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -74,8 +74,8 @@ public class WPSHelper {
                 Set<String> keys = theoutputs.keySet();
                 for (String key : keys) {
                     Object o = theoutputs.get(key);
-                    if (o instanceof OutputLiteralDataArgument) {
-                        OutputLiteralDataArgument argument = (OutputLiteralDataArgument) o;
+                    if (o instanceof OutputLiteralDataValue) {
+                        OutputLiteralDataValue argument = (OutputLiteralDataValue) o;
                         OutputDataType[] outputs = response.getExecuteResponse().getProcessOutputs().getOutputArray();
                         String value = "";
                         for (OutputDataType output : outputs) {
@@ -86,9 +86,9 @@ public class WPSHelper {
                             }
                         }
                         request.addResult(key, value);
-                    } else if (o instanceof OutputComplexDataArgument) {
+                    } else if (o instanceof OutputComplexDataValue) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
-                        OutputComplexDataArgument argument = (OutputComplexDataArgument) o;
+                        OutputComplexDataValue argument = (OutputComplexDataValue) o;
                         if (argument.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
                             
@@ -109,12 +109,12 @@ public class WPSHelper {
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);
                             Logger.log(this.getClass(), "analyseResponse", "the size " + binding.getPayload().size());
                         }
-                    } else if (o instanceof OutputBoundingBoxDataArgument) {
+                    } else if (o instanceof OutputBoundingBoxDataValue) {
                         //Currently returns the BoundingBoxData when used with
                         //*.test.MultipleComplexInAndOutputsDummyTestClass
 
                         //OutputBoundingBoxDataArgument argument;
-                        //argument = (OutputBoundingBoxDataArgument) o;
+                        //argument = (OutputBoundingBoxDataValue) o;
                         ExecuteResponseDocument.ExecuteResponse exResp;
                         exResp = response.getExecuteResponse();
                         if ("Process successful".equals(exResp.getStatus().getProcessSucceeded())) {
@@ -177,19 +177,19 @@ public class WPSHelper {
         final Set<String> keys = theinputs.keySet();
         for (String key : keys) {
             Object o = theinputs.get(key);
-            if (o instanceof InputLiteralDataArgument) {
-                String value = ((InputLiteralDataArgument) o).getValue();
+            if (o instanceof InputLiteralDataValue) {
+                String value = ((InputLiteralDataValue) o).getValue();
                 executeBuilder.addLiteralData(key, value);
-            } else if (o instanceof InputComplexDataArgument) {
-                InputComplexDataArgument param = (InputComplexDataArgument) o;
+            } else if (o instanceof InputComplexDataValue) {
+                InputComplexDataValue param = (InputComplexDataValue) o;
                 String url = param.getURL();
                 String mimetype = param.getMimeType();
                 String encoding = param.getEncoding();
                 String schema = param.getSchema();
                 executeBuilder.addComplexDataReference(key, url, schema, encoding, mimetype);
-            } else if (o instanceof InputBoundingBoxDataArgument) {
-                InputBoundingBoxDataArgument param;
-                param = (InputBoundingBoxDataArgument) o;
+            } else if (o instanceof InputBoundingBoxDataValue) {
+                InputBoundingBoxDataValue param;
+                param = (InputBoundingBoxDataValue) o;
                 final String crs = param.getCrsType();
                 String[] split = param.getValue().split(",");
                 BigInteger dimension = BigInteger.valueOf(split.length);
@@ -211,10 +211,10 @@ public class WPSHelper {
         final Set<String> keys = theoutputs.keySet();
         for (String key : keys) {
             Object o = theoutputs.get(key);
-            if (o instanceof OutputLiteralDataArgument) {
+            if (o instanceof OutputLiteralDataValue) {
                 executeBuilder.addOutput(key);
-            } else if (o instanceof OutputComplexDataArgument) {
-                OutputComplexDataArgument param = (OutputComplexDataArgument) o;
+            } else if (o instanceof OutputComplexDataValue) {
+                OutputComplexDataValue param = (OutputComplexDataValue) o;
                 executeBuilder.addOutput(key);
                 boolean asReference = param.isAsReference();
                 String mimetype = param.getMimetype();
@@ -226,7 +226,7 @@ public class WPSHelper {
                 executeBuilder.setMimeTypeForOutput(mimetype, key);
                 executeBuilder.setEncodingForOutput(encoding, key);
                 executeBuilder.setSchemaForOutput(schema, key);
-            } else if (o instanceof OutputBoundingBoxDataArgument) {
+            } else if (o instanceof OutputBoundingBoxDataValue) {
                 //FIXME BoundingBox
                 executeBuilder.addOutput(key);
             }

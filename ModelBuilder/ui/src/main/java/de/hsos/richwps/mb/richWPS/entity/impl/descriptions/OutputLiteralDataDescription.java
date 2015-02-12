@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
 import java.util.Objects;
@@ -12,7 +12,7 @@ import org.n52.wps.io.data.binding.literal.LiteralStringBinding;
  *
  * @author dalcacer
  */
-public class OutputLiteralDataSpecifier implements IOutputSpecifier {
+public class OutputLiteralDataDescription implements IOutputSpecifier {
 
     private String identifier;
 
@@ -25,7 +25,7 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
     /**
      * Constructs an empty OutputLiteralDataSpecifier.
      */
-    public OutputLiteralDataSpecifier() {
+    public OutputLiteralDataDescription() {
         this.identifier = "";
         this.theabstract = "";
         this.title = "";
@@ -40,7 +40,7 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
      * @param title
      * @param type
      */
-    public OutputLiteralDataSpecifier(String identifier, String theabstract,
+    public OutputLiteralDataDescription(String identifier, String theabstract,
             String title, String type) {
         this.identifier = identifier;
         this.theabstract = theabstract;
@@ -52,7 +52,7 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
      *
      * @param description
      */
-    public OutputLiteralDataSpecifier(OutputDescriptionType description) {
+    public OutputLiteralDataDescription(OutputDescriptionType description) {
         this.identifier = description.getIdentifier().getStringValue();
         if (description.getAbstract() != null) {
             this.theabstract = description.getAbstract().getStringValue();
@@ -192,7 +192,7 @@ public class OutputLiteralDataSpecifier implements IOutputSpecifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final OutputLiteralDataSpecifier other = (OutputLiteralDataSpecifier) obj;
+        final OutputLiteralDataDescription other = (OutputLiteralDataDescription) obj;
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }

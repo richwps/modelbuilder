@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputBoundingBoxDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import java.util.List;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
@@ -56,7 +56,7 @@ public class InputBBoxForm extends javax.swing.JPanel {
     /**
      * specifier For usage in InputParameterization.
      */
-    private InputBoundingBoxDataSpecifier specifier;
+    private InputBoundingBoxDataDescription specifier;
 
     private boolean isMandatory = false;
 
@@ -64,7 +64,7 @@ public class InputBBoxForm extends javax.swing.JPanel {
      *
      * @param specifier
      */
-    public InputBBoxForm(final InputBoundingBoxDataSpecifier specifier) {
+    public InputBBoxForm(final InputBoundingBoxDataDescription specifier) {
         initComponents();
 
         InputVerifier verifier = new CoordinateVerifier();
@@ -134,7 +134,7 @@ public class InputBBoxForm extends javax.swing.JPanel {
      *
      * @param specifier
      */
-    public InputBBoxForm(final InputBoundingBoxDataSpecifier specifier, InputBoundingBoxDataArgument argument) {
+    public InputBBoxForm(final InputBoundingBoxDataDescription specifier, InputBoundingBoxDataValue argument) {
         initComponents();
 
         InputVerifier verifier = new CoordinateVerifier();
@@ -199,7 +199,7 @@ public class InputBBoxForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public InputBoundingBoxDataSpecifier getSpecifier() {
+    public InputBoundingBoxDataDescription getSpecifier() {
         return this.specifier;
     }
 

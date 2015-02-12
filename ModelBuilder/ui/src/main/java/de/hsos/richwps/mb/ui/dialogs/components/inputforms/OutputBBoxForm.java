@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputBoundingBoxDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxDataDescription;
 import java.util.List;
 import javax.swing.border.TitledBorder;
 
@@ -10,7 +10,7 @@ import javax.swing.border.TitledBorder;
  */
 public class OutputBBoxForm extends javax.swing.JPanel {
 
-    private final OutputBoundingBoxDataSpecifier specifier;
+    private final OutputBoundingBoxDataDescription specifier;
 
     private final String id;
 
@@ -19,7 +19,7 @@ public class OutputBBoxForm extends javax.swing.JPanel {
      * @param specifier
      */
     public OutputBBoxForm(
-            final OutputBoundingBoxDataSpecifier specifier) {
+            final OutputBoundingBoxDataDescription specifier) {
         initComponents();
         this.specifier = specifier;
 
@@ -63,7 +63,7 @@ public class OutputBBoxForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputBoundingBoxDataSpecifier getSpecifier() {
+    public OutputBoundingBoxDataDescription getSpecifier() {
         return this.specifier;
     }
 

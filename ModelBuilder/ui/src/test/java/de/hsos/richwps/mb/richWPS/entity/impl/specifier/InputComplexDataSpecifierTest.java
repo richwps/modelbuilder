@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 import java.util.ArrayList;
 import java.util.List;
 import net.opengis.wps.x100.InputDescriptionType;
@@ -38,13 +38,13 @@ public class InputComplexDataSpecifierTest {
     }
 
     /**
-     * Test of getIdentifier method, of class InputComplexDataSpecifier.
+     * Test of getIdentifier method, of class InputComplexDataDescription.
      */
     @Test
     public void testConstruction() {
         System.out.println("testConstruction");
-        InputComplexDataSpecifier specifier;
-        specifier = new InputComplexDataSpecifier();
+        InputComplexDataDescription specifier;
+        specifier = new InputComplexDataDescription();
         specifier.setIdentifier("aabb input.");
         specifier.setTitle("aabb input.");
         specifier.setMinOccur(0);
@@ -66,7 +66,7 @@ public class InputComplexDataSpecifierTest {
         specifier.setMaximumMegabytes(5);
 
         InputDescriptionType ogctype = specifier.toInputDescription();
-        InputComplexDataSpecifier specifier2 = new InputComplexDataSpecifier(ogctype);
+        InputComplexDataDescription specifier2 = new InputComplexDataDescription(ogctype);
 
         assertEquals(specifier2, specifier);
     }

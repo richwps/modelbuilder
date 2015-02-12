@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
@@ -16,7 +16,7 @@ import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
  *
  * @author caduevel
  */
-public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
+public class OutputBoundingBoxDataDescription implements IOutputSpecifier {
 
     /**
      * Unambiguous identifier or name of a process, input, or output, unique for
@@ -49,7 +49,7 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
     /**
      * Constructs an empty OutputBoundingBoxDataSpecifier.
      */
-    public OutputBoundingBoxDataSpecifier() {
+    public OutputBoundingBoxDataDescription() {
         this.identifier = "";
         this.theabstract = "";
         this.title = "";
@@ -66,7 +66,7 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
      * @param defaultCRS
      * @param supportedCRS
      */
-    public OutputBoundingBoxDataSpecifier(String identifier, String theabstract,
+    public OutputBoundingBoxDataDescription(String identifier, String theabstract,
             String title, String defaultCRS, LinkedList<String> supportedCRS) {
         this.identifier = identifier;
         this.theabstract = theabstract;
@@ -80,7 +80,7 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
      *
      * @param description
      */
-    public OutputBoundingBoxDataSpecifier(final OutputDescriptionType description) {
+    public OutputBoundingBoxDataDescription(final OutputDescriptionType description) {
         this.identifier = description.getIdentifier().getStringValue();
         if (description.getAbstract() != null) {
             this.theabstract = description.getAbstract().getStringValue();
@@ -212,8 +212,8 @@ public class OutputBoundingBoxDataSpecifier implements IOutputSpecifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final OutputBoundingBoxDataSpecifier other;
-        other = (OutputBoundingBoxDataSpecifier) obj;
+        final OutputBoundingBoxDataDescription other;
+        other = (OutputBoundingBoxDataDescription) obj;
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }

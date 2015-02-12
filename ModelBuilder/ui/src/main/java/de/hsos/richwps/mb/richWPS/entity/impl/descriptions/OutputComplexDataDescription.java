@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
 import de.hsos.richwps.mb.richWPS.entity.IOutputSpecifier;
@@ -16,7 +16,7 @@ import org.n52.wps.client.richwps.OutputDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class OutputComplexDataSpecifier implements IOutputSpecifier {
+public class OutputComplexDataDescription implements IOutputSpecifier {
 
     
     private String identifier;
@@ -46,7 +46,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
     /**
      * Constructs a new empty OuputComplexDataSpecifier.
      */
-    public OutputComplexDataSpecifier() {
+    public OutputComplexDataDescription() {
         this.identifier = "";
         this.theabstract = "";
         this.title = "";
@@ -58,7 +58,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
      *
      * @param description
      */
-    public OutputComplexDataSpecifier(OutputDescriptionType description) {
+    public OutputComplexDataDescription(OutputDescriptionType description) {
 
         types = new LinkedList<>();
         type = description.getComplexOutput();
@@ -206,12 +206,12 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         ComplexDataCombinationsType supportedFormats = ComplexDataCombinationsType.Factory.newInstance();
         for (List atype : this.types) {
 
-            String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
-            String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
+            String mimetype = (String) atype.get(InputComplexDataDescription.mimetype_IDX);
+            String schema = (String) atype.get(InputComplexDataDescription.schema_IDX);
             schema = this.nullify(schema);
-            String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);//TRICKY wps-client-lib needs null.
+            String encoding = (String) atype.get(InputComplexDataDescription.encoding_IDX);//TRICKY wps-client-lib needs null.
             encoding = this.nullify(encoding);
-            //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
+            //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataDescription::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
             ComplexDataDescriptionType desctype = supportedFormats.addNewFormat();
             desctype.setEncoding(encoding);
             desctype.setMimeType(mimetype);
@@ -219,13 +219,13 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         }
 
         //create defaulttype
-        String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
-        String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
+        String mimetype = (String) this.defaulttype.get(InputComplexDataDescription.mimetype_IDX);
+        String schema = (String) this.defaulttype.get(InputComplexDataDescription.schema_IDX);
         schema = this.nullify(schema);
-        String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
+        String encoding = (String) this.defaulttype.get(InputComplexDataDescription.encoding_IDX);
         encoding = this.nullify(encoding);
 
-        //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataSpecifier::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
+        //de.hsos.richwps.mb.Logger.log("Debug::OutputComplexDataDescription::toOutputDesc\n mimetype, schema, encoding " + mimetype + ", " + schema + ", " + encoding);
         ComplexDataCombinationType ogcdefaulttype = OutputDescriptionTypeBuilder.createComplexDataCombiType(mimetype, encoding, schema);
 
         OutputDescriptionTypeBuilder description = new OutputDescriptionTypeBuilder(ogcdefaulttype, supportedFormats, this.identifier, this.title);
@@ -262,7 +262,7 @@ public class OutputComplexDataSpecifier implements IOutputSpecifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final OutputComplexDataSpecifier other = (OutputComplexDataSpecifier) obj;
+        final OutputComplexDataDescription other = (OutputComplexDataDescription) obj;
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }

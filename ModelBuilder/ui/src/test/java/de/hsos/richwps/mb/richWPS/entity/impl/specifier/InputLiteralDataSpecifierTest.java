@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
 import net.opengis.wps.x100.InputDescriptionType;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,12 +36,12 @@ public class InputLiteralDataSpecifierTest {
     }
 
     /**
-     * Test of getIdentifier method, of class InputLiteralDataSpecifier.
+     * Test of getIdentifier method, of class InputLiteralDataDescription.
      */
     @Test
     public void testConstruction() {
         System.out.println("testConstruction");
-        InputLiteralDataSpecifier specifier = new InputLiteralDataSpecifier();
+        InputLiteralDataDescription specifier = new InputLiteralDataDescription();
         specifier.setIdentifier("aabb");
         specifier.setTitle("aabb");
         specifier.setAbstract("aabb's abstract");
@@ -51,7 +51,7 @@ public class InputLiteralDataSpecifierTest {
         specifier.setDefaultvalue("aab");
         
         InputDescriptionType ogctype = specifier.toInputDescription();
-        InputLiteralDataSpecifier specifier2 = new InputLiteralDataSpecifier(ogctype);
+        InputLiteralDataDescription specifier2 = new InputLiteralDataDescription(ogctype);
         assertEquals(specifier, specifier2);
     }
 }

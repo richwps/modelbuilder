@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.richWPS.entity.impl.specifier;
+package de.hsos.richwps.mb.richWPS.entity.impl.descriptions;
 
 
 import de.hsos.richwps.mb.richWPS.entity.IInputSpecifier;
@@ -17,7 +17,7 @@ import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
  *
  * @author dalcacer
  */
-public class InputComplexDataSpecifier implements IInputSpecifier {
+public class InputComplexDataDescription implements IInputSpecifier {
 
     private String identifier;
     private String title;
@@ -46,7 +46,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
     /**
      * Constructs an empty InputSpecifier.
      */
-    public InputComplexDataSpecifier() {
+    public InputComplexDataDescription() {
 
         this.maximumMegabytes = BigInteger.ONE.intValue();
         this.identifier = "";
@@ -61,7 +61,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
      *
      * @param description 52n InputDescriptionType.
      */
-    public InputComplexDataSpecifier(final InputDescriptionType description) {
+    public InputComplexDataDescription(final InputDescriptionType description) {
         SupportedComplexDataInputType ogctype = description.getComplexData();
 
         this.identifier = description.getIdentifier().getStringValue();
@@ -259,10 +259,10 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         //create supported type list
         List<ComplexDataDescriptionType> supportedFormatList = new ArrayList();
         for (List atype : this.types) {
-            String mimetype = (String) atype.get(InputComplexDataSpecifier.mimetype_IDX);
-            String schema = (String) atype.get(InputComplexDataSpecifier.schema_IDX);
+            String mimetype = (String) atype.get(InputComplexDataDescription.mimetype_IDX);
+            String schema = (String) atype.get(InputComplexDataDescription.schema_IDX);
             schema = this.nullify(schema);
-            String encoding = (String) atype.get(InputComplexDataSpecifier.encoding_IDX);
+            String encoding = (String) atype.get(InputComplexDataDescription.encoding_IDX);
             encoding = this.nullify(encoding);
 
             ComplexDataDescriptionType ogctype = InputDescriptionTypeBuilder.createComplexDataDescriptionType(mimetype, encoding, schema);
@@ -270,10 +270,10 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         }
 
         //create defaulttype
-        String mimetype = (String) this.defaulttype.get(InputComplexDataSpecifier.mimetype_IDX);
-        String schema = (String) this.defaulttype.get(InputComplexDataSpecifier.schema_IDX);
+        String mimetype = (String) this.defaulttype.get(InputComplexDataDescription.mimetype_IDX);
+        String schema = (String) this.defaulttype.get(InputComplexDataDescription.schema_IDX);
         schema = this.nullify(schema);
-        String encoding = (String) this.defaulttype.get(InputComplexDataSpecifier.encoding_IDX);
+        String encoding = (String) this.defaulttype.get(InputComplexDataDescription.encoding_IDX);
         encoding = this.nullify(encoding);
 
         ComplexDataDescriptionType ogcdefaulttype = InputDescriptionTypeBuilder.createComplexDataDescriptionType(mimetype, encoding, schema);
@@ -322,7 +322,7 @@ public class InputComplexDataSpecifier implements IInputSpecifier {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final InputComplexDataSpecifier other = (InputComplexDataSpecifier) obj;
+        final InputComplexDataDescription other = (InputComplexDataDescription) obj;
 
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;

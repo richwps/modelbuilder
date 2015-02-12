@@ -1,7 +1,7 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.arguments.InputComplexDataArgument;
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 
 /**
  *
@@ -10,7 +10,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.InputComplexDataSpecifie
 public class InputComplexForm extends javax.swing.JPanel {
 
     private String id;
-    private InputComplexDataSpecifier specifier;
+    private InputComplexDataDescription specifier;
     private boolean isMandatory = false;
 
     /**
@@ -18,7 +18,7 @@ public class InputComplexForm extends javax.swing.JPanel {
      *
      * @param specifier the specifier of the complexinputdata.
      */
-    public InputComplexForm(final InputComplexDataSpecifier specifier) {
+    public InputComplexForm(final InputComplexDataDescription specifier) {
         initComponents();
         this.specifier = specifier;
 
@@ -30,9 +30,9 @@ public class InputComplexForm extends javax.swing.JPanel {
 
         for (java.util.List type : specifier.getTypes()) {
 
-            String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
-            String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
-            String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
+            String amimetype = (String) type.get(InputComplexDataDescription.mimetype_IDX);
+            String aschema = (String) type.get(InputComplexDataDescription.schema_IDX);
+            String aencoding = (String) type.get(InputComplexDataDescription.encoding_IDX);
             String line = "";
 
             if (specifier.isDefaultType(type)) {
@@ -84,7 +84,7 @@ public class InputComplexForm extends javax.swing.JPanel {
      *
      * @param specifier the specifier of the complexinputdata.
      */
-    public InputComplexForm(final InputComplexDataSpecifier specifier, InputComplexDataArgument argument) {
+    public InputComplexForm(final InputComplexDataDescription specifier, InputComplexDataValue argument) {
         initComponents();
         this.specifier = specifier;
 
@@ -96,9 +96,9 @@ public class InputComplexForm extends javax.swing.JPanel {
 
         for (java.util.List type : specifier.getTypes()) {
 
-            String amimetype = (String) type.get(InputComplexDataSpecifier.mimetype_IDX);
-            String aschema = (String) type.get(InputComplexDataSpecifier.schema_IDX);
-            String aencoding = (String) type.get(InputComplexDataSpecifier.encoding_IDX);
+            String amimetype = (String) type.get(InputComplexDataDescription.mimetype_IDX);
+            String aschema = (String) type.get(InputComplexDataDescription.schema_IDX);
+            String aencoding = (String) type.get(InputComplexDataDescription.encoding_IDX);
             String line = "";
 
             if (specifier.isDefaultType(type)) {
@@ -137,7 +137,7 @@ public class InputComplexForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public InputComplexDataSpecifier getSpecifier() {
+    public InputComplexDataDescription getSpecifier() {
         return this.specifier;
     }
 

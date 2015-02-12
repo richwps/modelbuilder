@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.ui.dialogs.components.inputforms;
 
-import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifier;
+import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 
 /**
  *
@@ -9,14 +9,14 @@ import de.hsos.richwps.mb.richWPS.entity.impl.specifier.OutputLiteralDataSpecifi
  */
 public class OutputLiteralForm extends javax.swing.JPanel {
 
-    private OutputLiteralDataSpecifier specifier;
+    private OutputLiteralDataDescription specifier;
 
     /**
      * Creates new form OutputLiteralData
      *
      * @param specifier
      */
-    public OutputLiteralForm(final OutputLiteralDataSpecifier specifier) {
+    public OutputLiteralForm(final OutputLiteralDataDescription specifier) {
         this.specifier = specifier;
         initComponents();
 
@@ -34,7 +34,7 @@ public class OutputLiteralForm extends javax.swing.JPanel {
      *
      * @return
      */
-    public OutputLiteralDataSpecifier getSpecifier() {
+    public OutputLiteralDataDescription getSpecifier() {
         return this.specifier;
     }
 
