@@ -3,11 +3,8 @@ package de.hsos.richwps.mb.entity.ports;
 import de.hsos.richwps.mb.entity.*;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
-import static de.hsos.richwps.mb.entity.ports.LiteralInput.COMPONENTTYPE_DATATYPEDESCRIPTION;
 import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import de.hsos.richwps.mb.properties.Property;
-import static java.lang.System.getProperty;
-import org.jdom.IllegalDataException;
 
 public class ComplexDataInput extends ProcessInputPort {
 
@@ -23,7 +20,7 @@ public class ComplexDataInput extends ProcessInputPort {
         super(ProcessPortDatatype.COMPLEX, global);
 
         createProperties("");
-        owsPropertiesCreated();
+        globalStatusChanged();
         updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
     }
 

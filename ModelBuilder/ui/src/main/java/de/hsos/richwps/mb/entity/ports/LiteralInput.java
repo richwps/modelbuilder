@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.entity.ports;
 
 import de.hsos.richwps.mb.entity.*;
 import static de.hsos.richwps.mb.entity.ProcessPort.PROPERTY_KEY_DATATYPEDESCRIPTION;
-import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionBoundingBox;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral;
 import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
@@ -22,7 +21,7 @@ public class LiteralInput extends ProcessInputPort {
         createProperties("");
         updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
 
-        owsPropertiesCreated();
+        globalStatusChanged();
     }
 
     public LiteralInput clone() {

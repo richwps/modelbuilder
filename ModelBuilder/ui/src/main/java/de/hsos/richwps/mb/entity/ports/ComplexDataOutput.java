@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.entity.ports;
 
 import de.hsos.richwps.mb.entity.*;
 import static de.hsos.richwps.mb.entity.ProcessPort.PROPERTY_KEY_DATATYPEDESCRIPTION;
-import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionBoundingBox;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import static de.hsos.richwps.mb.entity.ports.ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION;
@@ -21,7 +20,7 @@ public class ComplexDataOutput extends ProcessOutputPort {
         super(ProcessPortDatatype.COMPLEX, global);
 
         createProperties("");
-        owsPropertiesCreated();
+        globalStatusChanged();
         updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
 
     }

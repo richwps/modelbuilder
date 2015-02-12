@@ -268,7 +268,7 @@ public class AppSetup {
     /**
      * Register custom mxGraph codecs
      */
-    private static void addGraphCodecs() {
+    public static void addGraphCodecs() {
         mxCodecRegistry.register(new CellCodec());
 
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity");

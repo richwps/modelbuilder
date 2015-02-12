@@ -6,6 +6,7 @@
 package de.hsos.richwps.mb.graphView;
 
 import com.mxgraph.model.mxCell;
+import de.hsos.richwps.mb.app.AppSetup;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
@@ -13,12 +14,12 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
-import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
 import de.hsos.richwps.mb.entity.ports.LiteralOutput;
 import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import java.awt.Point;
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.After;
@@ -71,6 +72,7 @@ public class GraphViewTest {
 
     @BeforeClass
     public static void setUpClass() {
+        AppSetup.addGraphCodecs();
     }
 
     @AfterClass
@@ -80,6 +82,7 @@ public class GraphViewTest {
     @Before
     public void setUp() throws IllegalDatatypeDescriptionException {
         filename = "testmodel.xml";
+        deleteTestfile();
 
         instance = new GraphView();
 
@@ -147,8 +150,16 @@ public class GraphViewTest {
         globalOut1.setDataTypeDescription(complexDescription);
     }
 
+    private void deleteTestfile() {
+        File file = new File(filename);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     @After
     public void tearDown() {
+        deleteTestfile();
     }
 
     /**
@@ -187,11 +198,16 @@ public class GraphViewTest {
 
     /**
      * Test of saveGraphToXml method, of class GraphView.
+     *
+     * @throws java.lang.Exception
      */
     @Test
     public void testSaveGraphToXml() throws Exception {
         System.out.println("saveGraphToXml");
+        saveGraphToXml();
+    }
 
+    private void saveGraphToXml() throws IOException {
         // add nodes to instance
         addProcessToInstance();
         addPortToInstance();
@@ -206,6 +222,8 @@ public class GraphViewTest {
     @Test
     public void testLoadGraphFromXml() throws Throwable {
         System.out.println("loadGraphFromXml");
+
+        saveGraphToXml();
 
         File modelFile = new File(filename);
         if (modelFile.exists()) {

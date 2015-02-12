@@ -18,7 +18,7 @@ public class LiteralOutput extends ProcessOutputPort {
         super(ProcessPortDatatype.LITERAL, global);
 
         createProperties("");
-        owsPropertiesCreated();
+        globalStatusChanged();
         updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
     }
 

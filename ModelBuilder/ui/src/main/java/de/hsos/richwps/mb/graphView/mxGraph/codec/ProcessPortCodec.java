@@ -35,11 +35,11 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
             de.hsos.richwps.mb.entity.oldVersions.ProcessPort port = (de.hsos.richwps.mb.entity.oldVersions.ProcessPort) obj;
             if (attr.getNodeName().equals(ATTR_DATATYPE)) {
                 port.setDatatype(ProcessPortDatatype.getValueByName(attr.getNodeValue()));
-
-            } else {
-                super.decodeAttribute(dec, attr, obj);
+                return;
             }
         }
+
+        super.decodeAttribute(dec, attr, obj);
     }
 
     @Override

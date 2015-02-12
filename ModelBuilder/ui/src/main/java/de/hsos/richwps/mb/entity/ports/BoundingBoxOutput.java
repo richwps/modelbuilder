@@ -18,7 +18,7 @@ public class BoundingBoxOutput extends ProcessOutputPort {
         super(ProcessPortDatatype.BOUNDING_BOX, global);
 
         createProperties("");
-        owsPropertiesCreated();
+        globalStatusChanged();
         updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
     }
 

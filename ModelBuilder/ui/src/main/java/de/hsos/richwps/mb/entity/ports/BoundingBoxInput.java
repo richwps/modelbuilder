@@ -19,7 +19,7 @@ public class BoundingBoxInput extends ProcessInputPort {
         super(ProcessPortDatatype.BOUNDING_BOX, global);
 
         createProperties("");
-        owsPropertiesCreated();
+        globalStatusChanged();
         updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
     }
 
