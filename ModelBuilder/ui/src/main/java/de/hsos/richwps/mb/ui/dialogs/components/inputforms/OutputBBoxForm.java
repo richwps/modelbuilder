@@ -16,22 +16,22 @@ public class OutputBBoxForm extends javax.swing.JPanel {
 
     /**
      * Creates new form OutputsParamPanel
-     * @param specifier
+     * @param description
      */
     public OutputBBoxForm(
-            final OutputBoundingBoxDataDescription specifier) {
+            final OutputBoundingBoxDataDescription description ){
         initComponents();
-        this.description = specifier;
+        this.description = description;
 
         //SupportedComplexDataType type = description.getComplexOutput();
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
 
         this.selectType.removeAllItems();
 
-        List<String> suppCRS = specifier.getSupportedCRS();
-        String defaultCRS = specifier.getDefaultCRS();
+        List<String> suppCRS = description.getSupportedCRS();
+        String defaultCRS = description.getDefaultCRS();
 
 
         //Fill combobox, select defaultCRS

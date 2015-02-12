@@ -14,16 +14,16 @@ public class OutputLiteralForm extends javax.swing.JPanel {
     /**
      * Creates new form OutputLiteralData
      *
-     * @param specifier
+     * @param description
      */
-    public OutputLiteralForm(final OutputLiteralDataDescription specifier) {
-        this.description = specifier;
+    public OutputLiteralForm(final OutputLiteralDataDescription description) {
+        this.description = description;
         initComponents();
 
         //SupportedComplexDataType type = description.getComplexOutput();
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
 
         this.titleValue.setText(thetitel);
 

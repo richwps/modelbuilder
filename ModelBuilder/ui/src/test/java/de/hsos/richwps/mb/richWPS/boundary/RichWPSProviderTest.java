@@ -147,7 +147,7 @@ public class RichWPSProviderTest extends TestCase {
         arg2.setMimeType("text/xml");
         ins.put("literalInput", arg1);
         ins.put("complexInput", arg2);
-        request.setInputArguments(ins);
+        request.setInputValues(ins);
 
         HashMap<String, IOutputDescription> outs = new HashMap();
         List<IOutputValue> outputs = request.getOutputs();
@@ -203,7 +203,7 @@ public class RichWPSProviderTest extends TestCase {
         arg2.setMimeType("text/xml");
         ins.put("literalInput", arg1);
         ins.put("complexInput", arg2);
-        perform.setInputArguments(ins);
+        perform.setInputValues(ins);
 
         HashMap<String, IOutputDescription> outs = new HashMap();
         List<IOutputSpecifier> outputs = perform.getOutputs();
@@ -262,7 +262,7 @@ public class RichWPSProviderTest extends TestCase {
      arg2.setMimeType("text/xml");
      ins.put("width", arg1);
      ins.put("data", arg2);
-     perform.setInputArguments(ins);
+     perform.setInputValues(ins);
 
      HashMap<String, IOutputDescription> outs = new HashMap();
      List<IOutputSpecifier> outputs = perform.getOutputs();
@@ -278,13 +278,13 @@ public class RichWPSProviderTest extends TestCase {
      assertNotNull(theResults);
      }*/
     private IInputDescription createComplexDataInput() {
-        InputComplexDataDescription specifier;
-        specifier = new InputComplexDataDescription();
-        specifier.setIdentifier("aabb input.");
-        specifier.setTitle("aabb input.");
-        specifier.setMinOccur(0);
-        specifier.setMaxOccur(1);
-        specifier.setAbstract("aabb's abstract.");
+        InputComplexDataDescription description;
+        description = new InputComplexDataDescription();
+        description.setIdentifier("aabb input.");
+        description.setTitle("aabb input.");
+        description.setMinOccur(0);
+        description.setMaxOccur(1);
+        description.setAbstract("aabb's abstract.");
 
         List<String> atype = new ArrayList<>();
         atype.add("application/xml");   // mimetype
@@ -299,29 +299,29 @@ public class RichWPSProviderTest extends TestCase {
         types.add(atype);
         types.add(anothertype);
 
-        specifier.setTypes(types);
-        specifier.setDefaulttype(atype);
-        specifier.setMaximumMegabytes(5);
-        return specifier;
+        description.setTypes(types);
+        description.setDefaulttype(atype);
+        description.setMaximumMegabytes(5);
+        return description;
     }
 
     private IInputDescription createLiteralDataInput() {
-        InputLiteralDataDescription specifier = new InputLiteralDataDescription();
-        specifier.setIdentifier("aabb");
-        specifier.setTitle("aabb");
-        specifier.setAbstract("aabb's abstract");
-        specifier.setMinOccur(0);
-        specifier.setMaxOccur(1);
-        specifier.setType(("xs:string"));
-        specifier.setDefaultvalue("aab");
-        return specifier;
+        InputLiteralDataDescription description = new InputLiteralDataDescription();
+        description.setIdentifier("aabb");
+        description.setTitle("aabb");
+        description.setAbstract("aabb's abstract");
+        description.setMinOccur(0);
+        description.setMaxOccur(1);
+        description.setType(("xs:string"));
+        description.setDefaultvalue("aab");
+        return description;
     }
 
     private IOutputValue createComplexDataOutput() {
-        OutputComplexDataDescription specifier = new OutputComplexDataDescription();
-        specifier.setIdentifier("aabb");
-        specifier.setTitle("aabb");
-        specifier.setTheAbstract("aabb's abstract");
+        OutputComplexDataDescription description = new OutputComplexDataDescription();
+        description.setIdentifier("aabb");
+        description.setTitle("aabb");
+        description.setTheAbstract("aabb's abstract");
 
         List<String> atype = new ArrayList<>();
         atype.add("application/xml");   // mimetype
@@ -336,18 +336,18 @@ public class RichWPSProviderTest extends TestCase {
         types.add(atype);
         types.add(anothertype);
 
-        specifier.setTypes(types);
-        specifier.setDefaulttype(atype);
-        return specifier;
+        description.setTypes(types);
+        description.setDefaulttype(atype);
+        return description;
     }
 
     private IOutputValue createLiteralDataOutput() {
-        OutputLiteralDataDescription specifier = new OutputLiteralDataDescription();
-        specifier.setIdentifier("identifier");
-        specifier.setTitle("");
-        specifier.setAbstract("identifier {NF/DI}.");
-        specifier.setType("xs:string");
-        return specifier;
+        OutputLiteralDataDescription description = new OutputLiteralDataDescription();
+        description.setIdentifier("identifier");
+        description.setTitle("");
+        description.setAbstract("identifier {NF/DI}.");
+        description.setType("xs:string");
+        return description;
     }
 
     /*public void testDeploy() {
@@ -371,13 +371,13 @@ public class RichWPSProviderTest extends TestCase {
      instance.richwpsDeployProcess(perform);
      }*/
     private IInputDescription createComplexDataInput1() {
-        InputComplexDataDescription specifier;
-        specifier = new InputComplexDataDescription();
-        specifier.setIdentifier("reportingareas");
-        specifier.setTitle("");
-        specifier.setMinOccur(1);
-        specifier.setMaxOccur(1);
-        specifier.setAbstract(".");
+        InputComplexDataDescription description;
+        description = new InputComplexDataDescription();
+        description.setIdentifier("reportingareas");
+        description.setTitle("");
+        description.setMinOccur(1);
+        description.setMaxOccur(1);
+        description.setAbstract(".");
 
         List<String> atype = new ArrayList<>();
         atype.add("application/json");   // mimetype
@@ -387,29 +387,29 @@ public class RichWPSProviderTest extends TestCase {
         List<List> types = new ArrayList<>();
         types.add(atype);
 
-        specifier.setTypes(types);
-        specifier.setDefaulttype(atype);
-        specifier.setMaximumMegabytes(50);
-        return specifier;
+        description.setTypes(types);
+        description.setDefaulttype(atype);
+        description.setMaximumMegabytes(50);
+        return description;
     }
 
     private IInputDescription createLiteralDataInput1() {
-        InputLiteralDataDescription specifier = new InputLiteralDataDescription();
-        specifier.setIdentifier("identifier");
-        specifier.setTitle("");
-        specifier.setAbstract("{NF/DI}");
-        specifier.setMinOccur(1);
-        specifier.setMaxOccur(1);
-        specifier.setType(("xs:string"));
-        specifier.setDefaultvalue("NF");
-        return specifier;
+        InputLiteralDataDescription description = new InputLiteralDataDescription();
+        description.setIdentifier("identifier");
+        description.setTitle("");
+        description.setAbstract("{NF/DI}");
+        description.setMinOccur(1);
+        description.setMaxOccur(1);
+        description.setType(("xs:string"));
+        description.setDefaultvalue("NF");
+        return description;
     }
 
     private IOutputValue createComplexDataOutput1() {
-        OutputComplexDataDescription specifier = new OutputComplexDataDescription();
-        specifier.setIdentifier("selectedarea");
-        specifier.setTitle("");
-        specifier.setTheAbstract("");
+        OutputComplexDataDescription description = new OutputComplexDataDescription();
+        description.setIdentifier("selectedarea");
+        description.setTitle("");
+        description.setTheAbstract("");
 
         List<String> atype = new ArrayList<>();
         atype.add("application/xml");   // mimetype
@@ -419,9 +419,9 @@ public class RichWPSProviderTest extends TestCase {
         List<List> types = new ArrayList<>();
         types.add(atype);
 
-        specifier.setTypes(types);
-        specifier.setDefaulttype(atype);
-        return specifier;
+        description.setTypes(types);
+        description.setDefaulttype(atype);
+        return description;
     }
 
     public void testDeployUndeploy() {

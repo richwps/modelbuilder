@@ -54,7 +54,7 @@ public class RichWPSHelper {
      * Sets given inputs to a test-request.
      *
      * @param builder TestProcessRequestBuilder.
-     * @param theinputs list of inputs (InputArguments) that should be set.
+     * @param theinputs list of inputs (Inputvalues) that should be set.
      * @see IInputValue
      */
     void setTestProcessInputs(TestProcessRequestBuilder builder, final HashMap theinputs) {
@@ -89,7 +89,7 @@ public class RichWPSHelper {
      * Sets requested outputs to execute-request.
      *
      * @param builder TestProcessRequestBuilder.
-     * @param theinputs list of outputs (OutputArgument) that should be set.
+     * @param theinputs list of outputs (OutputValues) that should be set.
      * @see IOutputDescription
      */
     void setTestProcessOutputs(TestProcessRequestBuilder builder, final HashMap theoutputs) {
@@ -144,7 +144,7 @@ public class RichWPSHelper {
 
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
-        HashMap theoutputs = request.getOutputArguments();
+        HashMap theoutputs = request.getOutputValues();
 
         if (responseObject instanceof TestProcessResponseDocument) {
             TestProcessResponseDocument response = (TestProcessResponseDocument) responseObject;
@@ -272,9 +272,9 @@ public class RichWPSHelper {
         TestProcessRequestBuilder builder = new TestProcessRequestBuilder(request.toProcessDescriptionType());
         builder.setExecutionUnit(request.getExecutionUnit());
         builder.setDeploymentProfileName(request.getDeploymentprofile());
-        HashMap theinputs = request.getInputArguments();
+        HashMap theinputs = request.getInputValues();
         richwpshelper.setTestProcessInputs(builder, theinputs);
-        HashMap theoutputs = request.getOutputArguments();
+        HashMap theoutputs = request.getOutputValues();
         richwpshelper.setTestProcessOutputs(builder, theoutputs);
         richwpshelper.setTestProcessVariables(builder, request.getVariables());
         TestProcessDocument testprocessdocument = null;

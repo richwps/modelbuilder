@@ -109,8 +109,8 @@ public class InputPanel extends APanel {
             if (description instanceof InputLiteralDataDescription) {
 
                 InputLiteralForm pan;
-                if (this.request.getInputArguments().containsKey(description.getIdentifier())) {
-                    InputLiteralDataValue arg = (InputLiteralDataValue) this.request.getInputArguments().get(description.getIdentifier());
+                if (this.request.getInputValues().containsKey(description.getIdentifier())) {
+                    InputLiteralDataValue arg = (InputLiteralDataValue) this.request.getInputValues().get(description.getIdentifier());
                     pan = new InputLiteralForm((InputLiteralDataDescription) description, arg);
                 } else {
                     pan = new InputLiteralForm((InputLiteralDataDescription) description);
@@ -127,8 +127,8 @@ public class InputPanel extends APanel {
                 this.panels.add(tc);
             } else if (description instanceof InputComplexDataDescription) {
                 InputComplexForm pan;
-                if (this.request.getInputArguments().containsKey(description.getIdentifier())) {
-                    InputComplexDataValue arg = (InputComplexDataValue) this.request.getInputArguments().get(description.getIdentifier());
+                if (this.request.getInputValues().containsKey(description.getIdentifier())) {
+                    InputComplexDataValue arg = (InputComplexDataValue) this.request.getInputValues().get(description.getIdentifier());
                     pan = new InputComplexForm((InputComplexDataDescription) description, arg);
 
                 } else {
@@ -147,8 +147,8 @@ public class InputPanel extends APanel {
 
             } else if (description instanceof InputBoundingBoxDataDescription) {
                 InputBBoxForm pan;
-                if (this.request.getInputArguments().containsKey(description.getIdentifier())) {
-                    InputBoundingBoxDataValue arg = (InputBoundingBoxDataValue) this.request.getInputArguments().get(description.getIdentifier());
+                if (this.request.getInputValues().containsKey(description.getIdentifier())) {
+                    InputBoundingBoxDataValue arg = (InputBoundingBoxDataValue) this.request.getInputValues().get(description.getIdentifier());
                     pan = new InputBBoxForm((InputBoundingBoxDataDescription) description, arg);
                 } else {
                     pan = new InputBBoxForm((InputBoundingBoxDataDescription) description);
@@ -292,7 +292,7 @@ public class InputPanel extends APanel {
                 }
             }
         }
-        this.request.setInputArguments(theinputs);
+        this.request.setInputValues(theinputs);
     }
 
     /**

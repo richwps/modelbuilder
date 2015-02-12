@@ -95,7 +95,7 @@ public class ResultPanel extends APanel {
     private void prepareResults(ExecuteRequest request) {
         this.request = request;
         HashMap results = this.request.getResults();
-        HashMap arguments = this.request.getOutputArguments();
+        HashMap values = this.request.getOutputValues();
         java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();
@@ -113,33 +113,33 @@ public class ResultPanel extends APanel {
         outputsPanel.setLayout(layout);
 
         for (Object key : keys) {
-            IOutputDescription argument = (IOutputDescription) arguments.get(key);
-            if (argument instanceof OutputComplexDataValue) {
+            IOutputDescription value = (IOutputDescription) values.get(key);
+            if (value instanceof OutputComplexDataValue) {
                 URL httpKVPref = (URL) results.get(key);
                 String uri = httpKVPref.toString();
                 //String uri = (String) results.get(key);
-                OutputComplexDataValue _argument = (OutputComplexDataValue) argument;
-                String identifier = (_argument.getDescription()).getIdentifier();
+                OutputComplexDataValue _value = (OutputComplexDataValue) value;
+                String identifier = (_value.getDescription()).getIdentifier();
                 URIRenderer pan = new URIRenderer(identifier, uri);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 this.panels.add(tc);
-            } else if (argument instanceof OutputLiteralDataValue) {
+            } else if (value instanceof OutputLiteralDataValue) {
                 String literalDataAsString = (String) results.get(key);
-                OutputLiteralDataValue _argument = (OutputLiteralDataValue) argument;
-                String identifier = (_argument.getDescription()).getIdentifier();
+                OutputLiteralDataValue _value = (OutputLiteralDataValue) value;
+                String identifier = (_value.getDescription()).getIdentifier();
                 LiteralRenderer pan = new LiteralRenderer(identifier, literalDataAsString);
                 TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.setTitleBold();
                 tc.fold();
                 this.panels.add(tc);
-            } else if (argument instanceof OutputBoundingBoxDataValue) {
+            } else if (value instanceof OutputBoundingBoxDataValue) {
                 OutputDataType[] odts = (OutputDataType[]) results.get(key);
                 
-                OutputBoundingBoxDataValue _argument;
-                _argument = (OutputBoundingBoxDataValue) argument;
-                String identifier = (_argument.getDescription()).getIdentifier();
+                OutputBoundingBoxDataValue _value;
+                _value = (OutputBoundingBoxDataValue) value;
+                String identifier = (_value.getDescription()).getIdentifier();
                 
                 for(OutputDataType odt : odts) {
                     BoundingBoxResultRenderer pan;

@@ -9,35 +9,34 @@ import net.opengis.wps.x100.ComplexDataDescriptionType;
  */
 public class OutputComplexForm extends javax.swing.JPanel {
 
-    private OutputComplexDataDescription description
-;
+    private OutputComplexDataDescription description;
 
     private String id;
     private ComplexDataDescriptionType[] subtypes_;
 
     /**
      * Creates new form OutputsParamPanel
-     * @param specifier
+     *
+     * @param description
      */
-    public OutputComplexForm(OutputComplexDataDescription specifier) {
+    public OutputComplexForm(OutputComplexDataDescription description) {
         initComponents();
-        this.description
- = specifier;
+        this.description = description;
 
         //SupportedComplexDataType type = description.getComplexOutput();
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
 
         this.selectType.removeAllItems();
 
-        for (java.util.List type : specifier.getTypes()) {
+        for (java.util.List type : description.getTypes()) {
             String amimetype = (String) type.get(OutputComplexDataDescription.mimetype_IDX);
             String aschema = (String) type.get(OutputComplexDataDescription.schema_IDX);
             String aencoding = (String) type.get(OutputComplexDataDescription.encoding_IDX);
             String line = "";
 
-            if (specifier.isDefaultType(type)){
+            if (description.isDefaultType(type)) {
                 line = "<html><b>" + amimetype + "<br/>Schema: " + aschema + "<br/>Encoding: " + aencoding + "</b></html>";
                 this.selectType.addItem(line);
                 this.selectType.setSelectedItem(line);
@@ -61,8 +60,7 @@ public class OutputComplexForm extends javax.swing.JPanel {
      * @return
      */
     public OutputComplexDataDescription getDescription() {
-        return this.description
-;
+        return this.description;
     }
 
     /**
@@ -72,13 +70,12 @@ public class OutputComplexForm extends javax.swing.JPanel {
     public boolean isSelected() {
         return this.selectOutput.isSelected();
     }
-    
-    
-    public void setSelected(){
+
+    public void setSelected() {
         this.selectOutput.setSelected(true);
     }
-    
-    public void setUnselected(){
+
+    public void setUnselected() {
         this.selectOutput.setSelected(false);
     }
 
@@ -89,7 +86,7 @@ public class OutputComplexForm extends javax.swing.JPanel {
     public java.util.List getType() {
         int idx = this.selectType.getSelectedIndex();
         return description
-.getTypes().get(idx);
+                .getTypes().get(idx);
     }
 
     /**

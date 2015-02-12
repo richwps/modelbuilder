@@ -187,28 +187,28 @@ public class OutputPanel extends APanel {
                 OutputComplexForm pan = (OutputComplexForm) panel.getComponent();
                 if (pan.isSelected()) {
                     OutputComplexDataDescription description = pan.getDescription();
-                    OutputComplexDataValue argument = new OutputComplexDataValue(description);
+                    OutputComplexDataValue value = new OutputComplexDataValue(description);
 
                     Boolean asRef = pan.asReference();
-                    argument.setAsReference(asRef);
+                    value.setAsReference(asRef);
                     List type = pan.getType();
                     String amimetype = (String) type.get(OutputComplexDataDescription.mimetype_IDX);
                     String aschema = (String) type.get(OutputComplexDataDescription.schema_IDX);
                     String aencoding = (String) type.get(OutputComplexDataDescription.encoding_IDX);
 
-                    argument.setMimetype(amimetype);
-                    argument.setSchema(aschema);
-                    argument.setEncoding(aencoding);
+                    value.setMimetype(amimetype);
+                    value.setSchema(aschema);
+                    value.setEncoding(aencoding);
 
-                    theoutputs.put(argument.getIdentifier(), argument);
+                    theoutputs.put(value.getIdentifier(), value);
                 }
             } else if (panel.getComponent() instanceof OutputLiteralForm) {
                 OutputLiteralForm pan = (OutputLiteralForm) panel.getComponent();
 
                 if (pan.isSelected()) {
                     OutputLiteralDataDescription description = pan.getDescription();
-                    OutputLiteralDataValue argument = new OutputLiteralDataValue(description);
-                    theoutputs.put(argument.getIdentifier(), argument);
+                    OutputLiteralDataValue value = new OutputLiteralDataValue(description);
+                    theoutputs.put(value.getIdentifier(), value);
                 }
 
             } else if (panel.getComponent() instanceof OutputBBoxForm) {
@@ -216,13 +216,13 @@ public class OutputPanel extends APanel {
 
                 if (pan.isSelected()) {
                     OutputBoundingBoxDataDescription description = pan.getDescription();
-                    OutputBoundingBoxDataValue argument = new OutputBoundingBoxDataValue(description);
-                    theoutputs.put(argument.getIdentifier(), argument);
+                    OutputBoundingBoxDataValue value = new OutputBoundingBoxDataValue(description);
+                    theoutputs.put(value.getIdentifier(), value);
                 }
             }
             
         }
-        this.request.setOutputArguments(theoutputs);
+        this.request.setOutputValues(theoutputs);
     }
 
     /**

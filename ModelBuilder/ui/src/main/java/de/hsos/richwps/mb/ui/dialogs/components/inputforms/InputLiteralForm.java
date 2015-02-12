@@ -63,15 +63,15 @@ public class InputLiteralForm extends javax.swing.JPanel {
 
     /**
      *
-     * @param specifier
-     * @param argument
+     * @param description
+     * @param value
      */
-    public InputLiteralForm(InputLiteralDataDescription specifier, InputLiteralDataValue argument) {
+    public InputLiteralForm(InputLiteralDataDescription description, InputLiteralDataValue value) {
         initComponents();
-        this.description = specifier;
-        String theidentifier = specifier.getIdentifier();
-        String theabstract = specifier.getAbstract();
-        String thetitel = specifier.getTitle();
+        this.description = description;
+        String theidentifier = description.getIdentifier();
+        String theabstract = description.getAbstract();
+        String thetitel = description.getTitle();
         String datatype = this.description.getType();
         String defaultvalue = this.description.getDefaultvalue();
         //FIXME
@@ -92,7 +92,7 @@ public class InputLiteralForm extends javax.swing.JPanel {
         this.occurs.setText(occurstxt);
 
         this.type.setText(datatype);
-        this.value.setText(argument.getValue());
+        this.value.setText(value.getValue());
     }
 
     public void setText(String content) {

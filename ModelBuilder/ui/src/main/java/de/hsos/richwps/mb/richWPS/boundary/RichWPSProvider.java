@@ -188,7 +188,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * Describes process and its' in and outputs.
      *
      * @param request ExecuteRequestDTO with serverid and processid and in- and
-     * outputarguments.
+     * outputvalues.
      * @return ExecuteRequest as xml or emptystring.
      */
     @Override
@@ -201,8 +201,8 @@ public class RichWPSProvider implements IRichWPSProvider {
         } catch (Exception e) {
         }
 
-        HashMap theinputs = request.getInputArguments();
-        HashMap theoutputs = request.getOutputArguments();
+        HashMap theinputs = request.getInputValues();
+        HashMap theoutputs = request.getOutputValues();
 
         ProcessDescriptionType description = helper.getProcessDescriptionType(wps, request, this);
         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
@@ -237,10 +237,10 @@ public class RichWPSProvider implements IRichWPSProvider {
             builder.setExecutionUnit(request.getExecutionUnit());
             builder.setDeploymentProfileName(request.getDeploymentprofile());
 
-            HashMap theinputs = request.getInputArguments();
+            HashMap theinputs = request.getInputValues();
             richwpsHelper.setTestProcessInputs(builder, theinputs);
 
-            HashMap theoutputs = request.getOutputArguments();
+            HashMap theoutputs = request.getOutputValues();
             richwpsHelper.setTestProcessOutputs(builder, theoutputs);
 
             richwpsHelper.setTestProcessVariables(builder, request.getVariables());

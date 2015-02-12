@@ -38,13 +38,13 @@ public class InputBoundingBoxDataTest {
      * Test of getDescription method, of class InputBBoxForm.
      */
     @Test
-    public void testGetSpecifier() {
-        System.out.println("getSpecifier");
-        InputBoundingBoxDataDescription spec;
-        spec = new InputBoundingBoxDataDescription();
-        InputBBoxForm instance = new InputBBoxForm(spec);
+    public void testGetDescription() {
+        System.out.println("getDescription");
+        InputBoundingBoxDataDescription desc;
+        desc = new InputBoundingBoxDataDescription();
+        InputBBoxForm instance = new InputBBoxForm(desc);
         InputBoundingBoxDataDescription result = instance.getDescription();
-        assertEquals(spec, result);
+        assertEquals(desc, result);
     }
 
     /**
@@ -53,9 +53,9 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testGetText() {
         System.out.println("getText");
-        InputBoundingBoxDataDescription spec;
-        spec = new InputBoundingBoxDataDescription();
-        InputBBoxForm instance = new InputBBoxForm(spec);
+        InputBoundingBoxDataDescription desc;
+        desc = new InputBoundingBoxDataDescription();
+        InputBBoxForm instance = new InputBBoxForm(desc);
         String expResult = "-2.0"+" "+"-1.0"+","+"3.0"+" "+"4.0";
         String result = instance.getText();
         assertEquals(expResult, result);
@@ -67,9 +67,9 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testGetCRS() {
         System.out.println("getCRS");
-        InputBoundingBoxDataDescription spec;
-        spec = new InputBoundingBoxDataDescription();
-        InputBBoxForm instance = new InputBBoxForm(spec);
+        InputBoundingBoxDataDescription desc;
+        desc = new InputBoundingBoxDataDescription();
+        InputBBoxForm instance = new InputBBoxForm(desc);
         String expResult = "";
         String result = instance.getCRS();
         assertEquals(expResult, result);
@@ -81,9 +81,9 @@ public class InputBoundingBoxDataTest {
     @Test
     public void testIsMandatory() {
         System.out.println("isMandatory");
-        InputBoundingBoxDataDescription spec;
-        spec = new InputBoundingBoxDataDescription();
-        InputBBoxForm instance = new InputBBoxForm(spec);
+        InputBoundingBoxDataDescription desc;
+        desc = new InputBoundingBoxDataDescription();
+        InputBBoxForm instance = new InputBBoxForm(desc);
         boolean expResult = false;
         boolean result = instance.isMandatory();
         assertEquals(expResult, result);

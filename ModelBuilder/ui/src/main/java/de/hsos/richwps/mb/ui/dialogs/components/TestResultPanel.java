@@ -83,7 +83,7 @@ public class TestResultPanel extends APanel {
         this.request = (TestRequest) request;
         HashMap results = this.request.getResults();
         //Unused
-        //HashMap arguments = this.request.getOutputArguments();
+        
         java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();

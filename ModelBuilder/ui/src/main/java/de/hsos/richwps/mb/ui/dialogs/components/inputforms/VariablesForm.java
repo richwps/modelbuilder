@@ -11,7 +11,6 @@ public class VariablesForm extends javax.swing.JPanel {
     /**
      * Creates new form OutputsParamPanel
      *
-     * @param specifier
      */
     public VariablesForm(final String variablenames, final String route) {
         initComponents();

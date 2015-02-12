@@ -65,7 +65,7 @@ public class WPSHelper {
 
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
-        HashMap theoutputs = request.getOutputArguments();
+        HashMap theoutputs = request.getOutputValues();
         //FIXME simplify
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
@@ -75,12 +75,12 @@ public class WPSHelper {
                 for (String key : keys) {
                     Object o = theoutputs.get(key);
                     if (o instanceof OutputLiteralDataValue) {
-                        OutputLiteralDataValue argument = (OutputLiteralDataValue) o;
+                        OutputLiteralDataValue outputvalue = (OutputLiteralDataValue) o;
                         OutputDataType[] outputs = response.getExecuteResponse().getProcessOutputs().getOutputArray();
                         String value = "";
                         for (OutputDataType output : outputs) {
                             final String givenIdentifier = output.getIdentifier().getStringValue();
-                            final String wantedIdentifer = argument.getIdentifier();
+                            final String wantedIdentifer = outputvalue.getIdentifier();
                             if (givenIdentifier.equals(wantedIdentifer)) {
                                 value = output.getData().getLiteralData().getStringValue();
                             }
@@ -88,8 +88,8 @@ public class WPSHelper {
                         request.addResult(key, value);
                     } else if (o instanceof OutputComplexDataValue) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
-                        OutputComplexDataValue argument = (OutputComplexDataValue) o;
-                        if (argument.isAsReference()) {
+                        OutputComplexDataValue outputvalue = (OutputComplexDataValue) o;
+                        if (outputvalue.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
                             
                             
@@ -113,8 +113,6 @@ public class WPSHelper {
                         //Currently returns the BoundingBoxData when used with
                         //*.test.MultipleComplexInAndOutputsDummyTestClass
 
-                        //OutputBoundingBoxDataArgument argument;
-                        //argument = (OutputBoundingBoxDataValue) o;
                         ExecuteResponseDocument.ExecuteResponse exResp;
                         exResp = response.getExecuteResponse();
                         if ("Process successful".equals(exResp.getStatus().getProcessSucceeded())) {
@@ -170,7 +168,7 @@ public class WPSHelper {
      * Sets given inputs to execute-request.
      *
      * @param executeBuilder 52n executebuilder.
-     * @param theinputs list of inputs (InputArguments) that should be set.
+     * @param theinputs list of inputs (InputValuess) that should be set.
      * @see IInputValue
      */
     void setInputs(ExecuteRequestBuilder executeBuilder, final HashMap theinputs) {
@@ -204,7 +202,7 @@ public class WPSHelper {
      * Sets requested outputs to execute-request.
      *
      * @param executeBuilder 52n executebuilder.
-     * @param theinputs list of outputs (OutputArgument) that should be set.
+     * @param theinputs list of outputs (OutputValue) that should be set.
      * @see IOutputDescription
      */
     void setOutputs(ExecuteRequestBuilder executeBuilder, final HashMap theoutputs) {
@@ -301,14 +299,14 @@ public class WPSHelper {
      * Describes process and its' in and outputs.
      *
      * @param request ExecuteRequest with serverid and processid and in- and
-     * outputarguments.
+     * outputvalues.
      */
     public void wpsExecuteProcess(WPSClientSession wps, ExecuteRequest request, RichWPSProvider richWPSProvider) {
         final WPSHelper helper = new WPSHelper();
         String severid = request.getEndpoint();
         String processid = request.getIdentifier();
-        HashMap theinputs = request.getInputArguments();
-        HashMap theoutputs = request.getOutputArguments();
+        HashMap theinputs = request.getInputValues();
+        HashMap theoutputs = request.getOutputValues();
         ProcessDescriptionType description = getProcessDescriptionType(wps, request, richWPSProvider);
         ExecuteRequestBuilder executeBuilder = new ExecuteRequestBuilder(description);
         helper.setInputs(executeBuilder, theinputs);

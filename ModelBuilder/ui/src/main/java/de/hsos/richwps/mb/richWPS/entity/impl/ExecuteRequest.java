@@ -71,32 +71,32 @@ public class ExecuteRequest extends DescribeRequest implements IRequest, Seriali
      *
      * @return
      */
-    public HashMap<String, IInputValue> getInputArguments() {
+    public HashMap<String, IInputValue> getInputValues() {
         return this.actualinputs;
     }
 
     /**
      *
-     * @param arguments
+     * @param values
      */
-    public void setInputArguments(HashMap<String, IInputValue> arguments) {
-        this.actualinputs = arguments;
+    public void setInputValues(HashMap<String, IInputValue> values) {
+        this.actualinputs = values;
     }
 
     /**
      *
      * @return
      */
-    public HashMap<String, IOutputDescription> getOutputArguments() {
+    public HashMap<String, IOutputDescription> getOutputValues() {
         return this.actualoutputs;
     }
 
     /**
      *
-     * @param arguments
+     * @param values
      */
-    public void setOutputArguments(HashMap<String, IOutputDescription> arguments) {
-        this.actualoutputs = arguments;
+    public void setOutputValues(HashMap<String, IOutputDescription> values) {
+        this.actualoutputs = values;
     }
 
     /**
