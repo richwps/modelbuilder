@@ -36,17 +36,12 @@ public class RichWPSProvider implements IRichWPSProvider {
     private RichWPSClientSession richwps;
 
     /**
-     * The deploymentprofile, that should be used.
-     */
-    public static String deploymentProfile = "rola";
-
-    /**
      * Connects the provider to a WPS-server.
      *
      * @param wpsurl serverid of WebProcessingService.
      * @throws java.lang.Exception
      */
-    private void connect(String wpsurl) throws Exception {
+    private void connect(final String wpsurl) throws Exception {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
@@ -86,7 +81,8 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param richwpsurl richwpsurl of RichWPS Service.
      * @throws java.lang.Exception when unable to connect to service.
      */
-    private void connect(String wpsurl, String richwpsurl) throws Exception {
+    private void connect(final String wpsurl, final String richwpsurl)
+            throws Exception {
         try {
             this.wps = WPSClientSession.getInstance();
             this.wps.connect(wpsurl);
@@ -123,16 +119,9 @@ public class RichWPSProvider implements IRichWPSProvider {
 
         //endpoint detection.
         final String givenendpoint = request.getEndpoint();
-
-        String richwpsurl = "";
-        String wpsurl = "";
-        if (RichWPSProvider.isWPSEndpoint(givenendpoint)) {
-            wpsurl = givenendpoint;
-            richwpsurl = givenendpoint.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        } else if (RichWPSProvider.isRichWPSEndpoint(givenendpoint)) {
-            richwpsurl = givenendpoint;
-            wpsurl = givenendpoint.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
-        }
+        String[] endpoints = RichWPSProvider.deliverEndpoints(givenendpoint);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
 
         final RichWPSHelper richwpshelper = new RichWPSHelper();
         final WPSHelper wpshelper = new WPSHelper();
@@ -140,36 +129,36 @@ public class RichWPSProvider implements IRichWPSProvider {
             if (request instanceof ProfileRequest) {
                 //check TestRequest before Execute and Desscribe, it is a differentiation.
                 Logger.log(this.getClass(), "request()", "performing " + ProfileRequest.class.getSimpleName());
-                this.connect(wpsurl, richwpsurl);
+                this.connect(wpsendpoint, richwpsendpoint);
                 richwpshelper.richwpsProfileProcess(this.richwps, (ProfileRequest) request, this);
             } else if (request instanceof TestRequest) {
                 //check TestRequest before Execute and Desscribe, it is a differentiation.
                 Logger.log(this.getClass(), "request()", "performing " + TestRequest.class.getSimpleName());
-                this.connect(wpsurl, richwpsurl);
+                this.connect(wpsendpoint, richwpsendpoint);
                 richwpshelper.richwpsTestProcess(this.richwps, (TestRequest) request, this);
             } else if (request instanceof GetInputTypesRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + GetInputTypesRequest.class.getSimpleName());
-                this.connect(wpsurl, richwpsurl);
+                this.connect(wpsendpoint, richwpsendpoint);
                 richwpshelper.richwpsGetInputTypes(this.richwps, (GetInputTypesRequest) request, this);
             } else if (request instanceof GetOutputTypesRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + GetOutputTypesRequest.class.getSimpleName());
-                this.connect(wpsurl, richwpsurl);
+                this.connect(wpsendpoint, richwpsendpoint);
                 richwpshelper.richwpsGetOutputTypes(this.richwps, (GetOutputTypesRequest) request, this);
             } else if (request instanceof DeployRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + DeployRequest.class.getSimpleName());
-                this.connect(wpsurl, richwpsurl);
+                this.connect(wpsendpoint, richwpsendpoint);
                 richwpshelper.richwpsDeployProcess(this.richwps, (DeployRequest) request, this);
             } else if (request instanceof UndeployRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + UndeployRequest.class.getSimpleName());
-                this.connect(wpsurl, richwpsurl);
+                this.connect(wpsendpoint, richwpsendpoint);
                 richwpshelper.richwpsUndeployProcess(this.richwps, (UndeployRequest) request);
             } else if (request instanceof GetProcessesRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + GetProcessesRequest.class.getSimpleName());
-                this.connect(wpsurl);
+                this.connect(wpsendpoint);
                 wpshelper.getAvailableProcesses(this.wps, (GetProcessesRequest) request);
             } else if (request instanceof ExecuteRequest) {
                 //check Execute before Describe. It is a differentiation.
-                this.connect(wpsurl);
+                this.connect(wpsendpoint);
                 //Executes can be used for process discovery/description, too!
                 if (((ExecuteRequest) request).isDescribed()) {
                     Logger.log(this.getClass(), "request()", "performing " + ExecuteRequest.class.getSimpleName());
@@ -180,7 +169,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 }
             } else if (request instanceof DescribeRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
-                this.connect(wpsurl);
+                this.connect(wpsendpoint);
                 wpshelper.describeProcess(this.wps, (DescribeRequest) request);
             }
             this.disconnect();
@@ -199,8 +188,8 @@ public class RichWPSProvider implements IRichWPSProvider {
     @Override
     public String wpsPreviewExecuteProcess(ExecuteRequest request) {
         final WPSHelper helper = new WPSHelper();
-        String serverid = request.getEndpoint();
-        String processid = request.getIdentifier();
+        final String serverid = request.getEndpoint();
+        final String processid = request.getIdentifier();
         try {
             this.connect(serverid);
         } catch (Exception e) {
@@ -285,7 +274,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param uri the given endpooint.
      * @return true for wps endpooint, false if not.
      */
-    public static boolean isWPSEndpoint(String uri) {
+    public static boolean isWPSEndpoint(final String uri) {
         return uri.contains(IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
     }
 
@@ -295,7 +284,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param uri the given endpooint.
      * @return true for richwps endpooint, false if not.
      */
-    public static boolean isRichWPSEndpoint(String uri) {
+    public static boolean isRichWPSEndpoint(final String uri) {
         return uri.contains(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
     }
 
@@ -305,7 +294,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @param uri RichWPS-endpoint.
      * @return <code>true</code> if available, <code>false</code> elsewise.
      */
-    public static boolean checkRichWPSEndpoint(String uri) {
+    public static boolean checkRichWPSEndpoint(final String uri) {
         // FIXME How else can we check the wpsurls existence, and readiness?
         // HTTP::HEAD Operation 405 Method Not Allowed, instead of 404?
         // HTTP::GET Operation 405 Method Not Allowed, instead of 404?
@@ -329,21 +318,47 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Checks if a process is available on WPS-server.
      *
-     * @param auri WPS-endpoint
+     * @param wpsendpoitn WPS-endpoint
      * @param processid processid.
      * @return <code>true</code> process exists, <code>false</code> elsewise.
      */
-    public static boolean hasProcess(String auri, String processid) {
+    public static boolean hasProcess(final String wpsendpoitn, final String processid) {
         RichWPSProvider provider = new RichWPSProvider();
         try {
-            provider.connect(auri);
+            provider.connect(wpsendpoitn);
         } catch (Exception ex) {
             Logger.log(RichWPSProvider.class, "hasProcess", "Unable to connect to "
-                    + auri + " " + ex);
+                    + wpsendpoitn + " " + ex);
         }
-        GetProcessesRequest request = new GetProcessesRequest(auri);
+        GetProcessesRequest request = new GetProcessesRequest(wpsendpoitn);
         provider.perform(request);
         List<String> processes = request.getProcesses();
         return processes.contains(processid);
+    }
+
+    /**
+     * Takes one endpoint (richwps or wps) and delivers the tupel of endpoints.
+     *
+     * @param auri
+     * @return <code>[0]=wpsendpoint</code>, <code>[1]=richwpsendpoints</code>.
+     */
+    public static String[] deliverEndpoints(final String auri) {
+        String wpsendpoint = "";
+        String richwpsendpoint = "";
+        if (RichWPSProvider.isWPSEndpoint(auri)) {
+            wpsendpoint = auri;
+            richwpsendpoint = wpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
+                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
+        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
+            richwpsendpoint = auri;
+            wpsendpoint = richwpsendpoint.replace(
+                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
+                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
+        }
+        String[] ret = new String[2];
+        ret[0] = wpsendpoint;
+        ret[1] = richwpsendpoint;
+        return ret;
     }
 }

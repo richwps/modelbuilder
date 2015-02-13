@@ -13,8 +13,6 @@ import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionCompone
 import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
 import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.app.view.dialogs.ExecuteDialog;
-import de.hsos.richwps.mb.app.view.dialogs.ExecuteModelDialog;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
@@ -29,6 +27,8 @@ import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.app.view.dialogs.ProfileModelDialog;
 import de.hsos.richwps.mb.app.view.dialogs.TestModelDialog;
 import de.hsos.richwps.mb.app.view.dialogs.UndeployDialog;
+import de.hsos.richwps.mb.app.view.dialogs.ExecuteDialog;
+import de.hsos.richwps.mb.app.view.dialogs.ExecuteModelDialog;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
 import java.awt.Component;
@@ -482,7 +482,7 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.DEPLOY).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
-        
+
         getActionProvider().getAction(APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
     }
 

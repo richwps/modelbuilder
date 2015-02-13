@@ -13,19 +13,16 @@ import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
-import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
-import de.hsos.richwps.mb.richWPS.entity.impl.DeployRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
 import de.hsos.richwps.mb.exception.GraphToRequestTransformationException;
-import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
+import de.hsos.richwps.mb.richWPS.boundary.RequestFactory;
+import de.hsos.richwps.mb.richWPS.entity.impl.*;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxDataDescription;
 import java.io.File;
@@ -43,7 +40,7 @@ import javax.swing.JOptionPane;
  *
  * @author dziegenh
  * @author dalcacer
- * @version 0.0.4
+ * @version 0.0.5
  */
 public class AppRichWPSManager {
 
@@ -94,11 +91,11 @@ public class AppRichWPSManager {
 
         //load information from model.
         final GraphModel model = this.graph.getGraphModel();
-        final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        //final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
         final String title = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_TITLE);
         final String version = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_VERSION);
-        final String theabstract = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ABSTRACT);
+        //final String theabstract = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ABSTRACT);
 
         //verify information
         if (identifier.isEmpty()) {
@@ -161,19 +158,9 @@ public class AppRichWPSManager {
             return;
         }
 
-        String wpsendpoint = "";
-        String richwpsendpoint = "";
-        if (RichWPSProvider.isWPSEndpoint(auri)) {
-            wpsendpoint = auri;
-            richwpsendpoint = wpsendpoint.replace(
-                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
-                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
-            richwpsendpoint = auri;
-            wpsendpoint = richwpsendpoint.replace(
-                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
-                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
-        }
+        String[] endpoints = RichWPSProvider.deliverEndpoints(auri);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
 
         if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
             this.error = true;
@@ -191,13 +178,13 @@ public class AppRichWPSManager {
         }
 
         //generate processdescription
-        DeployRequest request = new DeployRequest(wpsendpoint, richwpsendpoint,
-                identifier, title, version, RichWPSProvider.deploymentProfile);
+        DeployRequest request
+                = (DeployRequest) RequestFactory.createDeployRequest(wpsendpoint, richwpsendpoint, identifier, title, version);
         request.setAbstract(theabstract);
         request.setExecutionUnit(rola);
 
         try {
-            this.defineInputsOutputs(request);
+            this.convertInputsAndOutputs(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
@@ -261,19 +248,9 @@ public class AppRichWPSManager {
             return null;
         }
 
-        String wpsendpoint = "";
-        String richwpsendpoint = "";
-        if (RichWPSProvider.isWPSEndpoint(auri)) {
-            wpsendpoint = auri;
-            richwpsendpoint = wpsendpoint.replace(
-                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
-                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
-            richwpsendpoint = auri;
-            wpsendpoint = richwpsendpoint.replace(
-                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
-                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
-        }
+        String[] endpoints = RichWPSProvider.deliverEndpoints(auri);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
 
         if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
             this.error = true;
@@ -291,13 +268,13 @@ public class AppRichWPSManager {
         }
 
         //generate processdescription
-        TestRequest request = new TestRequest(wpsendpoint, richwpsendpoint,
-                identifier, title, version, RichWPSProvider.deploymentProfile);
+        TestRequest request
+                = (TestRequest) RequestFactory.createTestRequest(wpsendpoint, richwpsendpoint, identifier, title, version);
         request.setAbstract(theabstract);
         request.setExecutionUnit(rola);
 
         try {
-            this.defineInputsOutputs(request);
+            this.convertInputsAndOutputs(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
@@ -332,19 +309,9 @@ public class AppRichWPSManager {
             return null;
         }
 
-        String wpsendpoint = "";
-        String richwpsendpoint = "";
-        if (RichWPSProvider.isWPSEndpoint(auri)) {
-            wpsendpoint = auri;
-            richwpsendpoint = wpsendpoint.replace(
-                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT,
-                    RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
-            richwpsendpoint = auri;
-            wpsendpoint = richwpsendpoint.replace(
-                    IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT,
-                    IRichWPSProvider.DEFAULT_WPS_ENDPOINT);
-        }
+        String[] endpoints = RichWPSProvider.deliverEndpoints(auri);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
 
         if (!RichWPSProvider.checkRichWPSEndpoint(richwpsendpoint)) {
             this.error = true;
@@ -360,15 +327,14 @@ public class AppRichWPSManager {
             this.computingModelFailed(AppConstants.DEPLOY_ROLA_FAILED);
             return null;
         }
-
-        //generate processdescription
-        ProfileRequest request = new ProfileRequest(wpsendpoint, richwpsendpoint,
-                identifier, title, version, RichWPSProvider.deploymentProfile);
+        //generate request and processdescription
+        ProfileRequest request = (ProfileRequest) RequestFactory.createProfileRequest(wpsendpoint, richwpsendpoint,
+                identifier, title, version);
         request.setAbstract(theabstract);
         request.setExecutionUnit(rola);
 
         try {
-            this.defineInputsOutputs(request);
+            this.convertInputsAndOutputs(request);
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
@@ -389,19 +355,17 @@ public class AppRichWPSManager {
         final String auri = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
         final String identifier = (String) model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
 
-        if (RichWPSProvider.hasProcess(auri, identifier)) {
-            String wpsendpoint = "";
-            String richwpsendpoint = "";
-            if (RichWPSProvider.isWPSEndpoint(auri)) {
-                wpsendpoint = auri;
-                richwpsendpoint = auri.replace(RichWPSProvider.DEFAULT_WPS_ENDPOINT, RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-            } else if (RichWPSProvider.isRichWPSEndpoint(auri)) {
-                richwpsendpoint = auri;
-                wpsendpoint = auri.replace(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT, RichWPSProvider.DEFAULT_WPS_ENDPOINT);
-            }
+        String[] endpoints = RichWPSProvider.deliverEndpoints(auri);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
+
+        if (RichWPSProvider.hasProcess(wpsendpoint, identifier)) {
+
             RichWPSProvider provider = new RichWPSProvider();
             try {
-                UndeployRequest request = new UndeployRequest(wpsendpoint, richwpsendpoint, identifier);
+                //(de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest)
+                UndeployRequest request
+                        = (UndeployRequest) RequestFactory.createUndeployRequest(wpsendpoint, richwpsendpoint, identifier);
                 provider.perform(request);
 
                 AppEventService service = AppEventService.getInstance();
@@ -474,7 +438,9 @@ public class AppRichWPSManager {
         return null;
     }
 
-    private void defineInputsOutputs(TestRequest request) throws GraphToRequestTransformationException {
+    private void convertInputsAndOutputs(
+            TestRequest request)
+            throws GraphToRequestTransformationException {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {
@@ -497,9 +463,11 @@ public class AppRichWPSManager {
         }
     }
 
-    private void defineInputsOutputs(ProfileRequest request) throws GraphToRequestTransformationException {
+    private void convertInputsAndOutputs(
+            ProfileRequest request)
+            throws GraphToRequestTransformationException {
 
-        // Transform global inputs
+        // Transform global inputs to InputDescriptions
         for (ProcessPort port : graph.getGlobalInputPorts()) {
             IInputDescription description = this.inputPort2InputDescription(port);
             if (null == description) {
@@ -508,7 +476,7 @@ public class AppRichWPSManager {
             request.addInput(description);
         }
 
-        // Transform global outputs
+        // Transform global outputs to OutputValues
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
             IOutputValue description = null;
             description = this.outputPort2OutputValue(port);
@@ -520,7 +488,9 @@ public class AppRichWPSManager {
         }
     }
 
-    private void defineInputsOutputs(DeployRequest request) throws GraphToRequestTransformationException {
+    private void convertInputsAndOutputs(
+            DeployRequest request)
+            throws GraphToRequestTransformationException {
 
         // Transform global inputs
         for (ProcessPort port : graph.getGlobalInputPorts()) {

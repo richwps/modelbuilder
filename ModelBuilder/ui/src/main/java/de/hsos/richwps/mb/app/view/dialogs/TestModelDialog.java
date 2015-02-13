@@ -47,11 +47,10 @@ public class TestModelDialog extends ADialog {
         this.currentPanel = null;
         this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
-        this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
+        this.request.setDeploymentprofile(RichWPSProvider.DEPLOYMENTPROFILE);
         //Already set this.request.setExecutionUnit(manager.getROLA());
         this.edges = manager.getEdges();
 
-        
         this.serverids = new ArrayList();
         this.serverids.add(this.request.getServerId());
         this.initComponents();
@@ -92,7 +91,12 @@ public class TestModelDialog extends ADialog {
         this.backButton.setVisible(true);
         this.nextButton.setVisible(true);
         this.previewButton.setVisible(false);
-        
+        //in case of a next-action block, if the provided input is not valid.
+        if (!isBackAction) {
+            if (!this.currentPanel.isValidInput()) {
+                return;
+            }
+        }
         //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
@@ -153,7 +157,7 @@ public class TestModelDialog extends ADialog {
         //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
-        
+
         //in case the perform was allready used.
         this.request.flushException();
         this.request.flushResults();
@@ -251,11 +255,11 @@ public class TestModelDialog extends ADialog {
         if (this.currentPanel == this.inputspanel) {
             this.showVariablesPanel(isBackAction);
         } else if (this.currentPanel == this.variablespanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
             this.showResultsPanel();
+            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -284,8 +288,8 @@ public class TestModelDialog extends ADialog {
         } else if (this.currentPanel == this.variablespanel) {
             this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

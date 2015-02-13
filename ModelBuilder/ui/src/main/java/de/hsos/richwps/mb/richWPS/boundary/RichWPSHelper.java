@@ -361,7 +361,9 @@ public class RichWPSHelper {
      * @param wpsurl serverid of WebProcessingService.
      * @return list of formats..
      */
-    void richwpsGetOutputTypes(RichWPSClientSession richwps, GetOutputTypesRequest request, RichWPSProvider richWPSProvider) {
+    void richwpsGetOutputTypes(RichWPSClientSession richwps,
+            GetOutputTypesRequest request,
+            RichWPSProvider richWPSProvider) {
         List<List<String>> formats = new LinkedList<>();
         GetSupportedTypesRequestBuilder builder = new GetSupportedTypesRequestBuilder();
         builder.setComplexTypesOnly(true);

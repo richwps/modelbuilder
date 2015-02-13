@@ -7,7 +7,6 @@ import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral;
 import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
 import de.hsos.richwps.mb.entity.ports.BoundingBoxOutput;
@@ -20,7 +19,7 @@ import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
-import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
+import de.hsos.richwps.mb.richWPS.boundary.RequestFactory;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputBoundingBoxDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputComplexDataDescription;
@@ -34,6 +33,7 @@ import java.util.List;
  *
  * @author dziegenh
  * @author dalcacer
+ * @version 0.0.1
  */
 public class ManagedRemoteDiscovery {
 
@@ -50,9 +50,10 @@ public class ManagedRemoteDiscovery {
 
             for (String processid : processes) {
 
-                DescribeRequest pd = new DescribeRequest();
-                pd.setEndpoint(uri);
-                pd.setIdentifier(processid);
+                de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest pd
+                        = (de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest)
+                        RequestFactory.createDescribeRequest(uri, processid);
+
                 provider.perform(pd);
 
                 ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
@@ -86,7 +87,9 @@ public class ManagedRemoteDiscovery {
      * @param pd ProcessDescription with IInputDescription.
      * @param pe ProcessEntity with ProcessPorts.
      */
-    private static void transformInputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
+    private static void transformInputs(
+            de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest pd,
+            ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
         for (IInputDescription description : pd.getInputs()) {
             if (description instanceof InputComplexDataDescription) {
@@ -132,7 +135,9 @@ public class ManagedRemoteDiscovery {
      * @param pd DescribeRequest with IOutputValue.
      * @param pe ProcessEntity with ProcessPorts.
      */
-    private static void transformOutputs(DescribeRequest pd, ProcessEntity pe) throws IllegalDatatypeDescriptionException {
+    private static void transformOutputs(
+            de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest pd,
+            ProcessEntity pe) throws IllegalDatatypeDescriptionException {
 
         for (IOutputValue description : pd.getOutputs()) {
             if (description instanceof OutputComplexDataDescription) {

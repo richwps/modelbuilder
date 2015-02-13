@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.app.view.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.ResultPanel;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
+import de.hsos.richwps.mb.richWPS.boundary.RequestFactory;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.ArrayList;
@@ -39,13 +40,11 @@ public class ExecuteModelDialog extends ADialog {
      * @param processid
      *
      */
-    public ExecuteModelDialog(java.awt.Frame parent, boolean modal, final String serverid,
-            final String processid) {
+    public ExecuteModelDialog(java.awt.Frame parent, boolean modal,
+            final String serverid, final String processid) {
         super(parent, AppConstants.EXECUTE_THIS_DIALOG_TITLE);
         this.currentPanel = null;
-        this.request = new ExecuteRequest();
-        this.request.setEndpoint(serverid);
-        this.request.setIdentifier(processid);
+        this.request = (ExecuteRequest) RequestFactory.createExecuteRequest(serverid, processid);
         this.provider = new RichWPSProvider();
         try {
             if (!RichWPSProvider.isWPSEndpoint(serverid)) {
@@ -233,11 +232,11 @@ public class ExecuteModelDialog extends ADialog {
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
             this.showResultsPanel();
+            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -264,8 +263,8 @@ public class ExecuteModelDialog extends ADialog {
         if (this.currentPanel == this.outputsspanel) {
             this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

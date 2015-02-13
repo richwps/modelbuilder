@@ -133,14 +133,14 @@ public class ExecuteDialog extends ADialog {
         }
 
         /*try {
-            this.provider.connect(this.perform.getEndpoint());
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
-            AppEventService appservice = AppEventService.getInstance();
-            appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
-            Logger.log(this.getClass(), "showProcessSelection()", ex);
-            return;
-        }*/
+         this.provider.connect(this.perform.getEndpoint());
+         } catch (Exception ex) {
+         JOptionPane.showMessageDialog(this, AppConstants.CONNECT_FAILED);
+         AppEventService appservice = AppEventService.getInstance();
+         appservice.fireAppEvent(AppConstants.CONNECT_FAILED, AppConstants.INFOTAB_ID_SERVER);
+         Logger.log(this.getClass(), "showProcessSelection()", ex);
+         return;
+         }*/
         this.processesselectionpanel = new ProcessPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -374,11 +374,12 @@ public class ExecuteDialog extends ADialog {
         } else if (this.currentPanel == this.processesselectionpanel) {
             this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.inputspanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
             this.showResultsPanel();
+            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
+
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -409,8 +410,9 @@ public class ExecuteDialog extends ADialog {
         } else if (this.currentPanel == this.outputsspanel) {
             this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
+
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

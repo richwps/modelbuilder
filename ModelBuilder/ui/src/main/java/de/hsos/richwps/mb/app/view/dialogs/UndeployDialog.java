@@ -10,6 +10,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.app.view.dialogs.components.ProcessPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.ServerPanel;
+import de.hsos.richwps.mb.richWPS.boundary.RequestFactory;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
@@ -101,7 +102,6 @@ public class UndeployDialog extends ADialog {
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
 
-        
         this.processesselectionpanel = new ProcessPanel(this.provider, this.desc_request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
@@ -123,10 +123,13 @@ public class UndeployDialog extends ADialog {
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
 
-//prepare the perform
-        String endp = desc_request.getServerId();
-        endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
+        //prepare the perform
+        String auri = desc_request.getServerId();
+        String[] endpoints = RichWPSProvider.deliverEndpoints(auri);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
+        this.undeploy_request
+                = (de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest) RequestFactory.createUndeployRequest(wpsendpoint, richwpsendpoint, this.desc_request.getIdentifier());
 
         //perform the perform
         try {
@@ -135,7 +138,7 @@ public class UndeployDialog extends ADialog {
             Logger.log(this.getClass(), "performUndeploy()", ex);
             String msg = AppConstants.UNDEPLOY_FAILURE
                     + "An error occured while undeploying  " + this.undeploy_request.getIdentifier() + " from"
-                    + " " + endp + ". " + undeploy_request.getException();
+                    + " " + wpsendpoint + ". " + undeploy_request.getException();
 
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
@@ -148,7 +151,7 @@ public class UndeployDialog extends ADialog {
         if (undeploy_request.isException()) {
             String msg = AppConstants.UNDEPLOY_FAILURE
                     + "An error occured while undeploying  " + this.undeploy_request.getIdentifier() + " from"
-                    + " " + endp + ". " + undeploy_request.getException();
+                    + " " + wpsendpoint + ". " + undeploy_request.getException();
 
             AppEventService appservice = AppEventService.getInstance();
             appservice.fireAppEvent(msg, AppConstants.INFOTAB_ID_SERVER);
@@ -255,8 +258,8 @@ public class UndeployDialog extends ADialog {
         final boolean isBackAction = false;
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         if (this.currentPanel == this.serverselectionpanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showProcessesPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         } else if (this.currentPanel == this.processesselectionpanel) {
             this.undeploy();
         }
@@ -289,9 +292,12 @@ public class UndeployDialog extends ADialog {
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         this.currentPanel.updateRequest();
         this.desc_request = (DescribeRequest) this.currentPanel.getRequest();
-        String endp = desc_request.getServerId();
-        endp = endp.replace(IRichWPSProvider.DEFAULT_WPS_ENDPOINT, IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT);
-        this.undeploy_request = new UndeployRequest(this.desc_request.getServerId(), endp, this.desc_request.getIdentifier());
+        String auri = desc_request.getServerId();
+        String[] endpoints = RichWPSProvider.deliverEndpoints(auri);
+        final String wpsendpoint = endpoints[0];
+        final String richwpsendpoint = endpoints[1];
+        this.undeploy_request
+                = (de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest) RequestFactory.createUndeployRequest(wpsendpoint, richwpsendpoint, this.desc_request.getIdentifier());
         String requeststr = this.provider.richwpsPreviewUndeployProcess(this.undeploy_request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");

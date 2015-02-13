@@ -21,6 +21,10 @@ public interface IRichWPSProvider {
     public static final String DEFAULT_52N_WPS_ENDPOINT = "/WebProcessingService";
     public static final String DEFAULT_RICHWPS_ENDPOINT = "/RichWPS";
     public static final String DEFAULT_WPS_ENDPOINT = DEFAULT_52N_WPS_ENDPOINT;
+    /**
+     * The deploymentprofile, that should be used.
+     */
+    public static final String DEPLOYMENTPROFILE = "rola";
 
     public String wpsPreviewExecuteProcess(ExecuteRequest request);
 

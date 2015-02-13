@@ -10,7 +10,6 @@ import de.hsos.richwps.mb.app.view.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.ProfileResultPanel;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
@@ -47,7 +46,7 @@ public class ProfileModelDialog extends ADialog {
         this.currentPanel = null;
         this.request = manager.getProfileRequest();
         this.provider = new RichWPSProvider();
-        this.request.setDeploymentprofile(RichWPSProvider.deploymentProfile);
+        this.request.setDeploymentprofile(RichWPSProvider.DEPLOYMENTPROFILE);
         this.request.setExecutionUnit(manager.getROLA());
         this.transitions = manager.getEdges();
 
@@ -223,11 +222,11 @@ public class ProfileModelDialog extends ADialog {
         this.nextButton.setText(AppConstants.DIALOG_BTN_NEXT);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         if (this.currentPanel == this.inputspanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         } else if (this.currentPanel == this.outputsspanel) {
-            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
             this.showResultsPanel();
+            this.abortButton.setText(AppConstants.DIALOG_BTN_CLOSE);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_nextButtonActionPerformed
@@ -253,8 +252,8 @@ public class ProfileModelDialog extends ADialog {
         if (this.currentPanel == this.outputsspanel) {
             this.showInputsPanel(isBackAction);
         } else if (this.currentPanel == this.resultpanel) {
-            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
             this.showOutputsPanel(isBackAction);
+            this.nextButton.setText(AppConstants.DIALOG_BTN_START);
         }
         UiHelper.centerToWindow(this, parent);
     }//GEN-LAST:event_backButtonActionPerformed

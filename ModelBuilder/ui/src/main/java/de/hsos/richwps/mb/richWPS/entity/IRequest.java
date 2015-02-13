@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Interface that represents an wps:/wpst:-request.
+ * Interface that represents an wps:/richwps:-request.
  *
  * @author dalcacer
  */
