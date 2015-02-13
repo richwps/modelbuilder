@@ -166,22 +166,22 @@ public class RichWPSProvider implements IRichWPSProvider {
             } else if (request instanceof GetProcessesRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + GetProcessesRequest.class.getSimpleName());
                 this.connect(wpsurl);
-                wpshelper.wpsGetAvailableProcesses(this.wps, (GetProcessesRequest) request, this);
+                wpshelper.getAvailableProcesses(this.wps, (GetProcessesRequest) request);
             } else if (request instanceof ExecuteRequest) {
                 //check Execute before Describe. It is a differentiation.
                 this.connect(wpsurl);
                 //Executes can be used for process discovery/description, too!
                 if (((ExecuteRequest) request).isDescribed()) {
                     Logger.log(this.getClass(), "request()", "performing " + ExecuteRequest.class.getSimpleName());
-                    wpshelper.wpsExecuteProcess(this.wps, (ExecuteRequest) request, this);
+                    wpshelper.executeProcess(this.wps, (ExecuteRequest) request);
                 } else {
                     Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
-                    wpshelper.wpsDescribeProcess(this.wps, (DescribeRequest) request, this);
+                    wpshelper.describeProcess(this.wps, (DescribeRequest) request);
                 }
             } else if (request instanceof DescribeRequest) {
                 Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
                 this.connect(wpsurl);
-                wpshelper.wpsDescribeProcess(this.wps, (DescribeRequest) request, this);
+                wpshelper.describeProcess(this.wps, (DescribeRequest) request);
             }
             this.disconnect();
         } catch (Exception e) {
@@ -209,7 +209,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         HashMap theinputs = request.getInputValues();
         HashMap theoutputs = request.getOutputValues();
 
-        ProcessDescriptionType description = helper.getProcessDescriptionType(wps, request, this);
+        ProcessDescriptionType description = helper.getProcessDescriptionType(wps, request);
         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
 
         helper.setInputs(executeBuilder, theinputs);

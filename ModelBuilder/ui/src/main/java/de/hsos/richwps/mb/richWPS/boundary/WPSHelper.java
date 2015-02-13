@@ -56,8 +56,8 @@ public class WPSHelper {
      * @param execute 52n execute document.
      * @param description 52n process description.
      * @param responseObject 52n reponse object. Execute-response or exception.
-     * @param request ExecuteRequest with possible inputs (IInputDescription) and
- outputs (IOutputValue).
+     * @param request ExecuteRequest with possible inputs (IInputDescription)
+     * and outputs (IOutputValue).
      */
     public void analyseExecuteResponse(ExecuteDocument execute, ProcessDescriptionType description, Object responseObject, ExecuteRequest request) {
         final URL res = this.getClass().getResource("/xml/wps_config.xml");
@@ -91,16 +91,15 @@ public class WPSHelper {
                         OutputComplexDataValue outputvalue = (OutputComplexDataValue) o;
                         if (outputvalue.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
-                            
-                            
-                             URL httpKVPref = new URL(httpkvpref);
-                            
-                             if(httpKVPref.toString().equalsIgnoreCase(httpkvpref)) {
+
+                            URL httpKVPref = new URL(httpkvpref);
+
+                            if (httpKVPref.toString().equalsIgnoreCase(httpkvpref)) {
                                 request.addResult(key, httpkvpref);
-                             } else {
-                             // TODO: error
-                             }
-                             
+                            } else {
+                                // TODO: error
+                            }
+
                         } else {
                             // FIXME proper analytics for different bindings.
                             // Blocked by broken commons implementation.
@@ -142,7 +141,7 @@ public class WPSHelper {
      * @return request with list of input descriptions.
      * @see IInputDescription
      */
-    void addInputs(DescribeRequest request, ProcessDescriptionType process) {
+    public void addInputs(DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.DataInputs inputs = process.getDataInputs();
         InputDescriptionType[] _inputs = inputs.getInputArray();
         for (InputDescriptionType description : _inputs) {
@@ -156,7 +155,7 @@ public class WPSHelper {
      * @param request with serverid and processid.
      * @see IOutputValue
      */
-    void addOutputs(DescribeRequest request, ProcessDescriptionType process) {
+    public void addOutputs(DescribeRequest request, ProcessDescriptionType process) {
         ProcessDescriptionType.ProcessOutputs outputs = process.getProcessOutputs();
         OutputDescriptionType[] _outputs = outputs.getOutputArray();
         for (OutputDescriptionType description : _outputs) {
@@ -171,7 +170,7 @@ public class WPSHelper {
      * @param theinputs list of inputs (InputValuess) that should be set.
      * @see IInputValue
      */
-    void setInputs(ExecuteRequestBuilder executeBuilder, final HashMap theinputs) {
+    public void setInputs(ExecuteRequestBuilder executeBuilder, final HashMap theinputs) {
         final Set<String> keys = theinputs.keySet();
         for (String key : keys) {
             Object o = theinputs.get(key);
@@ -205,7 +204,7 @@ public class WPSHelper {
      * @param theinputs list of outputs (OutputValue) that should be set.
      * @see IOutputDescription
      */
-    void setOutputs(ExecuteRequestBuilder executeBuilder, final HashMap theoutputs) {
+    public void setOutputs(ExecuteRequestBuilder executeBuilder, final HashMap theoutputs) {
         final Set<String> keys = theoutputs.keySet();
         for (String key : keys) {
             Object o = theoutputs.get(key);
@@ -232,12 +231,12 @@ public class WPSHelper {
     }
 
     /**
-     * Describes a process, via wps:wpsDescribeProcess()-Request.
+     * Describes a process, via wps:describeProcess()-Request.
      *
      *
      * @param request DescribeRequest containing the server- and processid.
      */
-    public void wpsDescribeProcess(WPSClientSession wps, DescribeRequest request, RichWPSProvider richWPSProvider) {
+    public void describeProcess(WPSClientSession wps, DescribeRequest request) {
         final String wpsurl = request.getEndpoint();
         WPSHelper wpshelper = new WPSHelper();
         try {
@@ -263,9 +262,9 @@ public class WPSHelper {
                 wpshelper.addOutputs(request, processdescriptions);
             }
         } catch (WPSClientException ex) {
-            Logger.log(richWPSProvider.getClass(), "wpsDescribeProcess()", ex);
+            Logger.log(this.getClass(), "describeProcess()", ex);
         } catch (Exception ex) {
-            Logger.log(richWPSProvider.getClass(), "wpsDescribeProcess()", ex);
+            Logger.log(this.getClass(), "describeProcess()", ex);
         }
     }
 
@@ -275,7 +274,7 @@ public class WPSHelper {
      * @param wpsurl serverid of WebProcessingService.
      * @return list of processes.
      */
-    public void wpsGetAvailableProcesses(WPSClientSession wps, GetProcessesRequest request, RichWPSProvider richWPSProvider) {
+    public void getAvailableProcesses(WPSClientSession wps, GetProcessesRequest request) {
         List<String> processes = new ArrayList<>();
         try {
             ProcessDescriptionsDocument pdd = wps.describeAllProcesses(request.getEndpoint());
@@ -286,11 +285,11 @@ public class WPSHelper {
                     String identifier = process.getIdentifier().getStringValue();
                     processes.add(identifier);
                 } else {
-                    //de.hsos.richwps.mb.Logger.log("Debug:wpsGetAvailableProcesses()" + process);
+                    //de.hsos.richwps.mb.Logger.log("Debug:getAvailableProcesses()" + process);
                 }
             }
         } catch (WPSClientException e) {
-            Logger.log(richWPSProvider.getClass(), "wpsGetAvailableProcesses()", e);
+            Logger.log(this.getClass(), "getAvailableProcesses()", e);
         }
         request.setProcesses(processes);
     }
@@ -301,13 +300,13 @@ public class WPSHelper {
      * @param request ExecuteRequest with serverid and processid and in- and
      * outputvalues.
      */
-    public void wpsExecuteProcess(WPSClientSession wps, ExecuteRequest request, RichWPSProvider richWPSProvider) {
+    public void executeProcess(WPSClientSession wps, ExecuteRequest request) {
         final WPSHelper helper = new WPSHelper();
         String severid = request.getEndpoint();
         String processid = request.getIdentifier();
         HashMap theinputs = request.getInputValues();
         HashMap theoutputs = request.getOutputValues();
-        ProcessDescriptionType description = getProcessDescriptionType(wps, request, richWPSProvider);
+        ProcessDescriptionType description = getProcessDescriptionType(wps, request);
         ExecuteRequestBuilder executeBuilder = new ExecuteRequestBuilder(description);
         helper.setInputs(executeBuilder, theinputs);
         helper.setOutputs(executeBuilder, theoutputs);
@@ -319,11 +318,11 @@ public class WPSHelper {
             WPSClientSession wpsClient = WPSClientSession.getInstance();
             response = wpsClient.execute(severid, execute);
             if (response == null) {
-                Logger.log(richWPSProvider.getClass(), "wpsExecuteProcess()", "No response");
+                Logger.log(this.getClass(), "executeProcess()", "No response");
                 return;
             }
         } catch (Exception e) {
-            Logger.log(richWPSProvider.getClass(), "wpsExecuteProcess()", processid + ", " + e);
+            Logger.log(this.getClass(), "executeProcess()", processid + ", " + e);
         }
         helper.analyseExecuteResponse(execute, description, response, request);
     }
@@ -332,10 +331,12 @@ public class WPSHelper {
      * Retreives and extracts the processdescription type from a given
      * WPS-server.
      *
-     * @param request ExecuteRequest with serverid and process id.
+     * @param wps WPSClientSession actual wps client.
+     * @param request ExecuteRequest.
+     *
      * @return 52n processdescriptiontype.
      */
-    public ProcessDescriptionType getProcessDescriptionType(WPSClientSession wps, ExecuteRequest request, RichWPSProvider richWPSProvider) {
+    public ProcessDescriptionType getProcessDescriptionType(WPSClientSession wps, ExecuteRequest request) {
         ProcessDescriptionType description = null;
         try {
             String[] processes = new String[1];
@@ -345,7 +346,7 @@ public class WPSHelper {
             ProcessDescriptionType[] descs = descriptions.getProcessDescriptionArray();
             description = descs[0];
         } catch (WPSClientException e) {
-            Logger.log(richWPSProvider.getClass(), "getProcessDescriptionType", request.getIdentifier() + " " + e);
+            Logger.log(this.getClass(), "getProcessDescriptionType", request.getIdentifier() + " " + e);
         }
         return description;
     }

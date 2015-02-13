@@ -2,12 +2,9 @@ package de.hsos.richwps.mb.app.view.dialogs.components;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.view.dialogs.components.renderer.ExceptionRenderer;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.LiteralRenderer;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.URIRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.app.view.dialogs.components.renderer.ProfileRenderer;
 import java.awt.GridBagConstraints;
