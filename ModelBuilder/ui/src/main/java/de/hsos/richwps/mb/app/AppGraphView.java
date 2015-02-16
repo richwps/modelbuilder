@@ -6,19 +6,23 @@ import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
+import de.hsos.richwps.mb.app.view.dialogs.processReplacer.ProcessReplacer;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortKey;
+import de.hsos.richwps.mb.graphView.GraphSetup;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
+import java.awt.Component;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -303,6 +307,8 @@ public class AppGraphView extends GraphView {
 
                         mappingError = true;
 
+                        markProcessCellAsErroneus(aCell);
+
                     } else {
 
                         // remove port instance from map to identity unmapped ports
@@ -326,6 +332,8 @@ public class AppGraphView extends GraphView {
                 );
                 msg = msg + '\n';
                 AppEventService.getInstance().fireAppEvent(msg, AppConstants.INFOTAB_ID_EDITOR, AppEvent.PRIORITY.URGENT);
+
+                markProcessCellAsErroneus(aCell);
             }
         }
 
@@ -333,7 +341,7 @@ public class AppGraphView extends GraphView {
             JOptionPane.showMessageDialog(app.getFrame(), AppConstants.LOAD_MODEL_MAPPING_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
 
         } else {
-            
+
             // no mapping error -> perform process cell values update
             for (mxCell aCell : processCells) {
                 ProcessEntity process = (ProcessEntity) graphModel.getValue(aCell);
@@ -370,6 +378,19 @@ public class AppGraphView extends GraphView {
             }
 
         }
+    }
+
+    private void markProcessCellAsErroneus(mxCell cell) {
+        Graph graph = getGraph();
+        GraphModel graphModel = graph.getGraphModel();
+
+        graphModel.beginUpdate();
+        cell.setStyle(GraphSetup.STYLENAME_PROCESS_W_ERROR);
+        graphModel.endUpdate();
+
+        // refresh in order to enable the new cell style
+        GraphComponent gui = (GraphComponent) getGui();
+        gui.refresh();
     }
 
     private HashMap<ProcessPortKey, ProcessPort> getProcessPorts(ProcessEntity process) {

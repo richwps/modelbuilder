@@ -29,9 +29,11 @@ public class GraphSetup {
 
     public final static int CELLS_VERTICAL_OFFSET = 100;
 
+    public static final String STYLENAME_ERROR_POSTFIX = "_ERROR";
     static String STYLENAME_GLOBAL_INPUT = "GLOBAL_INPUT";
     static String STYLENAME_GLOBAL_OUTPUT = "GLOBAL_OUTPUT";
-    static String STYLENAME_PROCESS = "PROCESS";
+    final static String STYLENAME_PROCESS = "PROCESS";
+    public static String STYLENAME_PROCESS_W_ERROR = STYLENAME_PROCESS + STYLENAME_ERROR_POSTFIX;
 
     static String STYLENAME_LOCAL_INPUT = "LOCAL_INPUT";
     static String STYLENAME_LOCAL_OUTPUT = "LOCAL_OUTPUT";
@@ -137,6 +139,13 @@ public class GraphSetup {
         processStyle.put(mxConstants.STYLE_GRADIENTCOLOR, "#f6f6f6");
         processStyle.put(mxConstants.STYLE_SPACING_TOP, spacing);
         stylesheet.putCellStyle(STYLENAME_PROCESS, processStyle);
+
+        // derive style for processes with errors
+        Hashtable<String, Object> processErrorStyle = (Hashtable<String, Object>) processStyle.clone();
+        processErrorStyle.remove(mxConstants.STYLE_FILLCOLOR);
+        processErrorStyle.put(mxConstants.STYLE_FILLCOLOR, "#ff0000");
+        processErrorStyle.put(mxConstants.STYLE_FONTCOLOR, "#ffffff");
+        stylesheet.putCellStyle(STYLENAME_PROCESS_W_ERROR, processErrorStyle);
 
         // GLOBAL INPUT PORT STYLE
         Hashtable<String, Object> processInputStyle = (Hashtable<String, Object>) processStyle.clone();

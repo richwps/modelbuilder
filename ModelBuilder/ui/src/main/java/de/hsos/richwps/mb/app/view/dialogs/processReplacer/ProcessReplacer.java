@@ -1,187 +1,69 @@
 package de.hsos.richwps.mb.app.view.dialogs.processReplacer;
 
 import com.mxgraph.model.mxCell;
-import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.app.AppGraphView;
-import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.graphView.GraphNodeCreator;
+import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
-import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.ui.MbDialog;
-import java.awt.CardLayout;
-import java.awt.Container;
 import java.awt.Point;
-import java.util.Collection;
 import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import layout.TableLayout;
 
 /**
  *
  * @author dziegenh
  */
-public class ProcessReplacer extends MbDialog {
+public class ProcessReplacer {
 
-    private final ProcessProvider processProvider;
-    private final AppGraphView graphView;
-    private SelectProcessTree selectProcessTree;
-    private CardLayout cardLayout;
-    private MapPortsPanel mapPortsPanel;
-
-    enum CARD {
-
-        SELECT_PROCESS,
-        MAP_PORTS
+    public void replaceAutoMappedProcess(GraphView graphView, mxCell oldCell, ProcessEntity newProcess) {
+        final ProcessEntity oldProcess = (ProcessEntity) oldCell.getValue();
+        MapPortsPanel mapPortsPanel = new MapPortsPanel(oldProcess, newProcess);
+        this.replaceProcess(graphView, mapPortsPanel, oldCell, newProcess);
     }
 
-    private CARD currentCard = CARD.SELECT_PROCESS;
+    public void replaceProcess(GraphView graphView, MapPortsPanel mapPortsPanel, mxCell oldCell, ProcessEntity newProcess) {
+        Graph graph = graphView.getGraph();
+        
 
-    private ProcessEntity sourceProcess;
-    private mxCell sourceCell;
-    private ProcessEntity targetProcess;
+        // insert new process cell
+        Point cellLocation = oldCell.getGeometry().getPoint();
+        mxCell targetCell = GraphNodeCreator.createNodeFromProcess(graph, newProcess, cellLocation);
 
-    public ProcessReplacer(AppFrame frame, ProcessProvider processProvider, AppGraphView graphView) {
-        super(frame, AppConstants.PROCESS_REPLACER_DIALOG_TITLE, MbDialog.BTN_ID_BACK | MbDialog.BTN_ID_NEXT | MbDialog.BTN_ID_CANCEL | MbDialog.BTN_ID_OK);
+        // restore outgoing connections
+        Object[] outgoingEdges = graphView.getGraph().getOutgoingEdges(oldCell);
+        for (Object edge : outgoingEdges) {
+            GraphEdge outEdge = (GraphEdge) edge;
 
-        this.processProvider = processProvider;
-        this.graphView = graphView;
+            Object outEdgeSourcePort = outEdge.getSourcePortCell().getValue();
+            List<MapPortPanel> portPanelsForSourcePort = mapPortsPanel.getPortPanelsForSourcePort((ProcessPort) outEdgeSourcePort);
 
-        setSize(600, 400);
+            for (MapPortPanel mapPortPanel : portPanelsForSourcePort) {
+                mxCell targetPortCell = graphView.getCellByValue(targetCell, mapPortPanel.getTarget());
 
-        getDialogButton(MbDialog.BTN_ID_BACK).setEnabled(false);
-        getDialogButton(MbDialog.BTN_ID_NEXT).setEnabled(false);
-        getDialogButton(MbDialog.BTN_ID_OK).setEnabled(false);
-
-        sourceProcess = graphView.getSelectedProcesses().get(0);
-//        sourceProcess = processProvider.getFullyLoadedProcessEntity(sourceProcess);
-        sourceCell = (mxCell) graphView.getGraph().getSelectionCell();
-
-        init();
-    }
-
-    private void init() {
-        Container contentPane = getContentPane();
-        cardLayout = new CardLayout();
-        contentPane.setLayout(cardLayout);
-
-        // temporary disable discovering managed remote servers
-        boolean managedRemotesEnabled = processProvider.isManagedRemotesEnabled();
-        processProvider.setManagedRemotesEnabled(false);
-
-        // create "select process" panel
-        Collection<WpsServer> processes = this.processProvider.getAllServerWithProcesses();
-        JPanel selectProcessPanel = new JPanel();
-        selectProcessPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
-        selectProcessTree = new SelectProcessTree(processes);
-        selectProcessPanel.add(new JScrollPane(selectProcessTree), "0 0");
-        selectProcessTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
-
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath newLeadSelectionPath = e.getNewLeadSelectionPath();
-                DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) newLeadSelectionPath.getLastPathComponent();
-                Object treeNodeObject = treeNode.getUserObject();
-
-                boolean processSelected = treeNodeObject instanceof ProcessEntity;
-                getDialogButton(MbDialog.BTN_ID_NEXT).setEnabled(processSelected);
-
-                if (processSelected) {
-                    targetProcess = (ProcessEntity) treeNodeObject;
-                } else {
-                    targetProcess = null;
-                }
+                // connect cells
+                graph.insertEdge(targetCell, null, null, targetPortCell, outEdge.getTargetPortCell());
             }
-        });
-
-        // restore "discover managed remotes" flag
-        processProvider.setManagedRemotesEnabled(managedRemotesEnabled);
-
-        contentPane.add(selectProcessPanel, CARD.SELECT_PROCESS.name());
-    }
-
-    @Override
-    protected void handleDialogButton(int buttonId) {
-
-        // NEXT -> show "map ports" panel
-        if (isTheDialogButton(buttonId, MbDialog.BTN_ID_NEXT)) {
-            getDialogButton(MbDialog.BTN_ID_BACK).setEnabled(true);
-            getDialogButton(MbDialog.BTN_ID_NEXT).setEnabled(false);
-            getDialogButton(MbDialog.BTN_ID_OK).setEnabled(true);
-
-            // complete process loading if necessary
-            targetProcess = processProvider.getFullyLoadedProcessEntity(targetProcess);
-
-            mapPortsPanel = new MapPortsPanel(sourceProcess, targetProcess);
-            getContentPane().add(mapPortsPanel, CARD.MAP_PORTS.name());
-
-            cardLayout.show(getContentPane(), CARD.MAP_PORTS.name());
         }
 
-        // BACK -> show "select target process" tree
-        if (isTheDialogButton(buttonId, MbDialog.BTN_ID_BACK)) {
-            getDialogButton(MbDialog.BTN_ID_BACK).setEnabled(false);
-            getDialogButton(MbDialog.BTN_ID_NEXT).setEnabled(true);
+        // restore incoming connections
+        Object[] incomingEdges = graphView.getGraph().getIncomingEdges(oldCell);
+        for (Object edge : incomingEdges) {
+            GraphEdge inEdge = (GraphEdge) edge;
 
-            cardLayout.show(getContentPane(), CARD.SELECT_PROCESS.name());
+            Object outEdgeTargetPort = inEdge.getTargetPortCell().getValue();
+            List<MapPortPanel> portPanelsForSourcePort = mapPortsPanel.getPortPanelsForSourcePort((ProcessPort) outEdgeTargetPort);
 
-            getContentPane().remove(mapPortsPanel);
-            mapPortsPanel = null;
+            for (MapPortPanel mapPortPanel : portPanelsForSourcePort) {
+                mxCell targetPortCell = graphView.getCellByValue(targetCell, mapPortPanel.getTarget());
+
+                // connect cells
+                graph.insertEdge(targetCell, null, null, targetPortCell, inEdge.getSourcePortCell());
+            }
         }
 
-        // OK -> replace process
-        if (isTheDialogButton(buttonId, MbDialog.BTN_ID_OK)) {
-            Graph graph = graphView.getGraph();
-            
-            // insert new process cell
-            Point cellLocation = sourceCell.getGeometry().getPoint();
-            mxCell targetCell = GraphNodeCreator.createNodeFromProcess(graphView.getGraph(), targetProcess, cellLocation);
-
-            // restore outgoing connections
-            Object[] outgoingEdges = graphView.getGraph().getOutgoingEdges(sourceCell);
-            for (Object edge : outgoingEdges) {
-                GraphEdge outEdge = (GraphEdge) edge;
-
-                Object outEdgeSourcePort = outEdge.getSourcePortCell().getValue();
-                List<MapPortPanel> portPanelsForSourcePort = mapPortsPanel.getPortPanelsForSourcePort((ProcessPort) outEdgeSourcePort);
-
-                for (MapPortPanel mapPortPanel : portPanelsForSourcePort) {
-                    mxCell targetPortCell = graphView.getCellByValue(targetCell, mapPortPanel.getTarget());
-
-                    // connect cells
-                    graph.insertEdge(targetCell, null, null, targetPortCell, outEdge.getTargetPortCell());
-                }
-            }
-            
-            // restore incoming connections
-            Object[] incomingEdges = graphView.getGraph().getIncomingEdges(sourceCell);
-            for (Object edge : incomingEdges) {
-                GraphEdge inEdge = (GraphEdge) edge;
-
-                Object outEdgeTargetPort = inEdge.getTargetPortCell().getValue();
-                List<MapPortPanel> portPanelsForSourcePort = mapPortsPanel.getPortPanelsForSourcePort((ProcessPort) outEdgeTargetPort);
-
-                for (MapPortPanel mapPortPanel : portPanelsForSourcePort) {
-                    mxCell targetPortCell = graphView.getCellByValue(targetCell, mapPortPanel.getTarget());
-
-                    // connect cells
-                    graph.insertEdge(targetCell, null, null, targetPortCell, inEdge.getSourcePortCell());
-                }
-            }
-
-            // remove old process cell
-            graph.removeCells(new mxCell[]{sourceCell});
-        }
-
-        super.handleDialogButton(buttonId);
+        // remove old process cell
+        graph.removeCells(new mxCell[]{oldCell});
     }
 
 }

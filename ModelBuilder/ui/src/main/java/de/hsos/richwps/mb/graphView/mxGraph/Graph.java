@@ -208,11 +208,27 @@ public class Graph extends mxGraph {
         Object value = model.getValue(cell);
 
         if (null != value) {
+            
             if (value instanceof ProcessPort) {
                 return ((ProcessPort) value).getToolTipText();
+                
             } else if (value instanceof ProcessEntity) {
-                return ((ProcessEntity) value).getToolTipText();
+                String ttt = ((ProcessEntity) value).getToolTipText();
+                
+                // Add error message if the cell has the "error"-style
+                if (((mxCell) cell).getStyle().endsWith(GraphSetup.STYLENAME_ERROR_POSTFIX)) {
+                    StringBuilder addMsg = new StringBuilder();
+                    addMsg.append("<html>")
+                            .append("<div style=\"color:#ff0000;font-weight:bold;\">")
+                            .append("This process version has compatibility errors.<br />")
+                            .append("It is recommended to replace it with a valid version.")
+                            .append("</div>")
+                            .append("<hr />");
+                    ttt = ttt.replaceFirst("<html>", addMsg.toString());
+                }
+                return ttt;
             }
+            
         } else if (model.isEdge(cell)) {
             return convertValueToString(model.getTerminal(cell, true)) + " -> "
                     + convertValueToString(model.getTerminal(cell, false));

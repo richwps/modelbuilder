@@ -43,7 +43,9 @@ public class GraphNodeCreator {
             int y = location.y;
             int w = GraphSetup.PROCESS_WIDTH;
             int h = GraphSetup.PROCESS_HEIGHT;
+
             String style = GraphSetup.STYLENAME_PROCESS;
+
             processCell = (mxCell) graph.insertVertex(parent, null, process, x, y, w, h, style);
             processCell.setConnectable(false);
 
@@ -80,6 +82,7 @@ public class GraphNodeCreator {
 
     /**
      * Creates a cell representing a local process input or output.
+     *
      * @param port
      * @param x
      * @param y

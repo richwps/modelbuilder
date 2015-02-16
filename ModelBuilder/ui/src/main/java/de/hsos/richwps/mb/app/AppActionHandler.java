@@ -10,7 +10,7 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
-import de.hsos.richwps.mb.app.view.dialogs.processReplacer.ProcessReplacer;
+import de.hsos.richwps.mb.app.view.dialogs.processReplacer.ProcessReplacerDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -461,7 +461,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doReplaceProcess() {
-        ProcessReplacer processReplacer = new ProcessReplacer(app.getFrame(), app.getProcessProvider(), app.getGraphView());
-        processReplacer.setVisible(true);
+        ProcessReplacerDialog dialog = new ProcessReplacerDialog(app.getFrame(), app.getProcessProvider(), app.getGraphView());
+        dialog.setVisible(true);
     }
 }

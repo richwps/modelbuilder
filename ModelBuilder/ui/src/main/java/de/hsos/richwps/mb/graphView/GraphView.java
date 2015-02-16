@@ -182,9 +182,7 @@ public class GraphView extends JPanel {
      * @param value
      */
     public void selectCellByValue(Object value) {
-//        if (value instanceof GraphModel) {
         getGraph().clearSelection();
-//        } else {
         Object[] cells = getGraph().getChildCells(getGraph().getDefaultParent());
         for (Object cell : cells) {
             Object cellValue = getGraph().getGraphModel().getValue(cell);
@@ -192,7 +190,6 @@ public class GraphView extends JPanel {
                 getGraph().setSelectionCell(cell);
             }
         }
-//        }
     }
 
     // constants for model element change listener
@@ -208,7 +205,7 @@ public class GraphView extends JPanel {
 
     private List<ModelElementsChangedListener> getModelElementsChangedListeners() {
         if (null == modelElementsChangeListener) {
-            modelElementsChangeListener = new LinkedList<ModelElementsChangedListener>();
+            modelElementsChangeListener = new LinkedList<>();
 
             // listen to cells added/removed and fire custom event
             mxEventSource.mxIEventListener listener = new mxEventSource.mxIEventListener() {
