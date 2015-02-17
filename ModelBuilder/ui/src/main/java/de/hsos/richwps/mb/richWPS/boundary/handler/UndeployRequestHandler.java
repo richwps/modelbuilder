@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.richWPS.boundary.handler;
 
+
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
 import static de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
@@ -19,9 +21,9 @@ public class UndeployRequestHandler implements IRequestHandler {
     RichWPSClientSession wps;
     UndeployRequest request;
 
-    public UndeployRequestHandler(RichWPSClientSession wps, UndeployRequest request) {
+    public UndeployRequestHandler(RichWPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (UndeployRequest) request;
     }
 
     @Override

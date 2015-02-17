@@ -11,6 +11,7 @@ import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionsDocument;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
 /**
  *
@@ -22,9 +23,9 @@ public class DescribeRequestHandler implements IRequestHandler {
     WPSClientSession wps;
     DescribeRequest request;
 
-    public DescribeRequestHandler(WPSClientSession wps, DescribeRequest request) {
+    public DescribeRequestHandler(WPSClientSession wps, IRequest  request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (DescribeRequest) request;
     }
 
     @Override
@@ -54,9 +55,9 @@ public class DescribeRequestHandler implements IRequestHandler {
                 addOutputs(request, processdescriptions);
             }
         } catch (WPSClientException ex) {
-            Logger.log(this.getClass(), "describeProcess()", ex);
+            Logger.log(this.getClass(), "handle()", ex);
         } catch (Exception ex) {
-            Logger.log(this.getClass(), "describeProcess()", ex);
+            Logger.log(this.getClass(), "handle()", ex);
         }
     }
 
@@ -87,5 +88,10 @@ public class DescribeRequestHandler implements IRequestHandler {
         for (OutputDescriptionType description : _outputs) {
             request.addOutput(description);
         }
+    }
+
+    @Override
+    public String preview() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

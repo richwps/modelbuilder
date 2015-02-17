@@ -12,20 +12,17 @@ import de.hsos.richwps.mb.richWPS.boundary.handler.TestRequestHandler;
 import de.hsos.richwps.mb.richWPS.boundary.handler.UndeployRequestHandler;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.*;
+import java.lang.reflect.Constructor;
 
 import java.util.HashMap;
 import java.util.List;
-import net.opengis.wps.x100.ExecuteDocument;
-import net.opengis.wps.x100.ProcessDescriptionType;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.client.RichWPSClientSession;
-import org.n52.wps.client.richwps.TransactionalRequestBuilder;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import net.opengis.wps.x100.TestProcessDocument;
-import org.n52.wps.client.richwps.TestProcessRequestBuilder;
+import java.util.Map;
 
 /**
  * Interface to RichWPS enabled servers.
@@ -35,6 +32,10 @@ import org.n52.wps.client.richwps.TestProcessRequestBuilder;
  */
 public class RichWPSProvider implements IRichWPSProvider {
 
+    private Map<Class, Class> richwpshandler = new HashMap();
+    private Map<Class, Class> wpshandler = new HashMap();
+    private Class[] richwpshandlerparams = new Class[2];
+    private Class[] wpshandlerparams = new Class[2];
     /**
      * WPS client.
      */
@@ -43,6 +44,24 @@ public class RichWPSProvider implements IRichWPSProvider {
      * RichWPS client.
      */
     private RichWPSClientSession richwps;
+
+    public RichWPSProvider() {
+        richwpshandler.put(ProfileRequest.class, ProfileRequestHandler.class);
+        richwpshandler.put(TestRequest.class, TestRequestHandler.class);
+        richwpshandler.put(GetInputTypesRequest.class, GetInputTypesRequestHandler.class);
+        richwpshandler.put(GetOutputTypesRequest.class, GetOutputTypesRequestHandler.class);
+        richwpshandler.put(DeployRequest.class, DeployRequestHandler.class);
+        richwpshandler.put(UndeployRequest.class, UndeployRequestHandler.class);
+        richwpshandlerparams = new Class[2];
+        richwpshandlerparams[0] = RichWPSClientSession.class;
+        richwpshandlerparams[1] = IRequest.class;
+        wpshandler.put(GetProcessesRequest.class, GetProcessesRequestHandler.class);
+        wpshandler.put(ExecuteRequest.class, ExecuteRequestHandler.class);
+        wpshandler.put(DescribeRequest.class, DescribeRequestHandler.class);
+        wpshandlerparams = new Class[2];
+        wpshandlerparams[0] = WPSClientSession.class;
+        wpshandlerparams[1] = IRequest.class;
+    }
 
     /**
      * Connects the provider to a WPS-server.
@@ -125,71 +144,67 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     @Override
     public void perform(IRequest request) {
-
         //endpoint detection.
         final String givenendpoint = request.getEndpoint();
         String[] endpoints = RichWPSProvider.deliverEndpoints(givenendpoint);
         final String wpsendpoint = endpoints[0];
         final String richwpsendpoint = endpoints[1];
 
-        //FIXME spawn handlers differently.
-        //e.g. a map.
-        //ProfileRequest -> ProfileRequestHandler
-        //TestRequest -> TestRequestHandler
-        //...
+        IRequestHandler handler = null;
         try {
-            if (request instanceof ProfileRequest) {
-                //check TestRequest before Execute and Desscribe, it is a differentiation.
-                Logger.log(this.getClass(), "request()", "performing " + ProfileRequest.class.getSimpleName());
-                this.connect(wpsendpoint, richwpsendpoint);
-                new ProfileRequestHandler(this.richwps, (ProfileRequest) request).handle();
-            } else if (request instanceof TestRequest) {
-                //check TestRequest before Execute and Desscribe, it is a differentiation.
-                Logger.log(this.getClass(), "request()", "performing " + TestRequest.class.getSimpleName());
-                this.connect(wpsendpoint, richwpsendpoint);
-                new TestRequestHandler(this.richwps, (TestRequest) request).handle();
-            } else if (request instanceof GetInputTypesRequest) {
-                Logger.log(this.getClass(), "request()", "performing " + GetInputTypesRequest.class.getSimpleName());
-                this.connect(wpsendpoint, richwpsendpoint);
-                new GetInputTypesRequestHandler(this.richwps, (GetInputTypesRequest) request).handle();
-            } else if (request instanceof GetOutputTypesRequest) {
-                Logger.log(this.getClass(), "request()", "performing " + GetOutputTypesRequest.class.getSimpleName());
-                this.connect(wpsendpoint, richwpsendpoint);
-                new GetOutputTypesRequestHandler(this.richwps, (GetOutputTypesRequest) request).handle();
-            } else if (request instanceof DeployRequest) {
-                Logger.log(this.getClass(), "request()", "performing " + DeployRequest.class.getSimpleName());
-                this.connect(wpsendpoint, richwpsendpoint);
-                new DeployRequestHandler(richwps, (DeployRequest) request).handle();
-            } else if (request instanceof UndeployRequest) {
-                Logger.log(this.getClass(), "request()", "performing " + UndeployRequest.class.getSimpleName());
-                this.connect(wpsendpoint, richwpsendpoint);
-                new UndeployRequestHandler(this.richwps, (UndeployRequest) request).handle();
-            } else if (request instanceof GetProcessesRequest) {
-                Logger.log(this.getClass(), "request()", "performing " + GetProcessesRequest.class.getSimpleName());
-                this.connect(wpsendpoint);
-                new GetProcessesRequestHandler(this.wps, (GetProcessesRequest) request).handle();
-            } else if (request instanceof ExecuteRequest) {
-                //check Execute before Describe. It is a differentiation.
-                this.connect(wpsendpoint);
-                //Executes can be used for process discovery/description, too!
-                if (((ExecuteRequest) request).isDescribed()) {
-                    Logger.log(this.getClass(), "request()", "performing " + ExecuteRequest.class.getSimpleName());
-                    new ExecuteRequestHandler(this.wps, (ExecuteRequest) request).handle();
-                } else {
-                    Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
-                    new DescribeRequestHandler(this.wps, (DescribeRequest) request).handle();
+            //test for richwps requests
+            for (Class key : richwpshandler.keySet()) {
+                if (key == request.getClass()) {
+                    Logger.log(this.getClass(), "perform()", "performing " + key);
+                    Class handlertype = richwpshandler.get(key);
+
+                    this.connect(wpsendpoint, richwpsendpoint);
+                    Constructor ct = handlertype.getDeclaredConstructor(richwpshandlerparams);
+                    handler = (IRequestHandler) ct.newInstance(richwps, request);
                 }
-            } else if (request instanceof DescribeRequest) {
-                Logger.log(this.getClass(), "request()", "performing " + DescribeRequest.class.getSimpleName());
-                this.connect(wpsendpoint);
-                new DescribeRequestHandler(this.wps, (DescribeRequest) request).handle();
             }
+
+            //then regular wps requests
+            for (Class key : wpshandler.keySet()) {
+                if (key == request.getClass()) {
+                    Logger.log(this.getClass(), "perform()", "performing " + key);
+                    Class handlertype = wpshandler.get(key);
+                    //special case
+                    if (key == ExecuteRequest.class) {
+                        if (!((ExecuteRequest) request).isDescribed()) {
+                            handlertype = DescribeRequestHandler.class;
+                            //wpshandler.get(DescribeRequest.class);
+                        }
+                    }
+                    this.connect(wpsendpoint);
+                    Constructor ct = handlertype.getDeclaredConstructor(wpshandlerparams);
+                    handler = (IRequestHandler) ct.newInstance(wps, request);
+                }
+            }
+
+            handler.handle();
             this.disconnect();
         } catch (Exception e) {
-            Logger.log(this.getClass(), "Unkown request request()", e);
+            Logger.log(this.getClass(), "perform()", "Handler for "
+                    + "request could not be found." + e);
         }
     }
 
+    /**
+     * Performs a preview.
+     *
+     * @param request the request that should be preview (if possible).
+     * @see IRequest
+     * @see ExecuteRequest
+     * @see DeployRequest
+     * @see UndeployRequest
+     * @see TestRequest
+     * @see ProfileRequest
+     * @see GetProcessesRequest
+     * @see GetInputTypesRequest
+     * @see GetOutputTypesRequest
+     */
+    @Override
     public String preview(IRequest request) {
 
         //endpoint detection.
@@ -198,40 +213,47 @@ public class RichWPSProvider implements IRichWPSProvider {
         final String wpsendpoint = endpoints[0];
         final String richwpsendpoint = endpoints[1];
 
-        //FIXME spawn handlers differently.
-        //e.g. a map.
-        //ProfileRequest -> ProfileRequestHandler
-        //TestRequest -> TestRequestHandler
-        //...
+        IRequestHandler handler = null;
         try {
-            if (request instanceof ProfileRequest) {
-                /*//check TestRequest before Execute and Desscribe, it is a differentiation.
-                 this.connect(wpsendpoint, richwpsendpoint);
-                 new ProfileRequestHandler(this.richwps, (ProfileRequest) request).handle();*/
-            } else if (request instanceof TestRequest) {
-                //check TestRequest before Execute and Desscribe, it is a differentiation.
-                this.connect(wpsendpoint, richwpsendpoint);
-                return new TestRequestHandler(this.richwps, (TestRequest) request).preview();
-            } else if (request instanceof DeployRequest) {
-                this.connect(wpsendpoint, richwpsendpoint);
-                new DeployRequestHandler(richwps, (DeployRequest) request).handle();
-            } else if (request instanceof UndeployRequest) {
-                return new UndeployRequestHandler(this.richwps, (UndeployRequest) request).preview();
-            } 
-            else if (request instanceof ExecuteRequest) {
-                this.connect(wpsendpoint);
-                return new ExecuteRequestHandler(this.wps, (ExecuteRequest) request).preview();
+            //test for richwps requests
+            for (Class key : richwpshandler.keySet()) {
+                if (key == request.getClass()) {
+                    Logger.log(this.getClass(), "preview()", "previewing " + key);
+                    Class handlertype = richwpshandler.get(key);
+
+                    this.connect(wpsendpoint, richwpsendpoint);
+                    Constructor ct = handlertype.getDeclaredConstructor(richwpshandlerparams);
+                    handler = (IRequestHandler) ct.newInstance(richwps, request);
+                }
             }
+
+            //then regular wps requests
+            for (Class key : wpshandler.keySet()) {
+                if (key == request.getClass()) {
+                    Logger.log(this.getClass(), "preview()", "previewing " + key);
+                    Class handlertype = wpshandler.get(key);
+                    //special case
+                    if (key == ExecuteRequest.class) {
+                        if (!((ExecuteRequest) request).isDescribed()) {
+                            handlertype = DescribeRequestHandler.class;
+                            //wpshandler.get(DescribeRequest.class);
+                        }
+                    }
+                    this.connect(wpsendpoint);
+                    Constructor ct = handlertype.getDeclaredConstructor(wpshandlerparams);
+                    handler = (IRequestHandler) ct.newInstance(wps, request);
+                }
+            }
+
+            String str = handler.preview();
             this.disconnect();
+            return str;
         } catch (Exception e) {
-            Logger.log(this.getClass(), "Unkown request request()", e);
+            Logger.log(this.getClass(), "perform()", "Handler for "
+                    + "request could not be found." + e);
         }
         return "";
     }
-
-    
-
-  
 
     /**
      * Checks whether an URI is an (52n) WPS-endpoint or not.
@@ -291,6 +313,7 @@ public class RichWPSProvider implements IRichWPSProvider {
         RichWPSProvider provider = new RichWPSProvider();
         try {
             provider.connect(wpsendpoitn);
+
         } catch (Exception ex) {
             Logger.log(RichWPSProvider.class, "hasProcess", "Unable to connect to "
                     + wpsendpoitn + " " + ex);

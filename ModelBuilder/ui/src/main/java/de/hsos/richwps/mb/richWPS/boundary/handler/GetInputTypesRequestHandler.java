@@ -11,6 +11,7 @@ import net.opengis.wps.x100.ComplexTypesType;
 import net.opengis.wps.x100.SupportedTypesResponseDocument;
 import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
 /**
  *
@@ -22,9 +23,9 @@ public class GetInputTypesRequestHandler implements IRequestHandler {
     RichWPSClientSession wps;
     GetInputTypesRequest request;
 
-    public GetInputTypesRequestHandler(RichWPSClientSession wps, GetInputTypesRequest request) {
+    public GetInputTypesRequestHandler(RichWPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (GetInputTypesRequest) request;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class GetInputTypesRequestHandler implements IRequestHandler {
         try {
             responseObject = wps.getSupportedTypes(request.getServerId(), builder.build());
         } catch (Exception e) {
-            Logger.log(this.getClass(), "richwpsGetInputTypes()", e);
+            Logger.log(this.getClass(), "handle()", e);
         }
         if (responseObject instanceof SupportedTypesResponseDocument) {
             SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
@@ -55,7 +56,12 @@ public class GetInputTypesRequestHandler implements IRequestHandler {
         request.setFormats(formats);
         if (responseObject instanceof ExceptionReportDocument) {
             ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
-            Logger.log(this.getClass(), "richwpsGetInputTypes()", response.toString());
+            Logger.log(this.getClass(), "handle()", response.toString());
         }
+    }
+
+    @Override
+    public String preview() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

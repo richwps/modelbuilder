@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.boundary.handler;
 
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
@@ -36,9 +37,9 @@ public class ProfileRequestHandler implements IRequestHandler {
     RichWPSClientSession wps;
     ProfileRequest request;
 
-    public ProfileRequestHandler(RichWPSClientSession wps, ProfileRequest request) {
+    public ProfileRequestHandler(RichWPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (ProfileRequest) request;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class ProfileRequestHandler implements IRequestHandler {
             profileprocessdocument = builder.getProfiledocument();
             response = this.wps.profile(endp, profileprocessdocument);
             if (response == null) {
-                Logger.log(this.getClass().getClass(), "richwpsTestProcess()", "No response");
+                Logger.log(this.getClass().getClass(), "handle()", "No response");
                 return;
             }
             if (response instanceof ExceptionReportDocumentImpl) {
@@ -70,10 +71,10 @@ public class ProfileRequestHandler implements IRequestHandler {
                 Logger.log(deplok);;
                 //richwpshelper.analyseTestResponse(profileprocessdocument, response, request);
             } else {
-                Logger.log(this.getClass(), "richwpsTestProcess()", "Unknown reponse" + response + ", " + response.getClass());
+                Logger.log(this.getClass(), "handle()", "Unknown reponse" + response + ", " + response.getClass());
             }
         } catch (WPSClientException ex) {
-            Logger.log(this.getClass(), "richwpsTestProcess()", "Unable to create " + "deploymentdocument. " + ex);
+            Logger.log(this.getClass(), "handle()", "Unable to create " + "deploymentdocument. " + ex);
         }
     }
 
@@ -201,5 +202,10 @@ public class ProfileRequestHandler implements IRequestHandler {
             Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response." + "Response is Exception: " + exception.toString());
             Logger.log(this.getClass(), "analyseResponse", exception.getExceptionReport());
         }
+    }
+
+    @Override
+    public String preview() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

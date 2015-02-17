@@ -9,6 +9,7 @@ import net.opengis.wps.x100.ProcessBriefType;
 import net.opengis.wps.x100.ProcessDescriptionsDocument;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
 /**
  *
@@ -20,9 +21,9 @@ public class GetProcessesRequestHandler implements IRequestHandler{
     WPSClientSession wps;
     GetProcessesRequest request;
     
-    public GetProcessesRequestHandler(WPSClientSession wps, GetProcessesRequest request) {
+    public GetProcessesRequestHandler(WPSClientSession wps,  IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (GetProcessesRequest) request;
     }
 
     @Override
@@ -44,6 +45,11 @@ public class GetProcessesRequestHandler implements IRequestHandler{
             Logger.log(this.getClass(), "handle()", e);
         }
         request.setProcesses(processes);
+    }
+
+    @Override
+    public String preview() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

@@ -29,6 +29,7 @@ import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
 import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
 /**
  *
@@ -40,9 +41,9 @@ public class ExecuteRequestHandler implements IRequestHandler {
     WPSClientSession wps;
     ExecuteRequest request;
 
-    public ExecuteRequestHandler(WPSClientSession wps, ExecuteRequest request) {
+    public ExecuteRequestHandler(WPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (ExecuteRequest) request;
     }
 
     public void handle() {
@@ -62,11 +63,11 @@ public class ExecuteRequestHandler implements IRequestHandler {
             WPSClientSession wpsClient = WPSClientSession.getInstance();
             response = wpsClient.execute(severid, execute);
             if (response == null) {
-                Logger.log(this.getClass(), "executeProcess()", "No response");
+                Logger.log(this.getClass(), "handle()", "No response");
                 return;
             }
         } catch (Exception e) {
-            Logger.log(this.getClass(), "executeProcess()", processid + ", " + e);
+            Logger.log(this.getClass(), "handle()", processid + ", " + e);
         }
         analyseResponse(execute, description, response);
     }

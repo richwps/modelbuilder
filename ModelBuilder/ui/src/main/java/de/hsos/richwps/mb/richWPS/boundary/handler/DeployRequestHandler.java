@@ -10,6 +10,7 @@ import net.opengis.wps.x100.impl.DeployProcessResponseDocumentImpl;
 import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.richwps.TransactionalRequestBuilder;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
 /**
  *
@@ -21,9 +22,9 @@ public class DeployRequestHandler implements IRequestHandler {
     RichWPSClientSession wps;
     DeployRequest request;
 
-    public DeployRequestHandler(RichWPSClientSession wps, DeployRequest request) {
+    public DeployRequestHandler(RichWPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (DeployRequest) request;
     }
 
     @Override
@@ -36,10 +37,10 @@ public class DeployRequestHandler implements IRequestHandler {
         try {
             String endp = request.getEndpoint();
             endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
-            Logger.log(this.getClass(), "richwpsDeployProcess", builder.getDeploydocument());
+            Logger.log(this.getClass(), "handle()", builder.getDeploydocument());
             Object response = wps.deploy(endp, builder.getDeploydocument());
             if (response == null) {
-                Logger.log(this.getClass(), "richwpsDeployProcess()", "No response");
+                Logger.log(this.getClass(), "handle()", "No response");
                 return;
             }
             if (response instanceof ExceptionReportDocumentImpl) {
@@ -48,11 +49,16 @@ public class DeployRequestHandler implements IRequestHandler {
             } else if (response instanceof DeployProcessResponseDocumentImpl) {
                 DeployProcessResponseDocumentImpl deplok = (DeployProcessResponseDocumentImpl) response;
             } else {
-                Logger.log(this.getClass(), "richwpsDeployProcess()", "Unknown reponse" + response + ", " + response.getClass());
+                Logger.log(this.getClass(), "handle()", "Unknown reponse" + response + ", " + response.getClass());
             }
         } catch (WPSClientException ex) {
-            Logger.log(this.getClass(), "richwpsDeployProcess()", "Unable to create " + "deploymentdocument. " + ex);
+            Logger.log(this.getClass(), "handle()", "Unable to create " + "deploymentdocument. " + ex);
         }
+    }
+
+    @Override
+    public String preview() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.richWPS.boundary.handler;
 
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
@@ -41,9 +42,9 @@ public class TestRequestHandler implements IRequestHandler {
     RichWPSClientSession wps;
     TestRequest request;
 
-    public TestRequestHandler(RichWPSClientSession wps, TestRequest request) {
+    public TestRequestHandler(RichWPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (TestRequest) request;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class TestRequestHandler implements IRequestHandler {
             testprocessdocument = builder.getTestdocument();
             response = wps.test(endp, testprocessdocument);
             if (response == null) {
-                Logger.log(this.getClass(), "richwpsTestProcess()", "No response");
+                Logger.log(this.getClass(), "handle()", "No response");
                 return;
             }
             if (response instanceof ExceptionReportDocumentImpl) {
@@ -74,10 +75,10 @@ public class TestRequestHandler implements IRequestHandler {
                 TestProcessResponseDocumentImpl deplok = (TestProcessResponseDocumentImpl) response;
                 analyseResponse(testprocessdocument, response, request);
             } else {
-                Logger.log(this.getClass(), "richwpsTestProcess()", "Unknown reponse" + response + ", " + response.getClass());
+                Logger.log(this.getClass(), "handle()", "Unknown reponse" + response + ", " + response.getClass());
             }
         } catch (WPSClientException ex) {
-            Logger.log(this.getClass(), "richwpsTestProcess()", "Unable to create " + "deploymentdocument. " + ex);
+            Logger.log(this.getClass(), "handle()", "Unable to create " + "deploymentdocument. " + ex);
         }
     }
 
@@ -236,7 +237,7 @@ public class TestRequestHandler implements IRequestHandler {
             testprocessdocument = builder.getTestdocument();
             return testprocessdocument.toString();
         } catch (WPSClientException ex) {
-            Logger.log(this.getClass(), "richwpsPreviewTestProcess", ex);
+            Logger.log(this.getClass(), "preview()", ex);
         }
 
         return "";

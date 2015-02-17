@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.richWPS.boundary.handler;
 
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.GetOutputTypesRequest;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +12,7 @@ import net.opengis.wps.x100.SupportedTypesResponseDocument;
 import org.n52.wps.client.RichWPSClientSession;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.richwps.GetSupportedTypesRequestBuilder;
+import de.hsos.richwps.mb.richWPS.entity.IRequest;
 
 /**
  *
@@ -24,9 +24,9 @@ public class GetOutputTypesRequestHandler implements IRequestHandler {
     RichWPSClientSession wps;
     GetOutputTypesRequest request;
 
-    public GetOutputTypesRequestHandler(RichWPSClientSession wps, GetOutputTypesRequest request) {
+    public GetOutputTypesRequestHandler(RichWPSClientSession wps, IRequest request) {
         this.wps = wps;
-        this.request = request;
+        this.request = (GetOutputTypesRequest) request;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class GetOutputTypesRequestHandler implements IRequestHandler {
         try {
             responseObject = wps.getSupportedTypes(request.getServerId(), builder.build());
         } catch (WPSClientException e) {
-            Logger.log(this.getClass(), "richwpsGetOutputTypes()", e);
+            Logger.log(this.getClass(), "handle()", e);
         }
         if (responseObject instanceof SupportedTypesResponseDocument) {
             SupportedTypesResponseDocument response = (SupportedTypesResponseDocument) responseObject;
@@ -57,7 +57,12 @@ public class GetOutputTypesRequestHandler implements IRequestHandler {
         request.setFormats(formats);
         if (responseObject instanceof ExceptionReportDocument) {
             ExceptionReportDocument response = (ExceptionReportDocument) responseObject;
-            Logger.log(this.getClass(), "richwpsGetOutputTypes()", response.toString());
+            Logger.log(this.getClass(), "handle()", response.toString());
         }
+    }
+
+    @Override
+    public String preview() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
