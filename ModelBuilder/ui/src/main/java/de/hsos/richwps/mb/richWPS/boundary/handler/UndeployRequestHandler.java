@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.richWPS.boundary.handler;
 
-
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
@@ -32,11 +31,12 @@ public class UndeployRequestHandler implements IRequestHandler {
         builder.setIdentifier(request.getIdentifier());
 
         try {
-            //FIXME
-            String endp = request.getEndpoint();
-            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + DEFAULT_52N_WPS_ENDPOINT;
-            //this.richwps.connect(perform.getEndpoint(), endp);
-            Object response = wps.undeploy(endp, builder.getUndeploydocument());
+            final String arui = request.getEndpoint();
+            String[] endpoints = RichWPSProvider.deliverEndpoints(arui);
+            final String wpsendpoint = endpoints[0];
+            final String richwpsendpoint = endpoints[1];
+
+            Object response = wps.undeploy(wpsendpoint, builder.getUndeploydocument());
 
             if (response == null) {
                 Logger.log(this.getClass(), "handle()", "No response");

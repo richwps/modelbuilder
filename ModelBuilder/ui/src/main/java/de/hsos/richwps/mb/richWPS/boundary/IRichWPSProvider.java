@@ -14,7 +14,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
  * Interface to RichWPS-enabled servers.
  *
  * @author dalcacer
- * @version 0.0.5
+ * @version 0.0.6
  */
 public interface IRichWPSProvider {
 
@@ -25,7 +25,6 @@ public interface IRichWPSProvider {
      * The deploymentprofile, that should be used.
      */
     public static final String DEPLOYMENTPROFILE = "rola";
-
 
     /**
      * Performs a perform.
@@ -42,7 +41,22 @@ public interface IRichWPSProvider {
      * @see GetOutputTypesRequest
      */
     public void perform(IRequest request);
-    
+
+    /**
+     * Performs a preview.
+     *
+     * @param request IRequest.
+     * @see IRequest
+     * @see ExecuteRequest
+     * @see DeployRequest
+     * @see UndeployRequest
+     * @see TestRequest
+     * @see ProfileRequest
+     * @see GetProcessesRequest
+     * @see GetInputTypesRequest
+     * @see GetOutputTypesRequest
+     * @return xml preview.
+     */
     public String preview(IRequest request);
 
 }

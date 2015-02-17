@@ -65,7 +65,6 @@ public class DescribeRequestHandler implements IRequestHandler {
      * Add processs inputs to a request.
      *
      * @param request with serverid and processid.
-     * @return request with list of input descriptions.
      * @see IInputDescription
      */
     public void addInputs(DescribeRequest request, ProcessDescriptionType process) {

@@ -29,7 +29,7 @@ public class ProfileModelDialog extends ADialog {
     private ProfileResultPanel resultpanel;
 
     private ProfileRequest request;
-    private Map<String,String> transitions;
+    private Map<String, String> transitions;
 
     /**
      * Creates new form ProfileModelDialog, starting with the
@@ -51,9 +51,8 @@ public class ProfileModelDialog extends ADialog {
         this.transitions = manager.getEdges();
 
         /*for (String var : manager.getVariables()) {
-            this.request.addVariable("var." + var);
-        }*/
-
+         this.request.addVariable("var." + var);
+         }*/
         this.serverids = new ArrayList();
         this.serverids.add(this.request.getServerId());
         this.initComponents();

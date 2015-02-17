@@ -35,10 +35,13 @@ public class DeployRequestHandler implements IRequestHandler {
         builder.setDeploymentProfileName(request.getDeploymentprofile());
         builder.setKeepExecutionUnit(request.isKeepExecUnit());
         try {
-            String endp = request.getEndpoint();
-            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
+            final String arui = request.getEndpoint();
+            String[] endpoints = RichWPSProvider.deliverEndpoints(arui);
+            final String wpsendpoint = endpoints[0];
+            final String richwpsendpoint = endpoints[1];
+
             Logger.log(this.getClass(), "handle()", builder.getDeploydocument());
-            Object response = wps.deploy(endp, builder.getDeploydocument());
+            Object response = wps.deploy(wpsendpoint, builder.getDeploydocument());
             if (response == null) {
                 Logger.log(this.getClass(), "handle()", "No response");
                 return;

@@ -15,6 +15,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest;
  */
 public class RequestFactory {
 
+
     public static IRequest createDescribeRequest(
             final String wpsendpoint, final String identifier) {
         DescribeRequest request = new DescribeRequest();
@@ -36,7 +37,6 @@ public class RequestFactory {
             final String title, final String version) {
         return new DeployRequest(wpsendpoint, richwpsendpoint,
                 identifier, title, version, IRichWPSProvider.DEPLOYMENTPROFILE);
-
     }
 
     public static IRequest createProfileRequest(final String wpsendpoint,

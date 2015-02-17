@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Interface to RichWPS enabled servers.
  *
- * @version 0.0.6
+ * @version 0.0.7
  * @author dalcacer
  */
 public class RichWPSProvider implements IRichWPSProvider {
@@ -45,6 +45,9 @@ public class RichWPSProvider implements IRichWPSProvider {
      */
     private RichWPSClientSession richwps;
 
+    /**
+     * Setup this facade.
+     */
     public RichWPSProvider() {
         richwpshandler.put(ProfileRequest.class, ProfileRequestHandler.class);
         richwpshandler.put(TestRequest.class, TestRequestHandler.class);
@@ -97,7 +100,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             } catch (Exception e) {
                 Logger.log(this.getClass(), "disconnect()", e.getLocalizedMessage());
                 throw new Exception("Unable to disconnect from service " + serverid);
-
             }
         }
     }
@@ -203,6 +205,7 @@ public class RichWPSProvider implements IRichWPSProvider {
      * @see GetProcessesRequest
      * @see GetInputTypesRequest
      * @see GetOutputTypesRequest
+     * @return preview xml.
      */
     @Override
     public String preview(IRequest request) {
@@ -232,13 +235,7 @@ public class RichWPSProvider implements IRichWPSProvider {
                 if (key == request.getClass()) {
                     Logger.log(this.getClass(), "preview()", "previewing " + key);
                     Class handlertype = wpshandler.get(key);
-                    //special case
-                    if (key == ExecuteRequest.class) {
-                        if (!((ExecuteRequest) request).isDescribed()) {
-                            handlertype = DescribeRequestHandler.class;
-                            //wpshandler.get(DescribeRequest.class);
-                        }
-                    }
+
                     this.connect(wpsendpoint);
                     Constructor ct = handlertype.getDeclaredConstructor(wpshandlerparams);
                     handler = (IRequestHandler) ct.newInstance(wps, request);
@@ -305,20 +302,20 @@ public class RichWPSProvider implements IRichWPSProvider {
     /**
      * Checks if a process is available on WPS-server.
      *
-     * @param wpsendpoitn WPS-endpoint
+     * @param wpsendpoint WPS-endpoint
      * @param processid processid.
      * @return <code>true</code> process exists, <code>false</code> elsewise.
      */
-    public static boolean hasProcess(final String wpsendpoitn, final String processid) {
+    public static boolean hasProcess(final String wpsendpoint, final String processid) {
         RichWPSProvider provider = new RichWPSProvider();
         try {
-            provider.connect(wpsendpoitn);
+            provider.connect(wpsendpoint);
 
         } catch (Exception ex) {
             Logger.log(RichWPSProvider.class, "hasProcess", "Unable to connect to "
-                    + wpsendpoitn + " " + ex);
+                    + wpsendpoint + " " + ex);
         }
-        GetProcessesRequest request = new GetProcessesRequest(wpsendpoitn);
+        GetProcessesRequest request = new GetProcessesRequest(wpsendpoint);
         provider.perform(request);
         List<String> processes = request.getProcesses();
         return processes.contains(processid);

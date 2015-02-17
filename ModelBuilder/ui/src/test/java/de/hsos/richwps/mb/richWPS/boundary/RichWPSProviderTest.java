@@ -59,6 +59,7 @@ public class RichWPSProviderTest extends TestCase {
      * instance.connect("http://no"); } catch (Exception e) { assertNotNull(e);
      * return; } fail("Expected exception was not raised."); }
      */
+   
     /**
      * Test of wpsGetAvailableProcesses method, of class RichWPSProvider.
      */
@@ -171,59 +172,48 @@ public class RichWPSProviderTest extends TestCase {
 
     /**
      * Should raise a server-side exception because of faulty inputs.
-     
-    public void testEchoProcessException() {
-        System.out.println("testEchoProcessException");
-        String processid = "org.n52.wps.server.algorithm.test.EchoProcess";
-
-        RichWPSProvider instance = new RichWPSProvider();
-
-        ExecuteRequest perform = new ExecuteRequest();
-        perform.setEndpoint(wpsurl);
-        perform.setIdentifier(processid);
-        instance.perform((DescribeRequest) perform);
-        List<IInputSpecifier> inputs = perform.getInputs();
-
-        assertEquals(2, inputs.size());
-        InputComplexDataDescription geomSpec;
-        InputLiteralDataDescription literalSpec;
-        if (inputs.get(0) instanceof InputComplexDataDescription) {
-            geomSpec = (InputComplexDataDescription) inputs.get(0);
-            literalSpec = (InputLiteralDataDescription) inputs.get(1);
-        } else {
-            geomSpec = (InputComplexDataDescription) inputs.get(1);
-            literalSpec = (InputLiteralDataDescription) inputs.get(0);
-        }
-
-        HashMap<String, IInputValue> ins = new HashMap<>();
-        InputLiteralDataValue arg1 = new InputLiteralDataValue(literalSpec, "Hello World.");
-        InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
-        arg2.setAsReference(true);
-        arg2.setURL("http://no.domain");
-        arg2.setMimeType("text/xml");
-        ins.put("literalInput", arg1);
-        ins.put("complexInput", arg2);
-        perform.setInputValues(ins);
-
-        HashMap<String, IOutputDescription> outs = new HashMap();
-        List<IOutputSpecifier> outputs = perform.getOutputs();
-        OutputComplexDataDescription outspec;
-        if (outputs.get(0) instanceof OutputComplexDataDescription) {
-            outspec = (OutputComplexDataDescription) outputs.get(0);
-        } else {
-            outspec = (OutputComplexDataDescription) outputs.get(1);
-        }
-
-        OutputComplexDataValue outarg = new OutputComplexDataValue(outspec);
-        outarg.setAsReference(true);
-        outarg.setMimetype("text/html");
-        outs.put("result", outarg);
-
-        instance.perform(perform);
-
-        assertTrue(perform.isException());
-        assertNotNull(perform.getException());
-    }*/
+     *
+     * public void testEchoProcessException() {
+     * System.out.println("testEchoProcessException"); String processid =
+     * "org.n52.wps.server.algorithm.test.EchoProcess";
+     *
+     * RichWPSProvider instance = new RichWPSProvider();
+     *
+     * ExecuteRequest perform = new ExecuteRequest();
+     * perform.setEndpoint(wpsurl); perform.setIdentifier(processid);
+     * instance.perform((DescribeRequest) perform); List<IInputSpecifier> inputs
+     * = perform.getInputs();
+     *
+     * assertEquals(2, inputs.size()); InputComplexDataDescription geomSpec;
+     * InputLiteralDataDescription literalSpec; if (inputs.get(0) instanceof
+     * InputComplexDataDescription) { geomSpec = (InputComplexDataDescription)
+     * inputs.get(0); literalSpec = (InputLiteralDataDescription) inputs.get(1);
+     * } else { geomSpec = (InputComplexDataDescription) inputs.get(1);
+     * literalSpec = (InputLiteralDataDescription) inputs.get(0); }
+     *
+     * HashMap<String, IInputValue> ins = new HashMap<>(); InputLiteralDataValue
+     * arg1 = new InputLiteralDataValue(literalSpec, "Hello World.");
+     * InputComplexDataValue arg2 = new InputComplexDataValue(geomSpec);
+     * arg2.setAsReference(true); arg2.setURL("http://no.domain");
+     * arg2.setMimeType("text/xml"); ins.put("literalInput", arg1);
+     * ins.put("complexInput", arg2); perform.setInputValues(ins);
+     *
+     * HashMap<String, IOutputDescription> outs = new HashMap();
+     * List<IOutputSpecifier> outputs = perform.getOutputs();
+     * OutputComplexDataDescription outspec; if (outputs.get(0) instanceof
+     * OutputComplexDataDescription) { outspec = (OutputComplexDataDescription)
+     * outputs.get(0); } else { outspec = (OutputComplexDataDescription)
+     * outputs.get(1); }
+     *
+     * OutputComplexDataValue outarg = new OutputComplexDataValue(outspec);
+     * outarg.setAsReference(true); outarg.setMimetype("text/html");
+     * outs.put("result", outarg);
+     *
+     * instance.perform(perform);
+     *
+     * assertTrue(perform.isException()); assertNotNull(perform.getException());
+     * }
+     */
 
     /*public void testSimpleBuffer() {
      System.out.println("testSimpleBuffer");
