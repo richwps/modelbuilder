@@ -5,20 +5,18 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.AppGraphView;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.entity.ProcessEntity;
-import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServer;
-import de.hsos.richwps.mb.graphView.GraphNodeCreator;
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
-import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.ui.MbDialog;
+import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.CardLayout;
 import java.awt.Container;
-import java.awt.Point;
+import java.awt.Insets;
 import java.util.Collection;
-import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -36,6 +34,7 @@ public class ProcessReplacerDialog extends MbDialog {
     private SelectProcessTree selectProcessTree;
     private CardLayout cardLayout;
     private MapPortsPanel mapPortsPanel;
+    private JPanel mapPortsPanelWrapper;
 
     enum CARD {
 
@@ -50,14 +49,16 @@ public class ProcessReplacerDialog extends MbDialog {
     private ProcessEntity targetProcess;
 
     private final ProcessReplacer processReplacer;
-    
+
+    private JLabel mappingCardCaption;
+
     public ProcessReplacerDialog(AppFrame frame, ProcessProvider processProvider, AppGraphView graphView) {
         super(frame, AppConstants.PROCESS_REPLACER_DIALOG_TITLE, MbDialog.BTN_ID_BACK | MbDialog.BTN_ID_NEXT | MbDialog.BTN_ID_CANCEL | MbDialog.BTN_ID_OK);
 
         this.processProvider = processProvider;
         this.graphView = graphView;
         this.processReplacer = new ProcessReplacer();
-        
+
         setSize(600, 400);
 
         getDialogButton(MbDialog.BTN_ID_BACK).setEnabled(false);
@@ -75,16 +76,27 @@ public class ProcessReplacerDialog extends MbDialog {
         cardLayout = new CardLayout();
         contentPane.setLayout(cardLayout);
 
-        // temporary disable discovering managed remote servers
+        // discovering managed remote servers is not necessary here
+        // -> disable it to speed up the tree loading
         boolean managedRemotesEnabled = processProvider.isManagedRemotesEnabled();
         processProvider.setManagedRemotesEnabled(false);
 
         // create "select process" panel
         Collection<WpsServer> processes = this.processProvider.getAllServerWithProcesses();
         JPanel selectProcessPanel = new JPanel();
-        selectProcessPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL}}));
-        selectProcessTree = new SelectProcessTree(processes);
-        selectProcessPanel.add(new JScrollPane(selectProcessTree), "0 0");
+        selectProcessPanel.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+
+        // create Tree caption
+        String format = String.format(AppConstants.PROCESS_REPLACER_TREE_CAPTION, sourceProcess.getOwsIdentifier(), sourceProcess.getServer());
+        JLabel treeLabel = new JLabel(format);
+        treeLabel.setBackground(null);
+        treeLabel.setBorder(new EmptyBorder(new Insets(2, 2, 2, 2)));
+        treeLabel.setToolTipText(sourceProcess.getToolTipText());
+        selectProcessPanel.add(treeLabel, "0 0");
+
+        // create Tree
+        selectProcessTree = new SelectProcessTree(processProvider, processes);
+        selectProcessPanel.add(new JScrollPane(selectProcessTree), "0 1");
         selectProcessTree.getSelectionModel().addTreeSelectionListener(new TreeSelectionListener() {
 
             @Override
@@ -104,7 +116,7 @@ public class ProcessReplacerDialog extends MbDialog {
             }
         });
 
-        // restore "discover managed remotes" flag
+        // restore "discover managed remotes" flag (see above)
         processProvider.setManagedRemotesEnabled(managedRemotesEnabled);
 
         contentPane.add(selectProcessPanel, CARD.SELECT_PROCESS.name());
@@ -122,8 +134,15 @@ public class ProcessReplacerDialog extends MbDialog {
             // complete process loading if necessary
             targetProcess = processProvider.getFullyLoadedProcessEntity(targetProcess);
 
+            // create mapping panel
             mapPortsPanel = new MapPortsPanel(sourceProcess, targetProcess);
-            getContentPane().add(mapPortsPanel, CARD.MAP_PORTS.name());
+            JScrollPane mapPortsPanelScroller = new JScrollPane(mapPortsPanel);
+            mapPortsPanelWrapper = new JPanel();
+            mapPortsPanelWrapper.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL}}));
+            mapPortsPanelWrapper.add(getMappingCardCaption(), "0 0");
+            mapPortsPanelWrapper.add(mapPortsPanelScroller, "0 1");
+            
+            getContentPane().add(mapPortsPanelWrapper, CARD.MAP_PORTS.name());
 
             cardLayout.show(getContentPane(), CARD.MAP_PORTS.name());
         }
@@ -135,16 +154,29 @@ public class ProcessReplacerDialog extends MbDialog {
 
             cardLayout.show(getContentPane(), CARD.SELECT_PROCESS.name());
 
-            getContentPane().remove(mapPortsPanel);
+            getContentPane().remove(mapPortsPanelWrapper);
             mapPortsPanel = null;
+            mapPortsPanelWrapper = null;
         }
 
         // OK -> replace process
         if (isTheDialogButton(buttonId, MbDialog.BTN_ID_OK)) {
-           processReplacer.replaceProcess(graphView, mapPortsPanel, sourceCell, targetProcess);
+            processReplacer.replaceProcess(graphView, mapPortsPanel, sourceCell, targetProcess);
         }
 
         super.handleDialogButton(buttonId);
+    }
+
+    private JLabel getMappingCardCaption() {
+        if (null == this.mappingCardCaption) {
+            // create caption
+            String format = String.format(AppConstants.PROCESS_REPLACER_MAPPING_CAPTION);
+            this.mappingCardCaption = new JLabel(format);
+            this.mappingCardCaption.setBackground(null);
+            this.mappingCardCaption.setBorder(new EmptyBorder(new Insets(2, 2, 2, 2)));
+        }
+
+        return this.mappingCardCaption;
     }
 
 }

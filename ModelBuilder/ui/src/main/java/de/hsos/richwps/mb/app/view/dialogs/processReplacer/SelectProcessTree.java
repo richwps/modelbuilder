@@ -4,24 +4,26 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.control.ProcessEntityTitleComparator;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.WpsServer;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.treeView.MbTreeCellRenderer;
+import de.hsos.richwps.mb.treeView.Tree;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
  * @author dziegenh
  */
-public class SelectProcessTree extends JTree {
+public class SelectProcessTree extends Tree {
 
-    public SelectProcessTree(Collection<WpsServer> processList) {
-        super();
+    public SelectProcessTree(ProcessProvider processProvider, Collection<WpsServer> processList) {
+        super(processProvider, new DefaultMutableTreeNode());
 
         // setup cell renderer
         final MbTreeCellRenderer cellRenderer = new MbTreeCellRenderer();

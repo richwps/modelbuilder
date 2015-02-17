@@ -7,24 +7,46 @@ import de.hsos.richwps.mb.graphView.GraphNodeCreator;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import java.awt.Point;
 import java.util.List;
 
 /**
+ * Controller class for replacing processes of a graph.
  *
  * @author dziegenh
  */
 public class ProcessReplacer {
 
+    /**
+     * Replaces an existing process cell with a new process cell with an
+     * automated port mapping.
+     *
+     * @param graphView the view/controller class of the cells' graph.
+     * @param oldCell the process cell which is to be replaced.
+     * @param newProcess the process of the new cell.
+     */
     public void replaceAutoMappedProcess(GraphView graphView, mxCell oldCell, ProcessEntity newProcess) {
         final ProcessEntity oldProcess = (ProcessEntity) oldCell.getValue();
         MapPortsPanel mapPortsPanel = new MapPortsPanel(oldProcess, newProcess);
         this.replaceProcess(graphView, mapPortsPanel, oldCell, newProcess);
     }
 
+    /**
+     * Replaces an existing process cell with a new process cell using a port
+     * mapping configuration.
+     *
+     * @param graphView the view/controller class of the cells' graph.
+     * @param mapPortsPanel the port mapping configuration.
+     * @param oldCell the process cell which is to be replaced.
+     * @param newProcess the process of the new cell.
+     */
     public void replaceProcess(GraphView graphView, MapPortsPanel mapPortsPanel, mxCell oldCell, ProcessEntity newProcess) {
         Graph graph = graphView.getGraph();
-        
+        GraphModel graphModel = graph.getGraphModel();
+
+        // begin recording graph changes 
+        graphModel.beginUpdate();
 
         // insert new process cell
         Point cellLocation = oldCell.getGeometry().getPoint();
@@ -64,6 +86,9 @@ public class ProcessReplacer {
 
         // remove old process cell
         graph.removeCells(new mxCell[]{oldCell});
+
+        // end recording graph changes
+        graphModel.endUpdate();
     }
 
 }

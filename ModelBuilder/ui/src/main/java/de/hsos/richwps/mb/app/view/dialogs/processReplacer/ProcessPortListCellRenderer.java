@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 /**
- *
+ * 
  * @author dziegenh
  */
 public class ProcessPortListCellRenderer extends DefaultListCellRenderer {
@@ -19,11 +19,13 @@ public class ProcessPortListCellRenderer extends DefaultListCellRenderer {
         Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (null == value) {
             JLabel label = ((JLabel) component);
-            label.setText("(skip mapping)");
+            label.setText("    (skip mapping)");
             label.setFont(label.getFont().deriveFont(Font.ITALIC));
+            label.setToolTipText(null);
             
         } else {
             ((JLabel) component).setText(((ProcessPort) value).getOwsIdentifier());
+            ((JLabel) component).setToolTipText(((ProcessPort) value).getToolTipText());
         }
 
         return component;

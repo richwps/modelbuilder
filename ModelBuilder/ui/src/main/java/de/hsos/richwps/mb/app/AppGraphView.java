@@ -387,7 +387,9 @@ public class AppGraphView extends GraphView {
         graphModel.beginUpdate();
         cell.setStyle(GraphSetup.STYLENAME_PROCESS_W_ERROR);
         graphModel.endUpdate();
-
+        
+        setCellsSelected(new Object[]{cell});
+        
         // refresh in order to enable the new cell style
         GraphComponent gui = (GraphComponent) getGui();
         gui.refresh();
