@@ -137,8 +137,8 @@ public class AppConstants {
     public static final String PROCESSNOTFOUND_DIALOG_MSG = "The process needs to be deployed before it can be undeployed or executed.";
 
     // Process Replacer Dialog
-    public final  static String PROCESS_REPLACER_DIALOG_TITLE = "Process Replacer";
-    
+    public final static String PROCESS_REPLACER_DIALOG_TITLE = "Process Replacer";
+
     //Connectivity errors
     public static final String CONNECT_FAILED = "Unable to connect to selected server.";
     public static final String DIALOG_REQUEST_SENT = "<html>Sending and processing statement.<br/>"
@@ -285,11 +285,14 @@ public class AppConstants {
      * ToolTipText for deselected default format.
      */
     public static String COMPLEX_FORMAT_TOOLTIP_DEFAULTFORMAT_DESELECTED = "Click to set as the default supported format";
-    
+
     /**
      * Text for copy to clipboard actions, eg menu items.
      */
     public static String COPY_TEXT_TO_CLIPBOARD = "Copy text to clipboard";
+
+    public static String PROCESS_REPLACER_TREE_CAPTION = "<html>Please select the process which replaces the selected instance of<br /><i>%s</i><br />(Server: <i>%s</i>):</html>";
+    public static String PROCESS_REPLACER_MAPPING_CAPTION = "<html>Please check and adjust the mapping of the old processes' ports to the new replacing processes' ports.</html>";
 
     public enum PREFERENCES_TAB {
 
@@ -300,8 +303,7 @@ public class AppConstants {
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
         {PREFERENCES_TAB.PROCESSSOURCES.name(), "Process Sources"},
         {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},
-        {PREFERENCES_TAB.MONITOR.name(), "Monitor"},
-    };
+        {PREFERENCES_TAB.MONITOR.name(), "Monitor"},};
     // SP preferences
     public static final String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
     // Http proxy preferences
@@ -330,11 +332,10 @@ public class AppConstants {
         {INFOTAB_ID_EDITOR, "Model"},
         {INFOTAB_ID_SEMANTICPROXY, "SemanticProxy"},
         {INFOTAB_ID_SERVER, "RichWPS-Server"},};
-    
+
     //getActionProvider
     public static final String CREATE_APP_ACTION_FAIL = "Can't create app actions. ModelBuilder will now exit.";
     public static final String CREATE_APP_ACTION_FAIL_TITLE = "ERROR";
-    
 
     /**
      * Sets a visible String caption and an icon for the app actions.

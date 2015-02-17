@@ -471,6 +471,10 @@ public class App {
      */
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
+        boolean hasSingleSelection = false;
+        
+        Object[] selection = getGraphView().getSelection();
+        hasSingleSelection = (null != selection) && (1 == selection.length);
 
         // MB Actions
         getActionProvider().getAction(APP_ACTIONS.SAVE_MODEL_AS).setEnabled(getGraphView().isEnabled());
@@ -483,7 +487,7 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
 
-        getActionProvider().getAction(APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
+        getActionProvider().getAction(APP_ACTIONS.REPLACE_PROCESS).setEnabled(hasSingleSelection);
     }
 
     /**

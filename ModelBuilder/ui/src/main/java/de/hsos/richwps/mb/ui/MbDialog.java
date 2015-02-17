@@ -154,7 +154,7 @@ public class MbDialog extends JDialog {
         if (null != buttonPanel) {
             buttonPanel.setBorder(new EmptyBorder(borderInsets));
             JPanel contentWrapper = new JPanel();
-            contentWrapper.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED, TableLayout.FILL, TableLayout.PREFERRED}}));
+            contentWrapper.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL, TableLayout.PREFERRED}}));
             contentWrapper.add(contentPane, "0 0");
             contentWrapper.add(buttonPanel, "0 1");
             super.getContentPane().add(contentWrapper);
