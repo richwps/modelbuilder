@@ -31,32 +31,48 @@ public class MapPortPanel extends JPanel {
         } else {
             setBackground(AppConstants.INPUT_PORT_COLOR);
         }
-        
+
         final EmptyBorder innerBorder = new EmptyBorder(2, 2, 1, 2);
         final ColorBorder outerBorder = new ColorBorder(Color.GRAY, 0, 0, 1, 0);
         setBorder(new CompoundBorder(outerBorder, innerBorder));
         setLayout(new TableLayout(new double[][]{{.5, .5}, {TableLayout.PREFERRED}}));
 
         JLabel label = createLabel();
-        dropdown = createDropdown(sources, target);
-
         add(label, "0 0");
-        add(dropdown, "1 0");
+
+        dropdown = createDropdown(sources);
+        if (dropdown.getItemCount() > 1) {
+            add(dropdown, "1 0");
+        } else {
+            add(new JLabel("(no ports with matching datatype)"), "1 0");
+        }
     }
 
-    private JComboBox createDropdown(List<ProcessPort> sources, ProcessPort target1) {
+    private JComboBox createDropdown(List<ProcessPort> sources) {
         JComboBox dropdown = new JComboBox<>();
         dropdown.setRenderer(new ProcessPortListCellRenderer());
-        int idx = 1;
         dropdown.addItem(null);
+
+        // temp index
+        int idx = 1;
+
+        // index of selected item
         int selectIdx = -1;
+
         for (ProcessPort sourcePort : sources) {
-            dropdown.addItem(sourcePort);
-            if (sourcePort.getOwsIdentifier().equals(target1.getOwsIdentifier())) {
-                selectIdx = idx;
+
+            // only add ports of the same datatype
+            if (sourcePort.getDatatype().equals(this.target.getDatatype())) {
+                dropdown.addItem(sourcePort);
+
+                if (sourcePort.getOwsIdentifier().equals(this.target.getOwsIdentifier())) {
+                    selectIdx = idx;
+                }
+
+                idx++;
             }
-            idx++;
         }
+
         if (selectIdx > 0) {
             dropdown.setSelectedIndex(selectIdx);
         }
@@ -72,11 +88,10 @@ public class MapPortPanel extends JPanel {
         return (ProcessPort) dropdown.getSelectedItem();
     }
 
-
     private JLabel createLabel() {
         JLabel label = new JLabel(target.getOwsIdentifier());
         label.setToolTipText(target.getToolTipText());
         return label;
     }
-    
+
 }

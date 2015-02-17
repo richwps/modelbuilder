@@ -134,6 +134,7 @@ public class ProcessReplacerDialog extends MbDialog {
             // complete process loading if necessary
             targetProcess = processProvider.getFullyLoadedProcessEntity(targetProcess);
 
+            // create mapping panel
             mapPortsPanel = new MapPortsPanel(sourceProcess, targetProcess);
             JScrollPane mapPortsPanelScroller = new JScrollPane(mapPortsPanel);
             mapPortsPanelWrapper = new JPanel();
