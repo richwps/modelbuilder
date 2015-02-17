@@ -26,11 +26,6 @@ public interface IRichWPSProvider {
      */
     public static final String DEPLOYMENTPROFILE = "rola";
 
-    public String wpsPreviewExecuteProcess(ExecuteRequest request);
-
-    public String richwpsPreviewUndeployProcess(UndeployRequest request);
-
-    public String richwpsPreviewTestProcess(TestRequest request);
 
     /**
      * Performs a perform.
@@ -47,5 +42,7 @@ public interface IRichWPSProvider {
      * @see GetOutputTypesRequest
      */
     public void perform(IRequest request);
+    
+    public String preview(IRequest request);
 
 }

@@ -297,7 +297,7 @@ public class TestModelDialog extends ADialog {
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         this.currentPanel.updateRequest();
         this.request = (TestRequest) this.currentPanel.getRequest();
-        String requeststr = this.provider.richwpsPreviewTestProcess(this.request);
+        String requeststr = this.provider.preview(this.request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
         textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);

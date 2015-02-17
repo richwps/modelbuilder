@@ -298,7 +298,7 @@ public class UndeployDialog extends ADialog {
         final String richwpsendpoint = endpoints[1];
         this.undeploy_request
                 = (de.hsos.richwps.mb.richWPS.entity.impl.UndeployRequest) RequestFactory.createUndeployRequest(wpsendpoint, richwpsendpoint, this.desc_request.getIdentifier());
-        String requeststr = this.provider.richwpsPreviewUndeployProcess(this.undeploy_request);
+        String requeststr = this.provider.preview(this.undeploy_request);
         final JTextPane textpane = new javax.swing.JTextPane();
         textpane.setContentType("text");
         textpane.setFont(AppConstants.DIALOG_TEXTPANE_FONT);
