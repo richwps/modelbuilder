@@ -29,7 +29,6 @@ public class ProfileModelDialog extends ADialog {
     private ProfileResultPanel resultpanel;
 
     private ProfileRequest request;
-    private Map<String, String> transitions;
 
     /**
      * Creates new form ProfileModelDialog, starting with the
@@ -48,11 +47,8 @@ public class ProfileModelDialog extends ADialog {
         this.provider = new RichWPSProvider();
         this.request.setDeploymentprofile(RichWPSProvider.DEPLOYMENTPROFILE);
         this.request.setExecutionUnit(manager.getROLA());
-        this.transitions = manager.getEdges();
+        
 
-        /*for (String var : manager.getVariables()) {
-         this.request.addVariable("var." + var);
-         }*/
         this.serverids = new ArrayList();
         this.serverids.add(this.request.getServerId());
         this.initComponents();
@@ -259,8 +255,7 @@ public class ProfileModelDialog extends ADialog {
 
     private void previewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_previewButtonActionPerformed
         this.currentPanel.updateRequest();
-        this.request = (ProfileRequest) this.currentPanel.getRequest();
-        //FIXME        
+        this.request = (ProfileRequest) this.currentPanel.getRequest();     
         //String requeststr = this.provider.richwpsPreviewTestProcess(this.perform);
         String requeststr = "Not, yet.";
         final JTextPane textpane = new javax.swing.JTextPane();

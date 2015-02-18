@@ -157,7 +157,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             //test for richwps requests
             for (Class key : richwpshandler.keySet()) {
                 if (key == request.getClass()) {
-                    Logger.log(this.getClass(), "perform()", "performing " + key);
                     Class handlertype = richwpshandler.get(key);
 
                     this.connect(wpsendpoint, richwpsendpoint);
@@ -169,11 +168,10 @@ public class RichWPSProvider implements IRichWPSProvider {
             //then regular wps requests
             for (Class key : wpshandler.keySet()) {
                 if (key == request.getClass()) {
-                    Logger.log(this.getClass(), "perform()", "performing " + key);
                     Class handlertype = wpshandler.get(key);
                     //special case
-                    if (key == ExecuteRequest.class) {
-                        if (!((ExecuteRequest) request).isDescribed()) {
+                    if (request instanceof ExecuteRequest) {
+                        if (((ExecuteRequest) request).isDescribed() == false) {
                             handlertype = DescribeRequestHandler.class;
                             //wpshandler.get(DescribeRequest.class);
                         }
@@ -183,7 +181,8 @@ public class RichWPSProvider implements IRichWPSProvider {
                     handler = (IRequestHandler) ct.newInstance(wps, request);
                 }
             }
-
+            Logger.log(this.getClass(), "perform()", "calling "
+                    + handler.getClass().getSimpleName());
             handler.handle();
             this.disconnect();
         } catch (Exception e) {
@@ -221,7 +220,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             //test for richwps requests
             for (Class key : richwpshandler.keySet()) {
                 if (key == request.getClass()) {
-                    Logger.log(this.getClass(), "preview()", "previewing " + key);
                     Class handlertype = richwpshandler.get(key);
 
                     this.connect(wpsendpoint, richwpsendpoint);
@@ -233,7 +231,6 @@ public class RichWPSProvider implements IRichWPSProvider {
             //then regular wps requests
             for (Class key : wpshandler.keySet()) {
                 if (key == request.getClass()) {
-                    Logger.log(this.getClass(), "preview()", "previewing " + key);
                     Class handlertype = wpshandler.get(key);
 
                     this.connect(wpsendpoint);
@@ -241,7 +238,8 @@ public class RichWPSProvider implements IRichWPSProvider {
                     handler = (IRequestHandler) ct.newInstance(wps, request);
                 }
             }
-
+            Logger.log(this.getClass(), "preview()", "calling "
+                    + handler.getClass().getSimpleName());
             String str = handler.preview();
             this.disconnect();
             return str;

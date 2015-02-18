@@ -278,7 +278,7 @@ public class AppRichWPSManager {
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
-            Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "getTestRequest()", ex.getLocalizedMessage());
             return null;
         }
 
@@ -338,7 +338,7 @@ public class AppRichWPSManager {
         } catch (GraphToRequestTransformationException ex) {
             this.error = true;
             this.computingModelFailed(AppConstants.DEPLOY_DESC_FAILED);
-            Logger.log(this.getClass(), "deploy()", ex.getLocalizedMessage());
+            Logger.log(this.getClass(), "getProfileRequest()", ex.getLocalizedMessage());
             return null;
         }
 

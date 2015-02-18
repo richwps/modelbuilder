@@ -61,7 +61,7 @@ public class TestRequestHandler implements IRequestHandler {
         Object response = null;
         try {
             String endp = request.getEndpoint();
-            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
+            endp = endp.split(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
             testprocessdocument = builder.getTestdocument();
             response = wps.test(endp, testprocessdocument);
             if (response == null) {

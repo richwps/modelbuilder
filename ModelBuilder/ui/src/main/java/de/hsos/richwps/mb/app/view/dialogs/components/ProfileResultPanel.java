@@ -2,11 +2,11 @@ package de.hsos.richwps.mb.app.view.dialogs.components;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.view.dialogs.components.renderer.ExceptionRenderer;
+import de.hsos.richwps.mb.app.view.dialogs.components.renderer.TimeStepRenderer;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.ProfileRenderer;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,6 +78,7 @@ public class ProfileResultPanel extends APanel {
     private void renderResults(ProfileRequest request) {
         this.request = (ProfileRequest) request;
         HashMap results = this.request.getResults();
+        java.util.Set keys = results.keySet();
 
         JPanel outputsPanel = new JPanel();
 
@@ -94,11 +95,12 @@ public class ProfileResultPanel extends APanel {
         outputsPanel.setLayout(layout);
 
         int i = 0;
-        for (int j = 0; j < 5; j++) {
-            String c = "0," + i;
 
-            ProfileRenderer renderer = new ProfileRenderer("", "");
-            TitledComponent tc = new TitledComponent("ProcessName", renderer, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
+        for (Object key : keys) {
+            String c = "0," + i;
+            List<String> aresult = (List) results.get(key);
+            TimeStepRenderer renderer = new TimeStepRenderer((String) key, aresult.get(1), aresult.get(2), aresult.get(3));
+            TitledComponent tc = new TitledComponent((String) key, renderer, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
             tc.setTitleBold();
             tc.fold();
             outputsPanel.add(tc, c);
@@ -178,8 +180,7 @@ public class ProfileResultPanel extends APanel {
 
         @Override
         public void run() {
-            //FIXME
-            //this.provider.request(this.request);
+            this.provider.perform(this.request);
             this.parent.update(this.request);
         }
     }

@@ -4,6 +4,7 @@ import de.hsos.richwps.mb.richWPS.entity.IInputDescription;
 import de.hsos.richwps.mb.richWPS.entity.IOutputValue;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import net.opengis.wps.x100.OutputDescriptionType;
 import net.opengis.wps.x100.ProcessDescriptionType;
@@ -41,7 +42,10 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
      */
     private boolean keepExecUnit;
 
-    protected List<String> variables;
+    /**
+     * The actual results.
+     */
+    private HashMap<String, Object> results;
 
     /**
      * Constructs a new TestRequest
@@ -56,7 +60,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
         this.deploymentprofile = "";
         this.inputs = new ArrayList<>();
         this.outputs = new ArrayList<>();
-        this.variables = new ArrayList<>();
+        this.results = new HashMap<>();
         this.theabstract = "";
         this.keepExecUnit = false;
     }
@@ -83,7 +87,7 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
         this.executionUnit = "";
         this.inputs = new ArrayList<>();
         this.outputs = new ArrayList<>();
-        this.variables = new ArrayList<>();
+        this.results = new HashMap<>();
         this.theabstract = "";
         this.keepExecUnit = false;
     }
@@ -170,22 +174,29 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
         this.exception = "";
     }
 
-    public void setVariables(List<String> variables) {
-        this.variables = variables;
+    /**
+     *
+     * @return
+     */
+    public HashMap<String, Object> getResults() {
+        return results;
     }
 
     /**
-     * Adds an output specification to the list of available intermediate
-     * results.
      *
-     * @param identifier.
+     * @param results
      */
-    public void addVariable(String identifier) {
-        this.variables.add(identifier);
+    public void setResults(HashMap<String, Object> results) {
+        this.results = results;
     }
 
-    public List<String> getVariables() {
-        return this.variables;
+    /**
+     *
+     * @param key
+     * @param value
+     */
+    public void addResult(final String key, final Object value) {
+        this.results.put(key, value);
     }
 
     /**
@@ -212,8 +223,8 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
     public void addInput(IInputDescription description) {
         this.inputs.add(description);
     }
-    
-     /**
+
+    /**
      *
      * @return
      */
@@ -237,7 +248,6 @@ public class ProfileRequest extends ExecuteRequest implements IRequest {
     public void addOutput(IOutputValue value) {
         this.outputs.add(value);
     }
-
 
     /**
      * Creates a processdescription, which is necessary for deployment.

@@ -4,8 +4,8 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.richWPS.boundary.IRichWPSProvider;
-import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
@@ -14,16 +14,18 @@ import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputLiteralDataValue;
 import java.math.BigInteger;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
-import net.opengis.wps.x100.ProcessDescriptionType;
 import net.opengis.wps.x100.ProfileProcessDocument;
+import net.opengis.wps.x100.ProfileType;
+import net.opengis.wps.x100.RuntimeInfoType;
 import net.opengis.wps.x100.impl.ProfileProcessResponseDocumentImpl;
+import org.n52.wps.client.ProfileProcessResponseAnalyser;
 import org.n52.wps.client.RichWPSClientSession;
-import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.richwps.ProfileProcessRequestBuilder;
 
@@ -56,11 +58,11 @@ public class ProfileRequestHandler implements IRequestHandler {
         Object response = null;
         try {
             String endp = request.getEndpoint();
-            endp = endp.split(RichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
+            endp = endp.split(IRichWPSProvider.DEFAULT_RICHWPS_ENDPOINT)[0] + IRichWPSProvider.DEFAULT_52N_WPS_ENDPOINT;
             profileprocessdocument = builder.getProfiledocument();
             response = this.wps.profile(endp, profileprocessdocument);
             if (response == null) {
-                Logger.log(this.getClass().getClass(), "handle()", "No response");
+                Logger.log(this.getClass().getClass(), "handle()", "No response.");
                 return;
             }
             if (response instanceof ExceptionReportDocumentImpl) {
@@ -68,8 +70,8 @@ public class ProfileRequestHandler implements IRequestHandler {
                 request.addException(exception.getExceptionReport().toString());
             } else if (response instanceof ProfileProcessResponseDocumentImpl) {
                 ProfileProcessResponseDocumentImpl deplok = (ProfileProcessResponseDocumentImpl) response;
-                Logger.log(deplok);;
-                //richwpshelper.analyseTestResponse(profileprocessdocument, response, request);
+                this.analyseResponse(profileprocessdocument, deplok);
+                Logger.log(this.getClass(), "handle()", deplok);
             } else {
                 Logger.log(this.getClass(), "handle()", "Unknown reponse" + response + ", " + response.getClass());
             }
@@ -144,7 +146,7 @@ public class ProfileRequestHandler implements IRequestHandler {
             }
         }
     }
-    
+
     /**
      * Analyses a given response and add specific results or exception to
      * request.
@@ -154,53 +156,37 @@ public class ProfileRequestHandler implements IRequestHandler {
      * @param request TestRequest with possible inputs (IInputDescription) and
      * outputs (IOutputDescription).
      */
-    private  void analyseResponse(ProfileProcessDocument profiledocument, Object responseObject, ProfileRequest request) {
-        final ProcessDescriptionType description = request.toProcessDescriptionType();
-        final URL res = this.getClass().getResource("/xml/wps_config.xml");
-        String file = res.toExternalForm().replace("file:", "");
+    private void analyseResponse(ProfileProcessDocument profiledocument, ProfileProcessResponseDocumentImpl responseObject) {
 
-        WPSClientConfig.getInstance(file);
-        ExecuteRequest resultrequest = request;
+        HashMap<String, Object> results = new HashMap<>();
+        List<String> aresult = new ArrayList<>();
 
-        if (responseObject instanceof ProfileProcessDocument) {
-            ProfileProcessDocument response = (ProfileProcessDocument) responseObject;
-            Logger.log(this.getClass(), "analyseResponse", response.toString());
-
-            response.getProfileProcess();
-            /*OutputDataType[] overalloutputs = response.getTestProcessResponse().getProcessOutputs().getOutputArray();
-             Logger.log(this.getClass(), "analyseResponse", overalloutputs);
-
-             //FIXME make use of executeresponseanalyzer
-             for (OutputDataType o : overalloutputs) {
-             if (o.getData() != null) {
-             //we might have a literaldata
-             if (o.getData().getLiteralData() != null) {
-             String key = o.getIdentifier().getStringValue();
-             String value = o.getData().getLiteralData().getStringValue();
-             request.addResult(key, value);
-             }
-             }
-
-             //we might have a complexdata with reference
-             if (o.getReference() != null) {
-             String key = o.getIdentifier().getStringValue();
-             String value = o.getReference().getHref();
-             URL url;
-             try {
-             url = new URL(value);
-             request.addResult(key, url);
-             } catch (MalformedURLException ex) {
-             java.util.logging.Logger.getLogger(RichWPSHelper.class.getName()).log(Level.SEVERE, null, ex);
-             }
-             }
-
-             //TODO: BoundingBox ?
-             }*/
-        } else {
-            ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
-            resultrequest.addException(exception.getExceptionReport().toString());
-            Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response." + "Response is Exception: " + exception.toString());
-            Logger.log(this.getClass(), "analyseResponse", exception.getExceptionReport());
+        try {
+            ProfileProcessResponseAnalyser analyser = new ProfileProcessResponseAnalyser(profiledocument, responseObject);
+            ProfileType[] pt = analyser.getProfiles();
+            for (ProfileType profile : pt) {
+                String aidentifier = profile.getIdentifier().getStringValue();
+                String adescription = null;
+                System.out.println(profile);
+                if (profile.getTitle() == null) {
+                    adescription = "None";
+                } else {
+                    adescription = profile.getTitle().getStringValue();
+                }
+                RuntimeInfoType theruntime = profile.getRuntimeInfo();
+                String astartime = theruntime.getStarttime().toString();
+                String aruntime = theruntime.getRuntime().toString();
+            aresult.add(aidentifier);
+                aresult.add(adescription);
+                aresult.add(astartime);
+                aresult.add(aruntime);
+                results.put(aidentifier, aresult);
+            }
+            request.setResults(results);
+        } catch (Exception e) {
+            Logger.log(this.getClass(), "analyseResponse()", "Analysing the response "
+                    + "failed due to " + e);
+            e.printStackTrace();
         }
     }
 
