@@ -560,41 +560,39 @@ public class AppRichWPSManager {
                 complexdesc.setMaximumMegabytes(mb);
                 try {
                     List<List> supportedTypes = new ArrayList<>();
-                    List<String> supportedType = new ArrayList<>();
-                    IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
 
+                    IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                    List<String> defaultType = new ArrayList<>();
                     if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                        ComplexDataTypeFormat format = description.getDefaultFormat();
-                        supportedType.add(format.getMimeType());
-                        /*if (format.getSchema().isEmpty()) {
-                         supportedType.add(null);
-                         } else {*/
-                        supportedType.add(format.getSchema());
-                        //}
 
-                        /*if (format.getEncoding().isEmpty()) {
-                         supportedType.add(null);
-                         } else {*/
-                        supportedType.add(format.getEncoding());
-                        //}
+                        for (ComplexDataTypeFormat aformat : description.getFormats()) {
+                            List<String> supportedType = new ArrayList<>();
+                            supportedType.add(aformat.getMimeType());
+                            supportedType.add(aformat.getSchema());
+                            supportedType.add(aformat.getEncoding());
+                            supportedTypes.add(supportedType);
+                        }
+
+                        ComplexDataTypeFormat defformat = description.getDefaultFormat();
+                        defaultType.add(defformat.getMimeType());
+                        defaultType.add(defformat.getSchema());
+                        defaultType.add(defformat.getEncoding());
                     }
-
-                    supportedTypes.add(supportedType);
 
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Supported types for input "
                                 + complexdesc.getIdentifier() + " can not be empty.");
                     }
-                    if (supportedType.isEmpty()) {
+                    if (defaultType.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Default type for input "
                                 + complexdesc.getIdentifier() + " can not be empty.");
                     }
 
                     complexdesc.setTypes(supportedTypes);
-                    complexdesc.setDefaulttype(supportedType);
+                    complexdesc.setDefaulttype(defaultType);
                 } catch (Exception ex) {
                     this.error = true;
                     this.computingModelFailed("Definition of supported types/default type for input "
@@ -663,33 +661,39 @@ public class AppRichWPSManager {
 
                 try {
                     List<List> supportedTypes = new ArrayList<>();
-                    List<String> supportedType = new ArrayList();
-
                     IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                    List<String> defaultType = new ArrayList<>();
 
                     if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                        ComplexDataTypeFormat format = description.getDefaultFormat();
-                        supportedType.add(format.getMimeType());
-                        supportedType.add(format.getSchema());
-                        supportedType.add(format.getEncoding());
-                    }
+                       
+                        for (ComplexDataTypeFormat aformat : description.getFormats()) {
+                            List<String> supportedType = new ArrayList<>();
+                            supportedType.add(aformat.getMimeType());
+                            supportedType.add(aformat.getSchema());
+                            supportedType.add(aformat.getEncoding());
+                            supportedTypes.add(supportedType);
+                        }
 
-                    supportedTypes.add(supportedType);
+                        ComplexDataTypeFormat defformat = description.getDefaultFormat();
+                        defaultType.add(defformat.getMimeType());
+                        defaultType.add(defformat.getSchema());
+                        defaultType.add(defformat.getEncoding());
+                    }
 
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Supported types for output "
                                 + complexdesc.getIdentifier() + " can not be empty.");
                     }
-                    if (supportedType.isEmpty()) {
+                    if (defaultType.isEmpty()) {
                         this.error = true;
                         this.computingModelFailed("Default type for output "
                                 + complexdesc.getIdentifier() + " can not be empty.");
                     }
 
                     complexdesc.setTypes(supportedTypes);
-                    complexdesc.setDefaulttype(supportedType);
+                    complexdesc.setDefaulttype(defaultType);
                 } catch (Exception ex) {
                     this.error = true;
                     this.computingModelFailed("Definition of supported types/default type for output "
