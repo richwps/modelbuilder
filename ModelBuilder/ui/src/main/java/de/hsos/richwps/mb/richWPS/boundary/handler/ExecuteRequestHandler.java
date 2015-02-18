@@ -203,16 +203,17 @@ public class ExecuteRequestHandler implements IRequestHandler {
                     } else if (o instanceof OutputComplexDataValue) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
                         OutputComplexDataValue outputvalue = (OutputComplexDataValue) o;
+                        
                         if (outputvalue.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
-
                             URL httpKVPref = new URL(httpkvpref);
-
-                            if (httpKVPref.toString().equalsIgnoreCase(httpkvpref)) {
-                                request.addResult(key, httpkvpref);
+                            request.addResult(key, httpKVPref);
+                                
+                            /*if (httpKVPref.toString().equalsIgnoreCase(httpkvpref)) {
+                            
                             } else {
                                 // TODO: error
-                            }
+                            }*/
 
                         } else {
                             // FIXME proper analytics for different bindings.
@@ -223,8 +224,6 @@ public class ExecuteRequestHandler implements IRequestHandler {
                             Logger.log(this.getClass(), "analyseResponse", "the size " + binding.getPayload().size());
                         }
                     } else if (o instanceof OutputBoundingBoxDataValue) {
-                        //Currently returns the BoundingBoxData when used with
-                        //*.test.MultipleComplexInAndOutputsDummyTestClass
 
                         ExecuteResponseDocument.ExecuteResponse exResp;
                         exResp = response.getExecuteResponse();
@@ -238,7 +237,7 @@ public class ExecuteRequestHandler implements IRequestHandler {
             } catch (WPSClientException e) {
                 Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response. " + e.getLocalizedMessage());
             } catch (MalformedURLException ex) {
-                java.util.logging.Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                Logger.log(this.getClass(), "analyseResponse", "Unable to analyse response. " + ex.getLocalizedMessage());
             }
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
@@ -255,7 +254,7 @@ public class ExecuteRequestHandler implements IRequestHandler {
         HashMap theoutputs = request.getOutputValues();
 
         /*GetProcessesRequest request = new GetProcessesRequest(serverid);
-        new GetProcessesRequestHandler(this.wps, (GetProcessesRequest) request).handle();*/
+         new GetProcessesRequestHandler(this.wps, (GetProcessesRequest) request).handle();*/
         ProcessDescriptionType description = getProcessDescriptionType();
         org.n52.wps.client.ExecuteRequestBuilder executeBuilder = new org.n52.wps.client.ExecuteRequestBuilder(description);
 

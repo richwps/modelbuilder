@@ -666,7 +666,7 @@ public class AppRichWPSManager {
 
                     if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
                         DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
-                       
+
                         for (ComplexDataTypeFormat aformat : description.getFormats()) {
                             List<String> supportedType = new ArrayList<>();
                             supportedType.add(aformat.getMimeType());
