@@ -159,15 +159,13 @@ public class ProfileRequestHandler implements IRequestHandler {
     private void analyseResponse(ProfileProcessDocument profiledocument, ProfileProcessResponseDocumentImpl responseObject) {
 
         HashMap<String, Object> results = new HashMap<>();
-        List<String> aresult = new ArrayList<>();
-
         try {
             ProfileProcessResponseAnalyser analyser = new ProfileProcessResponseAnalyser(profiledocument, responseObject);
             ProfileType[] pt = analyser.getProfiles();
             for (ProfileType profile : pt) {
+                List<String> aresult = new ArrayList<>();
                 String aidentifier = profile.getIdentifier().getStringValue();
                 String adescription = null;
-                System.out.println(profile);
                 if (profile.getTitle() == null) {
                     adescription = "None";
                 } else {
@@ -176,7 +174,7 @@ public class ProfileRequestHandler implements IRequestHandler {
                 RuntimeInfoType theruntime = profile.getRuntimeInfo();
                 String astartime = theruntime.getStarttime().toString();
                 String aruntime = theruntime.getRuntime().toString();
-            aresult.add(aidentifier);
+                aresult.add(aidentifier);
                 aresult.add(adescription);
                 aresult.add(astartime);
                 aresult.add(aruntime);

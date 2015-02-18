@@ -99,7 +99,7 @@ public class ProfileResultPanel extends APanel {
         for (Object key : keys) {
             String c = "0," + i;
             List<String> aresult = (List) results.get(key);
-            TimeStepRenderer renderer = new TimeStepRenderer((String) key, aresult.get(1), aresult.get(2), aresult.get(3));
+            TimeStepRenderer renderer = new TimeStepRenderer(aresult.get(0), aresult.get(1), aresult.get(2), aresult.get(3));
             TitledComponent tc = new TitledComponent((String) key, renderer, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
             tc.setTitleBold();
             tc.fold();
