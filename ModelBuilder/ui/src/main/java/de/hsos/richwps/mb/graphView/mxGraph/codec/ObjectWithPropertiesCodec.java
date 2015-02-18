@@ -4,6 +4,7 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import java.util.HashMap;
@@ -117,6 +118,19 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
         return decoded;
     }
 
+    @Override
+    protected void encodeValue(mxCodec enc, Object obj, String fieldname, Object value, Node node) {
+        if (obj instanceof Property) {
+            Property property = (Property) obj;
+            LiteralInput literalInput = new LiteralInput();
+            if (fieldname.equals("possibleValues") && property.getPossibleValuesTransient()) {
+                return;
+            }
+        }
+
+        super.encodeValue(enc, obj, fieldname, value, node);
+    }
+
     /**
      * Decodes the properties and adds them to the current object. Other child
      * nodes are delegated to the super class.
@@ -126,7 +140,8 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
      * @param obj
      */
     @Override
-    protected void decodeChild(mxCodec dec, Node child, Object obj) {
+    protected void decodeChild(mxCodec dec, Node child, Object obj
+    ) {
 
         Element item = (Element) child;
 
@@ -150,7 +165,8 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
     }
 
     @Override
-    public Node afterEncode(mxCodec enc, Object obj, Node node) {
+    public Node afterEncode(mxCodec enc, Object obj, Node node
+    ) {
         Node encoded = super.afterEncode(enc, obj, node);
 
         if (obj instanceof OwsObjectWithProperties) {

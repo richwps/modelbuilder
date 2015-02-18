@@ -8,6 +8,7 @@ import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.entity.ports.LiteralOutput;
+import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 
 /**
  *
@@ -15,23 +16,23 @@ import de.hsos.richwps.mb.entity.ports.LiteralOutput;
  */
 public class ProcessPortFactory {
 
-    public static ProcessPort createGlobalInputPort(ProcessPortDatatype datatype) {
+    public static ProcessPort createGlobalInputPort(ProcessPortDatatype datatype) throws LoadDataTypesException {
         return createInputPort(datatype, true);
     }
 
     public static ProcessPort createGlobalOutputPort(ProcessPortDatatype datatype) {
         return createOutputPort(datatype, true);
     }
-    
-    public static ProcessPort createLocalInputPort(ProcessPortDatatype datatype) {
+
+    public static ProcessPort createLocalInputPort(ProcessPortDatatype datatype) throws LoadDataTypesException {
         return createInputPort(datatype, false);
     }
 
     public static ProcessPort createLocalOutputPort(ProcessPortDatatype datatype) {
         return createOutputPort(datatype, false);
     }
-    
-    private static ProcessPort createInputPort(ProcessPortDatatype datatype, boolean global) {
+
+    private static ProcessPort createInputPort(ProcessPortDatatype datatype, boolean global) throws LoadDataTypesException {
         switch (datatype) {
             case LITERAL:
                 return new LiteralInput(global);

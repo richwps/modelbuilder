@@ -40,7 +40,7 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     
     private Collection<E> possibleValues;
 
-    private boolean possibleValuesTransient = false;
+    private Boolean possibleValuesTransient = false;
     
     private transient Collection<IPropertyChangeListener> changeListeners;
     
@@ -190,11 +190,11 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         possibleValues.add(value);
     }
     
-    public void setPossibleValuesTransient(boolean possibleValuesTransient) {
+    public void setPossibleValuesTransient(Boolean possibleValuesTransient) {
         this.possibleValuesTransient = possibleValuesTransient;
     }
 
-    public boolean getPossibleValuesTransient() {
+    public Boolean getPossibleValuesTransient() {
         return possibleValuesTransient;
     }
 

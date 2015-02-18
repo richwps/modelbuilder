@@ -1,6 +1,6 @@
 package de.hsos.richwps.mb.processProvider.exception;
 
-import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
+import de.hsos.richwps.mb.processProvider.control.FormatProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 
 /**

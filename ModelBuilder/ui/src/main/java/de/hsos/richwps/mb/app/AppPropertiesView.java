@@ -1,10 +1,12 @@
 package de.hsos.richwps.mb.app;
 
+import de.hsos.richwps.mb.app.actions.AppAction;
+import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
-import de.hsos.richwps.mb.app.view.properties.PropertyComponentLiteralDataType;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
@@ -22,8 +24,11 @@ import de.hsos.richwps.mb.propertiesView.propertyComponents.IPropertyChangedByUI
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldDouble;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -167,12 +172,26 @@ public class AppPropertiesView extends PropertiesView {
 
         AbstractPropertyComponent component;
 
+        // if missing, set literal datatypes for dropdown component
+        if (property.getPropertiesObjectName().equals(LiteralInput.LITERAL_DATATYPE)) {
+
+            Collection datatypes = property.getPossibleValues();
+            if (null == datatypes || datatypes.isEmpty()) {
+                try {
+                    property.setPossibleValues(app.getDatatypeProvider().getLiteralDatatypes());
+                } catch (LoadDataTypesException ex) {
+                    AppAction action = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SHOW_ERROR_MSG);
+                    action.fireActionPerformed(AppConstants.LOAD_DATATYPES_ERROR);
+                }
+            }
+        }
+
         if (property.getComponentType().equals(ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
             component = createPropertyComplexDataTypeFormat(property);
 
-        } else if (property.getComponentType().equals(LiteralInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
-            component = new PropertyComponentLiteralDataType(property);
-
+//        } else if (property.getComponentType().equals(LiteralInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
+//            component = createPropertyLiteralDataType(property);
+//        } 
         } else {
 
             component = super.getComponentFor(property);
@@ -255,7 +274,8 @@ public class AppPropertiesView extends PropertiesView {
     private PropertyComponentComplexDataType createPropertyComplexDataTypeFormat(Property<DataTypeDescriptionComplex> property) {
         PropertyComponentComplexDataType propertyComplexDataTypeFormat = null;
         try {
-            propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), app.getFormatProvider());
+            List<ComplexDataTypeFormat> formats = app.getDatatypeProvider().getComplexDatatypes();
+            propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), formats);
             propertyComplexDataTypeFormat.setProperty(property);
 
         } catch (LoadDataTypesException ex) {
@@ -265,6 +285,20 @@ public class AppPropertiesView extends PropertiesView {
         return propertyComplexDataTypeFormat;
     }
 
+//    private PropertyComponentComplexDataType createPropertyLiteralDataType(Property<DataTypeDescriptionLiteral> property) {
+//        PropertyComponentLiteralDataType propertyLiteralDataType = null;
+//        try {
+//            List<String> datatypes = app.getDatatypeProvider().getLiteralDatatypes();
+//            
+////            propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), formats);
+//            propertyLiteralDataType.setProperty(property);
+//
+//        } catch (LoadDataTypesException ex) {
+//            app.showErrorMessage(AppConstants.FORMATS_CSV_FILE_LOAD_ERROR);
+//        }
+//
+//        return propertyLiteralDataType;
+//    }
     private GraphView getGraphView() {
         return app.getGraphView();
     }

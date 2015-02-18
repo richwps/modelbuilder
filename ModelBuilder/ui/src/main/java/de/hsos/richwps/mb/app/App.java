@@ -16,7 +16,7 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
-import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
+import de.hsos.richwps.mb.processProvider.control.FormatProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -29,6 +29,7 @@ import de.hsos.richwps.mb.app.view.dialogs.TestModelDialog;
 import de.hsos.richwps.mb.app.view.dialogs.UndeployDialog;
 import de.hsos.richwps.mb.app.view.dialogs.ExecuteDialog;
 import de.hsos.richwps.mb.app.view.dialogs.ExecuteModelDialog;
+import de.hsos.richwps.mb.processProvider.boundary.DatatypeProvider;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
 import java.awt.Component;
@@ -86,7 +87,7 @@ public class App {
     private ProfileModelDialog profileDialog;
 
     boolean changesSaved = false;
-    private FormatProvider formatProvider;
+    private DatatypeProvider datatypeProvider;
     private ProcessMetricProvider processMetricProvider;
     private SementicProxySearch semanticProxySearch;
 
@@ -843,12 +844,12 @@ public class App {
      *
      * @return
      */
-    FormatProvider getFormatProvider() {
-        if (null == formatProvider) {
-            formatProvider = new FormatProvider(AppConstants.FORMATS_CSV_FILE);
+    DatatypeProvider getDatatypeProvider() {
+        if (null == datatypeProvider) {
+            datatypeProvider = new DatatypeProvider(AppConstants.COMPLEX_FORMATS_CSV_FILE, AppConstants.LITERAL_DATATYPES_CSV_FILE);
         }
 
-        return formatProvider;
+        return datatypeProvider;
     }
 
     /**

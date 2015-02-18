@@ -6,7 +6,7 @@ import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescriptionChangeListener;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
-import de.hsos.richwps.mb.processProvider.boundary.FormatProvider;
+import de.hsos.richwps.mb.processProvider.control.FormatProvider;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
@@ -27,11 +27,11 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
     public static String COMPONENT_TYPE = "Complex datatype format";
 
     
-    public PropertyComponentComplexDataType(final Window parent, FormatProvider formatProvider) throws LoadDataTypesException {
+    public PropertyComponentComplexDataType(final Window parent,  List<ComplexDataTypeFormat> datatypeFormats) throws LoadDataTypesException {
         super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE));
 
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
-        formats.addAll(formatProvider.getComplexDataTypes());
+        formats.addAll(datatypeFormats);
         component = new ComplexDataTypeLabel(parent, formats);
         component.addSelectionListener(new IDataTypeDescriptionChangeListener() {
             @Override

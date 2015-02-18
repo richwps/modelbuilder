@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.control.ProcessEntityTitleComparator;
+import de.hsos.richwps.mb.control.ProcessPortFactory;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
@@ -13,17 +14,18 @@ import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
 import de.hsos.richwps.mb.entity.ports.BoundingBoxOutput;
-import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
-import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.entity.ports.LiteralOutput;
+import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 /**
  * Controls the main tree view component and it's interaction with the
@@ -135,9 +137,10 @@ public class MainTreeViewController extends AbstractTreeViewController {
         DefaultMutableTreeNode insAndOuts = new DefaultMutableTreeNode(AppConstants.TREE_INTERFACEOBJECTS_NAME);
 
         // inputs
-        insAndOuts.add(new DefaultMutableTreeNode(new ComplexDataInput(true)));
-        insAndOuts.add(new DefaultMutableTreeNode( new LiteralInput(true)));
-        insAndOuts.add(new DefaultMutableTreeNode(new BoundingBoxInput(true)));
+        boolean loadDatatypesError = false;
+        loadDatatypesError |= !addGlobalInput(insAndOuts, ProcessPortDatatype.COMPLEX);
+        loadDatatypesError |= !addGlobalInput(insAndOuts, ProcessPortDatatype.LITERAL);
+        loadDatatypesError |= !addGlobalInput(insAndOuts, ProcessPortDatatype.BOUNDING_BOX);
 
         // Outputs
         insAndOuts.add(new DefaultMutableTreeNode(new ComplexDataOutput(true)));
@@ -153,6 +156,27 @@ public class MainTreeViewController extends AbstractTreeViewController {
 //        downloadServices.add(new DefaultMutableTreeNode(""));
 //        root.add(downloadServices);
         updateUI();
+        
+        // show message if an error occured
+        if(loadDatatypesError) {
+                JOptionPane.showMessageDialog(
+                        getParent(),
+                        AppConstants.LOAD_DATATYPES_ERROR,
+                        AppConstants.DIALOG_TITLE_ERROR,
+                        JOptionPane.ERROR_MESSAGE
+                );
+        }
+    }
+
+    private boolean addGlobalInput(DefaultMutableTreeNode parent, ProcessPortDatatype datatype) {
+        try {
+            ProcessPort literalInput = ProcessPortFactory.createGlobalInputPort(datatype);
+            parent.add(new DefaultMutableTreeNode(literalInput));
+        } catch (LoadDataTypesException ex) {
+            return false;
+        }
+
+        return true;
     }
 
     private void sendReceiveResultMessage(int numReceived, boolean spConnected, int numRemotes) {

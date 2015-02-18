@@ -58,7 +58,7 @@ public class PropertyDropdown<E extends Object> extends AbstractPropertyComponen
 
             // no property value: set it to the first possible item if available
             Collection<E> possibleValues = property.getPossibleValues();
-            if (null != possibleValues) {
+            if (null != possibleValues && possibleValues.iterator().hasNext()) {
                 property.setValue(possibleValues.iterator().next());
             }
         }

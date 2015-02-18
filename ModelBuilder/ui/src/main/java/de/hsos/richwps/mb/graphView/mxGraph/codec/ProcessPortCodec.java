@@ -1,9 +1,14 @@
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
+import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.appEvents.AppEvent;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.control.ProcessPortFactory;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
+import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import java.util.Map;
 import org.w3c.dom.Element;
@@ -86,35 +91,39 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
 
     @Override
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
+        try {
 
-        // workaround to support older model versions
-        if (obj instanceof de.hsos.richwps.mb.entity.oldVersions.ProcessPort) {
+            // workaround to support older model versions
+            if (obj instanceof de.hsos.richwps.mb.entity.oldVersions.ProcessPort) {
 
-            Element nodeEl = (Element) node;
-            String id = nodeEl.getAttribute(ATTR_REFERENCE_ID);
-            IObjectWithProperties decodedObject = getDecodedObject(id);
-            if (null != decodedObject) {
-                return decodedObject;
+                Element nodeEl = (Element) node;
+                String id = nodeEl.getAttribute(ATTR_REFERENCE_ID);
+                IObjectWithProperties decodedObject = getDecodedObject(id);
+                if (null != decodedObject) {
+                    return decodedObject;
+                }
+
+                de.hsos.richwps.mb.entity.oldVersions.ProcessPort decodedOldPort = (de.hsos.richwps.mb.entity.oldVersions.ProcessPort) obj;
+                ProcessPort port;
+                boolean isInput = decodedOldPort.isFlowInput();
+                boolean isGlobal = decodedOldPort.isGlobal();
+                ProcessPortDatatype datatype = decodedOldPort.getDatatype();
+
+                if (isGlobal && isInput) {
+                    port = ProcessPortFactory.createGlobalInputPort(datatype);
+                } else if (isGlobal && !isInput) {
+                    port = ProcessPortFactory.createGlobalOutputPort(datatype);
+                } else if (!isGlobal && isInput) {
+                    port = ProcessPortFactory.createLocalInputPort(datatype);
+                } else {
+                    port = ProcessPortFactory.createLocalOutputPort(datatype);
+                }
+
+                port.copyValuesFrom(decodedOldPort);
+                obj = port;
             }
-
-            de.hsos.richwps.mb.entity.oldVersions.ProcessPort decodedOldPort = (de.hsos.richwps.mb.entity.oldVersions.ProcessPort) obj;
-            ProcessPort port;
-            boolean isInput = decodedOldPort.isFlowInput();
-            boolean isGlobal = decodedOldPort.isGlobal();
-            ProcessPortDatatype datatype = decodedOldPort.getDatatype();
-
-            if (isGlobal && isInput) {
-                port = ProcessPortFactory.createGlobalInputPort(datatype);
-            } else if (isGlobal && !isInput) {
-                port = ProcessPortFactory.createGlobalOutputPort(datatype);
-            } else if (!isGlobal && isInput) {
-                port = ProcessPortFactory.createLocalInputPort(datatype);
-            } else {
-                port = ProcessPortFactory.createLocalOutputPort(datatype);
-            }
-
-            port.copyValuesFrom(decodedOldPort);
-            obj = port;
+        } catch (LoadDataTypesException ex) {
+            AppEventService.getInstance().fireAppEvent(AppConstants.LOAD_DATATYPES_ERROR, AppConstants.INFOTAB_ID_EDITOR, AppEvent.PRIORITY.URGENT);
         }
 
         return super.afterDecode(dec, node, obj);

@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.processProvider.boundary;
+package de.hsos.richwps.mb.processProvider.control;
 
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
@@ -12,22 +12,21 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Provides a list of available complex data formats. Currently, the list's
- * items are received from a CSV file.
+ * Provides a list of available literal datatypes.
  *
  * @author dziegenh
  */
-public class FormatProvider {
+public class LiteralDatatypeProvider {
     
     private final String csvFile;
     
-    private List<ComplexDataTypeFormat> dataTypes;
+    private List<String> dataTypes;
     
-    public FormatProvider(String formatCsvFile) {
-        this.csvFile = formatCsvFile;
+    public LiteralDatatypeProvider(String datatypesCsvFile) {
+        this.csvFile = datatypesCsvFile;
     }
     
-    public List<ComplexDataTypeFormat> getComplexDataTypes() throws LoadDataTypesException {
+    public List<String> getDataTypes() throws LoadDataTypesException {
         
         if (null != dataTypes) {
             return dataTypes;
@@ -41,17 +40,12 @@ public class FormatProvider {
             String path = AppConstants.RESOURCES_DIR + File.separator + "csv" + File.separator + csvFile;
             reader = new BufferedReader(new FileReader(path));
             String line = "";
-            String valueSeperator = ",";
+            
             while (null != (line = reader.readLine())) {
-                String[] values = line.split(valueSeperator);
-                String mimeType = values[0];
-                String schema = (values.length > 1) ? values[1] : "";
-                String encoding = (values.length > 2) ? values[2] : "";
+                line = line.trim();
                 
-                ComplexDataTypeFormat tmp = new ComplexDataTypeFormat(mimeType, schema, encoding);
-                
-                if (!dataTypes.contains(tmp)) {
-                    dataTypes.add(tmp);
+                if (!dataTypes.contains(line)) {
+                    dataTypes.add(line);
                 }
             }
             

@@ -7,7 +7,6 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.io.File;
 import java.util.Locale;
-import javax.swing.Icon;
 
 /**
  * Collection of app-wide constant values.
@@ -198,7 +197,7 @@ public class AppConstants {
     public static final Color OUTPUT_PORT_COLOR = new Color(0xcfe1fc);
 
     static String FORMATS_CSV_FILE_LOAD_ERROR = "Error while loading complex data formats!";
-    static String DIALOG_TITLE_ERROR = "An error occured";
+    public static String DIALOG_TITLE_ERROR = "An error occured";
 
     /**
      * Common CSS for input and output ports.
@@ -222,8 +221,18 @@ public class AppConstants {
      * The CSS which is used for the main html container in ToolTipTexts.
      */
     static String TOOLTIP_CSS_FOR_MAIN_CONTAINER = "color:#000000;background:#" + TOOLTIP_BG_COLOR_HEX_STRING + ";border:0;margin:0;";
-    public static final String FORMATS_CSV_FILE = "formats.csv";
 
+    /**
+     * Name of the CSV file containing the complex datatype formats (needed in
+     * older MB versions).
+     */
+    public static final String COMPLEX_FORMATS_CSV_FILE = "formats.csv";
+
+    /**
+     * Name of the CSV file containing the literal datatypes.
+     */
+    public static final String LITERAL_DATATYPES_CSV_FILE = "literal_datatypes.csv";
+    
     static String REMOTES_NOT_AVAILABLE_ERROR_MSG = "No remote server available!"
             + System.lineSeparator()
             + "Please check the SemanticProxy preferences or add a remote server using the 'Manage Remotes' dialog.";
@@ -293,6 +302,11 @@ public class AppConstants {
 
     public static String PROCESS_REPLACER_TREE_CAPTION = "<html>Please select the process which replaces the selected instance of<br /><i>%s</i><br />(Server: <i>%s</i>):</html>";
     public static String PROCESS_REPLACER_MAPPING_CAPTION = "<html>Please check and adjust the mapping of the old processes' ports to the new replacing processes' ports.</html>";
+
+    /**
+     * Message for errors which occur while loading port datatypes.
+     */
+    public static String LOAD_DATATYPES_ERROR = "Error while loading the port datatypes!\nPossible reason: missing or corrupt datatypes CSV file.";
 
     public enum PREFERENCES_TAB {
 
