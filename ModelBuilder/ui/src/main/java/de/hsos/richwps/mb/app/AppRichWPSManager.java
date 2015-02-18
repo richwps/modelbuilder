@@ -454,7 +454,7 @@ public class AppRichWPSManager {
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
             IOutputValue description = null;
-            description = this.outputPort2OutputValue(port);
+            description = this.outputPort2OutputDescription(port);
 
             if (null == description) {
                 throw new GraphToRequestTransformationException(port);
@@ -479,7 +479,7 @@ public class AppRichWPSManager {
         // Transform global outputs to OutputValues
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
             IOutputValue description = null;
-            description = this.outputPort2OutputValue(port);
+            description = this.outputPort2OutputDescription(port);
 
             if (null == description) {
                 throw new GraphToRequestTransformationException(port);
@@ -504,7 +504,7 @@ public class AppRichWPSManager {
         // Transform global outputs
         for (ProcessPort port : graph.getGlobalOutputPorts()) {
             IOutputValue description = null;
-            description = this.outputPort2OutputValue(port);
+            description = this.outputPort2OutputDescription(port);
 
             if (null == description) {
                 throw new GraphToRequestTransformationException(port);
@@ -630,7 +630,7 @@ public class AppRichWPSManager {
      * @param port outputprocessport.
      * @return OutputValue.
      */
-    private IOutputValue outputPort2OutputValue(ProcessPort port) {
+    private IOutputValue outputPort2OutputDescription(ProcessPort port) {
         if (null == port || !port.isGlobalOutput()) {
             throw new IllegalArgumentException("invalid port (null or not an output)");
         }

@@ -208,13 +208,7 @@ public class ExecuteRequestHandler implements IRequestHandler {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
                             URL httpKVPref = new URL(httpkvpref);
                             request.addResult(key, httpKVPref);
-                                
-                            /*if (httpKVPref.toString().equalsIgnoreCase(httpkvpref)) {
                             
-                            } else {
-                                // TODO: error
-                            }*/
-
                         } else {
                             // FIXME proper analytics for different bindings.
                             // Blocked by broken commons implementation.
