@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.exception.CloneFailedException;
 
 /**
@@ -19,7 +20,7 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
      * Used for properties which should not added to views.
      */
     public final static String COMPONENT_TYPE_NONE = "NONE";
-    
+
     public final static String COMPONENT_TYPE_TEXTFIELD = "TEXTFIELD";
     public final static String COMPONENT_TYPE_INTEGER = "INTEGER";
     public final static String COMPONENT_TYPE_DOUBLE = "DOUBLE";
@@ -37,13 +38,13 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     private String componentType;
 
     private boolean editable;
-    
+
     private Collection<E> possibleValues;
 
     private Boolean possibleValuesTransient = false;
-    
+
     private transient Collection<IPropertyChangeListener> changeListeners;
-    
+
     private boolean isTransient = false;
 
     public Property() {
@@ -148,7 +149,15 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         return true;
     }
 
+    /**
+     *
+     * @param values if null, possible values will be an empty list
+     */
     public void setPossibleValues(Collection<E> values) {
+        if (null == values) {
+            values = new LinkedList<>();
+        }
+
         this.possibleValues = values;
         // TODO add source object if necessary
         firePropertyChanged(null, PropertyChangeType.POSSIBLE_VALUES_CHANGED);
@@ -189,7 +198,7 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     public void addPossibleValue(E value) {
         possibleValues.add(value);
     }
-    
+
     public void setPossibleValuesTransient(Boolean possibleValuesTransient) {
         this.possibleValuesTransient = possibleValuesTransient;
     }
@@ -218,8 +227,10 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         clone.setComponentType(componentType);
         clone.setPossibleValuesTransient(possibleValuesTransient);
 
-        for (E pVal : possibleValues) {
-            clone.addPossibleValue(pVal);
+        if (null != possibleValues) {
+            for (E pVal : possibleValues) {
+                clone.addPossibleValue(pVal);
+            }
         }
 
         return clone;

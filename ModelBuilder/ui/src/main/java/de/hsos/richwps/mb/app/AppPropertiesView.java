@@ -27,8 +27,7 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -175,15 +174,30 @@ public class AppPropertiesView extends PropertiesView {
         // if missing, set literal datatypes for dropdown component
         if (property.getPropertiesObjectName().equals(LiteralInput.LITERAL_DATATYPE)) {
 
-            Collection datatypes = property.getPossibleValues();
-            if (null == datatypes || datatypes.isEmpty()) {
-                try {
-                    property.setPossibleValues(app.getDatatypeProvider().getLiteralDatatypes());
-                } catch (LoadDataTypesException ex) {
-                    AppAction action = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SHOW_ERROR_MSG);
-                    action.fireActionPerformed(AppConstants.LOAD_DATATYPES_ERROR);
+            if (getCurrentObjectWithProperties() instanceof LiteralInput) {
+                LiteralInput input = (LiteralInput) getCurrentObjectWithProperties();
+
+                if (input.isGlobal()) {
+
+                    Collection datatypes = property.getPossibleValues();
+                    if (null == datatypes || datatypes.isEmpty()) {
+                        try {
+                            property.setPossibleValues(app.getDatatypeProvider().getLiteralDatatypes());
+                        } catch (LoadDataTypesException ex) {
+                            AppAction action = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SHOW_ERROR_MSG);
+                            action.fireActionPerformed(AppConstants.LOAD_DATATYPES_ERROR);
+                        }
+                    }
+
                 }
+                
+            } else {
+                property.setPossibleValues(null);
+                property.setComponentType(Property.COMPONENT_TYPE_TEXTFIELD);
+                property.setValue("(unknown)");
+                property.setEditable(false);
             }
+
         }
 
         if (property.getComponentType().equals(ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
