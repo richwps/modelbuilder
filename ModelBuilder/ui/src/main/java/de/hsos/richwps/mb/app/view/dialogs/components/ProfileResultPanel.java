@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import javax.swing.table.TableColumn;
  * Dialog panel for profileresult visualisation.
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class ProfileResultPanel extends APanel {
 
@@ -52,7 +53,7 @@ public class ProfileResultPanel extends APanel {
         this.loadingLabel.setText("Preparing statement.");
         this.resultPane.setVisible(false);
         this.expand = false;
-        this.timesteps.setVisible(false);
+        this.timestepsTable.setVisible(false);
     }
 
     /**
@@ -94,10 +95,13 @@ public class ProfileResultPanel extends APanel {
             i++;
         }
 
-        this.timesteps = new JTable(new TimeStepsTableModel(rowData));
+        this.timestepsTable = new JTable(new TimeStepsTableModel(rowData));
+        String currentfontname = this.timestepsTable.getTableHeader().getFont().getFontName();
+        int currentfonsize = this.timestepsTable.getTableHeader().getFont().getSize();
+        this.timestepsTable.getTableHeader().setFont(new Font(currentfontname, Font.BOLD, currentfonsize));
 
-        this.timesteps.setVisible(true);
-        this.resultPane.setViewportView(timesteps);
+        this.timestepsTable.setVisible(true);
+        this.resultPane.setViewportView(timestepsTable);
         this.resultPane.setVisible(true);
         this.loadingLabel.setVisible(false);
     }
@@ -107,9 +111,6 @@ public class ProfileResultPanel extends APanel {
         this.loadingLabel.setVisible(false);
 
         ExceptionRenderer exception = new ExceptionRenderer(request.getException());
-        /*TitledComponent tc = new TitledComponent("Exception", r, TitledComponent.DEFAULT_TITLE_HEIGHT);
-         tc.unfold();
-         tc.setTitleBold();*/
 
         this.remove(this.resultPane);
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -175,7 +176,7 @@ public class ProfileResultPanel extends APanel {
 
         loadingLabel = new javax.swing.JLabel();
         resultPane = new javax.swing.JScrollPane();
-        timesteps = new javax.swing.JTable();
+        timestepsTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         selectedProcess = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
@@ -206,7 +207,7 @@ public class ProfileResultPanel extends APanel {
         resultPane.setMinimumSize(new java.awt.Dimension(600, 600));
         resultPane.setPreferredSize(new java.awt.Dimension(600, 600));
 
-        timesteps.setModel(new javax.swing.table.DefaultTableModel(
+        timestepsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -217,7 +218,7 @@ public class ProfileResultPanel extends APanel {
                 "Action", "Description", "Starttime", "Time"
             }
         ));
-        resultPane.setViewportView(timesteps);
+        resultPane.setViewportView(timestepsTable);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -308,7 +309,7 @@ public class ProfileResultPanel extends APanel {
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;
     private javax.swing.JLabel selectedServerLabel;
-    private javax.swing.JTable timesteps;
+    private javax.swing.JTable timestepsTable;
     // End of variables declaration//GEN-END:variables
 
     private class TimeStepsTableModel extends AbstractTableModel {

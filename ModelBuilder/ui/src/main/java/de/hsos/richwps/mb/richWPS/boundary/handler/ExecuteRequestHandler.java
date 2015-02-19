@@ -2,8 +2,9 @@ package de.hsos.richwps.mb.richWPS.boundary.handler;
 
 import de.hsos.richwps.mb.richWPS.boundary.IRequestHandler;
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.richWPS.entity.IInputValue;
+import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.GetProcessesRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.InputBoundingBoxDataValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.InputComplexDataValue;
 import de.hsos.richwps.mb.richWPS.entity.impl.values.InputLiteralDataValue;
@@ -16,7 +17,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.logging.Level;
 import net.opengis.ows.x11.impl.ExceptionReportDocumentImpl;
 import net.opengis.wps.x100.ExecuteDocument;
 import net.opengis.wps.x100.ExecuteResponseDocument;
@@ -28,8 +28,9 @@ import org.n52.wps.client.ExecuteResponseAnalyser;
 import org.n52.wps.client.WPSClientConfig;
 import org.n52.wps.client.WPSClientException;
 import org.n52.wps.client.WPSClientSession;
-import org.n52.wps.io.data.binding.complex.GTVectorDataBinding;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import net.opengis.ows.x11.BoundingBoxType;
+import net.opengis.wps.x100.LiteralDataType;
 
 /**
  *
@@ -184,6 +185,7 @@ public class ExecuteRequestHandler implements IRequestHandler {
         if (responseObject instanceof ExecuteResponseDocument) {
             ExecuteResponseDocument response = (ExecuteResponseDocument) responseObject;
             Logger.log(this.getClass(), "analyseResponse", response.toString());
+
             try {
                 Set<String> keys = theoutputs.keySet();
                 for (String key : keys) {
@@ -191,40 +193,43 @@ public class ExecuteRequestHandler implements IRequestHandler {
                     if (o instanceof OutputLiteralDataValue) {
                         OutputLiteralDataValue outputvalue = (OutputLiteralDataValue) o;
                         OutputDataType[] outputs = response.getExecuteResponse().getProcessOutputs().getOutputArray();
-                        String value = "";
+                        LiteralDataType value=null;
                         for (OutputDataType output : outputs) {
                             final String givenIdentifier = output.getIdentifier().getStringValue();
                             final String wantedIdentifer = outputvalue.getIdentifier();
                             if (givenIdentifier.equals(wantedIdentifer)) {
-                                value = output.getData().getLiteralData().getStringValue();
+                                value = output.getData().getLiteralData();
+                                request.addResult(key, value);
                             }
                         }
-                        request.addResult(key, value);
                     } else if (o instanceof OutputComplexDataValue) {
                         ExecuteResponseAnalyser analyser = new ExecuteResponseAnalyser(execute, response, description);
                         OutputComplexDataValue outputvalue = (OutputComplexDataValue) o;
-                        
+
                         if (outputvalue.isAsReference()) {
                             String httpkvpref = analyser.getComplexReferenceByIndex(0);
                             URL httpKVPref = new URL(httpkvpref);
                             request.addResult(key, httpKVPref);
-                            
-                        } else {
+                        } /*else {
                             // FIXME proper analytics for different bindings.
                             // Blocked by broken commons implementation.
                             // The invoked parser relies on a different WPSConfig
                             // an thus raises an exception in context of a client.
                             GTVectorDataBinding binding = (GTVectorDataBinding) analyser.getComplexData(key, GTVectorDataBinding.class);
                             Logger.log(this.getClass(), "analyseResponse", "the size " + binding.getPayload().size());
-                        }
+                        }*/
                     } else if (o instanceof OutputBoundingBoxDataValue) {
-
-                        ExecuteResponseDocument.ExecuteResponse exResp;
-                        exResp = response.getExecuteResponse();
-                        if ("Process successful".equals(exResp.getStatus().getProcessSucceeded())) {
-                            OutputDataType[] outputArray;
-                            outputArray = exResp.getProcessOutputs().getOutputArray();
-                            request.addResult(key, outputArray);
+                        OutputBoundingBoxDataValue outputvalue = (OutputBoundingBoxDataValue) o;
+                        OutputDataType[] outputs = response.getExecuteResponse().getProcessOutputs().getOutputArray();
+                        BoundingBoxType value=null;
+                        
+                        for (OutputDataType output : outputs) {
+                            final String givenIdentifier = output.getIdentifier().getStringValue();
+                            final String wantedIdentifer = outputvalue.getIdentifier();
+                            if (givenIdentifier.equals(wantedIdentifer)) {
+                                value = output.getData().getBoundingBoxData();
+                                request.addResult(key, value);
+                            }
                         }
                     }
                 }

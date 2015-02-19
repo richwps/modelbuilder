@@ -176,12 +176,10 @@ public class TestRequestHandler implements IRequestHandler {
 
         WPSClientConfig.getInstance(file);
         ExecuteRequest resultrequest = request;
-        HashMap theoutputs = request.getOutputValues();
 
         if (responseObject instanceof TestProcessResponseDocument) {
             TestProcessResponseDocument response = (TestProcessResponseDocument) responseObject;
             Logger.log(this.getClass(), "analyseResponse", response.toString());
-
             OutputDataType[] overalloutputs = response.getTestProcessResponse().getProcessOutputs().getOutputArray();
             Logger.log(this.getClass(), "analyseResponse", overalloutputs);
 
@@ -191,8 +189,7 @@ public class TestRequestHandler implements IRequestHandler {
                     //we might have a literaldata
                     if (o.getData().getLiteralData() != null) {
                         String key = o.getIdentifier().getStringValue();
-                        String value = o.getData().getLiteralData().getStringValue();
-                        request.addResult(key, value);
+                        request.addResult(key, o.getData().getLiteralData());
                     }
                 }
 

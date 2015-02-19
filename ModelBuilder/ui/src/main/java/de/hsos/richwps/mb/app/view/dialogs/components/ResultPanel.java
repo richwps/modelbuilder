@@ -1,35 +1,43 @@
 package de.hsos.richwps.mb.app.view.dialogs.components;
 
+import de.hsos.richwps.mb.ui.OpenInBrowserButton;
+import de.hsos.richwps.mb.ui.CopyToClipboardButton;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.ExceptionRenderer;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.LiteralRenderer;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.URIRenderer;
+import de.hsos.richwps.mb.app.view.dialogs.components.listener.ResultTableMouseListener;
+import de.hsos.richwps.mb.app.view.dialogs.components.renderer.*;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.mb.richWPS.entity.IOutputDescription;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
-import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputBoundingBoxDataValue;
-import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputComplexDataValue;
-import de.hsos.richwps.mb.richWPS.entity.impl.values.OutputLiteralDataValue;
 import de.hsos.richwps.mb.ui.TitledComponent;
-import de.hsos.richwps.mb.app.view.dialogs.components.renderer.BoundingBoxResultRenderer;
+import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JTable;
 import javax.swing.UIManager;
-import layout.TableLayout;
+import javax.swing.table.AbstractTableModel;
 import net.opengis.ows.x11.BoundingBoxType;
-import net.opengis.wps.x100.OutputDataType;
+import net.opengis.wps.x100.LiteralDataType;
 
 /**
  * Dialog panel for result visualisation.
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class ResultPanel extends APanel {
 
@@ -41,9 +49,8 @@ public class ResultPanel extends APanel {
      * Connection to RichWPS server.
      */
     private RichWPSProvider provider;
-    
+
     private ExecuteRequest request;
-    private boolean expand = false;
 
     /**
      *
@@ -61,7 +68,7 @@ public class ResultPanel extends APanel {
         this.loadingLabel.setIcon(ico);
         this.loadingLabel.setText("Preparing statement.");
         this.resultPane.setVisible(false);
-        this.expand = false;
+        this.resultTable.setVisible(false);
     }
 
     /**
@@ -87,113 +94,50 @@ public class ResultPanel extends APanel {
         if (this.request.isException()) {
             renderException(request);
         } else {
-            this.prepareResults(request);
-            this.visualiseResults();
+            this.renderResults(request);
         }
     }
 
-    private void prepareResults(ExecuteRequest request) {
+    private void renderResults(ExecuteRequest request) {
         this.request = request;
         HashMap results = this.request.getResults();
-        HashMap values = this.request.getOutputValues();
         java.util.Set keys = results.keySet();
 
-        JPanel outputsPanel = new JPanel();
-
-        double size[][] = new double[2][1];
-        size[0] = new double[]{TableLayout.FILL};
-
-        double innersize[] = new double[results.size()];
-        for (int i = 0; i < results.size(); i++) {
-            innersize[i] = TableLayout.PREFERRED;
-        }
-        size[1] = innersize;
-
-        TableLayout layout = new TableLayout(size);
-        outputsPanel.setLayout(layout);
-
-        for (Object key : keys) {
-            IOutputDescription value = (IOutputDescription) values.get(key);
-            if (value instanceof OutputComplexDataValue) {
-                URL httpKVPref = (URL) results.get(key);
-                String uri = httpKVPref.toString();
-                //String uri = (String) results.get(key);
-                OutputComplexDataValue _value = (OutputComplexDataValue) value;
-                String identifier = (_value.getDescription()).getIdentifier();
-                URIRenderer pan = new URIRenderer(identifier, uri);
-                TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
-                tc.setTitleBold();
-                tc.fold();
-                this.panels.add(tc);
-            } else if (value instanceof OutputLiteralDataValue) {
-                String literalDataAsString = (String) results.get(key);
-                OutputLiteralDataValue _value = (OutputLiteralDataValue) value;
-                String identifier = (_value.getDescription()).getIdentifier();
-                LiteralRenderer pan = new LiteralRenderer(identifier, literalDataAsString);
-                TitledComponent tc = new TitledComponent(identifier, pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
-                tc.setTitleBold();
-                tc.fold();
-                this.panels.add(tc);
-            } else if (value instanceof OutputBoundingBoxDataValue) {
-                OutputDataType[] odts = (OutputDataType[]) results.get(key);
-                
-                OutputBoundingBoxDataValue _value;
-                _value = (OutputBoundingBoxDataValue) value;
-                String identifier = (_value.getDescription()).getIdentifier();
-                
-                for(OutputDataType odt : odts) {
-                    BoundingBoxResultRenderer pan;
-                    
-                    BoundingBoxType bbData;
-                    bbData = odt.getData().getBoundingBoxData();
-                    pan = new BoundingBoxResultRenderer(identifier,bbData);
-                    TitledComponent tc;
-                    tc = new TitledComponent(identifier, pan, 
-                            TitledComponent.DEFAULT_TITLE_HEIGHT, true);
-                    tc.setTitleBold();;
-                    tc.fold();
-                    this.panels.add(tc);
-                }
-            }
-        }
-    }
-
-    private void visualiseResults() {
-        JPanel outputsPanel = new JPanel();
-
-        double size[][] = new double[2][1];
-        size[0] = new double[]{TableLayout.FILL};
-
-        double innersize[] = new double[this.panels.size()];
-        for (int i = 0; i < this.panels.size(); i++) {
-            innersize[i] = TableLayout.PREFERRED;
-        }
-        size[1] = innersize;
-
-        TableLayout layout = new TableLayout(size);
-        outputsPanel.setLayout(layout);
-
+     
+        Object rowData[][] = new Object[results.size()][4];
         int i = 0;
-        for (TitledComponent compo : this.panels) {
-            String c = "0," + i;
-            outputsPanel.add(compo, c);
-            i++;
-        }
-        String c = "0," + i + 1;
-        outputsPanel.add(new JPanel(), c);
+        for (Object key : keys) {
 
-        if (this.panels.size() <= 2) {
-            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
-            this.expand = true;
-            for (TitledComponent renderer : this.panels) {
-                renderer.setFolded(false);
+            Object value = results.get(key);
+            if (value instanceof URL) {
+                URL val = (URL) value;
+                rowData[i][0] = "C";
+                rowData[i][1] = key;
+                rowData[i][2] = value;
+                rowData[i][3] = new OpenInBrowserButton(val);
+                i++;
+            } else if (value instanceof LiteralDataType) {
+                String val = ((LiteralDataType) value).getStringValue();
+                rowData[i][0] = "L";
+                rowData[i][1] = key;
+                rowData[i][2] = value;
+                rowData[i][3] = new CopyToClipboardButton(val);
+                i++;
+            } else if (value instanceof BoundingBoxType) {
+                String val = ((BoundingBoxType) value).toString();
+                rowData[i][0] = "B";
+                rowData[i][1] = key;
+                rowData[i][2] = value;
+                rowData[i][3] = new CopyToClipboardButton(val);
+                i++;
             }
-        }
 
-        this.resultPane.setViewportView(outputsPanel);
-        this.resultPane.setVisible(true);
-        this.validate();
-        this.loadingLabel.setVisible(false);
+            this.resultTable = new ResultTable(rowData);
+            this.resultTable.setVisible(true);
+            this.resultPane.setViewportView(resultTable);
+            this.resultPane.setVisible(true);
+            this.loadingLabel.setVisible(false);
+        }
     }
 
     private void renderException(ExecuteRequest request) {
@@ -216,7 +160,6 @@ public class ResultPanel extends APanel {
 
         this.add(exception, gridBagConstraints);
         this.validate();
-        this.expandButton.setEnabled(false);
     }
 
     /**
@@ -267,6 +210,7 @@ public class ResultPanel extends APanel {
 
         loadingLabel = new javax.swing.JLabel();
         resultPane = new javax.swing.JScrollPane();
+        resultTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         selectedProcess = new javax.swing.JLabel();
         selectedProcessLabel = new javax.swing.JLabel();
@@ -274,8 +218,6 @@ public class ResultPanel extends APanel {
         selectedServerLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jPanel2 = new javax.swing.JPanel();
-        expandButton = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(620, 700));
         setPreferredSize(new java.awt.Dimension(620, 700));
@@ -297,6 +239,20 @@ public class ResultPanel extends APanel {
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         resultPane.setMinimumSize(new java.awt.Dimension(600, 600));
         resultPane.setPreferredSize(new java.awt.Dimension(600, 600));
+
+        resultTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        resultPane.setViewportView(resultTable);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -372,62 +328,16 @@ public class ResultPanel extends APanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jSeparator1, gridBagConstraints);
-
-        jPanel2.setMinimumSize(new java.awt.Dimension(85, 100));
-        jPanel2.setPreferredSize(new java.awt.Dimension(85, 100));
-        jPanel2.setLayout(new java.awt.GridBagLayout());
-
-        expandButton.setText("Expand all");
-        expandButton.setMaximumSize(new java.awt.Dimension(70, 32));
-        expandButton.setMinimumSize(new java.awt.Dimension(70, 32));
-        expandButton.setPreferredSize(new java.awt.Dimension(70, 32));
-        expandButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                expandButtonActionPerformed(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(expandButton, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_END;
-        add(jPanel2, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void expandButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandButtonActionPerformed
-        if (this.expand == true) {
-            for (TitledComponent tc : this.panels) {
-                tc.fold();
-            }
-            this.expand = false;
-            this.expandButton.setText(AppConstants.DIALOG_BTN_EXPAND_ALL);
-            return;
-        }
-
-        for (TitledComponent tc : this.panels) {
-            tc.unfold();
-            this.expand = true;
-            this.expandButton.setText(AppConstants.DIALOG__BTN_COLLAPSE_ALL);
-        }
-    }//GEN-LAST:event_expandButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton expandButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel loadingLabel;
     private javax.swing.JScrollPane resultPane;
+    private javax.swing.JTable resultTable;
     private javax.swing.JLabel selectedProcess;
     private javax.swing.JLabel selectedProcessLabel;
     private javax.swing.JLabel selectedServer;
