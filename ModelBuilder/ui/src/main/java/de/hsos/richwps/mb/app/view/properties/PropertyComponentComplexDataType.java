@@ -28,7 +28,7 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
 
     
     public PropertyComponentComplexDataType(final Window parent,  List<ComplexDataTypeFormat> datatypeFormats) throws LoadDataTypesException {
-        super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE));
+        super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE, null));
 
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
         formats.addAll(datatypeFormats);

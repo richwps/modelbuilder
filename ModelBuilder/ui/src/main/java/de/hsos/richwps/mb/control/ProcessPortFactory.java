@@ -8,6 +8,8 @@ import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.entity.ports.LiteralOutput;
+import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
+import de.hsos.richwps.mb.entity.ports.ProcessOutputPort;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 
 /**
@@ -16,23 +18,23 @@ import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
  */
 public class ProcessPortFactory {
 
-    public static ProcessPort createGlobalInputPort(ProcessPortDatatype datatype) throws LoadDataTypesException {
+    public static ProcessInputPort createGlobalInputPort(ProcessPortDatatype datatype) throws LoadDataTypesException {
         return createInputPort(datatype, true);
     }
 
-    public static ProcessPort createGlobalOutputPort(ProcessPortDatatype datatype) {
+    public static ProcessOutputPort createGlobalOutputPort(ProcessPortDatatype datatype) {
         return createOutputPort(datatype, true);
     }
 
-    public static ProcessPort createLocalInputPort(ProcessPortDatatype datatype) throws LoadDataTypesException {
+    public static ProcessInputPort createLocalInputPort(ProcessPortDatatype datatype) throws LoadDataTypesException {
         return createInputPort(datatype, false);
     }
 
-    public static ProcessPort createLocalOutputPort(ProcessPortDatatype datatype) {
+    public static ProcessOutputPort createLocalOutputPort(ProcessPortDatatype datatype) {
         return createOutputPort(datatype, false);
     }
 
-    private static ProcessPort createInputPort(ProcessPortDatatype datatype, boolean global) throws LoadDataTypesException {
+    private static ProcessInputPort createInputPort(ProcessPortDatatype datatype, boolean global) throws LoadDataTypesException {
         switch (datatype) {
             case LITERAL:
                 return new LiteralInput(global);
@@ -45,7 +47,7 @@ public class ProcessPortFactory {
         return null;
     }
 
-    private static ProcessPort createOutputPort(ProcessPortDatatype datatype, boolean global) {
+    private static ProcessOutputPort createOutputPort(ProcessPortDatatype datatype, boolean global) {
         switch (datatype) {
             case LITERAL:
                 return new LiteralOutput(global);

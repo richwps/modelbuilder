@@ -1,17 +1,14 @@
 package de.hsos.richwps.mb.entity.ports;
 
 import de.hsos.richwps.mb.entity.*;
-import static de.hsos.richwps.mb.entity.ProcessPort.PROPERTY_KEY_DATATYPEDESCRIPTION;
-import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral;
-import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
-import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import de.hsos.richwps.mb.properties.Property;
 import java.util.List;
 
 public class LiteralInput extends ProcessInputPort {
 
-    public static String COMPONENTTYPE_DATATYPEDESCRIPTION = "Datatype description literal";
-    public static final String LITERAL_DATATYPE = "Literal Datatype";
+    public static String PROPERTY_KEY_DEFAULTVALUE = "Default literal value";
+    
+    public static final String PROPERTY_KEY_LITERALDATATYPE = "Literal Datatype";
     
     /**
      * Default value for literal datatypes
@@ -26,8 +23,6 @@ public class LiteralInput extends ProcessInputPort {
         super(ProcessPortDatatype.LITERAL, global);
 
         createProperties("");
-        updateDatatypeDescriptionProperty(COMPONENTTYPE_DATATYPEDESCRIPTION);
-
         globalStatusChanged();
     }
 
@@ -39,7 +34,7 @@ public class LiteralInput extends ProcessInputPort {
     }
     
     public void setDatatypes(List<String> datatypes) {
-        Property property = this.owsGroup.getPropertyObject(LITERAL_DATATYPE);
+        Property property = this.owsGroup.getPropertyObject(PROPERTY_KEY_LITERALDATATYPE);
         property.setPossibleValues(datatypes);
     }
 
@@ -47,21 +42,13 @@ public class LiteralInput extends ProcessInputPort {
     protected void createProperties(String owsIdentifier) {
         super.createProperties(owsIdentifier);
         
-        Property<String> datatype = new Property<>(LITERAL_DATATYPE, Property.COMPONENT_TYPE_DROPDOWN);
+        Property<String> datatype = new Property<>(PROPERTY_KEY_LITERALDATATYPE, Property.COMPONENT_TYPE_DROPDOWN, null);
         datatype.setPossibleValuesTransient(true);
         datatype.setValue(DEFAULT_DATATYPE);
         this.owsGroup.addObject(datatype);
-    }
-    
-
-    @Override
-    public void setDataTypeDescription(IDataTypeDescription dataTypeDescription) throws IllegalDatatypeDescriptionException {
-        if (null != dataTypeDescription && !(dataTypeDescription instanceof DataTypeDescriptionLiteral)) {
-            throw new IllegalDatatypeDescriptionException(getDatatype(), dataTypeDescription);
-        }
-
-        Property property = owsGroup.getPropertyObject(PROPERTY_KEY_DATATYPEDESCRIPTION);
-        property.setValue(dataTypeDescription);
+        
+        Property<String> defaultValue = new Property<>(PROPERTY_KEY_DEFAULTVALUE, Property.COMPONENT_TYPE_TEXTFIELD, null);
+        this.owsGroup.addObject(defaultValue);
     }
 
 }

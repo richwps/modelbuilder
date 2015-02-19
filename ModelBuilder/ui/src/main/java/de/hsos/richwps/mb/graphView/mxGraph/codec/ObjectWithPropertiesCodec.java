@@ -4,6 +4,7 @@ import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
@@ -54,6 +55,21 @@ public class ObjectWithPropertiesCodec extends mxObjectCodec {
     @Override
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
         Object decoded = super.afterDecode(dec, node, obj);
+
+        // Old version compability: transform datatype description
+        if (obj instanceof Property) {
+            Property property = (Property) obj;
+            if (property.getPropertiesObjectName().equals("Datatype description")) {
+                switch (property.getComponentType()) {
+                    case "Datatype description complex":
+                        property.setPropertiesObjectName(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION);
+                        break;
+                    case "Datatype description literal":
+                        property.setPropertiesObjectName(LiteralInput.PROPERTY_KEY_DEFAULTVALUE);
+                        break;
+                }
+            }
+        }
 
         // identify non-global process ports
         Node idNode = node.getAttributes().getNamedItem(ATTR_REFERENCE_ID);

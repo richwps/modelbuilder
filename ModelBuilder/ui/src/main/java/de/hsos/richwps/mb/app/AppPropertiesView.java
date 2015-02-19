@@ -172,7 +172,7 @@ public class AppPropertiesView extends PropertiesView {
         AbstractPropertyComponent component;
 
         // if missing, set literal datatypes for dropdown component
-        if (property.getPropertiesObjectName().equals(LiteralInput.LITERAL_DATATYPE)) {
+        if (property.getPropertiesObjectName().equals(LiteralInput.PROPERTY_KEY_LITERALDATATYPE)) {
 
             if (getCurrentObjectWithProperties() instanceof LiteralInput) {
                 LiteralInput input = (LiteralInput) getCurrentObjectWithProperties();
@@ -197,7 +197,6 @@ public class AppPropertiesView extends PropertiesView {
                 property.setValue("(unknown)");
                 property.setEditable(false);
             }
-
         }
 
         if (property.getComponentType().equals(ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
@@ -299,20 +298,6 @@ public class AppPropertiesView extends PropertiesView {
         return propertyComplexDataTypeFormat;
     }
 
-//    private PropertyComponentComplexDataType createPropertyLiteralDataType(Property<DataTypeDescriptionLiteral> property) {
-//        PropertyComponentLiteralDataType propertyLiteralDataType = null;
-//        try {
-//            List<String> datatypes = app.getDatatypeProvider().getLiteralDatatypes();
-//            
-////            propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), formats);
-//            propertyLiteralDataType.setProperty(property);
-//
-//        } catch (LoadDataTypesException ex) {
-//            app.showErrorMessage(AppConstants.FORMATS_CSV_FILE_LOAD_ERROR);
-//        }
-//
-//        return propertyLiteralDataType;
-//    }
     private GraphView getGraphView() {
         return app.getGraphView();
     }

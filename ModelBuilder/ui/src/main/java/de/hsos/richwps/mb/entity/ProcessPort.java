@@ -1,7 +1,5 @@
 package de.hsos.richwps.mb.entity;
 
-import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
-import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import de.hsos.richwps.mb.properties.Property;
 import java.util.Objects;
 
@@ -15,8 +13,6 @@ public abstract class ProcessPort extends OwsObjectWithProperties {
 
     public static String TOOLTIP_STYLE_INPUT = "";
     public static String TOOLTIP_STYLE_OUTPUT = "";
-
-    public final static String PROPERTY_KEY_DATATYPEDESCRIPTION = "Datatype description";
 
     private ProcessPortDatatype datatype;
 
@@ -37,24 +33,6 @@ public abstract class ProcessPort extends OwsObjectWithProperties {
         this.datatype = processPortDatatype;
 
         createProperties("");
-    }
-
-    public abstract void setDataTypeDescription(IDataTypeDescription dataTypeDescription)
-            throws IllegalDatatypeDescriptionException;
-
-    @Override
-    protected void createProperties(String owsIdentifier) {
-        super.createProperties(owsIdentifier);
-
-        // create missing properties if necessary
-        if (!owsGroup.hasProperty(PROPERTY_KEY_DATATYPEDESCRIPTION)) {
-            Property descriptionProperty = new Property<>(PROPERTY_KEY_DATATYPEDESCRIPTION, (IDataTypeDescription) null, global);
-            owsGroup.addObject(descriptionProperty);
-        }
-    }
-
-    public IDataTypeDescription getDataTypeDescription() {
-        return (IDataTypeDescription) getPropertyValue(PROPERTY_KEY_DATATYPEDESCRIPTION);
     }
 
     public boolean isGlobal() {
@@ -124,12 +102,7 @@ public abstract class ProcessPort extends OwsObjectWithProperties {
     protected void setFlowOutput(boolean isOutput) {
         flowInput = !isOutput;
     }
-
-    protected void updateDatatypeDescriptionProperty(String componentType) {
-        Property property = owsGroup.getPropertyObject(PROPERTY_KEY_DATATYPEDESCRIPTION);
-        property.setComponentType(componentType);
-    }
-
+    
     @Override
     public String toString() {
         if (null != getDatatype()) {
@@ -178,6 +151,16 @@ public abstract class ProcessPort extends OwsObjectWithProperties {
         }
 
         return toolTipText;
+    }
+
+    public boolean setPropertyValue(String propertyKey, Object value) {
+        Property property = this.owsGroup.getPropertyObject(propertyKey);
+        if (null == property) {
+            return false;
+        }
+
+        property.setValue(value);
+        return true;
     }
 
     // must be implemented by sub classes. these may call cloneInto().

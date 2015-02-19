@@ -7,9 +7,9 @@ import de.hsos.richwps.mb.dsl.exceptions.IdentifierDuplicatedException;
 import de.hsos.richwps.mb.dsl.exceptions.NoIdentifierException;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
-import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
@@ -38,9 +38,9 @@ import javax.swing.JOptionPane;
  * Manages script creation, processdescription creation and the deployment.
  *
  *
- * @author dziegenh
  * @author dalcacer
- * @version 0.0.5
+ * @author dziegenh
+ * @version 0.0.6
  */
 public class AppRichWPSManager {
 
@@ -525,6 +525,8 @@ public class AppRichWPSManager {
         }
 
         IInputDescription thedescription = null;
+        Integer maxOcc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
+        Integer minOcc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
 
         switch (port.getDatatype()) {
             case LITERAL:
@@ -535,14 +537,15 @@ public class AppRichWPSManager {
                 if (literaldesc.getTitle().equals("")) {
                     literaldesc.setTitle(literaldesc.getIdentifier());
                 }
-                Integer maxl = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
-                Integer minl = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
-                literaldesc.setMinOccur(minl);
-                literaldesc.setMaxOccur(maxl);
-                literaldesc.setType(("xs:string"));
-                literaldesc.setDefaultvalue("");
+                String defaultValue = (String) port.getPropertyValue(LiteralInput.PROPERTY_KEY_DEFAULTVALUE);
+                String datatype = (String) port.getPropertyValue(LiteralInput.PROPERTY_KEY_LITERALDATATYPE);
+                literaldesc.setMinOccur(minOcc);
+                literaldesc.setMaxOccur(maxOcc);
+                literaldesc.setType(datatype);
+                literaldesc.setDefaultvalue(defaultValue);
                 thedescription = literaldesc;
                 break;
+
             case COMPLEX:
                 InputComplexDataDescription complexdesc = new InputComplexDataDescription();
                 complexdesc.setIdentifier(port.getOwsIdentifier());
@@ -552,33 +555,31 @@ public class AppRichWPSManager {
                     complexdesc.setTitle(complexdesc.getIdentifier());
                 }
 
-                Integer maxc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
-                Integer minc = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
-                complexdesc.setMinOccur(minc);
-                complexdesc.setMaxOccur(maxc);
+                complexdesc.setMinOccur(minOcc);
+                complexdesc.setMaxOccur(maxOcc);
                 Integer mb = (Integer) port.getPropertyValue(ComplexDataInput.PROPERTY_KEY_MAXMB);
-                complexdesc.setMaximumMegabytes(mb);
+                if (null != mb) {
+                    complexdesc.setMaximumMegabytes(mb);
+                }
                 try {
                     List<List> supportedTypes = new ArrayList<>();
-
-                    IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
                     List<String> defaultType = new ArrayList<>();
-                    if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-                        DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
 
-                        for (ComplexDataTypeFormat aformat : description.getFormats()) {
-                            List<String> supportedType = new ArrayList<>();
-                            supportedType.add(aformat.getMimeType());
-                            supportedType.add(aformat.getSchema());
-                            supportedType.add(aformat.getEncoding());
-                            supportedTypes.add(supportedType);
-                        }
+                    Object descValue = port.getPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION);
+                    DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) descValue;
 
-                        ComplexDataTypeFormat defformat = description.getDefaultFormat();
-                        defaultType.add(defformat.getMimeType());
-                        defaultType.add(defformat.getSchema());
-                        defaultType.add(defformat.getEncoding());
+                    for (ComplexDataTypeFormat aformat : description.getFormats()) {
+                        List<String> supportedType = new ArrayList<>();
+                        supportedType.add(aformat.getMimeType());
+                        supportedType.add(aformat.getSchema());
+                        supportedType.add(aformat.getEncoding());
+                        supportedTypes.add(supportedType);
                     }
+
+                    ComplexDataTypeFormat defformat = description.getDefaultFormat();
+                    defaultType.add(defformat.getMimeType());
+                    defaultType.add(defformat.getSchema());
+                    defaultType.add(defformat.getEncoding());
 
                     if (supportedTypes.isEmpty()) {
                         this.error = true;
@@ -611,10 +612,8 @@ public class AppRichWPSManager {
                 if (bboxdesc.getTitle().equals("")) {
                     bboxdesc.setTitle(bboxdesc.getIdentifier());
                 }
-                Integer maxb = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS);
-                Integer minb = (Integer) port.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS);
-                bboxdesc.setMinOccur(minb);
-                bboxdesc.setMaxOccur(maxb);
+                bboxdesc.setMinOccur(minOcc);
+                bboxdesc.setMaxOccur(maxOcc);
                 //TODO
                 /*literaldescription.setType(("xs:string"));
                  boundingboxdescriptoin.setDefaultvalue("");*/
@@ -661,13 +660,13 @@ public class AppRichWPSManager {
 
                 try {
                     List<List> supportedTypes = new ArrayList<>();
-                    IDataTypeDescription dataTypeDescription = port.getDataTypeDescription();
+                    Object descValue = port.getPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION);
+                    DataTypeDescriptionComplex dataTypeDescription = (DataTypeDescriptionComplex) descValue;
                     List<String> defaultType = new ArrayList<>();
 
-                    if (null != dataTypeDescription && dataTypeDescription instanceof DataTypeDescriptionComplex) {
-                        DataTypeDescriptionComplex description = (DataTypeDescriptionComplex) dataTypeDescription;
+                    if (null != dataTypeDescription) {
 
-                        for (ComplexDataTypeFormat aformat : description.getFormats()) {
+                        for (ComplexDataTypeFormat aformat : dataTypeDescription.getFormats()) {
                             List<String> supportedType = new ArrayList<>();
                             supportedType.add(aformat.getMimeType());
                             supportedType.add(aformat.getSchema());
@@ -675,7 +674,7 @@ public class AppRichWPSManager {
                             supportedTypes.add(supportedType);
                         }
 
-                        ComplexDataTypeFormat defformat = description.getDefaultFormat();
+                        ComplexDataTypeFormat defformat = dataTypeDescription.getDefaultFormat();
                         defaultType.add(defformat.getMimeType());
                         defaultType.add(defformat.getSchema());
                         defaultType.add(defformat.getEncoding());

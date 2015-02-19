@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.entity.datatypes;
 
 import de.hsos.richwps.mb.Logger;
-import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -13,7 +12,7 @@ import java.util.Objects;
  *
  * @author dziegenh
  */
-public class DataTypeDescriptionComplex implements IDataTypeDescription, Serializable, Cloneable {
+public class DataTypeDescriptionComplex implements Serializable, Cloneable {
 
     private List<ComplexDataTypeFormat> formats;
 
@@ -26,6 +25,7 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
     public DataTypeDescriptionComplex(ComplexDataTypeFormat format) {
         this.formats = new LinkedList<>();
         this.formats.add(format);
+        this.defaultFormat = format;
     }
 
     public DataTypeDescriptionComplex(List<ComplexDataTypeFormat> formats) {
@@ -50,11 +50,6 @@ public class DataTypeDescriptionComplex implements IDataTypeDescription, Seriali
 
     public ComplexDataTypeFormat getDefaultFormat() {
         return defaultFormat;
-    }
-
-    @Override
-    public boolean isDescriptionFor(ProcessPortDatatype dataType) {
-        return null == dataType || dataType.equals(ProcessPortDatatype.COMPLEX);
     }
 
     @Override

@@ -16,7 +16,6 @@ import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
 import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
 import de.hsos.richwps.mb.entity.ports.LiteralOutput;
-import de.hsos.richwps.mb.exception.IllegalDatatypeDescriptionException;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class GraphViewTest {
     }
 
     @Before
-    public void setUp() throws IllegalDatatypeDescriptionException {
+    public void setUp() {
         filename = "testmodel.xml";
         deleteTestfile();
 
@@ -148,7 +147,7 @@ public class GraphViewTest {
         globalOut1.setOwsIdentifier(globalOutPort1Identifier);
         globalOut1.setOwsAbstract(globalOutPort1Abstract);
         globalOut1.setOwsTitle(globalOutPort1Title);
-        globalOut1.setDataTypeDescription(complexDescription);
+//        globalOut1.setDataTypeDescription(complexDescription);
     }
 
     private void deleteTestfile() {
@@ -267,7 +266,7 @@ public class GraphViewTest {
 
     private void assertPortsEqual(ProcessPort port1, ProcessPort port2) {
         List<String> keys = new LinkedList<>();
-        keys.add(ProcessPort.PROPERTY_KEY_DATATYPEDESCRIPTION);
+//        keys.add(ProcessPort.PROPERTY_KEY_DATATYPEDESCRIPTION);
 
         assertOwsObjectsEqual(port1, port2, keys);
     }

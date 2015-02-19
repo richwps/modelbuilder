@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.app;
 
 import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
-import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
@@ -278,7 +277,6 @@ public class AppSetup {
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity.datatypes");
         mxCodecRegistry.register(new ComplexDataTypeFormatCodec(new de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat()));
         mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex()));
-        mxCodecRegistry.register(new mxObjectCodec(new de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionLiteral()));
         mxCodecRegistry.addPackage("de.hsos.richwps.mb.entity.ports");
         mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.BoundingBoxInput()));
         mxCodecRegistry.register(new ProcessPortCodec(new de.hsos.richwps.mb.entity.ports.BoundingBoxOutput()));

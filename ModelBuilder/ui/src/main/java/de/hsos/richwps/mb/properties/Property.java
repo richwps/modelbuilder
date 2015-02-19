@@ -55,9 +55,9 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         this(propertyName, COMPONENT_TYPE_TEXTFIELD, null);
     }
 
-    public Property(String propertyName, String componentType) {
-        this(propertyName, componentType, null);
-    }
+//    public Property(String propertyName, String componentType) {
+//        this(propertyName, componentType, null);
+//    }
 
     public Property(String propertyName, String componentType, E value) {
         this(propertyName, componentType, value, false);

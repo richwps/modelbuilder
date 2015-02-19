@@ -6,7 +6,6 @@ import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import static de.hsos.richwps.mb.entity.ProcessPortDatatype.BOUNDING_BOX;
 import static de.hsos.richwps.mb.entity.ProcessPortDatatype.COMPLEX;
 import static de.hsos.richwps.mb.entity.ProcessPortDatatype.LITERAL;
-import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescription;
 import de.hsos.richwps.mb.properties.Property;
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.entity.datatypes;
+package de.hsos.richwps.mb.entity.oldVersions;
 
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 
