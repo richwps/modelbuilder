@@ -253,12 +253,20 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_WARNING_KEY, new ImageIcon(iconDir + "dialog-warning-4.png", "warning icon"));
         UIManager.put(AppConstants.ICON_EMPTY_KEY, new ImageIcon(iconDir + "empty.png", "empty icon"));
 
+        // bigger port icons
+        UIManager.put(AppConstants.ICON_PORT_OUT_L_BIG_KEY, new ImageIcon(iconDir + "port_out_l_big.png", "port out L big icon"));
+        UIManager.put(AppConstants.ICON_PORT_OUT_C_BIG_KEY, new ImageIcon(iconDir + "port_out_c_big.png", "port out B big icon"));
+        UIManager.put(AppConstants.ICON_PORT_OUT_B_BIG_KEY, new ImageIcon(iconDir + "port_out_b_big.png", "port out C big icon"));
+        UIManager.put(AppConstants.ICON_PORT_IN_L_BIG_KEY, new ImageIcon(iconDir + "port_in_l_big.png", "port in L big icon"));
+        UIManager.put(AppConstants.ICON_PORT_IN_C_BIG_KEY, new ImageIcon(iconDir + "port_in_c_big.png", "port in B big icon"));
+        UIManager.put(AppConstants.ICON_PORT_IN_B_BIG_KEY, new ImageIcon(iconDir + "port_in_b_big.png", "port in C big icon"));
+
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
         UIManager.put(AppConstants.ICON_LOADING_ANI_KEY, new ImageIcon(iconDir + "720.gif", "loading ani"));
 
         UIManager.put(AppConstants.ICON_EDIT_COPY_KEY, new ImageIcon(iconDir + "edit-copy-3.png", "edit copy icon"));
         UIManager.put(AppConstants.ICON_OPEN_IN_BROWSER, new ImageIcon(iconDir + "applications-internet.png", "open in browser"));
-        
+
         // large icons
         UIManager.put(getLargeIconKey(AppConstants.ICON_NEW_KEY), new ImageIcon(largeIconDir + "document-new-6.png", "largeicon new"));
         UIManager.put(getLargeIconKey(AppConstants.ICON_OPEN_KEY), new ImageIcon(largeIconDir + "document-open-4.png", "largeicon open"));

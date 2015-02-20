@@ -232,7 +232,7 @@ public class AppConstants {
      * Name of the CSV file containing the literal datatypes.
      */
     public static final String LITERAL_DATATYPES_CSV_FILE = "literal_datatypes.csv";
-    
+
     static String REMOTES_NOT_AVAILABLE_ERROR_MSG = "No remote server available!"
             + System.lineSeparator()
             + "Please check the SemanticProxy preferences or add a remote server using the 'Manage Remotes' dialog.";
@@ -506,6 +506,12 @@ public class AppConstants {
     public final static String ICON_PORT_IN_L_KEY = "richwps_icon_port_in_l";
     public final static String ICON_PORT_IN_B_KEY = "richwps_icon_port_in_b";
     public final static String ICON_PORT_IN_C_KEY = "richwps_icon_port_in_c";
+    public final static String ICON_PORT_OUT_L_BIG_KEY = "richwps_icon_port_out_l_big";
+    public final static String ICON_PORT_OUT_B_BIG_KEY = "richwps_icon_port_out_b_big";
+    public final static String ICON_PORT_OUT_C_BIG_KEY = "richwps_icon_port_out_c_big";
+    public final static String ICON_PORT_IN_L_BIG_KEY = "richwps_icon_port_in_l_big";
+    public final static String ICON_PORT_IN_B_BIG_KEY = "richwps_icon_port_in_b_big";
+    public final static String ICON_PORT_IN_C_BIG_KEY = "richwps_icon_port_in_c_big";
     public final static String ICON_PREVIEW_KEY = "rwps_icon_preview";
     public final static String ICON_DEPLOY_KEY = "rwps_icon_deploy";
     public final static String ICON_UNDEPLOY_ANY_KEY = "rwps_icon_undeploy_any";
