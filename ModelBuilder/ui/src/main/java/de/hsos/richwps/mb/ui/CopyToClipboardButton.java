@@ -1,11 +1,14 @@
 package de.hsos.richwps.mb.ui;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.UIManager;
 
 /**
  *
@@ -16,7 +19,9 @@ public class CopyToClipboardButton extends JButton {
 
         public CopyToClipboardButton(final String content) {
             super("Copy To Clipboard");
-            this.setSize(120, 48);
+            this.setSize(120, 32);
+            ImageIcon icon = (ImageIcon) (UIManager.get(AppConstants.ICON_EDIT_COPY_KEY));
+            this.setIcon(icon);
             this.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {

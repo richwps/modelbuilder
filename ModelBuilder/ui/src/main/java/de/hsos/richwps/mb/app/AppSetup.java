@@ -238,7 +238,6 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_PORT_IN_L_KEY, new ImageIcon(iconDir + "port_in_l.png", "port in L icon"));
         UIManager.put(AppConstants.ICON_PORT_IN_C_KEY, new ImageIcon(iconDir + "port_in_c.png", "port in B icon"));
         UIManager.put(AppConstants.ICON_PORT_IN_B_KEY, new ImageIcon(iconDir + "port_in_b.png", "port in C icon"));
-
         UIManager.put(AppConstants.ICON_EDIT_KEY, new ImageIcon(iconDir + "edit-3.png", "edit icon"));
         UIManager.put(AppConstants.ICON_ADD_KEY, new ImageIcon(iconDir + "list-add-6.png", "add icon"));
         UIManager.put(AppConstants.ICON_DELETE_KEY, new ImageIcon(iconDir + "edit-delete-7.png", "delete icon"));
@@ -257,6 +256,9 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_LOADING_STATUS_KEY, new ImageIcon(iconDir + "ajax-loader.gif", "loading"));
         UIManager.put(AppConstants.ICON_LOADING_ANI_KEY, new ImageIcon(iconDir + "720.gif", "loading ani"));
 
+        UIManager.put(AppConstants.ICON_EDIT_COPY_KEY, new ImageIcon(iconDir + "edit-copy-3.png", "edit copy icon"));
+        UIManager.put(AppConstants.ICON_OPEN_IN_BROWSER, new ImageIcon(iconDir + "applications-internet.png", "open in browser"));
+        
         // large icons
         UIManager.put(getLargeIconKey(AppConstants.ICON_NEW_KEY), new ImageIcon(largeIconDir + "document-new-6.png", "largeicon new"));
         UIManager.put(getLargeIconKey(AppConstants.ICON_OPEN_KEY), new ImageIcon(largeIconDir + "document-open-4.png", "largeicon open"));

@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.app.view.dialogs.components.renderer;
 
 import java.awt.Font;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *

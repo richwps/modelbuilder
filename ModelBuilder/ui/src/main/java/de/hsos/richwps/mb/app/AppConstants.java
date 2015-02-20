@@ -519,6 +519,8 @@ public class AppConstants {
     public static final String ICON_LOADING_STATUS_KEY = "richwps_icon_loading";
     public static final String ICON_LOADING_ANI_KEY = "richwps_icon_loading_ani";
     public static final String ICON_EDIT_KEY = "richwps_icon_edit";
+    public static final String ICON_EDIT_COPY_KEY = "richwps_icon_edit_copy";
+    public static final String ICON_OPEN_IN_BROWSER = "richwps_icon_open_in_browser";
     public static final String ICON_ADD_KEY = "richwps_icon_add";
     public static final String ICON_DELETE_KEY = "richwps_icon_delete";
     public static final String ICON_CLOSE_KEY = "richwps_icon_close";
