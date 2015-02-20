@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
@@ -82,6 +83,7 @@ public class TreeView {
         }
 
         JMenuItem copyItem = new JMenuItem(AppConstants.COPY_TEXT_TO_CLIPBOARD);
+        copyItem.setIcon(UIManager.getIcon(AppConstants.ICON_EDIT_COPY_KEY));
         if (null == copyText) {
             copyItem.setEnabled(false);
         } else {
