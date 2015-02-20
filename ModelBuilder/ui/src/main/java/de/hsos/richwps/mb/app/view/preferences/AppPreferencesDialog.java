@@ -89,16 +89,13 @@ public class AppPreferencesDialog extends MbDialog {
 
             switch (prefTab) {
                 case PROCESSSOURCES:
-                    tab = new PreferencesProcessSources();
+                    tab = new PreferencesProcessSources(this);
                     break;
                 case HTTPPROXY:
                     tab = new PreferencesHttpProxy();
                     break;
                 case MONITOR:
                     tab = new PreferencesMonitor();
-                    break;
-                case MANAGEDREMOTES:
-                    tab = new PreferencesManagedRemotes(this);
                     break;
             }
 

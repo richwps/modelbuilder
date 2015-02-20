@@ -85,6 +85,10 @@ public class ListWithButtons<E> extends JPanel {
         return editItemButton;
     }
 
+    public void init() {
+        this.init(new LinkedList<E>());
+    }
+    
     public void init(List<E> items) {
         double[][] layoutSize = new double[][]{
             {TableLayout.FILL, TableLayout.PREFERRED},
@@ -92,11 +96,7 @@ public class ListWithButtons<E> extends JPanel {
         };
         setLayout(new TableLayout(layoutSize));
 
-        // Setup and add list
-        listModel.removeAllElements();
-        for (E anItem : items) {
-            listModel.addElement(anItem);
-        }
+        setItems(items);
         add(viewList, "0 0");
 
         // Add Buttons
@@ -112,6 +112,13 @@ public class ListWithButtons<E> extends JPanel {
             }
         } else {
             viewList.setSelectedIndex(0);
+        }
+    }
+
+    public void setItems(List<E> items) {
+        listModel.removeAllElements();
+        for (E anItem : items) {
+            listModel.addElement(anItem);
         }
     }
 

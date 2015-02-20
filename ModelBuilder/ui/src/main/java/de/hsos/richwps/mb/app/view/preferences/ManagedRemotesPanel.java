@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import layout.TableLayout;
 
 /**
@@ -16,9 +17,7 @@ import layout.TableLayout;
  *
  * @author dziegenh
  */
-public class PreferencesManagedRemotes extends AbstractPreferencesTab {
-
-    private ListWithButtons<String> remotesPanel;
+public class ManagedRemotesPanel extends ListWithButtons<String> {
 
     private final String persistKeyBase;
     private final String persistKeyCount;
@@ -28,11 +27,10 @@ public class PreferencesManagedRemotes extends AbstractPreferencesTab {
 
     private final String inputMessage = "";
 
-    public PreferencesManagedRemotes(Window parent) {
-        super();
+    public ManagedRemotesPanel(Window parent) {
+        super(parent);
 
         createContent(parent);
-
         this.preferences = AppConfig.getConfig();
         this.persistKeyBase = AppConfig.CONFIG_KEYS.REMOTES_S_URL.name();
         this.persistKeyCount = this.persistKeyBase + "_COUNT";
@@ -40,11 +38,9 @@ public class PreferencesManagedRemotes extends AbstractPreferencesTab {
     }
 
     private void createContent(final Window parent) {
-        setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.PREFERRED}}));
+        init();
 
-        remotesPanel = new ListWithButtons<>(parent);
-
-        remotesPanel.getAddItemButton().addActionListener(new ActionListener() {
+        getAddItemButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String remoteInput = (String) JOptionPane.showInputDialog(parent,
@@ -52,47 +48,34 @@ public class PreferencesManagedRemotes extends AbstractPreferencesTab {
                 );
 
                 if (null != remoteInput && !remoteInput.isEmpty()) {
-                    remotesPanel.addItemToList(remoteInput);
+                    addItemToList(remoteInput);
                 }
             }
         });
 
-        remotesPanel.getEditItemButton().addActionListener(new ActionListener() {
+        getEditItemButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                int selectedIndex = remotesPanel.getSelectedIndex();
+                int selectedIndex = getSelectedIndex();
 
                 String remoteInput = (String) JOptionPane.showInputDialog(parent,
                         inputMessage,
-                        remotesPanel.getSelectedItem()
+                        getSelectedItem()
                 );
 
                 if (null != remoteInput && !remoteInput.isEmpty()) {
-                    remotesPanel.setItemAt(selectedIndex, remoteInput);
+                    setItemAt(selectedIndex, remoteInput);
                 }
             }
-        }
-        );
-
-        add(remotesPanel, "0 0");
-    }
-
-    @Override
-    void save() {
-        saveItemsToPreferences();
-    }
-
-    @Override
-    void load() {
-        loadItemsFromPreferences();
+        });
     }
 
     /**
      * Saves all ComboBox items as preferences.
      */
     public void saveItemsToPreferences() {
-        String selectedItem = remotesPanel.getSelectedItem();
+        String selectedItem = getSelectedItem();
         if (null == selectedItem) {
             selectedItem = "";
         }
@@ -102,7 +85,7 @@ public class PreferencesManagedRemotes extends AbstractPreferencesTab {
         AppConfig.getConfig().put(this.persistKeyBase, selectedItemString);
 
         // save other items
-        List<String> items = remotesPanel.getAllItems();
+        List<String> items = getAllItems();
         int numItems = items.size();
         for (int i = 0; i < numItems; i++) {
             String key = String.format(this.persistKeyFormat, i);
@@ -123,7 +106,7 @@ public class PreferencesManagedRemotes extends AbstractPreferencesTab {
         boolean currentItemAvailable = null != currentItem && !currentItem.isEmpty();
         boolean currentItemAdded = !currentItemAvailable;
 
-        remotesPanel.clear();
+        clear();
 
         // load and add persisted items
         List<String> loadedItems = new LinkedList<>();
@@ -150,9 +133,9 @@ public class PreferencesManagedRemotes extends AbstractPreferencesTab {
         }
 
         // set items
-        remotesPanel.init(loadedItems);
+        setItems(loadedItems);
 
         // Select the currently used item
-        remotesPanel.selectItem(currentItem);
+        selectItem(currentItem);
     }
 }

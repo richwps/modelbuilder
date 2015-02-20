@@ -238,7 +238,7 @@ public class AppConstants {
             + "Please check the SemanticProxy preferences or add a remote server using the 'Manage Remotes' dialog.";
 
     public static final boolean PREFERENCES_DISCOVER_REMOTES_ON_STARTUP_DEFAULT = true;
-    public static String PREFERENCES_TAB_SP_LOADONSTART_LABEL = "Discover processes of managed remote servers on application start";
+    public static String PREFERENCES_TAB_SP_LOADONSTART_LABEL = "Discover processes of remote servers on application start";
 
     public static Insets DEFAULT_COMPONENT_INSETS = new Insets(0, 0, 0, 0); //new Insets(2, 2, 2, 2);
 
@@ -312,15 +312,12 @@ public class AppConstants {
 
         PROCESSSOURCES,
         HTTPPROXY,
-        MONITOR,
-        MANAGEDREMOTES
+        MONITOR
     }
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
         {PREFERENCES_TAB.PROCESSSOURCES.name(), "Process Sources"},
         {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},
-        {PREFERENCES_TAB.MONITOR.name(), "Monitor"},
-        {PREFERENCES_TAB.MANAGEDREMOTES.name(), "Managed Remotes"}
-    };
+        {PREFERENCES_TAB.MONITOR.name(), "Monitor"}};
     // SP preferences
     public static final String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
     // Http proxy preferences
