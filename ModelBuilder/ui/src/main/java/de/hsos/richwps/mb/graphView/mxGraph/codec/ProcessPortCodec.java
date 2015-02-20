@@ -62,14 +62,6 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
             if (hasBeenEncoded((ProcessPort) obj)) {
                 return;
             }
-
-            // encode datatype enum value as attribute (default encoding would be a child node with no value!)
-//            if (fieldname.equals(ATTR_DATATYPE)) {
-//                ProcessPort port = (ProcessPort) obj;
-//                Element nodeEl = (Element) node;
-//                nodeEl.setAttribute(ATTR_DATATYPE, port.getDatatype().name());
-//                return;
-//            }
         }
 
         super.encodeValue(enc, obj, fieldname, value, node);
@@ -125,6 +117,23 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
             AppEventService.getInstance().fireAppEvent(AppConstants.LOAD_DATATYPES_ERROR, AppConstants.INFOTAB_ID_EDITOR, AppEvent.PRIORITY.URGENT);
         }
 
+        // match port properties to update older model versions
+        
+        
+        
+        
+        // TODO !!!
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         return super.afterDecode(dec, node, obj);
     }
 

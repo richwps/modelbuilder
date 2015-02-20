@@ -26,7 +26,7 @@ public class Publisher {
     public void publishProcess(WPS wps, ProcessEntity process) throws Exception {
 
         PostWPS processPostWps = new PostWPS(wps.getRDFID());
-        PostProcess postProcess = EntityConverter.createSpProcess(processPostWps, process);
+        PostProcess postProcess = SpEntityConverter.createSpProcess(processPostWps, process);
 
         try {
             SPClient.getInstance().postProcess(postProcess);

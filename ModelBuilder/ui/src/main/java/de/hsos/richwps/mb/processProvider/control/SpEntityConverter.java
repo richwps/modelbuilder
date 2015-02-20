@@ -12,11 +12,15 @@ import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeExcept
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.sp.client.BadRequestException;
+import de.hsos.richwps.sp.client.CommunicationException;
+import de.hsos.richwps.sp.client.InternalSPException;
 import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.ows.gettypes.ComplexData;
 import de.hsos.richwps.sp.client.ows.gettypes.ComplexDataCombination;
 import de.hsos.richwps.sp.client.ows.gettypes.InAndOutputForm;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
+import de.hsos.richwps.sp.client.ows.gettypes.LiteralData;
 import de.hsos.richwps.sp.client.ows.gettypes.Output;
 import de.hsos.richwps.sp.client.ows.posttypes.PostBoundingBoxData;
 import de.hsos.richwps.sp.client.ows.posttypes.PostComplexData;
@@ -37,7 +41,7 @@ import java.util.List;
  *
  * @author dziegenh
  */
-public class EntityConverter {
+public class SpEntityConverter {
 
     public static ProcessEntity createProcessEntity(de.hsos.richwps.sp.client.ows.gettypes.Process spProcess, KeyTranslator translator) throws Exception {
         ProcessEntity processEntity = new ProcessEntity(spProcess.getWPS().getEndpoint(), spProcess.getIdentifier());
@@ -96,10 +100,7 @@ public class EntityConverter {
             postPort.setMinOcc((int) aPort.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MINOCCURS));
             postPort.setMaxOcc((int) aPort.getPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS));
 
-            // TODO what about max mb ?
-            // value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
-            // ...
-            PostInAndOutputForm datatype = EntityConverter.createSpInputDatatype(aPort);
+            PostInAndOutputForm datatype = SpEntityConverter.createSpInputDatatype(aPort);
             postPort.setPostInputFormChoice(datatype);
 
             postInputs.add(postPort);
@@ -115,10 +116,7 @@ public class EntityConverter {
             postPort.setIdentifier(aPort.getOwsIdentifier());
             postPort.setTitle(aPort.getOwsTitle());
 
-            // TODO what about max mb ?
-            // value = aPort.getPropertyValue(ProcessPort.PROPERTY_KEY_MAXMB);
-            // ...
-            PostInAndOutputForm datatype = EntityConverter.createSpInputDatatype(aPort);
+            PostInAndOutputForm datatype = SpEntityConverter.createSpInputDatatype(aPort);
             postPort.setPostOutputFormChoice(datatype);
 
             postOutputs.add(postPort);
@@ -191,7 +189,8 @@ public class EntityConverter {
     }
 
     public static ProcessPort createProcessInput(Input spInput) throws Exception {
-        ProcessPortDatatype datatype = EntityConverter.getDatatype(spInput.getInputFormChoice());
+        InAndOutputForm inputFormChoice = spInput.getInputFormChoice();
+        ProcessPortDatatype datatype = SpEntityConverter.getDatatype(inputFormChoice);
 
         ProcessInputPort inPort = ProcessPortFactory.createLocalInputPort(datatype);
         inPort.setOwsIdentifier(spInput.getIdentifier());
@@ -201,80 +200,48 @@ public class EntityConverter {
         inPort.setPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS, spInput.getMaxOccurs());
 
         switch (datatype) {
-            case LITERAL:
+            case LITERAL:                
+                LiteralData spInputData = (LiteralData) inputFormChoice;
+                convertLiteralPort(inputFormChoice, inPort);
+                // TODO set default value !
+                //spInputData.getDataType()
+                
                 break;
+
             case COMPLEX:
-                ComplexData spInputData = (ComplexData) spInput.getInputFormChoice();
-                inPort.setPropertyValue(ComplexDataInput.PROPERTY_KEY_MAXMB, spInputData.getMaximumMegabytes());
+                ComplexData spComplexIn = (ComplexData) inputFormChoice;
+                inPort.setPropertyValue(ComplexDataInput.PROPERTY_KEY_MAXMB, spComplexIn.getMaximumMegabytes());
+                convertComplexPort(inputFormChoice, inPort);
                 break;
+
             case BOUNDING_BOX:
                 break;
         }
 
-//        Collection<? extends IObjectWithProperties> properties = inPort.getProperties();
-//        inPort.get
-//        for (IObjectWithProperties aPropertyObject : properties) {
-//
-//            if (aPropertyObject instanceof Property) {
-//
-//                Property aProperty = (Property) aPropertyObject;
-//                String aKey = aProperty.getPropertiesObjectName();
-//
-//                switch (aKey) {
-//                    case ProcessInputPort.PROPERTY_KEY_MINOCCURS:
-//                        aProperty.setValue(spInput.getMinOccurs());
-//                        break;
-//
-//                    case ProcessInputPort.PROPERTY_KEY_MAXOCCURS:
-//                        aProperty.setValue(spInput.getMaxOccurs());
-//                        break;
-//
-//                    case ComplexDataInput.PROPERTY_KEY_MAXMB:
-//                        // TODO max MB ??
-//                        break;
-//                }
-//            }
-//
-//        }
         return inPort;
     }
 
     public static ProcessPort createProcessOutput(Output spOutput) throws Exception {
         InAndOutputForm spDatatype = spOutput.getOutputFormChoice();
-        ProcessPortDatatype datatype = EntityConverter.getDatatype(spDatatype);
+        ProcessPortDatatype datatype = SpEntityConverter.getDatatype(spDatatype);
 
         ProcessPort outPort = ProcessPortFactory.createLocalOutputPort(datatype);
         outPort.setOwsIdentifier(spOutput.getIdentifier());
         outPort.setOwsAbstract(spOutput.getAbstract());
         outPort.setOwsTitle(spOutput.getTitle());
 
-//        IDataTypeDescription datatypeDescription = null;
         switch (datatype) {
             case LITERAL:
-                // TODO set description
-                
+                convertLiteralPort(spDatatype, outPort);
                 break;
             case COMPLEX:
-                ComplexData spComplexData = (ComplexData) spDatatype;
-                ComplexDataTypeFormat defaultFormat = createComplexFormat(spComplexData.getDefaultFormat());
-                DataTypeDescriptionComplex complexDesc = new DataTypeDescriptionComplex(defaultFormat);
-
-                // convert supported formats
-                ComplexDataCombination[] supportedFormats = spComplexData.getSupportedFormats();
-                List<ComplexDataTypeFormat> formats = complexDesc.getFormats();
-                for (ComplexDataCombination aSpFormat : supportedFormats) {
-                    formats.add(createComplexFormat(aSpFormat));
-                }
-
-                outPort.setPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION, complexDesc);
-
+                convertComplexPort(spDatatype, outPort);
                 break;
 
             case BOUNDING_BOX:
                 // TODO set description
                 break;
         }
-//        outPort.setDataTypeDescription(datatypeDescription);
 
         Collection<? extends IObjectWithProperties> properties = outPort.getProperties();
         for (IObjectWithProperties aPropertyObject : properties) {
@@ -292,6 +259,28 @@ public class EntityConverter {
         }
 
         return outPort;
+    }
+
+    private static void convertComplexPort(InAndOutputForm spDatatype, ProcessPort port) throws CommunicationException, RDFException, BadRequestException, InternalSPException {
+        ComplexData spComplexData = (ComplexData) spDatatype;
+        ComplexDataTypeFormat defaultFormat = createComplexFormat(spComplexData.getDefaultFormat());
+        DataTypeDescriptionComplex complexDesc = new DataTypeDescriptionComplex(defaultFormat);
+
+        // convert supported formats
+        ComplexDataCombination[] supportedFormats = spComplexData.getSupportedFormats();
+        List<ComplexDataTypeFormat> formats = complexDesc.getFormats();
+        for (ComplexDataCombination aSpFormat : supportedFormats) {
+            formats.add(createComplexFormat(aSpFormat));
+        }
+
+        port.setPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION, complexDesc);
+    }
+
+    private static void convertLiteralPort(InAndOutputForm spDatatype, ProcessPort port) throws CommunicationException, RDFException, BadRequestException, InternalSPException {
+        LiteralData spLiteralData = (LiteralData) spDatatype;
+        // TODO set datatype (eg "xs:string")
+
+//        port.setPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION, complexDesc);
     }
 
     public static ComplexDataTypeFormat createComplexFormat(ComplexDataCombination spFormat) throws RDFException {

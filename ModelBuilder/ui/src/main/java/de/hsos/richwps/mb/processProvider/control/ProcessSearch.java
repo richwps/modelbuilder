@@ -42,7 +42,7 @@ public class ProcessSearch {
 
         for (Process aProcess : searchResult) {
             try {
-                ProcessEntity processEntity = EntityConverter.createProcessEntity(aProcess, translator);
+                ProcessEntity processEntity = SpEntityConverter.createProcessEntity(aProcess, translator);
                 processes.add(processEntity);
 
             } catch (Exception ex) {

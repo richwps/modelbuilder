@@ -7,7 +7,7 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServerSource;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
-import de.hsos.richwps.mb.processProvider.control.EntityConverter;
+import de.hsos.richwps.mb.processProvider.control.SpEntityConverter;
 import de.hsos.richwps.mb.processProvider.control.KeyTranslator;
 import de.hsos.richwps.mb.processProvider.control.ManagedRemoteDiscovery;
 import de.hsos.richwps.mb.processProvider.control.MonitorDataConverter;
@@ -226,13 +226,13 @@ public class ProcessProvider {
                                 if (spProcess.getIdentifier().equals(identifier)) {
 
                                     // Map process attributes
-                                    process = EntityConverter.createProcessEntity(spProcess, getTranslator());
+                                    process = SpEntityConverter.createProcessEntity(spProcess, getTranslator());
 
                                     // Map input ports
                                     try {
 
                                         for (Input spInput : spProcess.getInputs()) {
-                                            ProcessPort inPort = EntityConverter.createProcessInput(spInput);
+                                            ProcessPort inPort = SpEntityConverter.createProcessInput(spInput);
                                             process.addInputPort(inPort);
                                         }
 
@@ -245,7 +245,7 @@ public class ProcessProvider {
                                     try {
 
                                         for (Output spOutput : spProcess.getOutputs()) {
-                                            ProcessPort outPort = EntityConverter.createProcessOutput(spOutput);
+                                            ProcessPort outPort = SpEntityConverter.createProcessOutput(spOutput);
                                             process.addOutputPort(outPort);
                                         }
 
@@ -339,7 +339,7 @@ public class ProcessProvider {
 
                             // not cached: add to cache
                             if (null == processEntity) {
-                                processEntity = EntityConverter.createProcessEntity(process, getTranslator());
+                                processEntity = SpEntityConverter.createProcessEntity(process, getTranslator());
                                 getCache().addProcess(processEntity, false);
                             }
 

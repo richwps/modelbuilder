@@ -7,14 +7,14 @@ import java.util.List;
 public class LiteralInput extends ProcessInputPort {
 
     public static String PROPERTY_KEY_DEFAULTVALUE = "Default literal value";
-    
+
     public static final String PROPERTY_KEY_LITERALDATATYPE = "Literal Datatype";
-    
+
     /**
      * Default value for literal datatypes
      */
     public static String DEFAULT_DATATYPE = "xs:string";
-    
+
     public LiteralInput() {
         this(false);
     }
@@ -32,23 +32,37 @@ public class LiteralInput extends ProcessInputPort {
 
         return clone;
     }
-    
+
     public void setDatatypes(List<String> datatypes) {
-        Property property = this.owsGroup.getPropertyObject(PROPERTY_KEY_LITERALDATATYPE);
-        property.setPossibleValues(datatypes);
+        if (isGlobal()) {
+            Property property = this.owsGroup.getPropertyObject(PROPERTY_KEY_LITERALDATATYPE);
+            property.setPossibleValues(datatypes);
+        }
     }
 
     @Override
     protected void createProperties(String owsIdentifier) {
         super.createProperties(owsIdentifier);
-        
+
         Property<String> datatype = new Property<>(PROPERTY_KEY_LITERALDATATYPE, Property.COMPONENT_TYPE_DROPDOWN, null);
         datatype.setPossibleValuesTransient(true);
         datatype.setValue(DEFAULT_DATATYPE);
         this.owsGroup.addObject(datatype);
-        
+
         Property<String> defaultValue = new Property<>(PROPERTY_KEY_DEFAULTVALUE, Property.COMPONENT_TYPE_TEXTFIELD, null);
         this.owsGroup.addObject(defaultValue);
     }
 
+    @Override
+    protected void globalStatusChanged() {
+        Property property = this.owsGroup.getPropertyObject(PROPERTY_KEY_LITERALDATATYPE);
+
+        String componentType = Property.COMPONENT_TYPE_DROPDOWN;
+        if (!isGlobal()) {
+            componentType = Property.COMPONENT_TYPE_TEXTFIELD;
+            property.setPossibleValues(null);
+        }
+
+        property.setComponentType(componentType);
+    }
 }

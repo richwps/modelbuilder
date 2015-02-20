@@ -6,6 +6,8 @@ import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
@@ -174,11 +176,10 @@ public class AppPropertiesView extends PropertiesView {
         // if missing, set literal datatypes for dropdown component
         if (property.getPropertiesObjectName().equals(LiteralInput.PROPERTY_KEY_LITERALDATATYPE)) {
 
-            if (getCurrentObjectWithProperties() instanceof LiteralInput) {
-                LiteralInput input = (LiteralInput) getCurrentObjectWithProperties();
+            if (getCurrentObjectWithProperties() instanceof ProcessPort) {
+                ProcessPort port = (ProcessPort) getCurrentObjectWithProperties();
 
-                if (input.isGlobal()) {
-
+                if (port.isGlobal()) {
                     Collection datatypes = property.getPossibleValues();
                     if (null == datatypes || datatypes.isEmpty()) {
                         try {
@@ -190,12 +191,6 @@ public class AppPropertiesView extends PropertiesView {
                     }
 
                 }
-                
-            } else {
-                property.setPossibleValues(null);
-                property.setComponentType(Property.COMPONENT_TYPE_TEXTFIELD);
-                property.setValue("(unknown)");
-                property.setEditable(false);
             }
         }
 
