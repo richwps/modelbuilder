@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app.view.dialogs.components;
 
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
+import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
@@ -51,12 +52,30 @@ public abstract class APanel extends JPanel {
         //noop
     }
 
-    ;
+   
     /**
      * Visualize components.
      */
     public void visualize() {
         //noop
     }
-;
+
+    /**
+     * Indicator if resizable.
+     *
+     * @return indicator
+     */
+    public boolean isResizeable() {
+        return false;
+    }
+
+    public void resizeThis(int x, int y) {
+        Dimension newdim = new Dimension(x - 20, y - 20);
+        this.setPreferredSize(newdim);
+        newdim = new Dimension(x - 15, y - 15);
+        this.setSize(newdim);
+        this.setVisible(false);
+        this.setVisible(true);
+        this.validate();
+    }
 }

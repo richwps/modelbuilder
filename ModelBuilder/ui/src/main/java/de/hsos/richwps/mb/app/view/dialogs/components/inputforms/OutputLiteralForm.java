@@ -5,7 +5,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDesc
 /**
  *
  * @author dalcacer
- * @version 0.0.2
+ * @version 0.0.3
  */
 public class OutputLiteralForm extends javax.swing.JPanel {
 
@@ -62,100 +62,55 @@ public class OutputLiteralForm extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        selectOutput = new javax.swing.JCheckBox();
         titleLabel = new javax.swing.JLabel();
-        abstractLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
+        abstractLabel = new javax.swing.JLabel();
         abstractValue = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        selectOutput = new javax.swing.JCheckBox();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
-        setMinimumSize(new java.awt.Dimension(550, 113));
+        setMinimumSize(new java.awt.Dimension(500, 200));
+        setName(""); // NOI18N
         setPreferredSize(new java.awt.Dimension(500, 200));
-        setLayout(new java.awt.GridBagLayout());
-
-        selectOutput.setText("Select");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectOutput, gridBagConstraints);
+        setLayout(new java.awt.GridLayout(3, 2, -300, 0));
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setLabelFor(titleValue);
         titleLabel.setText("Title:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(titleLabel, gridBagConstraints);
-
-        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        abstractLabel.setLabelFor(abstractValue);
-        abstractLabel.setText("Abstract:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(abstractLabel, gridBagConstraints);
+        add(titleLabel);
 
         titleValue.setEditable(false);
+        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
         titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(titleValue, gridBagConstraints);
+        add(titleValue);
+
+        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abstractLabel.setLabelFor(abstractValue);
+        abstractLabel.setText("Abstract:");
+        add(abstractLabel);
 
         abstractValue.setEditable(false);
+        abstractValue.setBackground(java.awt.SystemColor.control);
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
         abstractValue.setRows(2);
         abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
         abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(abstractValue, gridBagConstraints);
+        add(abstractValue);
 
-        jLabel1.setMinimumSize(new java.awt.Dimension(450, 1));
-        jLabel1.setPreferredSize(new java.awt.Dimension(450, 1));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        add(jLabel1, gridBagConstraints);
+        selectOutput.setText("Select");
+        add(selectOutput);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel abstractLabel;
     private javax.swing.JTextArea abstractValue;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JCheckBox selectOutput;
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextArea titleValue;

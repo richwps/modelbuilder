@@ -11,9 +11,11 @@ import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
@@ -46,8 +48,13 @@ public class ProfileResultPanel extends APanel {
         this.request = (ProfileRequest) request;
         this.panels = new ArrayList<>();
         initComponents();
-        this.selectedProcess.setText(request.getIdentifier());
-        this.selectedServer.setText(request.getEndpoint());
+        
+        final String selectedprocess = this.request.getIdentifier();
+        this.stepDescriptionLabel.setText("Results for: "+selectedprocess+".");
+        Border paddingBorder = BorderFactory.createEmptyBorder(0,0,25,0);
+        this.stepDescriptionLabel.setBorder(paddingBorder);
+
+        
         ImageIcon ico = (ImageIcon) (UIManager.get(AppConstants.ICON_LOADING_STATUS_KEY));
         this.loadingLabel.setIcon(ico);
         this.loadingLabel.setText("Preparing statement.");
@@ -99,7 +106,7 @@ public class ProfileResultPanel extends APanel {
         String currentfontname = this.timestepsTable.getTableHeader().getFont().getFontName();
         int currentfonsize = this.timestepsTable.getTableHeader().getFont().getSize();
         this.timestepsTable.getTableHeader().setFont(new Font(currentfontname, Font.BOLD, currentfonsize));
-
+        this.timestepsTable.setAutoCreateRowSorter(true);
         this.timestepsTable.setVisible(true);
         this.resultPane.setViewportView(timestepsTable);
         this.resultPane.setVisible(true);
@@ -172,33 +179,23 @@ public class ProfileResultPanel extends APanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
+        stepDescriptionLabel = new javax.swing.JLabel();
         loadingLabel = new javax.swing.JLabel();
         resultPane = new javax.swing.JScrollPane();
         timestepsTable = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
-        selectedProcess = new javax.swing.JLabel();
-        selectedProcessLabel = new javax.swing.JLabel();
-        selectedServer = new javax.swing.JLabel();
-        selectedServerLabel = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
 
         setMinimumSize(new java.awt.Dimension(620, 700));
         setPreferredSize(new java.awt.Dimension(620, 700));
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(new java.awt.BorderLayout());
+
+        stepDescriptionLabel.setFont(new java.awt.Font("Droid Sans", 1, 14)); // NOI18N
+        stepDescriptionLabel.setText("Results.");
+        add(stepDescriptionLabel, java.awt.BorderLayout.NORTH);
 
         loadingLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         loadingLabel.setText("Loading");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(loadingLabel, gridBagConstraints);
+        add(loadingLabel, java.awt.BorderLayout.SOUTH);
 
         resultPane.setBorder(null);
         resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -220,95 +217,14 @@ public class ProfileResultPanel extends APanel {
         ));
         resultPane.setViewportView(timestepsTable);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(resultPane, gridBagConstraints);
-
-        jPanel1.setLayout(new java.awt.GridBagLayout());
-
-        selectedProcess.setText("jLabel2");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel1.add(selectedProcess, gridBagConstraints);
-
-        selectedProcessLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        selectedProcessLabel.setText("Process:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel1.add(selectedProcessLabel, gridBagConstraints);
-
-        selectedServer.setText("jLabel1");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel1.add(selectedServer, gridBagConstraints);
-
-        selectedServerLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        selectedServerLabel.setText("Server:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel1.add(selectedServerLabel, gridBagConstraints);
-
-        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        jLabel1.setText("Results for testing ");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel1.add(jLabel1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        add(jPanel1, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jSeparator1, gridBagConstraints);
+        add(resultPane, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel loadingLabel;
     private javax.swing.JScrollPane resultPane;
-    private javax.swing.JLabel selectedProcess;
-    private javax.swing.JLabel selectedProcessLabel;
-    private javax.swing.JLabel selectedServer;
-    private javax.swing.JLabel selectedServerLabel;
+    private javax.swing.JLabel stepDescriptionLabel;
     private javax.swing.JTable timestepsTable;
     // End of variables declaration//GEN-END:variables
 

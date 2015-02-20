@@ -104,7 +104,7 @@ public class ServerPanel extends APanel {
 
         serverSelectionLabel = new javax.swing.JLabel();
         serverSelectionBox = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
+        stepDescriptionLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -134,22 +134,22 @@ public class ServerPanel extends APanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(serverSelectionBox, gridBagConstraints);
 
-        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        jLabel1.setText("Please select or enter a Web Processing Service");
+        stepDescriptionLabel.setFont(new java.awt.Font("Droid Sans", 1, 14)); // NOI18N
+        stepDescriptionLabel.setText("Please select or enter a Web Processing Service.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 5;
         gridBagConstraints.ipady = 5;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel1, gridBagConstraints);
+        add(stepDescriptionLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JComboBox serverSelectionBox;
     private javax.swing.JLabel serverSelectionLabel;
+    private javax.swing.JLabel stepDescriptionLabel;
     // End of variables declaration//GEN-END:variables
 
 }

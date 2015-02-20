@@ -46,4 +46,5 @@ abstract class ADialog extends MbDialog {
 
     public void showResultsPanel() {//noop
     }
+    
 }

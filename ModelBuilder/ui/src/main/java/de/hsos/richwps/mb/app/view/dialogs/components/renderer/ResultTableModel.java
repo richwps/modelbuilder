@@ -9,9 +9,6 @@ import javax.swing.table.AbstractTableModel;
  */
 public class ResultTableModel extends AbstractTableModel {
 
-    String colHeadings[] = new String[]{
-        "Typ", "ID", "Data", "Action"};
-
     Object[][] data;
 
     public ResultTableModel(Object[][] rowdata) {
@@ -25,12 +22,12 @@ public class ResultTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return colHeadings.length;
+        return ResultTable.colHeadings.length;
     }
 
     @Override
     public String getColumnName(int col) {
-        return colHeadings[col];
+        return ResultTable.colHeadings[col];
     }
 
     @Override

@@ -76,7 +76,7 @@ public class AppConstants {
     public static final String DIALOG_BTN_EXPAND_ALL = "Expand all";
     public static final String DIALOG__BTN_COLLAPSE_ALL = "Collapse all";
     public static final String DIALOG_BTN_SELECT_ALL = "Select all";
-    public static final String DIALOG_BTN_DESELECT_ALL = "Deelect all";
+    public static final String DIALOG_BTN_DESELECT_ALL = "Deselect all";
     public static final String DIALOG_VALIDATION_MISSING_INPUT = "Please provide input for ";
     public static final Dimension DIALOG_BTN_SIZE = new Dimension(80, 20);
     public static final java.awt.Font DIALOG_TEXTPANE_FONT = new java.awt.Font("Arial", 0, 12);

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.hsos.richwps.mb.app.view.dialogs.components.renderer;
 
 import de.hsos.richwps.mb.app.view.dialogs.components.listener.ResultTableMouseListener;
@@ -15,34 +10,44 @@ import javax.swing.JTable;
  * @author dalcacer
  * @version 0.0.1
  */
-public class ResultTable extends JTable{
-       String colHeadings[] = new String[]{
-            "Typ", "ID", "Data", "Action"};
+public class ResultTable extends JTable {
 
-    public ResultTable(Object [][] rowData){
-             super(new ResultTableModel(rowData));
+    public static String colHeadings[] = new String[]{
+        "Datatype", "Identifier", "Data", "Action"};
+    public static final int TYPCOL = 0;
+    public static final int IDCOL = 1;
+    public static final int DATACOL = 2;
+    public static final int ACTIONCOL = 3;
 
-            this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            this.setRowHeight(54);
-            String currentfontname = this.getTableHeader().getFont().getFontName();
-            int currentfonsize = this.getTableHeader().getFont().getSize();
-            this.getTableHeader().setFont(new Font(currentfontname, Font.BOLD, currentfonsize));
-            ResultTableTypeCell tcr = new ResultTableTypeCell();
-            this.getColumnModel().getColumn(0).setCellRenderer(tcr);
-            this.getColumnModel().getColumn(0).setMinWidth(28);
-            this.getColumnModel().getColumn(0).setPreferredWidth(50);
+    public ResultTable(Object[][] rowData) {
+        super(new ResultTableModel(rowData));
 
-            this.getColumnModel().getColumn(1).setMinWidth(50);
-            ResultTableDataCell dcr = new ResultTableDataCell();
+        this.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        this.setRowHeight(54);
+        String currentfontname = this.getTableHeader().getFont().getFontName();
+        int currentfonsize = this.getTableHeader().getFont().getSize();
+        this.getTableHeader().setFont(new Font(currentfontname, Font.BOLD, currentfonsize));
 
-            this.getColumnModel().getColumn(2).setCellRenderer(dcr);
-            this.getColumnModel().getColumn(2).setMinWidth(350);
+        ResultTableTypeCell tcr = new ResultTableTypeCell();
+        this.getColumnModel().getColumn(ResultTable.TYPCOL).setCellRenderer(tcr);
+        this.getColumnModel().getColumn(ResultTable.TYPCOL).setMinWidth(28);
+        this.getColumnModel().getColumn(ResultTable.TYPCOL).setPreferredWidth(50);
 
-            ResultTableActionCell ace = new ResultTableActionCell();
-            this.getColumnModel().getColumn(3).setCellRenderer(ace);
-            this.getColumnModel().getColumn(3).setMinWidth(120);
+        ResultTableIdentifierCell rti = new ResultTableIdentifierCell();
+        this.getColumnModel().getColumn(ResultTable.IDCOL).setCellRenderer(rti);
+        this.getColumnModel().getColumn(ResultTable.IDCOL).setMinWidth(50);
 
-            MouseAdapter adap = new ResultTableMouseListener(this);
-            this.addMouseListener(adap);
+        ResultTableDataCell dcr = new ResultTableDataCell();
+        this.getColumnModel().getColumn(ResultTable.DATACOL).setCellRenderer(dcr);
+        this.getColumnModel().getColumn(ResultTable.DATACOL).setMinWidth(325);
+
+        ResultTableActionCell ace = new ResultTableActionCell();
+        this.getColumnModel().getColumn(ResultTable.ACTIONCOL).setCellRenderer(ace);
+        this.getColumnModel().getColumn(ResultTable.ACTIONCOL).setMinWidth(150);
+
+        MouseAdapter adap = new ResultTableMouseListener(this);
+        this.addMouseListener(adap);
+
+         this.setAutoCreateRowSorter(true);
     }
 }

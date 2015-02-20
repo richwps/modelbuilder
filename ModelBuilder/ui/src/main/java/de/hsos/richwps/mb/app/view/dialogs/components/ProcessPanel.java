@@ -100,7 +100,7 @@ public class ProcessPanel extends APanel {
 
         processLabel = new javax.swing.JLabel();
         processesBox = new javax.swing.JComboBox();
-        jLabel1 = new javax.swing.JLabel();
+        stepDescriptionLabel = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -126,8 +126,8 @@ public class ProcessPanel extends APanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(processesBox, gridBagConstraints);
 
-        jLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        jLabel1.setText("Please select a process");
+        stepDescriptionLabel.setFont(new java.awt.Font("Droid Sans", 1, 14)); // NOI18N
+        stepDescriptionLabel.setText("Please select a process.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
@@ -135,14 +135,14 @@ public class ProcessPanel extends APanel {
         gridBagConstraints.ipady = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel1, gridBagConstraints);
+        add(stepDescriptionLabel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel processLabel;
     private javax.swing.JComboBox processesBox;
+    private javax.swing.JLabel stepDescriptionLabel;
     // End of variables declaration//GEN-END:variables
 
 }

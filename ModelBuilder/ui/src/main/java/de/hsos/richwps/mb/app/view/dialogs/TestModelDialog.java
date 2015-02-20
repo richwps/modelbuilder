@@ -192,6 +192,8 @@ public class TestModelDialog extends ADialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        navpanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
         previewButton.setIcon(UIManager.getIcon(AppConstants.ICON_PREVIEW_KEY));
         previewButton.setMnemonic('P');
         previewButton.setText("Preview");

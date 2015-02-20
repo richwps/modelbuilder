@@ -23,7 +23,7 @@ public class VariablesTableModel extends DefaultTableModel {
 
     @Override
     public Class getColumnClass(int column) {
-        if (column == 2) {
+        if (column == VariablesTable.SELCOL) {
             return Boolean.class;
         }
         return String.class;

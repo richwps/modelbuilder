@@ -12,6 +12,10 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -79,6 +83,18 @@ public class ExecuteDialog extends ADialog {
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         this.showServersPanel();
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                if (currentPanel.isResizeable()) {
+                    Dimension dim = getPreferredSize();
+                    int x = (int) dim.getWidth();
+                    int y = (int) dim.getHeight();
+                    currentPanel.resizeThis(x, y);
+                } else {
+                    pack();
+                }
+            }
+        });
     }
 
     /**
@@ -99,7 +115,7 @@ public class ExecuteDialog extends ADialog {
             this.currentPanel.setVisible(false);
         }
 
-        this.add(this.serverselectionpanel);
+        this.add(this.serverselectionpanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = serverselectionpanel;
     }
@@ -144,7 +160,7 @@ public class ExecuteDialog extends ADialog {
         this.processesselectionpanel = new ProcessPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.processesselectionpanel);
+        this.add(this.processesselectionpanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = processesselectionpanel;
     }
@@ -178,7 +194,7 @@ public class ExecuteDialog extends ADialog {
         this.inputspanel = new InputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.inputspanel);
+        this.add(this.inputspanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = inputspanel;
     }
@@ -212,7 +228,7 @@ public class ExecuteDialog extends ADialog {
         this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.outputsspanel);
+        this.add(this.outputsspanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = outputsspanel;
     }
@@ -245,7 +261,7 @@ public class ExecuteDialog extends ADialog {
         this.resultpanel = new ResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.resultpanel);
+        this.add(this.resultpanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);
@@ -265,7 +281,6 @@ public class ExecuteDialog extends ADialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         navpanel = new javax.swing.JPanel();
         loadButton = new javax.swing.JButton();
@@ -278,7 +293,9 @@ public class ExecuteDialog extends ADialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Execute a process");
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        getContentPane().setLayout(new java.awt.BorderLayout(5, 5));
+
+        navpanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         loadButton.setIcon(UIManager.getIcon(AppConstants.ICON_OPEN_KEY));
         loadButton.setMnemonic('L');
@@ -356,11 +373,7 @@ public class ExecuteDialog extends ADialog {
         });
         navpanel.add(abortButton);
 
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        getContentPane().add(navpanel, gridBagConstraints);
+        getContentPane().add(navpanel, java.awt.BorderLayout.SOUTH);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

@@ -105,127 +105,68 @@ public class OutputComplexForm extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        selectOutput = new javax.swing.JCheckBox();
+        titleLabel = new javax.swing.JLabel();
+        titleValue = new javax.swing.JTextArea();
+        abstractLabel = new javax.swing.JLabel();
+        abstractValue = new javax.swing.JTextArea();
+        typeLabel = new javax.swing.JLabel();
         selectType = new javax.swing.JComboBox();
         selectAsReference = new javax.swing.JCheckBox();
         selectStore = new javax.swing.JCheckBox();
-        titleLabel = new javax.swing.JLabel();
-        typeLabel = new javax.swing.JLabel();
-        abstractLabel = new javax.swing.JLabel();
-        abstractValue = new javax.swing.JTextArea();
-        titleValue = new javax.swing.JTextArea();
+        selectOutput = new javax.swing.JCheckBox();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
-        setMinimumSize(new java.awt.Dimension(550, 200));
+        setMinimumSize(new java.awt.Dimension(500, 200));
         setPreferredSize(new java.awt.Dimension(500, 250));
         setRequestFocusEnabled(false);
-        setLayout(new java.awt.GridBagLayout());
-
-        selectOutput.setText("Select");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectOutput, gridBagConstraints);
-
-        selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        selectType.setPreferredSize(new java.awt.Dimension(450, 50));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectType, gridBagConstraints);
-
-        selectAsReference.setSelected(true);
-        selectAsReference.setText("As Reference");
-        selectAsReference.setEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectAsReference, gridBagConstraints);
-
-        selectStore.setText("Store");
-        selectStore.setEnabled(false);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(selectStore, gridBagConstraints);
+        setLayout(new java.awt.GridLayout(5, 2, -400, 0));
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setText("Title:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(titleLabel, gridBagConstraints);
-
-        typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        typeLabel.setText("Type:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(typeLabel, gridBagConstraints);
-
-        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        abstractLabel.setText("Abstract:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(abstractLabel, gridBagConstraints);
-
-        abstractValue.setEditable(false);
-        abstractValue.setColumns(20);
-        abstractValue.setLineWrap(true);
-        abstractValue.setRows(2);
-        abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(abstractValue, gridBagConstraints);
+        add(titleLabel);
 
         titleValue.setEditable(false);
+        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
         titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(titleValue, gridBagConstraints);
+        add(titleValue);
+
+        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abstractLabel.setText("Abstract:");
+        add(abstractLabel);
+
+        abstractValue.setEditable(false);
+        abstractValue.setBackground(java.awt.SystemColor.control);
+        abstractValue.setColumns(20);
+        abstractValue.setLineWrap(true);
+        abstractValue.setRows(2);
+        abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
+        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
+        add(abstractValue);
+
+        typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        typeLabel.setText("Type:");
+        add(typeLabel);
+
+        selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        selectType.setPreferredSize(new java.awt.Dimension(450, 50));
+        add(selectType);
+
+        selectAsReference.setSelected(true);
+        selectAsReference.setText("As Reference");
+        selectAsReference.setEnabled(false);
+        add(selectAsReference);
+
+        selectStore.setText("Store");
+        selectStore.setEnabled(false);
+        add(selectStore);
+
+        selectOutput.setText("Select");
+        add(selectOutput);
     }// </editor-fold>//GEN-END:initComponents
 
 

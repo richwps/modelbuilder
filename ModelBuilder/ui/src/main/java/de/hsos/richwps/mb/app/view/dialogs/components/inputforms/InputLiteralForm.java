@@ -6,7 +6,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescr
 /**
  *
  * @author dalcacer
- * @version 0.0.1
+ * @version 0.0.2
  */
 public class InputLiteralForm extends javax.swing.JPanel {
 
@@ -127,153 +127,80 @@ public class InputLiteralForm extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
-        value = new javax.swing.JTextField();
-        abstractLabel = new javax.swing.JLabel();
         titleLabel = new javax.swing.JLabel();
-        valueLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
+        abstractLabel = new javax.swing.JLabel();
         abstractValue = new javax.swing.JTextArea();
-        occursLabel = new javax.swing.JLabel();
-        occurs = new javax.swing.JLabel();
         typeLabel = new javax.swing.JLabel();
         type = new javax.swing.JTextArea();
+        occursLabel = new javax.swing.JLabel();
+        occurs = new javax.swing.JLabel();
+        valueLabel = new javax.swing.JLabel();
+        value = new javax.swing.JTextField();
 
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(500, 200));
         setPreferredSize(new java.awt.Dimension(500, 200));
-        setLayout(new java.awt.GridBagLayout());
-
-        value.setMinimumSize(new java.awt.Dimension(450, 27));
-        value.setPreferredSize(new java.awt.Dimension(450, 27));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(value, gridBagConstraints);
-
-        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        abstractLabel.setLabelFor(abstractValue);
-        abstractLabel.setText("Abstract:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(abstractLabel, gridBagConstraints);
+        setLayout(new java.awt.GridLayout(5, 2, -400, 0));
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setLabelFor(titleValue);
         titleLabel.setText("Title:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(titleLabel, gridBagConstraints);
-
-        valueLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        valueLabel.setLabelFor(value);
-        valueLabel.setText("Value:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(valueLabel, gridBagConstraints);
+        add(titleLabel);
 
         titleValue.setEditable(false);
+        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
         titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(titleValue, gridBagConstraints);
+        add(titleValue);
+
+        abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        abstractLabel.setLabelFor(abstractValue);
+        abstractLabel.setText("Abstract:");
+        add(abstractLabel);
 
         abstractValue.setEditable(false);
+        abstractValue.setBackground(java.awt.SystemColor.control);
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
         abstractValue.setRows(2);
         abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
         abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(abstractValue, gridBagConstraints);
-
-        occursLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
-        occursLabel.setText("Occurs:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(occursLabel, gridBagConstraints);
-
-        occurs.setText(".");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 3;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(occurs, gridBagConstraints);
+        add(abstractValue);
 
         typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         typeLabel.setLabelFor(titleValue);
         typeLabel.setText("Type:");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(typeLabel, gridBagConstraints);
+        add(typeLabel);
 
         type.setEditable(false);
+        type.setBackground(java.awt.SystemColor.control);
         type.setColumns(20);
         type.setLineWrap(true);
         type.setRows(2);
         type.setMinimumSize(new java.awt.Dimension(250, 32));
         type.setPreferredSize(new java.awt.Dimension(300, 32));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(type, gridBagConstraints);
+        add(type);
+
+        occursLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        occursLabel.setText("Occurs:");
+        add(occursLabel);
+
+        occurs.setText(".");
+        add(occurs);
+
+        valueLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
+        valueLabel.setLabelFor(value);
+        valueLabel.setText("Value:");
+        add(valueLabel);
+
+        value.setMinimumSize(new java.awt.Dimension(450, 27));
+        value.setPreferredSize(new java.awt.Dimension(450, 27));
+        add(value);
     }// </editor-fold>//GEN-END:initComponents
 
 

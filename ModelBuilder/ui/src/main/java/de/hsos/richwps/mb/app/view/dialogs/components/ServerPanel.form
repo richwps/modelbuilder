@@ -54,12 +54,12 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="stepDescriptionLabel">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Droid Sans" size="12" style="1"/>
+          <Font name="Droid Sans" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Please select or enter a Web Processing Service"/>
+        <Property name="text" type="java.lang.String" value="Please select or enter a Web Processing Service."/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

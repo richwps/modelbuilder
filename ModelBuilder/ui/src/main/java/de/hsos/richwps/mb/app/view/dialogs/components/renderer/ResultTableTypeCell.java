@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.app.view.dialogs.components.renderer;
 import de.hsos.richwps.mb.app.AppConstants;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,9 +21,15 @@ public class ResultTableTypeCell extends JPanel implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         this.removeAll();
+        FlowLayout flow = new FlowLayout();
+        flow.setAlignment(FlowLayout.LEFT);
+        this.setLayout(flow);
         this.setBackground(Color.WHITE);
         String cellvalue = (String) table.getValueAt(row, column);
         ImageIcon icon = null;
+        if (cellvalue == null) {
+            return this;
+        }
         if (cellvalue.equals("L")) {
             icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_L_BIG_KEY));
         } else if (value.equals("C")) {
