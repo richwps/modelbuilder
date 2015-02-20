@@ -25,6 +25,7 @@ import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.InputLiteralDataDescr
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputBoundingBoxDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputComplexDataDescription;
 import de.hsos.richwps.mb.richWPS.entity.impl.descriptions.OutputLiteralDataDescription;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.List;
 
 /**
@@ -36,7 +37,6 @@ import java.util.List;
 public class ManagedRemoteDiscovery {
 
     public static WpsServer discoverProcesses(String uri) {
-        // TODO check if it is useful to set the server entity as user object (instead of the endpoint string)
         WpsServer server = new WpsServer(uri);
 
         //Perform discovery.
@@ -54,20 +54,13 @@ public class ManagedRemoteDiscovery {
                 provider.perform(pd);
 
                 ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
-                //TRICKY
-                if (pd.getAbstract() != null) {
-                    pe.setOwsAbstract(pd.getAbstract());
-                } else {
-                    pe.setOwsAbstract("");
-                }
-
+                pe.setOwsAbstract(UiHelper.avoidNull(pd.getAbstract()));
                 pe.setOwsTitle(pd.getTitle());
-                //FIXME pe.setOwsVersion
+                pe.setPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION, pd.getProcessversion());
+
                 ManagedRemoteDiscovery.transformInputs(pd, pe);
                 ManagedRemoteDiscovery.transformOutputs(pd, pe);
 
-                // load metric properties
-//                pe = getProcessProvider().getFullyLoadedProcessEntity(pe);
                 server.addProcess(pe);
             }
 
@@ -153,7 +146,7 @@ public class ManagedRemoteDiscovery {
         for (IOutputValue description : pd.getOutputs()) {
             if (description instanceof OutputComplexDataDescription) {
                 OutputComplexDataDescription complex = (OutputComplexDataDescription) description;
-                ProcessPort pp = new ComplexDataOutput();
+                ProcessPort pp = new ComplexDataOutput(false);
                 pp.setOwsIdentifier(complex.getIdentifier());
                 pp.setOwsTitle(complex.getTitle());
                 pp.setOwsAbstract(complex.getAbstract());
@@ -168,23 +161,23 @@ public class ManagedRemoteDiscovery {
 
             } else if (description instanceof OutputLiteralDataDescription) {
                 OutputLiteralDataDescription literal = (OutputLiteralDataDescription) description;
-                ProcessPort pp = new LiteralOutput();
+                ProcessPort pp = new LiteralOutput(false);
                 pp.setOwsIdentifier(literal.getIdentifier());
                 pp.setOwsTitle(literal.getTitle());
                 pp.setOwsAbstract(literal.getAbstract());
                 pp.setPropertyValue(LiteralOutput.PROPERTY_KEY_LITERALDATATYPE, literal.getType());
-                pe.addInputPort(pp);
+                pe.addOutputPort(pp);
 
             } else if (description instanceof OutputBoundingBoxDataDescription) {
 
                 OutputBoundingBoxDataDescription bbox = (OutputBoundingBoxDataDescription) description;
-                ProcessPort pp = new BoundingBoxOutput();
+                ProcessPort pp = new BoundingBoxOutput(false);
                 pp.setOwsIdentifier(bbox.getIdentifier());
                 pp.setOwsTitle(bbox.getTitle());
                 pp.setOwsAbstract(bbox.getAbstract());
 
                 // TODO set datatype description
-                pe.addInputPort(pp);
+                pe.addOutputPort(pp);
             }
         }
     }

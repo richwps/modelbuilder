@@ -7,7 +7,6 @@ import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
-import de.hsos.richwps.mb.app.view.ManageRemotesDialog;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionComponents;
 import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
@@ -16,7 +15,6 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
-import de.hsos.richwps.mb.processProvider.control.FormatProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
@@ -39,6 +37,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -395,6 +394,9 @@ public class App {
         if (null == preferencesDialog) {
             preferencesDialog = new AppPreferencesDialog(frame);
 
+            final String[] prePersistedRemotes = getProcessProvider().getPersistedRemotes();
+            final List<String> preRemotesAsList = Arrays.asList(prePersistedRemotes);
+
             preferencesDialog.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosed(WindowEvent e) {
@@ -407,10 +409,18 @@ public class App {
                     String monitorUrl = getProcessMetricProvider().getMonitorUrl();
 
                     // update curently used value if the config has changed.
-                    if (!confUrl.equals(monitorUrl)) {
+                    boolean monitorSettingsChanged = !confUrl.equals(monitorUrl);
+                    if (monitorSettingsChanged) {
                         getProcessMetricProvider().setMonitorUrl(confUrl);
+                    }
 
-                        // force reloading monitor data
+                    // check if remotes changed
+                    String[] persistedRemotes = getProcessProvider().getPersistedRemotes();
+                    List<String> remotesAsList = Arrays.asList(persistedRemotes);
+                    boolean remotesChanged = !remotesAsList.containsAll(preRemotesAsList);
+
+                    // force reloading monitor data
+                    if (monitorSettingsChanged || remotesChanged) {
                         getProcessProvider().resetProcessLoadingStates();
                         getMainTreeView().fillTree();
                     }
@@ -473,7 +483,7 @@ public class App {
     void updateGraphDependentActions() {
         boolean graphIsEmpty = getGraphView().isEmpty();
         boolean hasSingleSelection = false;
-        
+
         Object[] selection = getGraphView().getSelection();
         hasSingleSelection = (null != selection) && (1 == selection.length);
 
@@ -652,29 +662,6 @@ public class App {
                 remotes_arr,
                 remotes_arr[0]);
         return selectedRemote;
-    }
-
-    /**
-     * Shows a dialog to enter a new uri.
-     *
-     * @return entered wps-server.
-     */
-    void showManageRemotes() {
-        final ManageRemotesDialog dialog = new ManageRemotesDialog(frame);
-        dialog.addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                String[] remotes = dialog.getRemotes();
-                if (null != remotes) {
-                    getMainTreeView().fillTree();
-                    getGraphView().updateRemotes();
-                }
-            }
-
-        });
-
-        dialog.setVisible(true);
     }
 
     /**

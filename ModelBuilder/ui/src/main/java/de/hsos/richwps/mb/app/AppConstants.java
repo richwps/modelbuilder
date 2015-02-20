@@ -312,12 +312,15 @@ public class AppConstants {
 
         PROCESSSOURCES,
         HTTPPROXY,
-        MONITOR
+        MONITOR,
+        MANAGEDREMOTES
     }
     public static final String[][] PREFERENCES_TAB_TITLE = new String[][]{
         {PREFERENCES_TAB.PROCESSSOURCES.name(), "Process Sources"},
         {PREFERENCES_TAB.HTTPPROXY.name(), "HTTP Proxy"},
-        {PREFERENCES_TAB.MONITOR.name(), "Monitor"},};
+        {PREFERENCES_TAB.MONITOR.name(), "Monitor"},
+        {PREFERENCES_TAB.MANAGEDREMOTES.name(), "Managed Remotes"}
+    };
     // SP preferences
     public static final String PREFERENCES_TAB_SP_URL_LABEL = "<html>SemanticProxy URL:<br />(e.g. http://localhost:4567/semanticproxy)</html>";
     // Http proxy preferences
@@ -371,7 +374,6 @@ public class AppConstants {
         {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process", AppConstants.ICON_UNDEPLOY_ANY_KEY},
         {AppActionProvider.APP_ACTIONS.PREVIEW_ROLA.name(), "Preview ROLA", AppConstants.ICON_PREVIEW_KEY},
         {AppActionProvider.APP_ACTIONS.RELOAD_PROCESSES.name(), "Reload processes", AppConstants.ICON_RELOAD_KEY}, // Action for reloading processes from the SP (client).
-        {AppActionProvider.APP_ACTIONS.MANAGE_REMOTES.name(), "Manage remotes", AppConstants.ICON_MANAGE_REMOTE},
         {AppActionProvider.APP_ACTIONS.PUBLISH.name(), "Publish model at SemanticProxy", AppConstants.ICON_PUBLISH},
         {AppActionProvider.APP_ACTIONS.EXECUTE.name(), "Execute this process", AppConstants.ICON_EXECUTE_KEY}, //  Action for opening the execute-current-model-dialog.
         {AppActionProvider.APP_ACTIONS.EXECUTE_ANY.name(), "Execute a process", AppConstants.ICON_EXECUTE_ANY_KEY}, //  Action for opening the execute-any-dialog.

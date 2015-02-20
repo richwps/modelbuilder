@@ -100,9 +100,6 @@ public class AppActionHandler implements IAppActionHandler {
             case RELOAD_PROCESSES:
                 doReloadProcesses();
                 break;
-            case MANAGE_REMOTES:
-                doShowManageRemotes();
-                break;
             case PUBLISH:
                 doPublish();
                 break;
@@ -351,10 +348,6 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doUnDeployAny() {
         app.showUndeploy();
-    }
-
-    private void doShowManageRemotes() {
-        app.showManageRemotes();
     }
 
     private void doUndo() {

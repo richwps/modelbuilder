@@ -33,7 +33,6 @@ public class AppActionProvider {
         UNDEPLOY_ANY,
         //
         RELOAD_PROCESSES,
-        MANAGE_REMOTES,
         PUBLISH,
         //others
         SHOW_ERROR_MSG

@@ -5,10 +5,7 @@ import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.ui.PerstistableComboBox;
 import java.awt.Dimension;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.UIManager;
 import layout.TableLayout;
 

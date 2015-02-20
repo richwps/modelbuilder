@@ -7,7 +7,6 @@ import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.control.ProcessPortFactory;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
-import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import java.util.Map;
@@ -22,6 +21,7 @@ import org.w3c.dom.Node;
  */
 public class ProcessPortCodec extends ObjectWithPropertiesCodec {
 
+    @Deprecated
     public static final String ATTR_DATATYPE = "datatype";
 
     public ProcessPortCodec(Object template) {
@@ -64,12 +64,12 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
             }
 
             // encode datatype enum value as attribute (default encoding would be a child node with no value!)
-            if (fieldname.equals(ATTR_DATATYPE)) {
-                ProcessPort port = (ProcessPort) obj;
-                Element nodeEl = (Element) node;
-                nodeEl.setAttribute(ATTR_DATATYPE, port.getDatatype().name());
-                return;
-            }
+//            if (fieldname.equals(ATTR_DATATYPE)) {
+//                ProcessPort port = (ProcessPort) obj;
+//                Element nodeEl = (Element) node;
+//                nodeEl.setAttribute(ATTR_DATATYPE, port.getDatatype().name());
+//                return;
+//            }
         }
 
         super.encodeValue(enc, obj, fieldname, value, node);
@@ -92,7 +92,6 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
     @Override
     public Object afterDecode(mxCodec dec, Node node, Object obj) {
         try {
-
             // workaround to support older model versions
             if (obj instanceof de.hsos.richwps.mb.entity.oldVersions.ProcessPort) {
 

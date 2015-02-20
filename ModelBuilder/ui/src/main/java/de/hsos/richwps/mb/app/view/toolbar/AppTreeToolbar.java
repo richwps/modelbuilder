@@ -17,8 +17,6 @@ public class AppTreeToolbar extends JToolBar {
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES));
         addSeparator();
         add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.RELOAD_PROCESSES));
-        addSeparator();
-        add(actionProvider.getAction(AppActionProvider.APP_ACTIONS.MANAGE_REMOTES));
 
     }
 

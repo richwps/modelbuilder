@@ -97,6 +97,9 @@ public class AppPreferencesDialog extends MbDialog {
                 case MONITOR:
                     tab = new PreferencesMonitor();
                     break;
+                case MANAGEDREMOTES:
+                    tab = new PreferencesManagedRemotes(this);
+                    break;
             }
 
             // only add existing tabs (=no empty tabs)
