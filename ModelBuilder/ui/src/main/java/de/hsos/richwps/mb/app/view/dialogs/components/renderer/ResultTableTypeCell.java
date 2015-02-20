@@ -24,11 +24,11 @@ public class ResultTableTypeCell extends JPanel implements TableCellRenderer {
         String cellvalue = (String) table.getValueAt(row, column);
         ImageIcon icon = null;
         if (cellvalue.equals("L")) {
-            icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_L_KEY));
+            icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_L_BIG_KEY));
         } else if (value.equals("C")) {
-            icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_C_KEY));
+            icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_C_BIG_KEY));
         } else if (value.equals("B")) {
-            icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_B_KEY));
+            icon = (ImageIcon) (UIManager.get(AppConstants.ICON_PORT_OUT_B_BIG_KEY));
         }
         JLabel label = new JLabel();
         label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
