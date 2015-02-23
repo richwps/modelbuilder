@@ -21,10 +21,8 @@ public class MonitorDataConverter {
         return metricProvider;
     }
     
-    
     public void addProcessMetrics(ProcessEntity process) throws ProcessMetricProviderNotAvailable {
 
-        // FIXME re-enable process metrics when monitor client is faster !!! (currently THE bottleneck!)
         if(null == getMetricProvider()) {
             throw new ProcessMetricProviderNotAvailable();
         }

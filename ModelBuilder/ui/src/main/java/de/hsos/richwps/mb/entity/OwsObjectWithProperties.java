@@ -141,9 +141,8 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
             // property is the main OWS group -> replace the current group
         } else if (property instanceof PropertyGroup && propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
             this.owsGroup = (PropertyGroup<Property>) property;
-
-            // add property to main ows group
-        } else {
+        } // add property to main ows group
+        else {
             this.owsGroup.setProperty(propertyName, property);
         }
     }
