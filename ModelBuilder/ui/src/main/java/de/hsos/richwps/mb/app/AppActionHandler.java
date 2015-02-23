@@ -17,8 +17,6 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -361,9 +359,17 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doReloadProcesses() {
-        app.getPropertiesView().clearPropertyCache();
-        app.getProcessProvider().clear();
-        app.getMainTreeView().fillTree();
+        app.getFrame().setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        new Runnable() {
+            @Override
+            public void run() {
+                app.getPropertiesView().clearPropertyCache();
+                app.getProcessProvider().clear();
+                app.getMainTreeView().fillTree();
+                app.getFrame().setCursor(Cursor.getDefaultCursor());
+            }
+        }.run();
     }
 
     private void doExecute() {
