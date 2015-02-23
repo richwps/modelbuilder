@@ -64,5 +64,7 @@ public class LiteralInput extends ProcessInputPort {
         }
 
         property.setComponentType(componentType);
+        
+        super.globalStatusChanged();
     }
 }
