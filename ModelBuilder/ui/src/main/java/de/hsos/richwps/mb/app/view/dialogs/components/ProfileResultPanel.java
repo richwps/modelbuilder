@@ -6,6 +6,7 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
+import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
@@ -120,17 +121,7 @@ public class ProfileResultPanel extends APanel {
         ExceptionRenderer exception = new ExceptionRenderer(request.getException());
 
         this.remove(this.resultPane);
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 5;
-        gridBagConstraints.ipady = 5;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-
-        this.add(exception, gridBagConstraints);
+        this.add(exception, BorderLayout.CENTER);
         this.validate();
     }
 

@@ -205,7 +205,6 @@ public class TestRequestHandler implements IRequestHandler {
                         java.util.logging.Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-
                 //TODO: BoundingBox ?
             }
         } else {
