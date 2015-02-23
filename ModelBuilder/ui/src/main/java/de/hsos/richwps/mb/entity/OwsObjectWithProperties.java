@@ -126,17 +126,25 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
         }
     }
 
+    /**
+     *
+     * @param propertyName
+     * @param property if null, the property will be removed from this object.
+     */
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {
-        if (property instanceof PropertyGroup) {
-            if (propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
-                this.owsGroup = (PropertyGroup<Property>) property;
-            }
 
+        // property is null => remove it
+        if (null == property) {
+            this.owsGroup.removeProperty(propertyName);
+
+            // property is the main OWS group -> replace the current group
+        } else if (property instanceof PropertyGroup && propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
+            this.owsGroup = (PropertyGroup<Property>) property;
+
+            // add property to main ows group
         } else {
-
-            // set property
-            this.owsGroup.setProperty(propertyName, (Property) property);
+            this.owsGroup.setProperty(propertyName, property);
         }
     }
 
@@ -179,8 +187,8 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
         this.toolTipText = null;
         this.owsGroup = new PropertyGroup<>(OWS_PROPERTY_GROUP_NAME);
 
-        for (Property property : other.owsGroup.getProperties()) {
-            IObjectWithProperties propertyClone = (IObjectWithProperties) property.clone();
+        for (IObjectWithProperties property : other.owsGroup.getProperties()) {
+            IObjectWithProperties propertyClone = property.clone();
             this.setProperty(property.getPropertiesObjectName(), propertyClone);
         }
     }

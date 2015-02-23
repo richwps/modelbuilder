@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.graphView.mxGraph.codec;
 
 import com.mxgraph.io.mxCodec;
+import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
@@ -9,6 +10,9 @@ import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.PropertyHelper;
+import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -118,23 +122,46 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
         }
 
         // match port properties to update older model versions
-        
-        
-        
-        
-        // TODO !!!
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+        if (obj instanceof ProcessPort) {
+            
+            // get the port's property names as a list
+            final ProcessPort port = (ProcessPort) obj;
+            List<String> propertyNames = PropertyHelper.getPropertyNames((IObjectWithProperties) obj);
+            
+            // get properties list of the prototype of the current port type
+            List<String> prototypeProperties = getPrototypeProperties(port);
+            
+            // check each loaded property against the properties of the port prototype
+            for (String property : propertyNames) {
+                // no prototype property: remove it from the port
+                if (!prototypeProperties.contains(property)) {
+                    port.setProperty(property, null);
+
+                }
+//                else {
+//                    prototypeProperties.remove(property);
+//                }
+            }
+
+//            for (String property : prototypeProperties) {
+//                Logger.log("PROPERTY MATCH ERROR:  prototype property '" + property + "' is missing!");
+//            }
+        }
+
         return super.afterDecode(dec, node, obj);
+    }
+
+    private List<String> getPrototypeProperties(ProcessPort port) {
+        try {
+            Constructor<? extends ProcessPort> constructor = port.getClass().getConstructor(new Class[]{boolean.class});
+            ProcessPort prototype = constructor.newInstance(port.isGlobal());
+            return PropertyHelper.getPropertyNames(prototype);
+
+        } catch (Exception ex) {
+            // ignore, null will be returned below.
+        }
+
+        return null;
     }
 
 }

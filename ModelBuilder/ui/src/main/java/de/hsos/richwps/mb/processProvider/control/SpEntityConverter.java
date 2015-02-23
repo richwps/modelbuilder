@@ -203,7 +203,7 @@ public class SpEntityConverter {
             case LITERAL:                
                 LiteralData spInputData = (LiteralData) inputFormChoice;
                 convertLiteralPort(inputFormChoice, inPort);
-                // TODO set default value !
+                // TODO set default value ! (SP Ticket #2)
                 //spInputData.getDataType()
                 
                 break;
