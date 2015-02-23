@@ -54,5 +54,7 @@ public class LiteralOutput extends ProcessOutputPort {
         }
 
         property.setComponentType(componentType);
+        
+        super.globalStatusChanged();
     }
 }
