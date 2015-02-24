@@ -137,6 +137,9 @@ public class AppConstants {
 
     // Process Replacer Dialog
     public final static String PROCESS_REPLACER_DIALOG_TITLE = "Process Replacer";
+    
+    // Port Rearranger Dialog
+    public final static String PORT_REARRANGER_DIALOG_TITLE = "Port Rearranger";
 
     //Connectivity errors
     public static final String CONNECT_FAILED = "Unable to connect to selected server.";
@@ -366,6 +369,7 @@ public class AppConstants {
         {AppActionProvider.APP_ACTIONS.DO_LAYOUT.name(), "Layout", AppConstants.ICON_LAYOUT_KEY}, // Action for layouting the graph.
         {AppActionProvider.APP_ACTIONS.ADD_PORTS.name(), "Add missing ports", AppConstants.ICON_ADDPORTS_KEY}, // Action for adding global ports to unconnected local ports.
         {AppActionProvider.APP_ACTIONS.REPLACE_PROCESS.name(), "Replace process", AppConstants.ICON_PROCESS_REPLACE_KEY}, // Action for showing the process replacement tool.
+        {AppActionProvider.APP_ACTIONS.REARRANGE_PORTS.name(), "Re-arrange ports", AppConstants.ICON_REARRANGE_KEY}, // Action for showing the port rearrangement tool.
         {AppActionProvider.APP_ACTIONS.DEPLOY.name(), "Deploy", AppConstants.ICON_DEPLOY_KEY}, // Action for starting the deployment.
         {AppActionProvider.APP_ACTIONS.UNDEPLOY.name(), "Undeploy", AppConstants.ICON_UNDEPLOY_KEY}, //  Action for starting the undeployment.
         {AppActionProvider.APP_ACTIONS.UNDEPLOY_ANY.name(), "Undeploy a process", AppConstants.ICON_UNDEPLOY_ANY_KEY},
@@ -496,6 +500,7 @@ public class AppConstants {
     public final static String ICON_REFRESH_KEY = "richwps_icon_refresh";
     public final static String ICON_PROCESS_KEY = "richwps_icon_process";
     public final static String ICON_PROCESS_REPLACE_KEY = "richwps_icon_process_replace";
+    public final static String ICON_REARRANGE_KEY = "richwps_icon_rearrange";
     public final static String ICON_PROCESSES_KEY = "richwps_icon_processes";
     public final static String ICON_PORTS_KEY = "richwps_icon_ports";
     public final static String ICON_PORT_BASE_KEY = "richwps_icon_port";

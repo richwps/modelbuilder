@@ -142,9 +142,11 @@ public class AppGraphView extends GraphView {
 
                 if (1 == selectedProcesses.size()) {
                     app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(true);
+                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REARRANGE_PORTS).setEnabled(true);
 
                 } else {
                     app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
+                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REARRANGE_PORTS).setEnabled(false);
                 }
             }
         });

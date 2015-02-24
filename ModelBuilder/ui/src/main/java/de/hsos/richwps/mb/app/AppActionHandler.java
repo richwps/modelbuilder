@@ -9,6 +9,7 @@ import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SAVE_MODEL_AS;
 import static de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS.SHOW_PREFERENCES;
 import de.hsos.richwps.mb.app.actions.IAppActionHandler;
+import de.hsos.richwps.mb.app.view.dialogs.portRearranger.PortRearranger;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
 import de.hsos.richwps.mb.app.view.dialogs.processReplacer.ProcessReplacerDialog;
 import de.hsos.richwps.mb.appEvents.AppEvent;
@@ -76,6 +77,9 @@ public class AppActionHandler implements IAppActionHandler {
                 break;
             case REPLACE_PROCESS:
                 doReplaceProcess();
+                break;
+            case REARRANGE_PORTS:
+                doRearrangePorts();
                 break;
             case PREVIEW_ROLA:
                 doPreview();
@@ -461,6 +465,11 @@ public class AppActionHandler implements IAppActionHandler {
 
     private void doReplaceProcess() {
         ProcessReplacerDialog dialog = new ProcessReplacerDialog(app.getFrame(), app.getProcessProvider(), app.getGraphView());
+        dialog.setVisible(true);
+    }
+
+    private void doRearrangePorts() {
+        PortRearranger dialog = new PortRearranger(app.getFrame(), getGraphView()); 
         dialog.setVisible(true);
     }
 }

@@ -498,6 +498,7 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.TEST).setEnabled(!graphIsEmpty);
         getActionProvider().getAction(APP_ACTIONS.PROFILE).setEnabled(!graphIsEmpty);
 
+        getActionProvider().getAction(APP_ACTIONS.REARRANGE_PORTS).setEnabled(hasSingleSelection);
         getActionProvider().getAction(APP_ACTIONS.REPLACE_PROCESS).setEnabled(hasSingleSelection);
     }
 

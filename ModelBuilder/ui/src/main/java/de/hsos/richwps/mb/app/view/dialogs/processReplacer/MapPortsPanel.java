@@ -2,7 +2,6 @@ package de.hsos.richwps.mb.app.view.dialogs.processReplacer;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import java.awt.Font;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +32,6 @@ public class MapPortsPanel extends JPanel {
         List<ProcessPort> targetOutputs = target.getOutputPorts();
 
         // set(up) layout
-        // one row for each input and output plus the header label row
         final int numRows = targetInputs.size() + targetOutputs.size() + 1;
         double[] layoutRows = new double[numRows];
         Arrays.fill(layoutRows, TableLayout.PREFERRED);

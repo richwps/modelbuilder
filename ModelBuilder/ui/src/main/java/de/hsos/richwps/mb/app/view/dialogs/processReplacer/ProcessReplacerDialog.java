@@ -8,7 +8,6 @@ import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.ui.MbDialog;
-import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.CardLayout;
 import java.awt.Container;
 import java.awt.Insets;

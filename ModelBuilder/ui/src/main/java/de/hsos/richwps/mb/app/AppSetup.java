@@ -206,6 +206,7 @@ public class AppSetup {
         UIManager.put(AppConstants.ICON_LAYOUT_KEY, new ImageIcon(iconDir + "zoom-fit-best-4.png", "layout icon"));
         UIManager.put(AppConstants.ICON_ADDPORTS_KEY, new ImageIcon(iconDir + "zoom-fit-height.png", "addports icon"));
         UIManager.put(AppConstants.ICON_PROCESS_REPLACE_KEY, new ImageIcon(iconDir + "process_replace.png", "process replace icon"));
+        UIManager.put(AppConstants.ICON_REARRANGE_KEY, new ImageIcon(iconDir + "distribute-horizontal-center.png", "rearrange icon"));
 
         // Tools Menu Icons
         // Help Menu Icons
