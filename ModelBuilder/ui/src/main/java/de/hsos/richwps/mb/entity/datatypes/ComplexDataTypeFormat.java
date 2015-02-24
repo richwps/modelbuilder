@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.entity.datatypes;
 
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -65,7 +66,7 @@ public class ComplexDataTypeFormat implements Serializable {
                     = "<html><b>MimeType: "
                     + ComplexDataTypeFormat.getValueForViews(mimeType)
                     + "</b>";
-            
+
             if (null != schema && !schema.isEmpty()) {
                 toolTipText += "<br/>&nbsp;&nbsp;Schema: "
                         + ComplexDataTypeFormat.getValueForViews(schema);
@@ -74,7 +75,7 @@ public class ComplexDataTypeFormat implements Serializable {
                 toolTipText += "<br/>&nbsp;&nbsp;Encoding: "
                         + ComplexDataTypeFormat.getValueForViews(encoding);
             }
-            
+
             toolTipText += "</html>";
         }
 
@@ -122,8 +123,13 @@ public class ComplexDataTypeFormat implements Serializable {
         if (null == val2) {
             val2 = "";
         }
-        
+
         return val1.equals(val2);
+    }
+
+    @Override
+    public String toString() {
+        return "ComplexDataTypeFormat{" + "mimeType=" + UiHelper.avoidNull(mimeType) + ", schema=" + UiHelper.avoidNull(schema) + ", encoding=" + UiHelper.avoidNull(encoding) + '}';
     }
 
 }

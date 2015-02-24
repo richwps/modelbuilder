@@ -200,12 +200,12 @@ public class SpEntityConverter {
         inPort.setPropertyValue(ProcessInputPort.PROPERTY_KEY_MAXOCCURS, spInput.getMaxOccurs());
 
         switch (datatype) {
-            case LITERAL:                
+            case LITERAL:
                 LiteralData spInputData = (LiteralData) inputFormChoice;
                 convertLiteralPort(inputFormChoice, inPort);
                 // TODO set default value ! (SP Ticket #2)
                 //spInputData.getDataType()
-                
+
                 break;
 
             case COMPLEX:
@@ -269,8 +269,9 @@ public class SpEntityConverter {
         // convert supported formats
         ComplexDataCombination[] supportedFormats = spComplexData.getSupportedFormats();
         List<ComplexDataTypeFormat> formats = complexDesc.getFormats();
-        for (ComplexDataCombination aSpFormat : supportedFormats) {
-            formats.add(createComplexFormat(aSpFormat));
+        
+        for (ComplexDataCombination supportedFormat : supportedFormats) {
+            formats.add(createComplexFormat(supportedFormat));
         }
 
         port.setPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION, complexDesc);

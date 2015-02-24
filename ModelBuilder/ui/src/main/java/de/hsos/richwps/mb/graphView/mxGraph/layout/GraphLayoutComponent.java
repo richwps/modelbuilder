@@ -4,7 +4,6 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
-import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphEdge;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import java.util.Arrays;
@@ -12,49 +11,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-/**
- * Stores temporary information about a cell's logical position inside the graph
- * for layouting.
- *
- * @author dziegenh
- */
-class CellInfo {
-
-    int xPos = -1;
-
-    int maxDownEdges = 0;
-    int maxUpEdges = 0;
-
-    void updateMaxDownIfPossible(int value) {
-        maxDownEdges = Math.max(maxDownEdges, value);
-    }
-
-    void updateMaxUpIfPossible(int value) {
-        maxUpEdges = Math.max(maxUpEdges, value);
-    }
-
-    /**
-     * Sets the X-Position only if it has not already been set.
-     *
-     * @param x
-     * @return
-     */
-    boolean updateXPosIfPossible(int x) {
-        if (-1 == xPos) {
-            xPos = x;
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return "" + xPos;
-//        return maxUpEdges + " " + maxDownEdges + ", x: " + xPos;
-    }
-
-}
 
 /**
  *
@@ -316,32 +272,7 @@ class EdgeSourceXComparator implements Comparator<Object> {
 
 }
 
-class CellXComparator implements Comparator<Object> {
 
-    @Override
-    public int compare(Object cell1, Object cell2) {
-        if (!(cell1 instanceof mxCell) || !(cell2 instanceof mxCell)) {
-            return 0;
-        }
-
-        mxCell mxCell1 = (mxCell) cell1;
-        mxCell mxCell2 = (mxCell) cell2;
-
-        double c1x = Graph.getAbsoluteCellX(mxCell1);
-        double c2x = Graph.getAbsoluteCellX(mxCell2);
-        double diff = (c1x - c2x);
-
-        // better check value explicit instead of just casting to int
-        if (diff < 0) {
-            return -1;
-        } else if (diff == 0) {
-            return 0;
-        } else {
-            return 1;
-        }
-    }
-
-}
 
 class CellInfoXPosComparator implements Comparator<Object> {
 
