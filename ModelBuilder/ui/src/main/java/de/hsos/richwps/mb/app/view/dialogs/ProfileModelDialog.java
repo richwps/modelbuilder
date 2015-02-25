@@ -153,7 +153,6 @@ public class ProfileModelDialog extends ADialog {
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Test opend model");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         navpanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
