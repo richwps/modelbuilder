@@ -23,6 +23,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * Handles all app actions (e.g. user interactions with the GUI).
@@ -464,7 +465,8 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doReplaceProcess() {
-        ProcessReplacerDialog dialog = new ProcessReplacerDialog(app.getFrame(), app.getProcessProvider(), app.getGraphView());
+        DefaultMutableTreeNode processesNode = app.getMainTreeView().getProcessesNode();
+        ProcessReplacerDialog dialog = new ProcessReplacerDialog(app, app.getFrame(), app.getProcessProvider(), app.getGraphView(), processesNode);
         dialog.setVisible(true);
     }
 

@@ -205,4 +205,8 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
         AppEventService.getInstance().fireAppEvent(msgSb.toString(), AppConstants.INFOTAB_ID_SEMANTICPROXY);
     }
+
+    public DefaultMutableTreeNode getProcessesNode() {
+        return this.processesNode;
+    }
 }

@@ -33,6 +33,12 @@ public class WpsServer {
 
     @Override
     public String toString() {
+        StringBuilder sb = new StringBuilder(endpoint.length() + 10);
+        String processString = "0";
+        if (null != this.processes) {
+            processString = "" + this.processes.size();
+        }
+        sb.append(this.endpoint).append(" [").append(processString).append("]");
         return endpoint;
     }
 
@@ -76,7 +82,7 @@ public class WpsServer {
         if (null != this.processes) {
             hash = 13 * hash + Objects.hashCode(this.processes);
         }
-        
+
         return hash;
     }
 

@@ -46,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.UIManager;
+import javax.swing.tree.DefaultMutableTreeNode;
 import layout.TableLayout;
 
 /**
@@ -848,6 +849,10 @@ public class App {
     void showErrorMessage(String message) {
         AppAction action = getActionProvider().getAction(APP_ACTIONS.SHOW_ERROR_MSG);
         action.fireActionPerformed(message);
+    }
+
+    public DefaultMutableTreeNode getMainTreeProcessesNode() {
+        return getMainTreeView().getProcessesNode();
     }
 
 }
