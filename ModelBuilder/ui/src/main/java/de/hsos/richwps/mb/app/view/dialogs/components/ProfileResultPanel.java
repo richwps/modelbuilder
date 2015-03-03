@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.richWPS.entity.IRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 /**
@@ -85,6 +87,36 @@ public class ProfileResultPanel extends APanel {
         }
     }
 
+    public static void tableResize(JTable table) {
+        table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
+
+        for (int column = 0; column < table.getColumnCount(); column++)
+        {
+            TableColumn tableColumn = table.getColumnModel().getColumn(column);
+            int preferredWidth = tableColumn.getMinWidth();
+            int maxWidth = tableColumn.getMaxWidth();
+
+            for (int row = 0; row < table.getRowCount(); row++)
+            {
+                TableCellRenderer cellRenderer = table.getCellRenderer(row, column);
+                Component c = table.prepareRenderer(cellRenderer, row, column);
+                int width = c.getPreferredSize().width + table.getIntercellSpacing().width;
+                preferredWidth = Math.max(preferredWidth, width);
+
+                //  We've exceeded the maximum width, no need to check other rows
+
+                if (preferredWidth >= maxWidth)
+                {
+                    preferredWidth = maxWidth;
+                    break;
+                }
+            }
+
+            tableColumn.setPreferredWidth( preferredWidth );
+        }
+    }
+    
+    
     private void renderResults(ProfileRequest request) {
         this.request = (ProfileRequest) request;
         HashMap results = this.request.getResults();
@@ -109,6 +141,10 @@ public class ProfileResultPanel extends APanel {
         this.timestepsTable.getTableHeader().setFont(new Font(currentfontname, Font.BOLD, currentfonsize));
         this.timestepsTable.setAutoCreateRowSorter(true);
         this.timestepsTable.setVisible(true);
+        
+        //Resizing table columns for content
+        this.tableResize(timestepsTable);
+        
         this.resultPane.setViewportView(timestepsTable);
         this.resultPane.setVisible(true);
         this.loadingLabel.setVisible(false);
