@@ -1,10 +1,11 @@
 package de.hsos.richwps.mb.app.view.dialogs.components.renderer;
 
+import de.hsos.richwps.mb.ui.MultilineLabel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.net.URL;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -28,7 +29,9 @@ public class ResultTableDataCell extends JPanel implements TableCellRenderer {
         this.setLayout(flow);
         this.setBackground(Color.WHITE);
         Object cellvalue = table.getValueAt(row, column);
-        JLabel label = new JLabel();
+        MultilineLabel label = new MultilineLabel();
+        label.setPreferredSize(new Dimension(300,48));
+        
         if (cellvalue instanceof URL) {
             String httpuri = ((URL) cellvalue).toString();
             String abbString = StringUtils.abbreviateMiddle(httpuri, "[...]", 50);

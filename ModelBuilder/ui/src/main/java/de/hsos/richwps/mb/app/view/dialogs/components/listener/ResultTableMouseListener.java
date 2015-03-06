@@ -28,16 +28,16 @@ public class ResultTableMouseListener  extends MouseAdapter {
                 Object value = table.getValueAt(row, column);
                 if (value instanceof JButton) {
 
-                    ((JButton) value).getModel().setPressed(true);
-                    ((JButton) value).getModel().setArmed(true);
-                    ((JButton) value).doClick();                //perform action
-                    try {
+                    /*((JButton) value).getModel().setPressed(true);
+                    ((JButton) value).getModel().setArmed(true);*/
+                    ((JButton) value).doClick(500);
+                    ((JButton) value).revalidate();
+                    /*try {
                         Thread.sleep(500);
                     } catch (InterruptedException ex) {
                     }
                     ((JButton) value).getModel().setPressed(false);
-                    ((JButton) value).getModel().setArmed(false);
-
+                    ((JButton) value).getModel().setArmed(false);*/
                 }
             }
         }

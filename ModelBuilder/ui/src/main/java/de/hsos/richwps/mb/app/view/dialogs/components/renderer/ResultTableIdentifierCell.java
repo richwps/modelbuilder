@@ -19,6 +19,7 @@ public class ResultTableIdentifierCell extends JPanel implements TableCellRender
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         this.removeAll();
         FlowLayout flow = new FlowLayout();
+        flow.setAlignOnBaseline(true);
         flow.setAlignment(FlowLayout.LEFT);
         flow.setAlignOnBaseline(true);
         this.setLayout(flow);

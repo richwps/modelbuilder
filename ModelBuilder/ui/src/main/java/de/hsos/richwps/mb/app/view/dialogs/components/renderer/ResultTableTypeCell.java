@@ -23,6 +23,7 @@ public class ResultTableTypeCell extends JPanel implements TableCellRenderer {
         this.removeAll();
         FlowLayout flow = new FlowLayout();
         flow.setAlignment(FlowLayout.LEFT);
+        flow.setAlignOnBaseline(true);
         this.setLayout(flow);
         this.setBackground(Color.WHITE);
         String cellvalue = (String) table.getValueAt(row, column);
