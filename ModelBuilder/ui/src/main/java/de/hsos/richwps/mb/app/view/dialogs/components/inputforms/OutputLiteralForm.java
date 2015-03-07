@@ -62,6 +62,7 @@ public class OutputLiteralForm extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         titleLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
@@ -73,38 +74,66 @@ public class OutputLiteralForm extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(500, 200));
         setName(""); // NOI18N
         setPreferredSize(new java.awt.Dimension(500, 200));
-        setLayout(new java.awt.GridLayout(3, 2, -300, 0));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWeights = new double[] {0.1};
+        layout.rowWeights = new double[] {0.1};
+        setLayout(layout);
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setLabelFor(titleValue);
         titleLabel.setText("Title:");
-        add(titleLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        add(titleLabel, gridBagConstraints);
 
         titleValue.setEditable(false);
-        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
+        titleValue.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(titleValue);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.weighty = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        add(titleValue, gridBagConstraints);
 
         abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         abstractLabel.setLabelFor(abstractValue);
         abstractLabel.setText("Abstract:");
-        add(abstractLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(abstractLabel, gridBagConstraints);
 
         abstractValue.setEditable(false);
-        abstractValue.setBackground(java.awt.SystemColor.control);
+        abstractValue.setBackground(titleValue.getBackground());
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
         abstractValue.setRows(2);
+        abstractValue.setBorder(titleValue.getBorder());
         abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(abstractValue);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.weighty = 0.9;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        add(abstractValue, gridBagConstraints);
 
         selectOutput.setText("Select");
-        add(selectOutput);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        add(selectOutput, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 

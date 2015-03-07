@@ -11,6 +11,8 @@ import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.app.view.dialogs.components.ProcessPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.ServerPanel;
 import de.hsos.richwps.mb.richWPS.boundary.RequestFactory;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
@@ -27,6 +29,8 @@ public class UndeployDialog extends ADialog {
 
     private ServerPanel serverselectionpanel;
     private ProcessPanel processesselectionpanel;
+
+    GridBagConstraints gridBagConstraints;
 
     /**
      * Describe-Request for discovery.
@@ -48,6 +52,13 @@ public class UndeployDialog extends ADialog {
     public UndeployDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
         super(parent, AppConstants.DEPLOY_DIALOG_TITLE);
 
+        //Contraints to enable window-rescaling
+        this.gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 1.0;
+        
         this.provider = new RichWPSProvider();
         this.desc_request = new DescribeRequest();
         this.serverids = severids;
@@ -58,6 +69,12 @@ public class UndeployDialog extends ADialog {
         this.backButton.setVisible(false);
         this.showServersPanel();
     }
+    
+    
+    private void addWithScaling(Component panel) {
+        this.getContentPane().add(panel, this.gridBagConstraints);
+    }
+
 
     /**
      * Shows serverselection panel.
@@ -75,7 +92,7 @@ public class UndeployDialog extends ADialog {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
         }
-        this.add(this.serverselectionpanel);
+        this.addWithScaling(this.serverselectionpanel);
         this.pack();
         this.currentPanel = serverselectionpanel;
     }
@@ -105,7 +122,7 @@ public class UndeployDialog extends ADialog {
         this.processesselectionpanel = new ProcessPanel(this.provider, this.desc_request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.processesselectionpanel);
+        this.addWithScaling(this.processesselectionpanel);
         this.pack();
         this.currentPanel = processesselectionpanel;
     }

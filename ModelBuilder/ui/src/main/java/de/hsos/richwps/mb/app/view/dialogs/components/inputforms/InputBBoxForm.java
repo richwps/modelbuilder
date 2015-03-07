@@ -232,13 +232,15 @@ public class InputBBoxForm extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         titleLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
         abstractLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         abstractValue = new javax.swing.JTextArea();
         occursLabel = new javax.swing.JLabel();
-        occurs = new javax.swing.JLabel();
+        occurs = new javax.swing.JTextArea();
         typeLabel = new javax.swing.JLabel();
         selectType = new javax.swing.JComboBox();
         valueLabel1 = new javax.swing.JLabel();
@@ -253,47 +255,111 @@ public class InputBBoxForm extends javax.swing.JPanel {
         setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.Color.gray));
         setMinimumSize(new java.awt.Dimension(500, 200));
         setPreferredSize(new java.awt.Dimension(500, 250));
-        setLayout(new java.awt.GridLayout(8, 2, -200, 0));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWeights = new double[] {0.1};
+        layout.rowWeights = new double[] {0.1};
+        setLayout(layout);
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setLabelFor(titleValue);
         titleLabel.setText("Title:");
-        add(titleLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(titleLabel, gridBagConstraints);
 
         titleValue.setEditable(false);
-        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
+        titleValue.setText("Lorem ipsum");
+        titleValue.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         titleValue.setMinimumSize(new java.awt.Dimension(16, 32));
-        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(titleValue);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(titleValue, gridBagConstraints);
 
         abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         abstractLabel.setLabelFor(abstractValue);
         abstractLabel.setText("Abstract:");
-        add(abstractLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(abstractLabel, gridBagConstraints);
+
+        jScrollPane1.setBackground(titleValue.getBackground());
+        jScrollPane1.setBorder(titleValue.getBorder());
 
         abstractValue.setEditable(false);
-        abstractValue.setBackground(java.awt.SystemColor.control);
+        abstractValue.setBackground(titleValue.getBackground());
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
         abstractValue.setRows(2);
+        abstractValue.setText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.");
+        abstractValue.setBorder(null);
         abstractValue.setMinimumSize(new java.awt.Dimension(16, 32));
-        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(abstractValue);
+        jScrollPane1.setViewportView(abstractValue);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        gridBagConstraints.weighty = 1.0;
+        add(jScrollPane1, gridBagConstraints);
 
         occursLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         occursLabel.setText("Occurs:");
-        add(occursLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(occursLabel, gridBagConstraints);
 
-        occurs.setText(".");
-        add(occurs);
+        occurs.setEditable(false);
+        occurs.setColumns(20);
+        occurs.setLineWrap(true);
+        occurs.setRows(2);
+        occurs.setText("Min: 42 Max: 42");
+        occurs.setToolTipText("");
+        occurs.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+        occurs.setMinimumSize(new java.awt.Dimension(16, 32));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(occurs, gridBagConstraints);
 
         typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         typeLabel.setLabelFor(selectType);
         typeLabel.setText("CRS-Type:");
-        add(typeLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(typeLabel, gridBagConstraints);
 
         selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "$Supported-CRS-Types" }));
         selectType.setMinimumSize(new java.awt.Dimension(16, 27));
@@ -302,13 +368,27 @@ public class InputBBoxForm extends javax.swing.JPanel {
                 selectTypeActionPerformed(evt);
             }
         });
-        add(selectType);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(selectType, gridBagConstraints);
 
         valueLabel1.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel1.setLabelFor(lowerCornerXCoords);
         valueLabel1.setText("LowerCorner Coordinates X:");
         valueLabel1.setToolTipText("LowerCorner Coordinates X");
-        add(valueLabel1);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(valueLabel1, gridBagConstraints);
         valueLabel1.getAccessibleContext().setAccessibleDescription("");
 
         lowerCornerXCoords.setText("-2.0");
@@ -318,38 +398,87 @@ public class InputBBoxForm extends javax.swing.JPanel {
                 lowerCornerXCoordsActionPerformed(evt);
             }
         });
-        add(lowerCornerXCoords);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(lowerCornerXCoords, gridBagConstraints);
         lowerCornerXCoords.getAccessibleContext().setAccessibleName("lowerCornerXCoords");
 
         valueLabel2.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel2.setLabelFor(lowerCornerYCoords);
-        valueLabel2.setText("Y:");
-        add(valueLabel2);
+        valueLabel2.setText("LowerCorner Coordinates Y:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(valueLabel2, gridBagConstraints);
 
         lowerCornerYCoords.setText("-1.0");
         lowerCornerYCoords.setMinimumSize(new java.awt.Dimension(84, 28));
-        add(lowerCornerYCoords);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(lowerCornerYCoords, gridBagConstraints);
         lowerCornerYCoords.getAccessibleContext().setAccessibleName("lowerCornerYCoords");
 
         valueLabel3.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel3.setLabelFor(upperCornerXCoords);
         valueLabel3.setText("UpperCorner Coordinates X:");
         valueLabel3.setToolTipText("UpperCorner Coordinates X");
-        add(valueLabel3);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(valueLabel3, gridBagConstraints);
 
         upperCornerXCoords.setText("3.0");
         upperCornerXCoords.setMinimumSize(new java.awt.Dimension(84, 28));
-        add(upperCornerXCoords);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(upperCornerXCoords, gridBagConstraints);
         upperCornerXCoords.getAccessibleContext().setAccessibleName("upperCornerXCoords");
 
         valueLabel4.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         valueLabel4.setLabelFor(upperCornerYCoords);
-        valueLabel4.setText("Y:");
-        add(valueLabel4);
+        valueLabel4.setText("LowerCorner Coordinates Y:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.2;
+        add(valueLabel4, gridBagConstraints);
 
         upperCornerYCoords.setText("4.0");
         upperCornerYCoords.setMinimumSize(new java.awt.Dimension(84, 28));
-        add(upperCornerYCoords);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.8;
+        add(upperCornerYCoords, gridBagConstraints);
         upperCornerYCoords.getAccessibleContext().setAccessibleName("upperCornerYCoords");
     }// </editor-fold>//GEN-END:initComponents
 
@@ -365,9 +494,10 @@ public class InputBBoxForm extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel abstractLabel;
     private javax.swing.JTextArea abstractValue;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField lowerCornerXCoords;
     private javax.swing.JTextField lowerCornerYCoords;
-    private javax.swing.JLabel occurs;
+    private javax.swing.JTextArea occurs;
     private javax.swing.JLabel occursLabel;
     private javax.swing.JComboBox selectType;
     private javax.swing.JLabel titleLabel;

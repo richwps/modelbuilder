@@ -9,11 +9,20 @@ import de.hsos.richwps.mb.ui.UiHelper;
 import de.hsos.richwps.mb.app.view.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.ProfileResultPanel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.LayoutManager;
 import java.util.ArrayList;
 import java.util.Map;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  * A dialog that displays three consecutive panels for inputparameterisation,
@@ -27,6 +36,9 @@ public class ProfileModelDialog extends ADialog {
     private InputPanel inputspanel;
     private OutputPanel outputsspanel;
     private ProfileResultPanel resultpanel;
+    
+    GridBagConstraints gridBagConstraints;
+
 
     private ProfileRequest request;
 
@@ -42,6 +54,14 @@ public class ProfileModelDialog extends ADialog {
      */
     public ProfileModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
         super(parent, AppConstants.PROFILE_THIS_DIALOG_TITLE);
+        
+        //Contraints to enable window-rescaling
+        this.gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 1.0;
+        
         this.currentPanel = null;
         this.request = manager.getProfileRequest();
         this.provider = new RichWPSProvider();
@@ -58,6 +78,10 @@ public class ProfileModelDialog extends ADialog {
         this.showInputsPanel(false);
     }
 
+    private void addWithScaling(Component panel) {
+        this.getContentPane().add(panel, this.gridBagConstraints);
+    }
+    
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
@@ -72,12 +96,12 @@ public class ProfileModelDialog extends ADialog {
             this.remove(this.currentPanel);
             this.currentPanel.setVisible(false);
         }
-
-        this.add(this.inputspanel);
+        
+        this.addWithScaling(this.inputspanel);
         this.pack();
         this.currentPanel = inputspanel;
     }
-
+    
     /**
      * Switches from parameterizeinputspanel to parameterizeoutputsspanel.
      */
@@ -102,7 +126,8 @@ public class ProfileModelDialog extends ADialog {
         this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.outputsspanel);
+        
+        this.addWithScaling(this.outputsspanel);
         this.pack();
         this.currentPanel = outputsspanel;
 
@@ -121,17 +146,20 @@ public class ProfileModelDialog extends ADialog {
         //refresh the perform
         this.currentPanel.updateRequest();
         this.request = (ProfileRequest) this.currentPanel.getRequest();
-        //in case the perform was allready used.
+        //in case the perform was already used.
         this.request.flushException();
         this.request.flushResults();
 
         this.resultpanel = new ProfileResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.resultpanel);
+        
+        
+        this.addWithScaling(this.resultpanel);
         this.pack();
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);
+
 
         this.resultpanel.profileProcess();
     }
@@ -153,7 +181,10 @@ public class ProfileModelDialog extends ADialog {
         abortButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        new java.awt.GridBagLayout().columnWeights = new double[] {0.1};
+        new java.awt.GridBagLayout().rowWeights = new double[] {0.1};
+        getContentPane().setLayout(layout);
 
         navpanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
@@ -162,7 +193,7 @@ public class ProfileModelDialog extends ADialog {
         previewButton.setText("Preview");
         previewButton.setToolTipText("Preview request");
         previewButton.setMinimumSize(new java.awt.Dimension(70, 32));
-        previewButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        previewButton.setPreferredSize(new java.awt.Dimension(100, 32));
         previewButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 previewButtonActionPerformed(evt);
@@ -207,6 +238,7 @@ public class ProfileModelDialog extends ADialog {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
         getContentPane().add(navpanel, gridBagConstraints);
 

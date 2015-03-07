@@ -104,6 +104,7 @@ public class OutputBBoxForm extends javax.swing.JPanel {
         titleLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
         abstractLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         abstractValue = new javax.swing.JTextArea();
         typeLabel = new javax.swing.JLabel();
         selectType = new javax.swing.JComboBox();
@@ -113,33 +114,40 @@ public class OutputBBoxForm extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(500, 200));
         setPreferredSize(new java.awt.Dimension(500, 250));
         setRequestFocusEnabled(false);
-        setLayout(new java.awt.GridLayout(5, 2, -400, 0));
+        setLayout(new java.awt.GridLayout(5, 2, -200, 0));
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setText("Title:");
         add(titleLabel);
 
         titleValue.setEditable(false);
-        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
         titleValue.setRows(2);
+        titleValue.setText("Lorem ipsum");
+        titleValue.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
         add(titleValue);
 
         abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         abstractLabel.setText("Abstract:");
         add(abstractLabel);
 
+        jScrollPane1.setBackground(titleValue.getBackground());
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
+
         abstractValue.setEditable(false);
-        abstractValue.setBackground(java.awt.SystemColor.control);
+        abstractValue.setBackground(titleValue.getBackground());
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
         abstractValue.setRows(2);
+        abstractValue.setText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.     Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,");
+        abstractValue.setToolTipText("");
+        abstractValue.setBorder(null);
         abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(abstractValue);
+        jScrollPane1.setViewportView(abstractValue);
+
+        add(jScrollPane1);
 
         typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         typeLabel.setText("CRS-Type:");
@@ -157,6 +165,7 @@ public class OutputBBoxForm extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel abstractLabel;
     private javax.swing.JTextArea abstractValue;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JCheckBox selectOutput;
     private javax.swing.JComboBox selectType;
     private javax.swing.JLabel titleLabel;

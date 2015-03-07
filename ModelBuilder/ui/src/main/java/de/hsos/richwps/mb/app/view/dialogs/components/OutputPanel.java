@@ -94,7 +94,19 @@ public class OutputPanel extends APanel {
     }
 
     /**
-     *
+     * Adds padding around the panel-form-elements
+     * without it the labels would be merged with the borders
+     */
+    private void addTiledComponentPadding(javax.swing.JPanel pan) {
+        pan.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                new javax.swing.border.EtchedBorder(),
+                new javax.swing.border.EmptyBorder(5, 5, 5, 5)    
+            )
+        );
+    }
+    
+    /**
+     * Creates and adds outputpanels based on outputdescriptions.
      */
     @Override
     public void prepare() {
@@ -109,18 +121,21 @@ public class OutputPanel extends APanel {
         for (IOutputValue description : this.request.getOutputs()) {
             if (description instanceof OutputLiteralDataDescription) {
                 OutputLiteralForm pan = new OutputLiteralForm((OutputLiteralDataDescription) description);
+                this.addTiledComponentPadding(pan);
                 TitledComponent tc = new TitledComponent(description.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
             } else if (description instanceof OutputComplexDataDescription) {
                 OutputComplexForm pan = new OutputComplexForm((OutputComplexDataDescription) description);
+                this.addTiledComponentPadding(pan);
                 TitledComponent tc = new TitledComponent(description.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
                 this.panels.add(tc);
             } else if (description instanceof OutputBoundingBoxDataDescription) {
                 OutputBBoxForm pan = new OutputBBoxForm((OutputBoundingBoxDataDescription) description);
+                this.addTiledComponentPadding(pan);
                 TitledComponent tc = new TitledComponent(description.getIdentifier(), pan, TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
                 tc.setTitleBold();
@@ -300,7 +315,7 @@ public class OutputPanel extends APanel {
         selectAllButton.setText("Select All");
         selectAllButton.setMaximumSize(new java.awt.Dimension(80, 32));
         selectAllButton.setMinimumSize(new java.awt.Dimension(70, 32));
-        selectAllButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        selectAllButton.setPreferredSize(new java.awt.Dimension(100, 32));
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectAllButtonActionPerformed(evt);
@@ -311,7 +326,7 @@ public class OutputPanel extends APanel {
         expandButton.setText("Expand all");
         expandButton.setMaximumSize(new java.awt.Dimension(80, 32));
         expandButton.setMinimumSize(new java.awt.Dimension(70, 32));
-        expandButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        expandButton.setPreferredSize(new java.awt.Dimension(100, 32));
         expandButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 expandButtonActionPerformed(evt);
@@ -323,7 +338,6 @@ public class OutputPanel extends APanel {
 
         outputsPanelScrollPane.setBorder(null);
         outputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        outputsPanelScrollPane.setViewportBorder(null);
         outputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
         outputsPanelScrollPane.setName(""); // NOI18N
         outputsPanelScrollPane.setPreferredSize(null);

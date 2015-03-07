@@ -10,6 +10,8 @@ import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.richWPS.boundary.RequestFactory;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
@@ -29,6 +31,8 @@ public class ExecuteModelDialog extends ADialog {
     private ResultPanel resultpanel;
     private ExecuteRequest request;
 
+    GridBagConstraints gridBagConstraints;
+
     /**
      * Creates new form ExecuteModelDialog, starting with the
      * inputparamerization.
@@ -43,6 +47,14 @@ public class ExecuteModelDialog extends ADialog {
     public ExecuteModelDialog(java.awt.Frame parent, boolean modal,
             final String serverid, final String processid) {
         super(parent, AppConstants.EXECUTE_THIS_DIALOG_TITLE);
+        
+        //Contraints to enable window-rescaling
+        this.gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 1.0;
+        
         this.currentPanel = null;
         this.request = (ExecuteRequest) RequestFactory.createExecuteRequest(serverid, processid);
         this.provider = new RichWPSProvider();
@@ -68,6 +80,10 @@ public class ExecuteModelDialog extends ADialog {
         this.showInputsPanel(false);
     }
 
+    private void addWithScaling(Component panel) {
+        this.getContentPane().add(panel, this.gridBagConstraints);
+    }
+
     /**
      * Switches from processselectionpanel to parameterizeinputspanel.
      */
@@ -83,7 +99,7 @@ public class ExecuteModelDialog extends ADialog {
             this.currentPanel.setVisible(false);
         }
 
-        this.add(this.inputspanel);
+        this.addWithScaling(this.inputspanel);
         this.pack();
         this.currentPanel = inputspanel;
     }
@@ -112,7 +128,7 @@ public class ExecuteModelDialog extends ADialog {
         this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.outputsspanel);
+        this.addWithScaling(this.outputsspanel);
         this.pack();
         this.currentPanel = outputsspanel;
 
@@ -144,7 +160,7 @@ public class ExecuteModelDialog extends ADialog {
         this.resultpanel = new ResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.resultpanel);
+        this.addWithScaling(this.resultpanel);
         this.pack();
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);

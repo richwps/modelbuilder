@@ -7,6 +7,8 @@ import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ProfileRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.TestRequest;
 import de.hsos.richwps.mb.app.view.dialogs.components.renderer.VariablesTable;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -162,7 +164,7 @@ public class VariablesPanel extends APanel {
         selectAllButton.setText("Select All");
         selectAllButton.setMaximumSize(new java.awt.Dimension(80, 32));
         selectAllButton.setMinimumSize(new java.awt.Dimension(70, 32));
-        selectAllButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        selectAllButton.setPreferredSize(new java.awt.Dimension(85, 32));
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectAllButtonActionPerformed(evt);
@@ -175,7 +177,6 @@ public class VariablesPanel extends APanel {
         variablesPanelScrollPane.setBorder(null);
         variablesPanelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         variablesPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        variablesPanelScrollPane.setViewportBorder(null);
         variablesPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
 
         variablesSelection.setModel(new javax.swing.table.DefaultTableModel(
@@ -204,6 +205,7 @@ public class VariablesPanel extends APanel {
             }
             allSelected = true;
             this.selectAllButton.setText(AppConstants.DIALOG_BTN_DESELECT_ALL);
+            this.selectAllButton.setPreferredSize(new Dimension(90,32));
             return;
         }
 
@@ -214,6 +216,7 @@ public class VariablesPanel extends APanel {
 
         allSelected = false;
         this.selectAllButton.setText(AppConstants.DIALOG_BTN_SELECT_ALL);
+        this.selectAllButton.setPreferredSize(new Dimension(85,32));
     }//GEN-LAST:event_selectAllButtonActionPerformed
 
     /**

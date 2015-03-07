@@ -143,7 +143,7 @@ public class ProfileResultPanel extends APanel {
         this.timestepsTable.setVisible(true);
         
         //Resizing table columns for content
-        this.tableResize(timestepsTable);
+        ProfileResultPanel.tableResize(timestepsTable);
         
         this.resultPane.setViewportView(timestepsTable);
         this.resultPane.setVisible(true);
@@ -225,7 +225,6 @@ public class ProfileResultPanel extends APanel {
         add(loadingLabel, java.awt.BorderLayout.SOUTH);
 
         resultPane.setBorder(null);
-        resultPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         resultPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         resultPane.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         resultPane.setMinimumSize(new java.awt.Dimension(600, 600));

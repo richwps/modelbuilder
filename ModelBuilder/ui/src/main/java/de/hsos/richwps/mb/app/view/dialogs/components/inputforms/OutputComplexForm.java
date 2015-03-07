@@ -105,13 +105,17 @@ public class OutputComplexForm extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel1 = new javax.swing.JPanel();
         titleLabel = new javax.swing.JLabel();
         titleValue = new javax.swing.JTextArea();
         abstractLabel = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         abstractValue = new javax.swing.JTextArea();
         typeLabel = new javax.swing.JLabel();
         selectType = new javax.swing.JComboBox();
+        jPanel2 = new javax.swing.JPanel();
         selectAsReference = new javax.swing.JCheckBox();
         selectStore = new javax.swing.JCheckBox();
         selectOutput = new javax.swing.JCheckBox();
@@ -120,59 +124,120 @@ public class OutputComplexForm extends javax.swing.JPanel {
         setMinimumSize(new java.awt.Dimension(500, 200));
         setPreferredSize(new java.awt.Dimension(500, 250));
         setRequestFocusEnabled(false);
-        setLayout(new java.awt.GridLayout(5, 2, -400, 0));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
+
+        jPanel1.setMinimumSize(new java.awt.Dimension(200, 160));
+        java.awt.GridBagLayout jPanel1Layout = new java.awt.GridBagLayout();
+        jPanel1Layout.columnWeights = new double[] {0.1};
+        jPanel1Layout.rowWeights = new double[] {0.1};
+        jPanel1.setLayout(jPanel1Layout);
 
         titleLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         titleLabel.setText("Title:");
-        add(titleLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        jPanel1.add(titleLabel, gridBagConstraints);
 
         titleValue.setEditable(false);
-        titleValue.setBackground(java.awt.SystemColor.control);
         titleValue.setColumns(20);
         titleValue.setLineWrap(true);
-        titleValue.setRows(2);
+        titleValue.setRows(1);
+        titleValue.setText("Lorem ipsum ");
+        titleValue.setToolTipText("");
+        titleValue.setBorder(javax.swing.BorderFactory.createCompoundBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1)));
         titleValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        titleValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(titleValue);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        jPanel1.add(titleValue, gridBagConstraints);
 
         abstractLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         abstractLabel.setText("Abstract:");
-        add(abstractLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        jPanel1.add(abstractLabel, gridBagConstraints);
+
+        jScrollPane1.setBackground(titleValue.getBackground());
+        jScrollPane1.setBorder(titleValue.getBorder());
 
         abstractValue.setEditable(false);
-        abstractValue.setBackground(java.awt.SystemColor.control);
+        abstractValue.setBackground(titleValue.getBackground());
         abstractValue.setColumns(20);
         abstractValue.setLineWrap(true);
-        abstractValue.setRows(2);
+        abstractValue.setRows(1);
+        abstractValue.setText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.     Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,");
+        abstractValue.setToolTipText("");
+        abstractValue.setBorder(null);
+        abstractValue.setMargin(new java.awt.Insets(4, 0, 0, 0));
         abstractValue.setMinimumSize(new java.awt.Dimension(250, 32));
-        abstractValue.setPreferredSize(new java.awt.Dimension(300, 32));
-        add(abstractValue);
+        jScrollPane1.setViewportView(abstractValue);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.gridheight = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.weighty = 0.9;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 2, 0);
+        jPanel1.add(jScrollPane1, gridBagConstraints);
 
         typeLabel.setFont(new java.awt.Font("Droid Sans", 1, 12)); // NOI18N
         typeLabel.setText("Type:");
-        add(typeLabel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 5);
+        jPanel1.add(typeLabel, gridBagConstraints);
 
         selectType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         selectType.setPreferredSize(new java.awt.Dimension(450, 50));
-        add(selectType);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.7;
+        jPanel1.add(selectType, gridBagConstraints);
+
+        add(jPanel1);
+
+        jPanel2.setLayout(new java.awt.GridLayout(1, 3));
 
         selectAsReference.setSelected(true);
         selectAsReference.setText("As Reference");
         selectAsReference.setEnabled(false);
-        add(selectAsReference);
+        jPanel2.add(selectAsReference);
 
         selectStore.setText("Store");
         selectStore.setEnabled(false);
-        add(selectStore);
+        jPanel2.add(selectStore);
 
         selectOutput.setText("Select");
-        add(selectOutput);
+        jPanel2.add(selectOutput);
+
+        add(jPanel2);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel abstractLabel;
     private javax.swing.JTextArea abstractValue;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JCheckBox selectAsReference;
     private javax.swing.JCheckBox selectOutput;
     private javax.swing.JCheckBox selectStore;

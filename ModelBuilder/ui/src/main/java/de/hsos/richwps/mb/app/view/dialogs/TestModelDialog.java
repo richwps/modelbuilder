@@ -10,6 +10,8 @@ import de.hsos.richwps.mb.app.view.dialogs.components.InputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.OutputPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.TestResultPanel;
 import de.hsos.richwps.mb.app.view.dialogs.components.VariablesPanel;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
 import java.util.ArrayList;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -32,6 +34,8 @@ public class TestModelDialog extends ADialog {
     private TestRequest request;
     private Map<String, String> edges;
 
+    GridBagConstraints gridBagConstraints;
+
     /**
      * Creates new form ExecuteModelDialog, starting with the
      * inputparamerization.
@@ -44,6 +48,14 @@ public class TestModelDialog extends ADialog {
      */
     public TestModelDialog(java.awt.Frame parent, boolean modal, AppRichWPSManager manager) {
         super(parent, AppConstants.TEST_THIS_DIALOG_TITLE);
+        
+        //Contraints to enable window-rescaling
+        this.gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 1.0;
+        
         this.currentPanel = null;
         this.request = manager.getTestRequest();
         this.provider = new RichWPSProvider();
@@ -58,6 +70,11 @@ public class TestModelDialog extends ADialog {
         this.backButton.setText(AppConstants.DIALOG_BTN_BACK);
         this.abortButton.setText(AppConstants.DIALOG_BTN_CANCEL);
         this.showInputsPanel(false);
+    }
+    
+    
+    private void addWithScaling(Component panel) {
+        this.getContentPane().add(panel, this.gridBagConstraints);
     }
 
     /**
@@ -77,7 +94,7 @@ public class TestModelDialog extends ADialog {
             this.currentPanel.setVisible(false);
         }
 
-        this.add(this.inputspanel);
+        this.addWithScaling(this.inputspanel);
         this.pack();
         this.currentPanel = inputspanel;
     }
@@ -107,7 +124,7 @@ public class TestModelDialog extends ADialog {
             this.currentPanel.setVisible(false);
         }
 
-        this.add(this.variablespanel);
+        this.addWithScaling(this.variablespanel);
         this.pack();
         this.currentPanel = variablespanel;
     }
@@ -134,7 +151,7 @@ public class TestModelDialog extends ADialog {
         this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.outputsspanel);
+        this.addWithScaling(this.outputsspanel);
         this.pack();
         this.currentPanel = outputsspanel;
     }
@@ -165,7 +182,7 @@ public class TestModelDialog extends ADialog {
         this.resultpanel = new TestResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.resultpanel);
+        this.addWithScaling(this.resultpanel);
         this.pack();
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);

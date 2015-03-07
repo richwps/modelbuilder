@@ -13,7 +13,9 @@ import de.hsos.richwps.mb.richWPS.entity.impl.DescribeRequest;
 import de.hsos.richwps.mb.richWPS.entity.impl.ExecuteRequest;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.FileInputStream;
@@ -64,6 +66,12 @@ public class ExecuteDialog extends ADialog {
     private ExecuteRequest request;
 
     /**
+     * Contraints to enable window-rescaling
+     */
+    GridBagConstraints gridBagConstraints;
+
+    
+    /**
      * Creates new form ExecuteDialog, starting with the serverselection- panel.
      *
      * @param parent
@@ -73,6 +81,13 @@ public class ExecuteDialog extends ADialog {
     public ExecuteDialog(java.awt.Frame parent, boolean modal, List<String> severids) {
         super(parent, AppConstants.EXECUTE_DIALOG_TITLE);
         this.initComponents();
+        
+        //Contraints to enable window-rescaling
+        this.gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridwidth = java.awt.GridBagConstraints.RELATIVE;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.9;
+        gridBagConstraints.weighty = 1.0;
 
         this.serverids = severids;
         this.provider = new RichWPSProvider();
@@ -96,6 +111,10 @@ public class ExecuteDialog extends ADialog {
             }
         });
     }
+    
+    private void addWithScaling(Component panel) {
+        this.getContentPane().add(panel, this.gridBagConstraints);
+    }
 
     /**
      * Shows serverselection panel.
@@ -115,7 +134,8 @@ public class ExecuteDialog extends ADialog {
             this.currentPanel.setVisible(false);
         }
 
-        this.add(this.serverselectionpanel, java.awt.BorderLayout.CENTER);
+        this.addWithScaling(this.serverselectionpanel);
+        //this.add(this.serverselectionpanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = serverselectionpanel;
     }
@@ -160,7 +180,8 @@ public class ExecuteDialog extends ADialog {
         this.processesselectionpanel = new ProcessPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.processesselectionpanel, java.awt.BorderLayout.CENTER);
+        this.addWithScaling(this.processesselectionpanel);
+        //this.add(this.processesselectionpanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = processesselectionpanel;
     }
@@ -194,7 +215,8 @@ public class ExecuteDialog extends ADialog {
         this.inputspanel = new InputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.inputspanel, java.awt.BorderLayout.CENTER);
+        this.addWithScaling(this.inputspanel);
+        //this.add(this.inputspanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = inputspanel;
     }
@@ -228,7 +250,8 @@ public class ExecuteDialog extends ADialog {
         this.outputsspanel = new OutputPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.outputsspanel, java.awt.BorderLayout.CENTER);
+        this.addWithScaling(this.outputsspanel);
+        //this.add(this.outputsspanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = outputsspanel;
     }
@@ -261,7 +284,8 @@ public class ExecuteDialog extends ADialog {
         this.resultpanel = new ResultPanel(this.provider, this.request);
         this.remove(this.currentPanel);
         this.currentPanel.setVisible(false);
-        this.add(this.resultpanel, java.awt.BorderLayout.CENTER);
+        this.addWithScaling(this.resultpanel);
+        //this.add(this.resultpanel, java.awt.BorderLayout.CENTER);
         this.pack();
         this.currentPanel = resultpanel;
         this.currentPanel.setVisible(true);
@@ -281,6 +305,7 @@ public class ExecuteDialog extends ADialog {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         navpanel = new javax.swing.JPanel();
         loadButton = new javax.swing.JButton();
@@ -293,7 +318,10 @@ public class ExecuteDialog extends ADialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Execute a process");
-        getContentPane().setLayout(new java.awt.BorderLayout(5, 5));
+        java.awt.GridBagLayout layout = new java.awt.GridBagLayout();
+        layout.columnWeights = new double[] {0.1};
+        layout.rowWeights = new double[] {0.1};
+        getContentPane().setLayout(layout);
 
         navpanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
@@ -373,7 +401,12 @@ public class ExecuteDialog extends ADialog {
         });
         navpanel.add(abortButton);
 
-        getContentPane().add(navpanel, java.awt.BorderLayout.SOUTH);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
+        getContentPane().add(navpanel, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

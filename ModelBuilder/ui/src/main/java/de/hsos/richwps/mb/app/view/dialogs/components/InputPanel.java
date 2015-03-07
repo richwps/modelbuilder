@@ -100,6 +100,15 @@ public class InputPanel extends APanel {
         this.visualize();
     }
 
+    private void addTiledComponentPadding(javax.swing.JPanel pan) {
+        pan.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                new javax.swing.border.EtchedBorder(),
+                new javax.swing.border.EmptyBorder(5, 5, 5, 5)    
+            )
+        );
+    }
+    
+    
     /**
      * Creates and adds inputpanels based on inputdescriptions.
      */
@@ -124,6 +133,10 @@ public class InputPanel extends APanel {
                 } else {
                     pan = new InputLiteralForm((InputLiteralDataDescription) description);
                 }
+                
+                //Add some padding around the panel
+                this.addTiledComponentPadding(pan);
+                
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
@@ -143,6 +156,10 @@ public class InputPanel extends APanel {
                 } else {
                     pan = new InputComplexForm((InputComplexDataDescription) description);
                 }
+                
+                //Add some padding around the panel
+                this.addTiledComponentPadding(pan);
+                
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
@@ -162,6 +179,9 @@ public class InputPanel extends APanel {
                 } else {
                     pan = new InputBBoxForm((InputBoundingBoxDataDescription) description);
                 }
+                //Add some padding around the panel
+                this.addTiledComponentPadding(pan);
+                
                 TitledComponent tc = new TitledComponent(pan.getTitle(), pan,
                         TitledComponent.DEFAULT_TITLE_HEIGHT, true);
                 tc.fold();
@@ -379,13 +399,12 @@ public class InputPanel extends APanel {
         setLayout(new java.awt.BorderLayout(5, 5));
 
         stepDescriptionLabel.setFont(new java.awt.Font("Droid Sans", 1, 14)); // NOI18N
-        stepDescriptionLabel.setText("Please provide required inputdata.");
+        stepDescriptionLabel.setText("Please provide inputs:...");
         add(stepDescriptionLabel, java.awt.BorderLayout.NORTH);
 
         inputsPanelScrollPane.setBorder(null);
         inputsPanelScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         inputsPanelScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        inputsPanelScrollPane.setViewportBorder(null);
         inputsPanelScrollPane.setMinimumSize(new java.awt.Dimension(610, 550));
         inputsPanelScrollPane.setPreferredSize(null);
         add(inputsPanelScrollPane, java.awt.BorderLayout.CENTER);
@@ -394,7 +413,7 @@ public class InputPanel extends APanel {
 
         expandButton.setText("Expand all");
         expandButton.setMinimumSize(new java.awt.Dimension(70, 32));
-        expandButton.setPreferredSize(new java.awt.Dimension(70, 32));
+        expandButton.setPreferredSize(new java.awt.Dimension(100, 32));
         expandButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 expandButtonActionPerformed(evt);
