@@ -39,7 +39,7 @@ public class AppSplashScreen extends JWindow {
         msgLabel = new JLabel();
         msgLabel.setFont(msgLabel.getFont().deriveFont(Font.ITALIC));
         msgLabel.setBorder(new EmptyBorder(0, 10, 0, 0));
-        int msgLabelHeight = 20;
+        int msgLabelHeight = 26;
 
         long time = System.currentTimeMillis() / 1000;
         xmasEgg = 1418947261 < time && time < 1420761661;
