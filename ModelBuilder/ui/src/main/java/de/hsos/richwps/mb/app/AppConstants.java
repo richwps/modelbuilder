@@ -154,7 +154,7 @@ public class AppConstants {
     /**
      * Size of the about dialog.
      */
-    public static final Dimension ABOUT_DIALOG_SIZE = new Dimension(400, 490);
+    public static final Dimension ABOUT_DIALOG_SIZE = new Dimension(400, 500);
     /**
      * Main about dialog image.
      */
