@@ -76,8 +76,8 @@ public class InfoTabs extends JTabbedPane {
         if (!this.tabs.containsKey(id)) {
 
             // gets the index which will be used for add()
-            int index = getTabCount();  
-            
+            int index = getTabCount();
+
             InfoTabData tabData = new InfoTabData(id, getDefaultTabStatus(), index);
             tabs.put(id, tabData);
 
@@ -124,7 +124,7 @@ public class InfoTabs extends JTabbedPane {
     /**
      * Get current text of a specific tab.
      *
-     * @param tab
+     * @param tabId
      * @return
      */
     public String getOutput(String tabId) {
@@ -173,21 +173,28 @@ public class InfoTabs extends JTabbedPane {
         return defaultTabStatus;
     }
 
-    public void removeTab(String tabId) {
-        // when implementing this method: 
-        // removing a tab may influence the other tab's indices!
-        // thus, the tab indices may have to be updated in the InfoTabData 
-        // objects (=values of HashMap this.tabs)
-
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public void setIconKeyHighLight(String iconKeyHighLight) {
         this.iconKeyHighLight = iconKeyHighLight;
     }
 
     public void setIconKeyWarning(String iconKeyWarning) {
         this.iconKeyWarning = iconKeyWarning;
+    }
+
+    /**
+     * Resets the tab's text and status (icon).
+     *
+     * @param tabId
+     */
+    public void clearTabContents(String tabId) {
+        InfoTabPanel infoTabPanel = getInfoTabPanel(tabId);
+
+        // reset text
+        infoTabPanel.clear();
+
+        // reset icon
+        int idx = getIndex(tabId);
+        setTabStatus(idx, getDefaultTabStatus());
     }
 
 }

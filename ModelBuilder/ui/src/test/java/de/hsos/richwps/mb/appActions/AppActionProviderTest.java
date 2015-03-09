@@ -27,7 +27,8 @@ public class AppActionProviderTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        this.app = new App(new String[] {""});
+        this.app = new App();
+        this.app.setup(new String[] {""});
         this.appActionHandler = new AppActionHandler(app);
         this.instance = new AppActionProvider(appActionHandler);
     }

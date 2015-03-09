@@ -40,7 +40,7 @@ import javax.swing.UIManager;
  */
 public class AppSetup {
 
-    public static void setup(final App app, boolean debugMode) {
+    static void setup(final App app, boolean debugMode) {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception ex) {
@@ -184,7 +184,7 @@ public class AppSetup {
     /**
      * Loads icons into UIManager.
      */
-    public static void loadIcons() {
+    private static void loadIcons() {
         String iconDir = AppConstants.RES_ICONS_DIR + File.separator;
         String largeIconDir = iconDir + AppConstants.LARGE_ICON_DIR + File.separator;
 

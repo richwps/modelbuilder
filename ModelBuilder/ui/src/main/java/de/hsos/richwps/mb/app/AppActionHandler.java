@@ -143,7 +143,7 @@ public class AppActionHandler implements IAppActionHandler {
             if (null == remote || remote.isEmpty()) {
                 return;
             }
-
+            
             getGraphView().newGraph(remote);
             app.getFrame().resetGraphViewTitle();
 
@@ -201,6 +201,7 @@ public class AppActionHandler implements IAppActionHandler {
                     app.getFrame().setGraphViewTitle(filename);
                     app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
+                    
                     // A new model has been loaded => add change listener
                     app.modelLoaded();
 

@@ -37,7 +37,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -92,11 +91,11 @@ public class App {
     private SementicProxySearch semanticProxySearch;
 
     /**
-     * ModelBuilder entry point. Creates and connects all components.
+     * Creates and connects all ModelBuilder components.
      *
      * @param args
      */
-    public App(String[] args) {
+    public void setup(String[] args) {
         boolean debugMode = Arrays.asList(args).contains("debug");
         AppSetup.setup(this, debugMode);
     }
@@ -458,6 +457,11 @@ public class App {
      * called after a new model has been created or loaded.
      */
     void modelLoaded() {
+
+        // clear tab text and remove notification icons
+        getInfoTabs().clearTabContents(AppConstants.INFOTAB_ID_EDITOR);
+        getInfoTabs().clearTabContents(AppConstants.INFOTAB_ID_SERVER);
+
         getGraphView().setEnabled(true);
         getGraphView().modelLoaded();
 

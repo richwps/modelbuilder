@@ -54,5 +54,9 @@ public class InfoTabPanel extends JPanel {
         JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
         scrollBar.setValue(scrollBar.getMaximum());
     }
+    
+    void clear() {
+        textArea.setText("");
+    }
 
 }

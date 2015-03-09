@@ -43,7 +43,6 @@ public class GraphViewTest {
     private String inPort1Identifier;
     private String inPort1Abstract;
     private String inPort1Title;
-    private ProcessPortDatatype inPort1Datatype;
     private String complexDescriptionFormatMime;
     private String complexDescriptionFormatSchema;
     private String complexDescriptionFormatEncoding;
@@ -52,20 +51,15 @@ public class GraphViewTest {
     private String outPort1Title;
     private String outPort1Identifier;
     private String outPort1Abstract;
-    private ProcessPortDatatype outPort1Datatype;
     private ProcessEntity process;
     private ProcessPort inPort1;
     private ProcessPort outPort1;
     private String globalOutPort1Identifier;
     private String globalOutPort1Abstract;
     private String globalOutPort1Title;
-    private ProcessPortDatatype globalOutPort1Datatype;
     private ProcessPort globalOut1;
     private String filename;
-    private String modelIdentifier;
-    private String modelAbstract;
-    private String modelTitle;
-    private String modelVersion;
+
 
     public GraphViewTest() {
     }
@@ -86,12 +80,6 @@ public class GraphViewTest {
 
         instance = new GraphView();
 
-        // MODEL DATA
-        modelIdentifier = "M id";
-        modelAbstract = "M abstract";
-        modelTitle = "M title";
-        modelVersion = "M version";
-
         // PROCESS DATA
         processEntityServer = "PE server";
         processEntityIdentifier = "PE id";
@@ -102,7 +90,6 @@ public class GraphViewTest {
         inPort1Identifier = "PPIN1 id";
         inPort1Abstract = "PPIN1 abstract";
         inPort1Title = "PPIN1 title";
-        inPort1Datatype = ProcessPortDatatype.BOUNDING_BOX;
 
         // COMPLEX DATA
         complexDescriptionFormatMime = "CDTF mime";
@@ -115,13 +102,11 @@ public class GraphViewTest {
         outPort1Identifier = "PPOUT1 id";
         outPort1Abstract = "PPOUT1 abstract";
         outPort1Title = "PPOUT1 title";
-        outPort1Datatype = ProcessPortDatatype.LITERAL;
 
         // GLOBAL OUT 1 DATA
         globalOutPort1Identifier = "GLOBOUT1 id";
         globalOutPort1Abstract = "GLOBOUT1 abstract";
         globalOutPort1Title = "GLOBOUT1 title";
-        globalOutPort1Datatype = ProcessPortDatatype.COMPLEX;
 
         // CREATE PROCESS
         process = new ProcessEntity(processEntityServer, processEntityIdentifier);
@@ -147,7 +132,6 @@ public class GraphViewTest {
         globalOut1.setOwsIdentifier(globalOutPort1Identifier);
         globalOut1.setOwsAbstract(globalOutPort1Abstract);
         globalOut1.setOwsTitle(globalOutPort1Title);
-//        globalOut1.setDataTypeDescription(complexDescription);
     }
 
     private void deleteTestfile() {

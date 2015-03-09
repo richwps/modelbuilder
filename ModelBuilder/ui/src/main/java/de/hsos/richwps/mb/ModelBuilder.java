@@ -10,7 +10,8 @@ import de.hsos.richwps.mb.app.App;
 public class ModelBuilder {
 
     public static void main(String[] args) {
-        App app = new App(args);
+        App app = new App();
+        app.setup(new String[] {""});
     }
 
 }
