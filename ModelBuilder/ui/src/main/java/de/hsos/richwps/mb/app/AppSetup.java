@@ -166,9 +166,8 @@ public class AppSetup {
         }
 
         // set existing pseudo-filename to enable setting the "changes saved" status.
-        app.setCurrentModelFilename(".");
-        app.setChangesSaved(true);
         app.setCurrentModelFilename(null);
+        app.setChangesSaved(true);
 
         // update actions as no model is loaded
         app.getGraphView().setEnabled(false);

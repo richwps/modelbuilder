@@ -16,6 +16,7 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.mxGraph.Graph;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -143,15 +144,11 @@ public class AppActionHandler implements IAppActionHandler {
             if (null == remote || remote.isEmpty()) {
                 return;
             }
-            
+
             getGraphView().newGraph(remote);
             app.getFrame().resetGraphViewTitle();
 
-            // override "changes saved" status
-            app.setCurrentModelFilename(".");
-            app.setChangesSaved(true);
             app.setCurrentModelFilename(null);
-
             app.modelLoaded();
         }
     }
@@ -199,9 +196,9 @@ public class AppActionHandler implements IAppActionHandler {
                     String previousModelFilename = app.getCurrentModelFilename();
                     app.setCurrentModelFilename(filename);
                     app.getFrame().setGraphViewTitle(filename);
-                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
+//                    app.getActionProvider().getAction(SAVE_MODEL).setEnabled(true);
                     app.getUndoManager().discardAllEdits();
-                    
+
                     // A new model has been loaded => add change listener
                     app.modelLoaded();
 
@@ -430,9 +427,10 @@ public class AppActionHandler implements IAppActionHandler {
 
         String tabMsg;
         AppEvent.PRIORITY eventPrio = AppEvent.PRIORITY.DEFAULT;
+        final ProcessProvider processProvider = app.getProcessProvider();
 
         try {
-            app.getProcessProvider().publishProcess(process);
+            processProvider.publishProcess(process);
             doReloadProcesses();
 
             tabMsg = AppConstants.SEMANTICPROXY_PUBLISH_SUCCESS;
@@ -453,8 +451,10 @@ public class AppActionHandler implements IAppActionHandler {
                     + AppConstants.SEE_LOGGING_TABS;
             app.showErrorMessage(msg);
         }
-
-        AppEventService.getInstance().fireAppEvent(tabMsg, app.getProcessProvider(), eventPrio);
+        
+        final AppEventService eventService = AppEventService.getInstance();
+        boolean commandEnabled = eventService.isCommandEnabled(AppConstants.INFOTAB_ID_SEMANTICPROXY);
+        eventService.fireAppEvent(tabMsg, processProvider, eventPrio);
     }
 
     /**
@@ -472,7 +472,7 @@ public class AppActionHandler implements IAppActionHandler {
     }
 
     private void doRearrangePorts() {
-        PortRearranger dialog = new PortRearranger(app.getFrame(), getGraphView()); 
+        PortRearranger dialog = new PortRearranger(app.getFrame(), getGraphView());
         dialog.setVisible(true);
     }
 }

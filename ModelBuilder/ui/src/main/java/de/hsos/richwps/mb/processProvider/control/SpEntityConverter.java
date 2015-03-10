@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.processProvider.exception.UnsupportedWpsDatatypeException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
@@ -135,8 +136,18 @@ public class SpEntityConverter {
 
         switch (inputPort.getDatatype()) {
             case LITERAL:
-                spDatatype = new PostLiteralData();
-                // TODO set default value !
+                PostLiteralData postLiteralData = new PostLiteralData();
+                
+                // set default value
+                String defaultValue = (String) inputPort.getPropertyValue(LiteralInput.PROPERTY_KEY_DEFAULTVALUE);
+                postLiteralData.setDefaultValue(defaultValue);
+
+                // set datatype
+                String literalDatatype = (String) inputPort.getPropertyValue(LiteralInput.PROPERTY_KEY_LITERALDATATYPE);
+                postLiteralData.setLiteralDataType(literalDatatype);
+                
+                spDatatype = postLiteralData;
+
                 break;
 
             case COMPLEX:
@@ -203,9 +214,6 @@ public class SpEntityConverter {
             case LITERAL:
                 LiteralData spInputData = (LiteralData) inputFormChoice;
                 convertLiteralPort(inputFormChoice, inPort);
-                // TODO set default value ! (SP Ticket #2)
-                //spInputData.getDataType()
-
                 break;
 
             case COMPLEX:
@@ -269,7 +277,7 @@ public class SpEntityConverter {
         // convert supported formats
         ComplexDataCombination[] supportedFormats = spComplexData.getSupportedFormats();
         List<ComplexDataTypeFormat> formats = complexDesc.getFormats();
-        
+
         for (ComplexDataCombination supportedFormat : supportedFormats) {
             formats.add(createComplexFormat(supportedFormat));
         }
@@ -279,9 +287,14 @@ public class SpEntityConverter {
 
     private static void convertLiteralPort(InAndOutputForm spDatatype, ProcessPort port) throws CommunicationException, RDFException, BadRequestException, InternalSPException {
         LiteralData spLiteralData = (LiteralData) spDatatype;
-        // TODO set datatype (eg "xs:string")
 
-//        port.setPropertyValue(ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION, complexDesc);
+        // set datatype
+        String litealDataType = spLiteralData.getLitealDataType();
+        port.setPropertyValue(LiteralInput.PROPERTY_KEY_LITERALDATATYPE, litealDataType);
+
+        // set default value
+        String defaultValue = spLiteralData.getDefaultValue();
+        port.setPropertyValue(LiteralInput.PROPERTY_KEY_DEFAULTVALUE, defaultValue);
     }
 
     public static ComplexDataTypeFormat createComplexFormat(ComplexDataCombination spFormat) throws RDFException {

@@ -7,6 +7,7 @@ import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
 import de.hsos.richwps.sp.client.ows.posttypes.PostProcess;
 import de.hsos.richwps.sp.client.ows.posttypes.PostWPS;
+import de.hsos.richwps.sp.client.rdf.RDFID;
 import java.net.URL;
 
 /**
@@ -28,19 +29,19 @@ public class Publisher {
         PostWPS processPostWps = new PostWPS(wps.getRDFID());
         PostProcess postProcess = SpEntityConverter.createSpProcess(processPostWps, process);
 
-        try {
-            SPClient.getInstance().postProcess(postProcess);
+        final SPClient spClient = SPClient.getInstance();
 
-            // FIXME create a unique exception for posting already published processes 
-            //  - OR - 
-            // integrate hasProcess(WPS, id) at SPClient in order to distinguish postProcess and updateProcess
-        } catch (InternalSPException ispex) {
-            if (ispex.getMessage().contains("A process with this WPS and identifier is already registered")) {
-                // FIXME won't work (see SP ticket #1)
-                SPClient.getInstance().updateProcess(postProcess);
-            } else {
-                throw ispex;
-            }
+        URL endpoint = new URL(process.getServer());
+        RDFID lookupProcess = spClient.lookupProcess(endpoint, process.getOwsIdentifier());
+
+        // post new process
+        if (null == lookupProcess) {
+            spClient.postProcess(postProcess);
+
+        } else {
+            // update process
+            postProcess.setRDFID(lookupProcess);
+            spClient.updateProcess(postProcess);
         }
     }
 

@@ -90,6 +90,8 @@ public class App {
     private ProcessMetricProvider processMetricProvider;
     private SementicProxySearch semanticProxySearch;
 
+    private boolean hasAModel = false;
+
     /**
      * Creates and connects all ModelBuilder components.
      *
@@ -141,20 +143,21 @@ public class App {
      * @return
      */
     boolean currentModelFileExists() {
+
         // no current file => return false
         if (null == getCurrentModelFilename() || getCurrentModelFilename().isEmpty()) {
             return false;
         }
 
         // check file existence
-        File file = null;
+        File file;
         try {
             file = new File(getCurrentModelFilename());
         } catch (Exception ex) {
             return false;
         }
 
-        return null != file && file.exists();
+        return file.exists();
     }
 
     /**
@@ -163,9 +166,14 @@ public class App {
      * @param changesSaved
      */
     void setChangesSaved(boolean changesSaved) {
-        if (currentModelFileExists()) {
-            this.changesSaved = changesSaved;
-            getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL).setEnabled(!changesSaved);
+        this.changesSaved = changesSaved;
+
+        final AppAction saveAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL);
+
+        if (!this.hasAModel) {
+            saveAction.setEnabled(false);
+        } else if (currentModelFileExists()) {
+            saveAction.setEnabled(!changesSaved);
         }
     }
 
@@ -458,6 +466,8 @@ public class App {
      */
     void modelLoaded() {
 
+        this.hasAModel = true;
+
         // clear tab text and remove notification icons
         getInfoTabs().clearTabContents(AppConstants.INFOTAB_ID_EDITOR);
         getInfoTabs().clearTabContents(AppConstants.INFOTAB_ID_SERVER);
@@ -474,6 +484,8 @@ public class App {
         updateGraphDependentActions();
         updateDeploymentDependentActions();
         updateModelPropertiesView();
+
+        setChangesSaved(true);
 
         getSemanticProxySearch().setAppHasModel(true);
 

@@ -136,7 +136,7 @@ public class AppEventService {
      */
     public void setCommandEnabled(String command, boolean enabled) {
 
-        if (enabled) {
+        if (!enabled) {
 
             if (!this.disabledCommands.contains(command)) {
                 this.disabledCommands.add(command);
