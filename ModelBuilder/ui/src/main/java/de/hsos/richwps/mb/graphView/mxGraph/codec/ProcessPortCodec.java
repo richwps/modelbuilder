@@ -27,6 +27,7 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
 
     @Deprecated
     public static final String ATTR_DATATYPE = "datatype";
+    private static final String ATTR_FLOWINPUT = "flowInput";
 
     public ProcessPortCodec(Object template) {
         super(template);
@@ -46,6 +47,10 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
                 port.setDatatype(ProcessPortDatatype.getValueByName(attr.getNodeValue()));
                 return;
             }
+
+        } else if (attr.getNodeName().equals(ATTR_FLOWINPUT)) {
+            // ignore "flowInput" which is set by the specific sub classes
+            return;
         }
 
         super.decodeAttribute(dec, attr, obj);
@@ -123,14 +128,14 @@ public class ProcessPortCodec extends ObjectWithPropertiesCodec {
 
         // match port properties to update older model versions
         if (obj instanceof ProcessPort) {
-            
+
             // get the port's property names as a list
             final ProcessPort port = (ProcessPort) obj;
             List<String> propertyNames = PropertyHelper.getPropertyNames((IObjectWithProperties) obj);
-            
+
             // get properties list of the prototype of the current port type
             List<String> prototypeProperties = getPrototypeProperties(port);
-            
+
             // check each loaded property against the properties of the port prototype
             for (String property : propertyNames) {
                 // no prototype property: remove it from the port
