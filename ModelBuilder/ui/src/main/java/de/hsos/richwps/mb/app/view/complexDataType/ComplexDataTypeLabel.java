@@ -100,8 +100,8 @@ public class ComplexDataTypeLabel extends JPanel implements Serializable {
         bar.setFloatable(false);
         bar.setBorder(null);
 
-        add(formatLabel, "0 0");
-        add(bar, "1 0");
+        add(bar, "0 0");
+        add(formatLabel, "1 0");
     }
 
     public void addSelectionListener(IDataTypeDescriptionChangeListener listener) {
