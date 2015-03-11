@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.propertiesView;
 
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
-import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
@@ -20,6 +19,7 @@ import java.util.Collection;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -52,16 +52,46 @@ class PropertiesCard extends JScrollPane {
         getHorizontalScrollBar().addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-//                adjustContentPanelSize();
+                scrollToTop();
+
             }
         });
 
+//        addComponentListener(new ComponentAdapter() {
+//            
+//            
+//            @Override
+//            // Scroll to top after component changed
+//            public void componentShown(ComponentEvent e) {
+//                scrollToTop();
+//            }
+//
+//            @Override
+//            // reset content panel as otherwise some visual glitches appear
+//            public void componentResized(ComponentEvent e) {
+////                adjustContentPanelSize();
+////                getViewport().setViewPosition(new Point(0, 0));
+//
+//            }
+//        });
         // create PropertyGroup borders
         int outerWidth = 1;
         int innerWidth = 2;
         Border outerDark = new ColorBorder(PropertyCardsConfig.propertyTitleBgColor2, 0, outerWidth, outerWidth, outerWidth);
         Border innerBright = new ColorBorder(PropertyCardsConfig.headLabelBgColor, innerWidth, innerWidth, innerWidth, innerWidth);
         propertyGroupPanelBorder = new CompoundBorder(outerDark, innerBright);
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+
+        new Runnable() {
+            @Override
+            public void run() {
+                scrollToTop();
+            }
+        }.run();
     }
 
     public IObjectWithProperties getObjectWithProperties() {
@@ -71,9 +101,19 @@ class PropertiesCard extends JScrollPane {
     public void setObjectWithProperties(IObjectWithProperties objectWithProperties) {
         this.objectWithProperties = objectWithProperties;
         createContentPanel();
-        
-        // scroll to top
-        getViewport().setViewPosition(new Point(0, 0));
+
+        scrollToTop();
+    }
+
+    public void scrollToTop() {
+        SwingUtilities.invokeLater(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        getViewport().setViewPosition(new Point(0, 0));
+
+                    }
+                });
     }
 
     protected void adjustContentPanelSize() {
