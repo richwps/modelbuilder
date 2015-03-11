@@ -170,10 +170,10 @@ public class App {
 
         final AppAction saveAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SAVE_MODEL);
 
-        if (!this.hasAModel) {
-            saveAction.setEnabled(false);
-        } else if (currentModelFileExists()) {
+        if (currentModelFileExists()) {
             saveAction.setEnabled(!changesSaved);
+        } else {
+            saveAction.setEnabled(false);
         }
     }
 
