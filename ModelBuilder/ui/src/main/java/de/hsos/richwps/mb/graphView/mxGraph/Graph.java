@@ -641,7 +641,7 @@ public class Graph extends mxGraph {
         ProcessEntity process = new ProcessEntity(server, identifier);
         process.setOwsAbstract(owsAbstract);
         process.setOwsTitle(title);
-        process.setPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION, version);
+        process.setOwsPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION, version);
 
         // get process ports
         List<ProcessPort> ports = getGlobalInputPorts();

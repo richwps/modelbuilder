@@ -3,6 +3,7 @@ package de.hsos.richwps.mb.processProvider.boundary;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
+import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServerSource;
@@ -19,6 +20,8 @@ import de.hsos.richwps.mb.processProvider.entity.ProcessLoadingStatus;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.ProcessMetricProviderNotAvailable;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
+import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
 import de.hsos.richwps.sp.client.ows.gettypes.Network;
@@ -101,6 +104,7 @@ public class ProcessProvider {
             net = spClient.getNetwork();
             getServerProvider().setNet(net);
             spClient.clearCache();
+            
         } catch (Exception ex) {
             net = null;
             AppEventService.getInstance().fireAppEvent(AppConstants.SEMANTICPROXY_NOT_REACHABLE, this, AppEvent.PRIORITY.URGENT);
@@ -138,6 +142,7 @@ public class ProcessProvider {
             spClient.clearCache();
             this.net = null;
         }
+
         getServerProvider().clearCache();
         getCache().resetLoadingStates();
     }
@@ -150,6 +155,10 @@ public class ProcessProvider {
         getCache().resetLoadingStates();
     }
 
+    public ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process) {
+        return this.getFullyLoadedProcessEntity(process, false);
+    }
+
     /**
      * Returns a fully loaded process that matches the endpoint and ows
      * identifier. If an error occurs while loading the process, a partially
@@ -158,11 +167,12 @@ public class ProcessProvider {
      * @param process
      * @return
      */
-    public ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process) {
+    private ProcessEntity getFullyLoadedProcessEntity(ProcessEntity process, boolean updateCache) {
         final ProcessEntity cachedProcess = getCache().getCachedProcess(process.getServer(), process.getOwsIdentifier());
 
-        if (null == cachedProcess) {
+        if (null == cachedProcess || updateCache) {
             getCache().addProcess(process, false);
+
         }
 
         ProcessEntity loadedProcess = getFullyLoadedProcessEntity(process.getServer(), process.getOwsIdentifier());
@@ -298,7 +308,7 @@ public class ProcessProvider {
 
         // indicate error occurences but don't abort loading servers.
         // (errors are handled after the loading is done)
-        String errorMsg = null;
+        String spErrorMsg = null;
         String errorMsgType = null;
 
         // temporary disable "SP not available" messages to avoid msg flooding
@@ -309,7 +319,7 @@ public class ProcessProvider {
             try {
                 wpss = getServerProvider().getWPSs();
             } catch (Exception ex) {
-                errorMsg = ex.getMessage();
+                spErrorMsg = ex.getMessage();
                 errorMsgType = ex.getClass().getSimpleName();
             }
 
@@ -349,20 +359,11 @@ public class ProcessProvider {
                         servers.put(server.getEndpoint(), server);
 
                     } catch (Exception ex) {
-                        errorMsg = ex.getMessage();
+                        spErrorMsg = ex.getMessage();
                         errorMsgType = ex.getClass().getSimpleName();
                     }
                 }
             }
-        }
-
-        // re-enable command (see above)
-        AppEventService.getInstance().setCommandEnabled(AppConstants.INFOTAB_ID_SEMANTICPROXY, true);
-
-        // handle occured SP errors
-        if (null != errorMsg) {
-            String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, errorMsgType, errorMsg);
-            AppEventService.getInstance().fireAppEvent(msg, this);
         }
 
         // add servers and processes from managed remote servers
@@ -386,7 +387,7 @@ public class ProcessProvider {
                 server = ManagedRemoteDiscovery.discoverProcesses(server.getEndpoint());
 
                 for (ProcessEntity aProcess : server.getProcesses()) {
-                    ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess);
+                    ProcessEntity loadedProcess = this.getFullyLoadedProcessEntity(aProcess, true);
                     if (!existingServer.getProcesses().contains(loadedProcess)) {
                         existingServer.addProcess(loadedProcess);
                     }
@@ -394,7 +395,15 @@ public class ProcessProvider {
             }
 
             servers.put(aPersistedRemote, existingServer);
+        }
 
+        // re-enable SP command (see above)
+        AppEventService.getInstance().setCommandEnabled(AppConstants.INFOTAB_ID_SEMANTICPROXY, true);
+
+        // handle occured SP errors
+        if (null != spErrorMsg) {
+            String msg = String.format(AppConstants.SEMANTICPROXY_RECEIVE_ERROR, errorMsgType, spErrorMsg);
+            AppEventService.getInstance().fireAppEvent(msg, this);
         }
 
         return servers.values();

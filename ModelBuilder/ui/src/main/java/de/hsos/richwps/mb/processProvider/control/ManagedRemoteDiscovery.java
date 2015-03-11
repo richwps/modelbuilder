@@ -56,7 +56,7 @@ public class ManagedRemoteDiscovery {
                 ProcessEntity pe = new ProcessEntity(uri, pd.getIdentifier());
                 pe.setOwsAbstract(UiHelper.avoidNull(pd.getAbstract()));
                 pe.setOwsTitle(pd.getTitle());
-                pe.setPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION, pd.getProcessversion());
+                pe.setOwsPropertyValue(ProcessEntity.PROPERTIES_KEY_VERSION, pd.getProcessversion());
 
                 ManagedRemoteDiscovery.transformInputs(pd, pe);
                 ManagedRemoteDiscovery.transformOutputs(pd, pe);

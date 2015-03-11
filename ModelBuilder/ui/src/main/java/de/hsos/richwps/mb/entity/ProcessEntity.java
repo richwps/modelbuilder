@@ -258,7 +258,7 @@ public class ProcessEntity extends OwsObjectWithProperties {
         return clone;
     }
 
-    public void setPropertyValue(String propertyKey, Object value) {
+    public void setOwsPropertyValue(String propertyKey, Object value) {
         Property property = this.owsGroup.getPropertyObject(propertyKey);
         if (null != property) {
             property.setValue(value);

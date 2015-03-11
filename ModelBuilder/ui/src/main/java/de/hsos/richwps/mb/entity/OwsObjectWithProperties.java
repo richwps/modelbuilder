@@ -18,7 +18,7 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
     public static String PROPERTIES_KEY_TITLE = "Title";
     public static String PROPERTIES_KEY_ABSTRACT = "Abstract";
 
-    protected final String OWS_PROPERTY_GROUP_NAME = "OWS Data";
+    public static final String OWS_PROPERTY_GROUP_NAME = "OWS Data";
 
     protected PropertyGroup<Property> owsGroup;
 
