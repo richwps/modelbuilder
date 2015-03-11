@@ -56,22 +56,6 @@ class PropertiesCard extends JScrollPane {
             }
         });
 
-        addComponentListener(new ComponentAdapter() {
-            @Override
-            // Scroll to top after component changed
-            public void componentShown(ComponentEvent e) {
-                getViewport().setViewPosition(new Point(0, 0));
-            }
-
-            @Override
-            // reset content panel as otherwise some visual glitches appear
-            public void componentResized(ComponentEvent e) {
-                adjustContentPanelSize();
-//                getViewport().setViewPosition(new Point(0, 0));
-
-            }
-        });
-
         // create PropertyGroup borders
         int outerWidth = 1;
         int innerWidth = 2;
@@ -87,6 +71,9 @@ class PropertiesCard extends JScrollPane {
     public void setObjectWithProperties(IObjectWithProperties objectWithProperties) {
         this.objectWithProperties = objectWithProperties;
         createContentPanel();
+        
+        // scroll to top
+        getViewport().setViewPosition(new Point(0, 0));
     }
 
     protected void adjustContentPanelSize() {
