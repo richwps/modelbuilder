@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -575,13 +576,6 @@ public class AppConstants {
     public static final String DEPLOYMENT_FAILED = "Deployment failed!";
 
     public static String INCOMPATIBLE_DATATYPE_DESCRIPTION = "Datatype '%s' can not be described with '%s'";
-
-    // Monitor key translations
-    static final String MONITOR_DATA = "Monitor Data";
-    static final String MONITOR_TRANSLATION_RESPONCE_METRIC = "Response Metric";
-    static String[][] MONITOR_KEY_TRANSLATIONS = {
-        {"response_metric", MONITOR_TRANSLATION_RESPONCE_METRIC}
-    };
 
     static final Color MONITOR_DATA_BG_COLOR = new Color(0xfccfcf);
 

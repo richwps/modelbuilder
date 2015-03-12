@@ -8,9 +8,7 @@ import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
 import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import de.hsos.richwps.mb.ui.UiHelper;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -21,20 +19,26 @@ import java.util.logging.Level;
  */
 public class ProcessMetricProvider {
 
+    public static final String PROPERTY_KEY_MONITOR_DATA = "monitor_data";
+    public static final String PROPERTY_KEY_RESPONCE_METRIC = "response_metric";
+
     private WpsMonitorClient client;
 
-    private final HashMap<String, String> translations;
-
-    private String mainPropertyGroupName = "monitor data";
     private String url;
 
     public ProcessMetricProvider(String url) throws Exception {
         this.url = url;
-        translations = new HashMap<>();
     }
 
-    public void setMainPropertyGroupName(String mainPropertyGroupName) {
-        this.mainPropertyGroupName = mainPropertyGroupName;
+    /**
+     * Returns all property keys of metric properties.
+     *
+     * @return
+     */
+    public static String[] getPropertyKeys() {
+        return new String[]{
+            PROPERTY_KEY_RESPONCE_METRIC
+        };
     }
 
     /**
@@ -49,7 +53,7 @@ public class ProcessMetricProvider {
 
         // create property group containing all metrics
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
-        groups.setPropertiesObjectName(this.mainPropertyGroupName);
+        groups.setPropertiesObjectName(PROPERTY_KEY_MONITOR_DATA);
 
         // connect to monitor
         if (null == client) {
@@ -69,13 +73,13 @@ public class ProcessMetricProvider {
 
             // add metrics sub groups
             for (Map.Entry<String, WpsMetricResource> aMetric : wpsProcess.getMetrics().entrySet()) {
-                PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(translateMonitorKey(aMetric.getKey()));
+                PropertyGroup<Property<String>> subGroup = new PropertyGroup<>(aMetric.getKey());
 
                 // add metric values to sub group as properties
                 for (Map.Entry<String, MeasuredValue> aMetricValue : aMetric.getValue().getValues().entrySet()) {
 
                     // create property
-                    String propertyName = translateMonitorKey(aMetricValue.getKey());
+                    String propertyName = aMetricValue.getKey();
                     String propertyType = Property.COMPONENT_TYPE_TEXTFIELD;
                     String propertyValue = aMetricValue.getValue().toString();
                     Property<String> property = new Property<>(propertyName, propertyType, propertyValue);
@@ -95,33 +99,6 @@ public class ProcessMetricProvider {
         }
 
         return groups;
-    }
-
-    /**
-     * Sets a readable translation for a key used by the monitor.
-     *
-     * @param monitorKey
-     * @param translation
-     */
-    public void addMonitorKeyTranslation(String monitorKey, String translation) {
-        this.translations.put(monitorKey, translation);
-    }
-
-    /**
-     * Translates monitor keys to readable ModelBuilder property name.
-     *
-     * @param key a key used by the monitor
-     * @return readable property name
-     */
-    private String translateMonitorKey(String key) {
-
-        // return translation if exists
-        if (this.translations.containsKey(key)) {
-            return this.translations.get(key);
-        }
-
-        // else: return with uppered first character
-        return UiHelper.upperFirst(key);
     }
 
     /**

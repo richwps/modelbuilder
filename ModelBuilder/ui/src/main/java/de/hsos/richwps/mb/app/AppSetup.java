@@ -26,6 +26,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.ObjectWithPropertiesCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyKeyTranslator;
 import de.hsos.richwps.mb.ui.UiHelper;
@@ -39,6 +40,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
+import org.jaitools.numeric.ApproxMedianProcessor;
 
 /**
  * Creates the app components and connects them.
@@ -92,12 +94,6 @@ public class AppSetup {
             GraphSetup.localInputBgColor = AppConstants.INPUT_PORT_COLOR_STRING;
             GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
             addGraphCodecs();
-
-            // Setup monitor client
-            for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
-                app.getProcessMetricProvider().addMonitorKeyTranslation(keyTranslation[0], keyTranslation[1]);
-            }
-            app.getProcessMetricProvider().setMainPropertyGroupName(AppConstants.MONITOR_DATA);
 
             // Load last used filename
             String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
@@ -398,6 +394,10 @@ public class AppSetup {
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT, "Endpoint");
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_VERSION, "Version");
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_TITLE, "Title");
+                
+        // monitor 
+        translator.addTranslation(ProcessMetricProvider.PROPERTY_KEY_MONITOR_DATA, "Monitor Data");
+        translator.addTranslation(ProcessMetricProvider.PROPERTY_KEY_RESPONCE_METRIC, "Response Metric");
     }
 
 }

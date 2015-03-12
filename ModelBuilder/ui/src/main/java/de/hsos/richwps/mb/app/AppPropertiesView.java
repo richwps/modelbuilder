@@ -14,6 +14,7 @@ import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
+import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
@@ -230,11 +231,12 @@ public class AppPropertiesView extends PropertiesView {
         if (null == groupName || groupName.isEmpty()) {
             return;
         }
+        
         boolean hasBrightBg = false;
 
         // Style monitor metrics group
         boolean isMetricGroup = isMetricGroup(groupName);
-        if (groupName.equals(AppConstants.MONITOR_DATA) || isMetricGroup) {
+        if (groupName.equals(ProcessMetricProvider.PROPERTY_KEY_MONITOR_DATA) || isMetricGroup) {
             groupPanel.setTitleGradientColor2(AppConstants.MONITOR_DATA_BG_COLOR);
             hasBrightBg = true;
 
@@ -270,8 +272,9 @@ public class AppPropertiesView extends PropertiesView {
     }
 
     private boolean isMetricGroup(String groupName) {
-        for (String[] keyTranslation : AppConstants.MONITOR_KEY_TRANSLATIONS) {
-            if (keyTranslation[1].equals(groupName)) {
+        String[] propertyKeys = ProcessMetricProvider.getPropertyKeys();
+        for (String key : propertyKeys) {
+            if (key.equals(groupName)) {
                 return true;
             }
         }

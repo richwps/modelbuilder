@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.properties;
 
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.util.HashMap;
 import org.apache.commons.lang.Validate;
 
@@ -36,14 +37,14 @@ public class PropertyKeyTranslator {
      * Gets a property key translation.
      *
      * @param propertyKey the key which should be translated.
-     * @return the translation if it exists or the key otherwise.
+     * @return the translation if it exists or the key (modified).
      */
     public String translate(String propertyKey) {
         String translated = this.translations.get(propertyKey);
 
         if (null == translated) {
             Logger.log("No translation for key '" + propertyKey + "' !");
-            translated = propertyKey;
+            translated = UiHelper.createStringForViews(propertyKey);
         }
 
         return translated;
