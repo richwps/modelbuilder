@@ -266,6 +266,8 @@ public class AppConstants {
 
     public static final String MONITOR_DEFAULT_URL = "http://localhost:1111";
 
+    public static final String MONITOR_CONNECTION_ERROR = "Monitor connection failed! Reason: '%s'.";
+    
     /**
      * ProcessProvider translations for views.
      */
@@ -346,9 +348,11 @@ public class AppConstants {
     public static final String INFOTAB_ID_SERVER = "server";
     public static final String INFOTAB_ID_EDITOR = "editor";
     public static final String INFOTAB_ID_SEMANTICPROXY = "semanticproxy";
+    public static final String INFOTAB_ID_MONITOR = "monitor";
     public static final String[][] INFOTABS = new String[][]{
         {INFOTAB_ID_EDITOR, "Model"},
         {INFOTAB_ID_SEMANTICPROXY, "SemanticProxy"},
+        {INFOTAB_ID_MONITOR, "Monitor"},
         {INFOTAB_ID_SERVER, "RichWPS-Server"},};
 
     //getActionProvider

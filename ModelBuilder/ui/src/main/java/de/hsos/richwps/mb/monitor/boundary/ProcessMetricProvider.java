@@ -5,12 +5,17 @@ import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClient;
 import de.hsos.ecs.richwps.wpsmonitor.client.WpsMonitorClientFactory;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsMetricResource;
 import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsProcessResource;
+import de.hsos.ecs.richwps.wpsmonitor.client.resource.WpsResource;
 import de.hsos.richwps.mb.Logger;
+import de.hsos.richwps.mb.app.AppConstants;
+import de.hsos.richwps.mb.appEvents.AppEvent;
+import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Integrates the RichWPS Monitor Client.
@@ -22,12 +27,15 @@ public class ProcessMetricProvider {
     public static final String PROPERTY_KEY_MONITOR_DATA = "monitor_data";
     public static final String PROPERTY_KEY_RESPONCE_METRIC = "response_metric";
 
+    private HashMap<String, WpsResource> wpss;
+
     private WpsMonitorClient client;
 
     private String url;
 
     public ProcessMetricProvider(String url) throws Exception {
         this.url = url;
+        this.wpss = new HashMap<>();
     }
 
     /**
@@ -39,6 +47,33 @@ public class ProcessMetricProvider {
         return new String[]{
             PROPERTY_KEY_RESPONCE_METRIC
         };
+    }
+
+    private boolean connect() {
+        if (null != this.client) {
+            return true;
+        }
+
+        try {
+            this.client = new WpsMonitorClientFactory().create(new URL(url));
+            List<WpsResource> allWps = this.client.getAllWps(true);
+
+            this.wpss.clear();
+            for (WpsResource wps : allWps) {
+                final String urlString = wps.getWpsEndPoint().toExternalForm();
+                this.wpss.put(urlString, wps);
+            }
+
+        } catch (Exception ex) {
+            String msg = String.format(AppConstants.MONITOR_CONNECTION_ERROR, ex.getMessage());
+            Object src = AppConstants.INFOTAB_ID_MONITOR;
+            AppEvent.PRIORITY prio = AppEvent.PRIORITY.URGENT;
+
+            AppEventService.getInstance().fireAppEvent(msg, src, prio);
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -55,21 +90,21 @@ public class ProcessMetricProvider {
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
         groups.setPropertiesObjectName(PROPERTY_KEY_MONITOR_DATA);
 
-        // connect to monitor
-        if (null == client) {
-            try {
-                client = new WpsMonitorClientFactory().create(new URL(url));
-            } catch (Exception ex) {
-                java.util.logging.Logger.getLogger(ProcessMetricProvider.class.getName()).log(Level.SEVERE, null, ex);
-
-                client = null;
-
-                return groups;
-            }
+        // try connect to monitor
+        if ((null == client) && !connect()) {
+            return groups;
         }
 
         try {
-            WpsProcessResource wpsProcess = client.getWpsProcess(new URL(server), identifier);
+
+            // cancel if the processes' endpoint is not monitored
+            server = new URL(server).toExternalForm();
+            WpsResource wps = this.wpss.get(server);
+            if (null == wps) {
+                return groups;
+            }
+
+            WpsProcessResource wpsProcess = client.getWpsProcess(wps, identifier);
 
             // add metrics sub groups
             for (Map.Entry<String, WpsMetricResource> aMetric : wpsProcess.getMetrics().entrySet()) {
