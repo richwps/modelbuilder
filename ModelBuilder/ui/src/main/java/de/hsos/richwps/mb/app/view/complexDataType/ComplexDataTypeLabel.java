@@ -90,7 +90,7 @@ public class ComplexDataTypeLabel extends JPanel implements Serializable {
         });
 
         double[][] layout = new double[][]{
-            {TableLayout.FILL, TableLayout.PREFERRED},
+            {TableLayout.PREFERRED, TableLayout.FILL},
             {TableLayout.PREFERRED},};
         setLayout(new TableLayout(layout));
 
