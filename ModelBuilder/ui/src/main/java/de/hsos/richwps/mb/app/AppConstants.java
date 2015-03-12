@@ -400,7 +400,6 @@ public class AppConstants {
 
     // Properties View
     public static final String PROPERTIES_MULTI_ELEMENTS_SELECTION = "(multiple elements selected)";
-    public static final String PROPERTIES_PROCESS_TITLE = "Process";
     public static final String PROPERTIES_INPUTS_TITLE = "Inputs";
     public static final String PROPERTIES_OUTPUTS_TITLE = "Outputs";
     public static final String PROPERTIES_PANEL_TITLE = "Properties";
@@ -411,12 +410,8 @@ public class AppConstants {
     public static final String PROPERTIES_PORT_ABSTRACT_LABEL = "Identifier";
     public static final String PROPERTIES_PORT_TITLE_LABEL = "Title";
     public static final String PROPERTIES_PORT_DATATYPE_LABEL = "Datatype";
-    public static final String PROPERTIES_BTN_EDIT_FORMAT_TTT = "Select format";
-    public static final String PROPERTIES_PROPERTY_EDIT = "edit property '%s' of '%s'";
-    public static final String PROPERTIES_MODELDATA_TITLE = "Model";
-    public static final String PROPERTIES_MODELDATA_IDENTIFIER = "Name";
+    public static final String PROPERTIES_BTN_EDIT_FORMAT_TTT = "Select format(s)";
     public static final String PROPERTIES_MODELDATA = "OWS Data";
-    public static final String PROPERTIES_GLOBALPORTDATA_TITLE = "Port";
 
     // Undo-/Redo-Manager
     public static final String UNDOMANAGER_CANT_UNDO = "Can't undo";

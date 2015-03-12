@@ -90,8 +90,6 @@ public class App {
     private ProcessMetricProvider processMetricProvider;
     private SementicProxySearch semanticProxySearch;
 
-    private boolean hasAModel = false;
-
     /**
      * Creates and connects all ModelBuilder components.
      *
@@ -465,8 +463,6 @@ public class App {
      * called after a new model has been created or loaded.
      */
     void modelLoaded() {
-
-        this.hasAModel = true;
 
         // clear tab text and remove notification icons
         getInfoTabs().clearTabContents(AppConstants.INFOTAB_ID_EDITOR);

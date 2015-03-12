@@ -9,9 +9,15 @@ import de.hsos.richwps.mb.app.view.AppSplashScreen;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
+import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
+import de.hsos.richwps.mb.entity.ports.BoundingBoxInput;
+import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
+import de.hsos.richwps.mb.entity.ports.LiteralInput;
+import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
+import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.CellCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ComplexDataTypeFormatCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.GraphEdgeCodec;
@@ -21,6 +27,7 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
 import de.hsos.richwps.mb.properties.Property;
+import de.hsos.richwps.mb.properties.PropertyKeyTranslator;
 import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
@@ -118,7 +125,7 @@ public class AppSetup {
             });
         }
 
-        splash.showMessageAndProgress("Initialising tooltips", 30);
+        splash.showMessageAndProgress("Initialising UI texts", 30);
         {
             // Setup ToolTip.
             ToolTipManager.sharedInstance().setInitialDelay(AppConstants.TOOLTIP_INITIAL_DELAY);
@@ -129,6 +136,10 @@ public class AppSetup {
             ProcessPort.TOOLTIP_STYLE_OUTPUT = AppConstants.TOOLTIP_CSS_FOR_OUTPUTS;
 
             ProcessEntity.toolTipCssForMainContainer = AppConstants.TOOLTIP_CSS_FOR_MAIN_CONTAINER;
+
+            // Setup property key translations
+            final PropertyKeyTranslator propertyKeyTranslator = app.getPropertiesView().getPropertyKeyTranslator();
+            setupPropertyTranslator(propertyKeyTranslator);
         }
 
         splash.showMessageAndProgress("Initialising user interactions", 45);
@@ -356,6 +367,37 @@ public class AppSetup {
         }
 
         loadIcons();
+    }
+
+    private static void setupPropertyTranslator(PropertyKeyTranslator translator) {
+
+        // Processes and Ports common properties
+        translator.addTranslation(OwsObjectWithProperties.PROPERTIES_KEY_IDENTIFIER, "Identifier");
+        translator.addTranslation(OwsObjectWithProperties.PROPERTIES_KEY_TITLE, "Title");
+        translator.addTranslation(OwsObjectWithProperties.PROPERTIES_KEY_ABSTRACT, "Abstract");
+        translator.addTranslation(OwsObjectWithProperties.PROPERTY_KEY_OWS_GROUP, "OWS Data");
+
+        // process properties
+        translator.addTranslation(ProcessEntity.PROPERTIES_KEY_SERVER, "Server");
+        translator.addTranslation(ProcessEntity.PROPERTIES_KEY_INPUT_PORTS, "Inputs");
+        translator.addTranslation(ProcessEntity.PROPERTIES_KEY_OUTPUT_PORTS, "Outputs");
+        translator.addTranslation(ProcessEntity.PROPERTIES_KEY_VERSION, "Version");
+
+        // port properties
+        translator.addTranslation(ProcessInputPort.PROPERTY_KEY_MINOCCURS, "Min occurs");
+        translator.addTranslation(ProcessInputPort.PROPERTY_KEY_MAXOCCURS, "Max occurs");
+        translator.addTranslation(LiteralInput.PROPERTY_KEY_DEFAULTVALUE, "Default literal value");
+        translator.addTranslation(LiteralInput.PROPERTY_KEY_LITERALDATATYPE, "Literal Datatype");
+        translator.addTranslation(ComplexDataOutput.PROPERTY_KEY_MAXMB, "Max MB");
+        translator.addTranslation(ComplexDataOutput.PROPERTY_KEY_DATATYPEDESCRIPTION, "Complex datatype");
+        translator.addTranslation(BoundingBoxInput.PROPERTY_KEY_DESCRIPTION, "Datatype description bbox");
+    
+        // model properties
+        translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER, "Identifier");
+        translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_ABSTRACT, "Abstract");
+        translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT, "Endpoint");
+        translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_VERSION, "Version");
+        translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_TITLE, "Title");
     }
 
 }

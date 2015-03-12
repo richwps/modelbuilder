@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.entity.ports;
 import de.hsos.richwps.mb.entity.*;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import static de.hsos.richwps.mb.entity.ports.ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION;
-import static de.hsos.richwps.mb.entity.ports.ComplexDataInput.PROPERTY_KEY_DATATYPEDESCRIPTION;
 import de.hsos.richwps.mb.properties.Property;
 
 public class ComplexDataOutput extends ProcessOutputPort {

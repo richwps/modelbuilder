@@ -1,7 +1,6 @@
 package de.hsos.richwps.mb.entity.ports;
 
 import de.hsos.richwps.mb.entity.*;
-import static de.hsos.richwps.mb.entity.ports.LiteralInput.PROPERTY_KEY_LITERALDATATYPE;
 import de.hsos.richwps.mb.properties.Property;
 import java.util.List;
 

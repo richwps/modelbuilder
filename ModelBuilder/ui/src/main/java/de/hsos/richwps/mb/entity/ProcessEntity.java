@@ -51,7 +51,7 @@ public class ProcessEntity extends OwsObjectWithProperties {
      */
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {
-        if (property instanceof PropertyGroup && !propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
+        if (property instanceof PropertyGroup && !propertyName.equals(PROPERTY_KEY_OWS_GROUP)) {
             this.additionalGroups.put(propertyName, (PropertyGroup) property);
         } else {
             super.setProperty(propertyName, property);

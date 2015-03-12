@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.properties.PropertyKeyTranslator;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
@@ -37,10 +38,12 @@ public class PropertiesView extends TitledComponent {
 
     private PropertiesCard propertiesCard;
 
-    private JPanel contentPanel;
+    private final JPanel contentPanel;
 
-    private Window parentWindow;
+    private final Window parentWindow;
 
+    private PropertyKeyTranslator translator;
+    
     public static enum CARD {
 
         NO_SELECTION, PROCESS_MULTI_SELECTION, OBJECT_WITH_PROPERTIES;
@@ -60,7 +63,7 @@ public class PropertiesView extends TitledComponent {
     }
 
     /**
-     * Holds property components for the current ObjectWithProperties.
+     * Caches property components for Objects with Properties.
      */
     protected HashMap<Property, AbstractPropertyComponent> componentCache;
 
@@ -68,10 +71,9 @@ public class PropertiesView extends TitledComponent {
         super(title, new JPanel());
 
         this.parentWindow = parentWindow;
-
         this.propertiesCard = new PropertiesCard(parentWindow, this);
-
         this.componentCache = new HashMap<>();
+        this.translator = new PropertyKeyTranslator();
 
         contentPanel = (JPanel) getComponent(1);
 
@@ -85,6 +87,10 @@ public class PropertiesView extends TitledComponent {
         getCardLayout().show(getContentPanel(), card.name());
     }
 
+    public PropertyKeyTranslator getPropertyKeyTranslator() {
+        return this.translator;
+    }
+    
     /**
      * Clears the cache for property components.
      */
@@ -144,7 +150,6 @@ public class PropertiesView extends TitledComponent {
     private void setupPropertyFields(final CARD card, final IObjectWithProperties property) {
 
         if (property instanceof PropertyTextFieldString) {
-            final AbstractPropertyComponent propertyComponent = (AbstractPropertyComponent) property;
 
             // setup GUI
             JTextField label = (JTextField) ((AbstractPropertyComponent) property).getComponent();
@@ -214,6 +219,7 @@ public class PropertiesView extends TitledComponent {
                 break;
         }
 
+        // default fallback component: textfield
         if (null == component) {
             component = new PropertyTextFieldString(property);
         }

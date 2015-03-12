@@ -4,6 +4,7 @@ import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComp
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.mb.properties.PropertyKeyTranslator;
 import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.MultilineLabel;
 import de.hsos.richwps.mb.ui.TitledComponent;
@@ -48,7 +49,6 @@ class PropertiesCard extends JScrollPane {
         this.propertiesView = view;
 
         // setup Scrollbars
-//        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         getHorizontalScrollBar().addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
@@ -57,23 +57,6 @@ class PropertiesCard extends JScrollPane {
             }
         });
 
-//        addComponentListener(new ComponentAdapter() {
-//            
-//            
-//            @Override
-//            // Scroll to top after component changed
-//            public void componentShown(ComponentEvent e) {
-//                scrollToTop();
-//            }
-//
-//            @Override
-//            // reset content panel as otherwise some visual glitches appear
-//            public void componentResized(ComponentEvent e) {
-////                adjustContentPanelSize();
-////                getViewport().setViewPosition(new Point(0, 0));
-//
-//            }
-//        });
         // create PropertyGroup borders
         int outerWidth = 1;
         int innerWidth = 2;
@@ -82,6 +65,10 @@ class PropertiesCard extends JScrollPane {
         propertyGroupPanelBorder = new CompoundBorder(outerDark, innerBright);
     }
 
+    protected String getCaptionFor(String propertyKey) {
+        return this.propertiesView.getPropertyKeyTranslator().translate(propertyKey);
+    }
+    
     @Override
     public void updateUI() {
         super.updateUI();
@@ -201,7 +188,9 @@ class PropertiesCard extends JScrollPane {
         propertiesPanel.setBorder(propertyGroupPanelBorder);
 
         // add panel to foldable titled component
-        TitledComponent groupPanel = createTitledComponent(propertyGroup.getPropertiesObjectName(), propertiesPanel);
+        String propertyKey = propertyGroup.getPropertiesObjectName();
+        String title = getCaptionFor(propertyKey);
+        TitledComponent groupPanel = createTitledComponent(title, propertiesPanel);
         propertiesView.setupPropertyGroupTitledComponent(propertyGroup, groupPanel);
 
         return groupPanel;
@@ -217,8 +206,11 @@ class PropertiesCard extends JScrollPane {
 
         componentPanel.setLayout(new TableLayout(layoutSize));
 
+        String propertyKey = component.getProperty().getPropertiesObjectName();
+        String propertyCaption = getCaptionFor(propertyKey);
+
         // label + component
-        componentPanel.add(createHeadLabel(component.getProperty().getPropertiesObjectName()), "0 0");
+        componentPanel.add(createHeadLabel(propertyCaption), "0 0");
         componentPanel.add(component.getComponent(), "1 0");
         // bottom border(s)
         componentPanel.add(createColumn1Border(), "0 1");

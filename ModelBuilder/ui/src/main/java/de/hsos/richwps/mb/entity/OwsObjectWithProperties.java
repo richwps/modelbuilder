@@ -14,11 +14,10 @@ import java.util.Collection;
  */
 public abstract class OwsObjectWithProperties implements IObjectWithProperties, IOwsObject, Serializable {
 
-    public static String PROPERTIES_KEY_IDENTIFIER = "Identifier";
-    public static String PROPERTIES_KEY_TITLE = "Title";
-    public static String PROPERTIES_KEY_ABSTRACT = "Abstract";
-
-    public static final String OWS_PROPERTY_GROUP_NAME = "OWS Data";
+    public final static String PROPERTIES_KEY_IDENTIFIER = "Identifier";
+    public final static String PROPERTIES_KEY_TITLE = "Title";
+    public final static String PROPERTIES_KEY_ABSTRACT = "Abstract";
+    public static final String PROPERTY_KEY_OWS_GROUP = "OWS Data";
 
     protected PropertyGroup<Property> owsGroup;
 
@@ -112,7 +111,7 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
 
     protected void createProperties(String owsIdentifier) {
         if (null == owsGroup) {
-            owsGroup = new PropertyGroup(OWS_PROPERTY_GROUP_NAME);
+            owsGroup = new PropertyGroup(PROPERTY_KEY_OWS_GROUP);
         }
 
         if (!owsGroup.hasProperty(PROPERTIES_KEY_IDENTIFIER)) {
@@ -139,7 +138,7 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
             this.owsGroup.removeProperty(propertyName);
 
             // property is the main OWS group -> replace the current group
-        } else if (property instanceof PropertyGroup && propertyName.equals(OWS_PROPERTY_GROUP_NAME)) {
+        } else if (property instanceof PropertyGroup && propertyName.equals(PROPERTY_KEY_OWS_GROUP)) {
             this.owsGroup = (PropertyGroup<Property>) property;
         } // add property to main ows group
         else {
@@ -184,7 +183,7 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
         }
 
         this.toolTipText = null;
-        this.owsGroup = new PropertyGroup<>(OWS_PROPERTY_GROUP_NAME);
+        this.owsGroup = new PropertyGroup<>(PROPERTY_KEY_OWS_GROUP);
 
         for (IObjectWithProperties property : other.owsGroup.getProperties()) {
             IObjectWithProperties propertyClone = property.clone();
