@@ -216,6 +216,7 @@ public class MbDialog extends JDialog {
         // Default listeners for keys which close the dialog.
         ActionMap am = getRootPane().getActionMap();
         InputMap im = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
         // "cancel" key (escape)
         Object windowCloseKey = new Object();
         KeyStroke windowCloseStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
@@ -223,9 +224,12 @@ public class MbDialog extends JDialog {
         am.put(windowCloseKey, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleDialogButton(BTN_ID_CANCEL);
+                if (getDialogButton(BTN_ID_CANCEL).isEnabled()) {
+                    handleDialogButton(BTN_ID_CANCEL);
+                }
             }
         });
+
         // "ok" & "close" key (enter/return)
         Object windowOkKey = new Object();
         KeyStroke windowOkStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
@@ -233,7 +237,9 @@ public class MbDialog extends JDialog {
         am.put(windowOkKey, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                handleDialogButton(BTN_ID_OK);
+                if (getDialogButton(BTN_ID_OK).isEnabled()) {
+                    handleDialogButton(BTN_ID_OK);
+                }
             }
         });
     }
