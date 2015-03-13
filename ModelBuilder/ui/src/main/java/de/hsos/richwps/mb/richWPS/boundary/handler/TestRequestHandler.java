@@ -191,6 +191,12 @@ public class TestRequestHandler implements IRequestHandler {
                         String key = o.getIdentifier().getStringValue();
                         request.addResult(key, o.getData().getLiteralData());
                     }
+                    
+                    //TODO: Test BoundingBox?
+                    if(o.getData().getBoundingBoxData() != null) {
+                        String key = o.getIdentifier().getStringValue();
+                        request.addResult(key, o.getData().getBoundingBoxData());
+                    }
                 }
 
                 //we might have a complexdata with reference
@@ -205,7 +211,6 @@ public class TestRequestHandler implements IRequestHandler {
                         java.util.logging.Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-                //TODO: BoundingBox ?
             }
         } else {
             ExceptionReportDocumentImpl exception = (ExceptionReportDocumentImpl) responseObject;
