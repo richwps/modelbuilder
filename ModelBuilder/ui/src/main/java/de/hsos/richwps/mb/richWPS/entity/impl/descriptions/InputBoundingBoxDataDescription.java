@@ -13,7 +13,7 @@ import net.opengis.wps.x100.SupportedCRSsType;
 import org.n52.wps.client.richwps.InputDescriptionTypeBuilder;
 
 /**
- * Description for BoundingBoxData.
+ * Description for BoundingBoxData input.
  *
  * @author caduevel
  */
@@ -218,8 +218,8 @@ public class InputBoundingBoxDataDescription implements IInputDescription {
         desc.setAbstract(this.theabstract);
 
         if (supportedCRS.size() <= 0) {
-            //Sollte nie eintreten, da beim setzen von defaultCRS
-            //defaultCRS dem supportedCRS Array hinzugefügt wird.
+            //Should never happen. DefaulCRS gets added to the supportedCRS 
+            //Array when it gets set.
             desc.addNewBoundingBoxData(defaultCRS);
 
         } else {
@@ -253,7 +253,7 @@ public class InputBoundingBoxDataDescription implements IInputDescription {
     /**
      *
      * @param obj
-     * @return
+     * @return bool: Are the Objects equal?
      */
     @Override
     final public boolean equals(Object obj) {
