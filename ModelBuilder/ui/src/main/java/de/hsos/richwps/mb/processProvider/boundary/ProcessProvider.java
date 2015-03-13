@@ -3,7 +3,6 @@ package de.hsos.richwps.mb.processProvider.boundary;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
-import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
 import de.hsos.richwps.mb.entity.WpsServerSource;
@@ -20,8 +19,6 @@ import de.hsos.richwps.mb.processProvider.entity.ProcessLoadingStatus;
 import de.hsos.richwps.mb.entity.WpsServer;
 import de.hsos.richwps.mb.processProvider.exception.ProcessMetricProviderNotAvailable;
 import de.hsos.richwps.mb.processProvider.exception.SpClientNotAvailableException;
-import de.hsos.richwps.mb.properties.IObjectWithProperties;
-import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.gettypes.Input;
 import de.hsos.richwps.sp.client.ows.gettypes.Network;
@@ -487,7 +484,7 @@ public class ProcessProvider {
 
     protected Publisher getPublisher() {
         if (null == this.publisher) {
-            this.publisher = new Publisher();
+            this.publisher = new Publisher(getTranslator());
         }
 
         return this.publisher;

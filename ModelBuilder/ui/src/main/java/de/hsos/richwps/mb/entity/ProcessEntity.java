@@ -295,4 +295,8 @@ public class ProcessEntity extends OwsObjectWithProperties {
             this.setProperty(addGroup.getKey(), addGroup.getValue());
         }
     }
+
+    public PropertyGroup getPropertyGroup(String groupKey) {
+        return this.additionalGroups.get(groupKey);
+    }
 }

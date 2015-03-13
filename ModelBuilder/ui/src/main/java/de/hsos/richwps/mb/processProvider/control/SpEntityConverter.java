@@ -50,7 +50,7 @@ public class SpEntityConverter {
         processEntity.setOwsTitle(spProcess.getTitle());
 
         // add qos targets
-        PropertyGroup qosGroups = QosConverter.targetsToProperties(spProcess, translator);
+        PropertyGroup qosGroups = QosConverter.spTargetsToProperties(spProcess, translator);
         if (null != qosGroups) {
             processEntity.setProperty(qosGroups.getPropertiesObjectName(), qosGroups);
         }

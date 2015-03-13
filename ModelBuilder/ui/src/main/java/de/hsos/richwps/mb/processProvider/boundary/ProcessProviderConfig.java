@@ -6,7 +6,7 @@ package de.hsos.richwps.mb.processProvider.boundary;
  */
 public class ProcessProviderConfig {
 
-    public final static String QOS_TARGETS_GROUP = "QoS Targets";
+    public final static String PROPERTY_KEY_QOS_TARGETS = "QoS Targets";
 
     public final static String QOS_TARGET_ABSTRACT = "Abstract";
 

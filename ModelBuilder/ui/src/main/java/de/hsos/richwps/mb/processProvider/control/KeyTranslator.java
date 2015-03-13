@@ -1,6 +1,8 @@
 package de.hsos.richwps.mb.processProvider.control;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -27,6 +29,23 @@ public class KeyTranslator {
         }
 
         return this.translations.get(key);
+    }
+
+    /**
+     * Returns the first key which translation matches the given value.
+     *
+     * @param translation
+     * @return the first matching key or null.
+     */
+    public String getKey(String translation) {
+        Set<Map.Entry<String, String>> entrySet = this.translations.entrySet();
+        for (Map.Entry<String, String> entry : entrySet) {
+            if (entry.getValue().equals(translation)) {
+                return entry.getKey();
+            }
+        }
+        
+        return null;
     }
 
 }

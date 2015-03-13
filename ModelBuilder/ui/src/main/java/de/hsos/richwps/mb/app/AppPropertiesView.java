@@ -7,7 +7,6 @@ import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.ProcessPortDatatype;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
@@ -30,7 +29,6 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JLabel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -129,7 +127,7 @@ public class AppPropertiesView extends PropertiesView {
 
         // collect QoS target subgroups in order to style them later
         qosTargetSubGroups = new LinkedList<>();
-        String qosGroup = ProcessProviderConfig.QOS_TARGETS_GROUP;
+        String qosGroup = ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS;
         for (IObjectWithProperties aProperty : object.getProperties()) {
             String aPropertyName = aProperty.getPropertiesObjectName();
 
@@ -245,7 +243,7 @@ public class AppPropertiesView extends PropertiesView {
             }
         }
 
-        if (groupName.equals(ProcessProviderConfig.QOS_TARGETS_GROUP)) {
+        if (groupName.equals(ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS)) {
             groupPanel.setTitleGradientColor2(AppConstants.QOS_TARGETS_BG_COLOR);
             hasBrightBg = true;
         }
