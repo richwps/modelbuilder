@@ -9,7 +9,18 @@ import layout.TableLayout;
 
 /**
  * A content panel for an info tab.
- *
+ * <pre>
+ * +-[InfoTabPanel]--+
+ * |+-[JScrollPane]-+|
+ * ||+-[JTextArea]-+||
+ * |||             |||
+ * ||+-------------+||
+ * |+---------------+|
+ * +-----------------+
+ * </pre>
+ * @see JScrollpane
+ * @see JTextArea
+ * 
  * @author dziegenh
  */
 public class InfoTabPanel extends JPanel {

@@ -14,7 +14,20 @@ import layout.TableLayout;
 
 /**
  * SearchPanel for searching processes.
- * (Located under the treeview)
+ * <pre>
+ * 
+ * +--[SemanticProxySearch]--+
+ * | +----[JTextField]-----+ |
+ * | |                     | |
+ * | +---------------------+ |
+ * | +-[SemanticProxyTabs]-+ |
+ * | |                     | |
+ * | +---------------------+ |
+ * +-------------------------+
+ * </pre>
+ * @see JPanel
+ * @see JTextField
+ * @see SemanticProxyTabs
  * @author dziegenh
  */
 public class SementicProxySearch extends JPanel {

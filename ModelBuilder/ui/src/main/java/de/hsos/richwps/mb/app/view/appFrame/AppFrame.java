@@ -21,7 +21,40 @@ import layout.TableLayout;
 /**
  * The ModelBuilder's main frame.
  *
+ * <pre>
+ *  +-----------------------------------------[AppFrame]-----------------------------------------------+
+ *  |                                                                                                  |
+ *  | [---------------------------------------[AppMenuBar]-------------------------------------------] |
+ *  |                                                                                                  |
+ *  | [---------------------------------------[AppToolbar]-------------------------------------------] |
+ *  |                                                                                                  |
+ *  | +---------------------------------------#MainPanel#--------------------------------------------+ |
+ *  | |                                  |                                                           | |
+ *  | |  +-------#LeftPanel#----------+  |  +------#CenterPanel#---------------------------------+   | |
+ *  | |  |                            |  |  |                                                    |   | |
+ *  | |  | +------[TreeView]--------+ |  |  |  +--------[AppGraphView]-----+-[PropertiesView]-+  |   | |
+ *  | |  | |                        | |  |  |  |                           |                  |  |   | |
+ *  | |  | |                        | |  |  |  |                           |                  |  |   | |
+ *  | |  | |                        | |  |  |  |                           |                  |  |   | |
+ *  | |  | |                        | |  |  |  |                           |                  |  |   | |
+ *  | |  | +------------------------+ |  |  |  |                           |                  |  |   | |
+ *  | |  |                            |  |  |  |                           |                  |  |   | |
+ *  | |  |----------------------------|  |  |  |                           |                  |  |   | |
+ *  | |  |                            |  |  |  |                           |                  |  |   | |
+ *  | |  | +------[SummaryView]-----+ |  |  |  +---------------------------+------------------+  |   | |
+ *  | |  | |                        | |  |  |  +-----------------[InfoTabs]-------------------+  |   | |
+ *  | |  | |                        | |  |  |  |                                              |  |   | |
+ *  | |  | +------------------------+ |  |  |  +----------------------------------------------+  |   | |
+ *  | |  |                            |  |  |                                                    |   | |
+ *  | |  +----------------------------+  |  +----------------------------------------------------+   | |
+ *  | |                                  |                                                           | |
+ *  | +----------------------------------------------------------------------------------------------+ |
+ *  |                                                                                                  |
+ *  +--------------------------------------------------------------------------------------------------+</pre>
  * @author dziegenh
+ * @see AppFrame#getMenuBar() 
+ * @see AppFrame#getToolbar() 
+ * @see AppFrame#getMainPanel() 
  */
 public class AppFrame extends JFrame {
 
@@ -117,7 +150,11 @@ public class AppFrame extends JFrame {
     /**
      * The summary component (south-west of the frame).
      *
-     * @return
+     * @return 
+     *     {@link de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch}
+     * 
+     * @see de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch
+     * @see App#getSemanticProxySearchGui() 
      */
     private Component getModellingSummaryView() {
         // TODO mock
@@ -157,9 +194,18 @@ public class AppFrame extends JFrame {
 
     /**
      * The main panel contains all content panels and components below the
-     * toolbar.
-     *
+     * toolbar. (Horizontal splitbar)
      * @return
+     *
+     *  <pre>
+     *  +-----------------------+
+     *  |leftPanel | centerPanel|
+     *  +-----------------------+
+     *  </pre>
+     * 
+     * @see getLeftPanel()
+     * @see getCenterPanel() 
+     * 
      */
     private Component getMainPanel() {
         if (null == mainPanel) {
@@ -174,8 +220,16 @@ public class AppFrame extends JFrame {
     /**
      * Vertical splitbar containing the tree (top component) and the summary
      * panel (bottom component).
-     *
      * @return
+     * <pre>
+     * +-----------+
+     * |TreeView   |
+     * |-----------|
+     * |SummaryView|   
+     * +-----------+</pre>
+     * 
+     * @see getMainTreeViewGui()
+     * @see getModellingSummaryView()
      */
     private JSplitPane getLeftPanel() {
         if (null == leftPanel) {
@@ -193,8 +247,20 @@ public class AppFrame extends JFrame {
     /**
      * The center splitpane contains the graph (top component) and tabs (bottom
      * component).
-     *
-     * @return
+      @return
+
+     *  <pre>
+     *  +------------------+
+     *  |mainModellingPanel|
+     *  |------------------|
+     *  |InfoTabsView      |
+     *  +------------------+</pre>
+     * "mainModellingPanel" contains DefaultMainPanel and ModellingPanel.
+     * 
+     * @see DefaultMainPanel
+     * @see ModellingPanel
+     * @see de.hsos.richwps.mb.infoTabsView.InfoTabs
+     * 
      */
     private Component getCenterPanel() {
         if (null == centerPanel) {
@@ -264,6 +330,22 @@ public class AppFrame extends JFrame {
         return new Dimension(w, h);
     }
 
+    
+    /**
+     * The tree component.
+     * @return 
+     * <pre>
+     * +----[TiledComponent]---+
+     * |+-[mainTreeViewPanel]-+|
+     * || AppTreeToolbar      ||
+     * ||---------------------||
+     * || JTree               ||
+     * |+---------------------+|
+     * +-----------------------+</pre>
+     * 
+     * @see de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar
+     * @see javax.swing.JTree
+    */
     private Component getMainTreeViewGui() {
         if (null == treeViewGui) {
             treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, app.getMainTreeViewGui());

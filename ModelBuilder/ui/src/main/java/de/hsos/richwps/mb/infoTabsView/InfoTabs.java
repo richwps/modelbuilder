@@ -11,7 +11,18 @@ import javax.swing.event.ChangeListener;
 
 /**
  * Swing GUI component and boundary class for the info tabs component.
+ * Contains multiple Tabs consisting of a Title and an InfoTabPanel.
  *
+ *   <pre>
+ *  +----------[InfoTabs]----------+
+ *  |  +------+                    |
+ *  |  |Title*|                    |
+ *  |+-+------+[InfoTabPanel*]----+|
+ *  ||                            ||
+ *  |+----------------------------+|
+ *  +------------------------------+</pre>
+ * 
+ * @see InfoTabPanel
  * @author dziegenh
  */
 public class InfoTabs extends JTabbedPane {
