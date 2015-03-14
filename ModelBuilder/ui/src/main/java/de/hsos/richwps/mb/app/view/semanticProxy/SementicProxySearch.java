@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app.view.semanticProxy;
 
 import de.hsos.richwps.mb.app.AppConstants;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Icon;
@@ -12,7 +13,8 @@ import javax.swing.UIManager;
 import layout.TableLayout;
 
 /**
- *
+ * SearchPanel for searching processes.
+ * (Located under the treeview)
  * @author dziegenh
  */
 public class SementicProxySearch extends JPanel {
@@ -40,7 +42,7 @@ public class SementicProxySearch extends JPanel {
 
         Icon searchIcon = UIManager.getIcon(AppConstants.ICON_SEARCH_KEY);
         JButton startSearch = new JButton(searchIcon);
-        startSearch.setToolTipText("Search for keyword at SemanticProxy"); // TODO move to app constants
+        startSearch.setToolTipText(AppConstants.SEMANTIC_PROXY_SEARCH_TOOLTIP);
         startSearch.addActionListener(actionListener);
 
         // wrap button in toolbar to use it's styling

@@ -403,6 +403,9 @@ public class AppConstants {
     public static Object TREE_DOWNLOADSERVICES_NAME = "Download Services";
     public static Object TREE_INTERFACEOBJECTS_NAME = "In & Outputs";   // inputs, outputs etc.
 
+    // SemanticProxySearch
+    public static final String SEMANTIC_PROXY_SEARCH_TOOLTIP = "Search for keyword at SemanticProxy";
+    
     // Properties View
     public static final String PROPERTIES_MULTI_ELEMENTS_SELECTION = "(multiple elements selected)";
     public static final String PROPERTIES_INPUTS_TITLE = "Inputs";
