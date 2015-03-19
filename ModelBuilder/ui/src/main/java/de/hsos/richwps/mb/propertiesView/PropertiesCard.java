@@ -1,5 +1,7 @@
 package de.hsos.richwps.mb.propertiesView;
 
+import de.hsos.richwps.mb.entity.IOwsObject;
+import de.hsos.richwps.mb.entity.OwsObjectWithProperties;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
@@ -65,10 +67,16 @@ class PropertiesCard extends JScrollPane {
         propertyGroupPanelBorder = new CompoundBorder(outerDark, innerBright);
     }
 
-    protected String getCaptionFor(String propertyKey) {
-        return this.propertiesView.getPropertyKeyTranslator().translate(propertyKey);
+    protected String getCaptionFor(IObjectWithProperties object) {
+        final String propertyKey = object.getPropertiesObjectName();
+
+        if (object.isTranslatable()) {
+            return this.propertiesView.getPropertyKeyTranslator().translate(propertyKey);
+        }
+
+        return propertyKey;
     }
-    
+
     @Override
     public void updateUI() {
         super.updateUI();
@@ -188,8 +196,7 @@ class PropertiesCard extends JScrollPane {
         propertiesPanel.setBorder(propertyGroupPanelBorder);
 
         // add panel to foldable titled component
-        String propertyKey = propertyGroup.getPropertiesObjectName();
-        String title = getCaptionFor(propertyKey);
+        String title = getCaptionFor(propertyGroup);
         TitledComponent groupPanel = createTitledComponent(title, propertiesPanel);
         propertiesView.setupPropertyGroupTitledComponent(propertyGroup, groupPanel);
 
@@ -206,8 +213,7 @@ class PropertiesCard extends JScrollPane {
 
         componentPanel.setLayout(new TableLayout(layoutSize));
 
-        String propertyKey = component.getProperty().getPropertiesObjectName();
-        String propertyCaption = getCaptionFor(propertyKey);
+        String propertyCaption = getCaptionFor(component.getProperty());
 
         // label + component
         componentPanel.add(createHeadLabel(propertyCaption), "0 0");

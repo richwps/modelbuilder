@@ -2,18 +2,19 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.properties.PropertyComponentComplexDataType;
+import de.hsos.richwps.mb.app.view.properties.PropertyComponentQosTarget;
+import de.hsos.richwps.mb.app.view.properties.PropertyComponentQosTargets;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.entity.ProcessPort;
-import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
-import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
+import de.hsos.richwps.mb.entity.QoSTarget;
 import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
+import de.hsos.richwps.mb.processProvider.boundary.DatatypeProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
@@ -26,9 +27,11 @@ import de.hsos.richwps.mb.propertiesView.propertyComponents.IPropertyChangedByUI
 import de.hsos.richwps.mb.propertiesView.propertyComponents.PropertyTextFieldDouble;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import java.awt.Color;
+import java.awt.Window;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -39,14 +42,22 @@ import javax.swing.event.ListSelectionListener;
  */
 public class AppPropertiesView extends PropertiesView {
 
-    private App app;
+    private AppProperties appProperties;
+    private AppGraphView graphView;
+    private AppUndoManager undoManager;
+    private AppActionProvider actionProvider;
+    private DatatypeProvider datatypeProvider;
+
+    private final ListSelectionListener listSelectionListener;
+    private final App app;
 
     public AppPropertiesView(App app) {
-        super(app.getFrame(), AppConstants.PROPERTIES_PANEL_TITLE);
+        super(AppConstants.PROPERTIES_PANEL_TITLE);
+
         this.app = app;
 
         // update properties view depending on the graph selection
-        app.getGraphView().addSelectionListener(new ListSelectionListener() {
+        listSelectionListener = new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (getGraphView().hasSelection()) {
@@ -60,7 +71,35 @@ public class AppPropertiesView extends PropertiesView {
                     setObjectWithProperties(getGraphView().getGraph().getGraphModel());
                 }
             }
-        });
+        };
+    }
+
+    public void setDatatypeProvider(DatatypeProvider datatypeProvider) {
+        this.datatypeProvider = datatypeProvider;
+    }
+
+    public void setParentFrame(Window parentFrame) {
+        super.setParentWindow(parentFrame);
+    }
+
+    public void setUndoManager(AppUndoManager undoManager) {
+        this.undoManager = undoManager;
+    }
+
+    public void setActionProvider(AppActionProvider actionProvider) {
+        this.actionProvider = actionProvider;
+    }
+
+    public void setGraphView(AppGraphView graphView) {
+        this.graphView = graphView;
+    }
+
+    public AppGraphView getGraphView() {
+        return graphView;
+    }
+
+    public ListSelectionListener getListSelectionListener() {
+        return listSelectionListener;
     }
 
     /**
@@ -76,7 +115,7 @@ public class AppPropertiesView extends PropertiesView {
                     propertyBeforeChange,
                     getCurrentObjectWithProperties());
 
-            app.getUndoManager().addEdit(new AppUndoableEdit(this, changeAction, "change property value"));
+            undoManager.addEdit(new AppUndoableEdit(this, changeAction, "change property value"));
 
             // react to changes of the current process's identifier
             if (property.getPropertiesObjectName().equals(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER)) {
@@ -123,7 +162,7 @@ public class AppPropertiesView extends PropertiesView {
     @Override
     public void setObjectWithProperties(IObjectWithProperties object) {
 
-        String uomName = ProcessProviderConfig.QOS_TARGET_UOM;
+        String uomName = QoSTarget.PROPERTY_KEY_QOS_TARGET_UOM;
 
         // collect QoS target subgroups in order to style them later
         qosTargetSubGroups = new LinkedList<>();
@@ -169,6 +208,7 @@ public class AppPropertiesView extends PropertiesView {
         }
 
         boolean addToCache = true;
+        boolean listenToChanges = true;
 
         AbstractPropertyComponent component;
 
@@ -182,9 +222,9 @@ public class AppPropertiesView extends PropertiesView {
                     Collection datatypes = property.getPossibleValues();
                     if (null == datatypes || datatypes.isEmpty()) {
                         try {
-                            property.setPossibleValues(app.getDatatypeProvider().getLiteralDatatypes());
+                            property.setPossibleValues(datatypeProvider.getLiteralDatatypes());
                         } catch (LoadDataTypesException ex) {
-                            AppAction action = app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.SHOW_ERROR_MSG);
+                            AppAction action = actionProvider.getAction(AppActionProvider.APP_ACTIONS.SHOW_ERROR_MSG);
                             action.fireActionPerformed(AppConstants.LOAD_DATATYPES_ERROR);
                         }
                     }
@@ -192,20 +232,25 @@ public class AppPropertiesView extends PropertiesView {
                 }
             }
         }
+        final String componentType = property.getComponentType();
 
-        if (property.getComponentType().equals(ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
-            component = createPropertyComplexDataTypeFormat(property);
+        if (componentType.equals(ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
+            component = appProperties.createPropertyComplexDataTypeFormat(property, this);
 
-//        } else if (property.getComponentType().equals(LiteralInput.COMPONENTTYPE_DATATYPEDESCRIPTION)) {
-//            component = createPropertyLiteralDataType(property);
-//        } 
+        } else if (componentType.equals(PropertyComponentQosTargets.COMPONENT_TYPE)) {
+            component = new PropertyComponentQosTargets(getParentWindow(), property);
+            listenToChanges = false;
+
+        } else if (componentType.equals(PropertyComponentQosTarget.COMPONENT_TYPE)) {
+            component = new PropertyComponentQosTarget(property);
+
         } else {
 
             component = super.getComponentFor(property);
             addToCache = false;
         }
 
-        if (!propertyComponentsListeningTo.contains(component)) {
+        if (listenToChanges && !propertyComponentsListeningTo.contains(component)) {
             component.addPropertyChangedByUIListener(propertyUIChangeListener);
             propertyComponentsListeningTo.add(component);
         }
@@ -229,7 +274,7 @@ public class AppPropertiesView extends PropertiesView {
         if (null == groupName || groupName.isEmpty()) {
             return;
         }
-        
+
         boolean hasBrightBg = false;
 
         // Style monitor metrics group
@@ -243,11 +288,13 @@ public class AppPropertiesView extends PropertiesView {
             }
         }
 
+        // Style the Qos Targets parent group
         if (groupName.equals(ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS)) {
             groupPanel.setTitleGradientColor2(AppConstants.QOS_TARGETS_BG_COLOR);
             hasBrightBg = true;
         }
 
+        // Style a Qos Target group
         if (qosTargetSubGroups.contains(groupName)) {
             groupPanel.setTitleGradientColor2(AppConstants.QOS_TARGET_BG_COLOR);
             groupPanel.resetTitleFontStyle();
@@ -280,22 +327,22 @@ public class AppPropertiesView extends PropertiesView {
         return false;
     }
 
-    private PropertyComponentComplexDataType createPropertyComplexDataTypeFormat(Property<DataTypeDescriptionComplex> property) {
-        PropertyComponentComplexDataType propertyComplexDataTypeFormat = null;
-        try {
-            List<ComplexDataTypeFormat> formats = app.getDatatypeProvider().getComplexDatatypes();
-            propertyComplexDataTypeFormat = new PropertyComponentComplexDataType(app.getFrame(), formats);
-            propertyComplexDataTypeFormat.setProperty(property);
-
-        } catch (LoadDataTypesException ex) {
-            app.showErrorMessage(AppConstants.FORMATS_CSV_FILE_LOAD_ERROR);
-        }
-
-        return propertyComplexDataTypeFormat;
+    void resetCurrentComponents() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                clearPropertyCache();
+                setObjectWithProperties(getCurrentObjectWithProperties());
+            }
+        });
     }
 
-    private GraphView getGraphView() {
-        return app.getGraphView();
+    AppProperties getAppProperties() {
+        return this.appProperties;
+    }
+
+    void setAppProperties(AppProperties appProperties) {
+        this.appProperties = appProperties;
     }
 
 }

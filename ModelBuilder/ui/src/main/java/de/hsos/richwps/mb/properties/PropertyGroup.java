@@ -1,23 +1,24 @@
 package de.hsos.richwps.mb.properties;
 
-import de.hsos.richwps.mb.Logger;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
-import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * A group of objects with properties.
  *
  * @author dziegenh
+ * @param <E>
  */
 public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWithProperties, Serializable {
 
     private HashMap<String, E> propertyObjects;
     private String propertiesObjectName;
     private boolean isTransient = false;
+
+    private boolean translatable = true;
 
     public PropertyGroup() {
         this("");
@@ -26,6 +27,25 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
     public PropertyGroup(String name) {
         this.propertiesObjectName = name;
         propertyObjects = new LinkedHashMap<>();
+    }
+
+    /**
+     * Returns true if the property's name is a translatable key.
+     *
+     * @return
+     */
+    @Override
+    public boolean isTranslatable() {
+        return translatable;
+    }
+
+    /**
+     * Sets wether the property's name is a translatable key.
+     *
+     * @param translatable
+     */
+    public void setTranslatable(boolean translatable) {
+        this.translatable = translatable;
     }
 
     public void setPropertyComponents(HashMap<String, E> propertyObjects) {
@@ -86,12 +106,16 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
         this.isTransient = isTransient;
     }
 
+    public void clear() {
+        this.propertyObjects.clear();
+    }
+    
     public PropertyGroup<E> clone() {
         PropertyGroup<E> clone = new PropertyGroup<>(propertiesObjectName);
         clone.setIsTransient(isTransient);
 
         for (Entry<String, E> pEntry : this.propertyObjects.entrySet()) {
-            
+
             E value = pEntry.getValue();
             if (null != value) {
                 value = (E) value.clone();
@@ -101,6 +125,12 @@ public class PropertyGroup<E extends IObjectWithProperties> implements IObjectWi
         }
 
         return clone;
+    }
+
+    public void addAll(Collection<E> properties) {
+        for (E iObjectWithProperties : properties) {
+            addObject(iObjectWithProperties);
+        }
     }
 
 }

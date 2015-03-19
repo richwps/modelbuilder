@@ -1,18 +1,16 @@
 package de.hsos.richwps.mb.app.view.semanticProxy;
 
-import de.hsos.richwps.mb.app.AppConstants;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
+import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
-import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.UIManager;
+import javax.swing.TransferHandler;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -23,21 +21,41 @@ class SemanticProxyTabs extends JTabbedPane {
 
     HashMap<String, SpSearchresultTab> searchResultTabs;
     HashMap<String, SpTabTitle> searchResultTabComponents;
-    
-    private final SemanticProxyInteractionComponents interactionComponents;
 
     private boolean appHasModel = false;
-
     
-    
-    public SemanticProxyTabs(SemanticProxyInteractionComponents components) {
-        this.interactionComponents = components;
+    private ProcessProvider processProvider;
+    private JFrame parent;
+    private Component graphDndProxy;
+    private GraphView graphView;
+    private TransferHandler processTransferHandler;
 
+    public SemanticProxyTabs() {
         this.searchResultTabs = new HashMap<>();
         this.searchResultTabComponents = new HashMap<>();
     }
 
     final static String titleTemplate = "\"%s\" (%d)";
+
+    public void setProcessProvider(ProcessProvider processProvider) {
+        this.processProvider = processProvider;
+    }
+
+    public void setParent(JFrame parent) {
+        this.parent = parent;
+    }
+
+    public void setGraphDndProxy(Component graphDndProxy) {
+        this.graphDndProxy = graphDndProxy;
+    }
+
+    public void setGraphView(GraphView graphView) {
+        this.graphView = graphView;
+    }
+
+    public void setProcessTransferHandler(TransferHandler processTransferHandler) {
+        this.processTransferHandler = processTransferHandler;
+    }
 
     /**
      * Creates a new tab, starts the search and displays the results inside the
@@ -58,7 +76,12 @@ class SemanticProxyTabs extends JTabbedPane {
         if (!searchResultTabs.containsKey(query)) {
 
             // create and add tab
-            final SpSearchresultTab theTab = new SpSearchresultTab(query, interactionComponents);
+            final SpSearchresultTab theTab = new SpSearchresultTab(query, processProvider);
+            theTab.setParent(parent);
+            theTab.setGraphDndProxy(graphDndProxy);
+            theTab.setGraphView(graphView);
+            theTab.setProcessTransferHandler(processTransferHandler);
+
             if (appHasModel) {
                 theTab.initDnd();
             }
@@ -93,7 +116,7 @@ class SemanticProxyTabs extends JTabbedPane {
         if (numResults < 0) {
             removeTab(query);
             JOptionPane.showMessageDialog(
-                    this.interactionComponents.parent,
+                    this.parent,
                     "Error while performing SemanticProxy search."
                     + "\nSee SemenaticProxy tab for details.",
                     "SemanticProxy Error",

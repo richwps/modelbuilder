@@ -46,6 +46,8 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
 
     private boolean isTransient = false;
 
+    private boolean translatable = true;
+
     public Property() {
         this(null);
     }
@@ -53,10 +55,6 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     public Property(String propertyName) {
         this(propertyName, COMPONENT_TYPE_TEXTFIELD, null);
     }
-
-//    public Property(String propertyName, String componentType) {
-//        this(propertyName, componentType, null);
-//    }
 
     public Property(String propertyName, String componentType, E value) {
         this(propertyName, componentType, value, false);
@@ -122,7 +120,24 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     public void setEditable(boolean editable) {
         this.editable = editable;
     }
+    /**
+     * Returns true if the property's name is a translatable key.
+     *
+     * @return
+     */
+    public boolean isTranslatable() {
+        return translatable;
+    }
 
+    /**
+     * Sets wether the property's name is a translatable key.
+
+     * @param translatable 
+     */
+    public void setTranslatable(boolean translatable) {
+        this.translatable = translatable;
+    }
+    
     /**
      * Properties are equal if their name and component type are equal.
      *
@@ -170,8 +185,8 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
         changeListeners.add(listener);
     }
 
-    public void removeChangeListener(IPropertyChangeListener listner) {
-        changeListeners.remove(listner);
+    public void removeChangeListener(IPropertyChangeListener listener) {
+        changeListeners.remove(listener);
     }
 
     public void firePropertyChanged(Object source, PropertyChangeType changeType) {

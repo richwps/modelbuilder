@@ -1,11 +1,11 @@
 package de.hsos.richwps.mb.processProvider.control;
 
 import de.hsos.richwps.mb.entity.ProcessEntity;
+import de.hsos.richwps.mb.entity.QoSTarget;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
-import de.hsos.richwps.sp.client.ows.EUOM;
 import de.hsos.richwps.sp.client.ows.SPClient;
 import de.hsos.richwps.sp.client.ows.gettypes.WPS;
 import de.hsos.richwps.sp.client.ows.posttypes.PostProcess;
@@ -43,7 +43,8 @@ public class Publisher {
 
         Object targetGroup = process.getPropertyValue(ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS);
         if(null == targetGroup) {
-            PropertyGroup<Property> mockTarget = QosConverter.createTargetProperties("aTitle", "aAbstr", 0d, 2d, 1d, .5d, "sec");
+            QoSTarget qoSTarget = new QoSTarget("aTitle", "aAbstr", 0d, 2d, 1d, .5d, "sec");
+            PropertyGroup<Property> mockTarget = QosConverter.createTargetProperties(qoSTarget);
             PropertyGroup<PropertyGroup> mockTargets = new PropertyGroup<>(ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS);
             mockTargets.addObject(mockTarget);
             process.setProperty(ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS, mockTargets);

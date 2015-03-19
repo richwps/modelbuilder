@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import layout.TableLayout;
@@ -155,7 +156,9 @@ public class MbDialog extends JDialog {
             buttonPanel.setBorder(new EmptyBorder(borderInsets));
             JPanel contentWrapper = new JPanel();
             contentWrapper.setLayout(new TableLayout(new double[][]{{TableLayout.FILL}, {TableLayout.FILL, TableLayout.PREFERRED}}));
-            contentWrapper.add(contentPane, "0 0");
+            JScrollPane contentScroller = new JScrollPane(contentPane);
+            contentScroller.setBorder(null);
+            contentWrapper.add(contentScroller, "0 0");
             contentWrapper.add(buttonPanel, "0 1");
             super.getContentPane().add(contentWrapper);
 

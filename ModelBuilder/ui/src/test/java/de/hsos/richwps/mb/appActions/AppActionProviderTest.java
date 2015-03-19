@@ -30,7 +30,8 @@ public class AppActionProviderTest extends TestCase {
         this.app = new App();
         this.app.setup(new String[] {""});
         this.appActionHandler = new AppActionHandler(app);
-        this.instance = new AppActionProvider(appActionHandler);
+        this.instance = new AppActionProvider();
+        this.instance.setActionHandler(appActionHandler);
     }
 
 

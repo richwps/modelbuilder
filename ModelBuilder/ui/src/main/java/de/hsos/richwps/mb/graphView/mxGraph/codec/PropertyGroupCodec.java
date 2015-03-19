@@ -28,7 +28,7 @@ public class PropertyGroupCodec extends mxObjectCodec {
 
         if (decoded instanceof PropertyGroup) {
             PropertyGroup decodedGroup = (PropertyGroup) decoded;
-            
+
             // get group name from attribute
             String groupName = ((Element) node).getAttribute(ObjectWithPropertiesCodec.ATTRIBUTE_OBJECTNAME);
             decodedGroup.setPropertiesObjectName(groupName);
@@ -57,37 +57,44 @@ public class PropertyGroupCodec extends mxObjectCodec {
     public Node encode(mxCodec enc, Object obj) {
         if (obj instanceof PropertyGroup) {
             PropertyGroup pGroup = (PropertyGroup) obj;
-            
-            if(pGroup.isTransient()) {
+
+            if (pGroup.isTransient()) {
                 return enc.encode("");
             }
-            
+
             Collection<? extends IObjectWithProperties> properties = pGroup.getProperties();
 
             // create property array for encoding
             IObjectWithProperties[] pArr = new IObjectWithProperties[properties.size()];
             int i = 0;
+            boolean addProperty = true;
             for (IObjectWithProperties aPropertyObject : properties) {
-                if(aPropertyObject instanceof Property) {
+                addProperty = true;
+
+                if (aPropertyObject instanceof Property) {
                     Property aProperty = (Property) aPropertyObject;
-                    if(aProperty.getPossibleValuesTransient()) {
+
+                    if (aProperty.isTransient()) {
+                        addProperty = false;
+                    }
+
+                    if (aProperty.getPossibleValuesTransient()) {
                         aProperty = aProperty.clone();
                         aProperty.setPossibleValues(null);
                         aPropertyObject = aProperty;
                     }
                 }
-                
-                pArr[i++] = aPropertyObject;
+
+                if (addProperty) {
+                    pArr[i++] = aPropertyObject;
+                }
             }
 
             Element encode = (Element) encode(enc, pArr);
-            
+
             // save object name as attribute
             encode.setAttribute(ObjectWithPropertiesCodec.ATTRIBUTE_OBJECTNAME, pGroup.getPropertiesObjectName());
 
-            
-            
-            
             return encode;
         }
 

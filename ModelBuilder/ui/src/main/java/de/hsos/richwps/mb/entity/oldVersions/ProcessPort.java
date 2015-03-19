@@ -356,5 +356,10 @@ public class ProcessPort extends OwsObjectWithProperties {
         return hash;
     }
 
+    @Override
+    public boolean isTranslatable() {
+        return false;
+    }
+
 }
 

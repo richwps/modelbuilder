@@ -7,6 +7,7 @@ import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
+import de.hsos.richwps.sp.client.RDFException;
 import de.hsos.richwps.sp.client.ows.EUOM;
 import de.hsos.richwps.sp.client.ows.gettypes.QoSTarget;
 import de.hsos.richwps.sp.client.ows.posttypes.PostQoSTarget;
@@ -37,16 +38,8 @@ public class QosConverter {
 
                 for (QoSTarget target : qoSTargets) {
 
-                    final String aAbstract = target.getAbstract();
-                    final double min = target.getMin();
-                    final double max = target.getMax();
-                    final double ideal = target.getIdeal();
-                    final double variance = target.getVariance();
-                    EUOM uom = target.getUOM();
-                    final String uomTranslated = translator.getTranslation(uom.name());
-                    final String targetTitle = target.getTitle();
-
-                    PropertyGroup<Property> targetGroup = createTargetProperties(targetTitle, aAbstract, min, max, ideal, variance, uomTranslated);
+                    de.hsos.richwps.mb.entity.QoSTarget mbTarget = spQosTargetToMbEntity(target, translator);
+                    PropertyGroup<Property> targetGroup = createTargetProperties(mbTarget);
 
                     qosGroup.addObject(targetGroup);
                 }
@@ -59,32 +52,48 @@ public class QosConverter {
         return qosGroup;
     }
 
-    public static PropertyGroup<Property> createTargetProperties(final String targetTitle, final String aAbstract, final double min, final double max, final double ideal, final double variance, final String uomTranslated) {
-        PropertyGroup<Property> targetGroup = new PropertyGroup<>(targetTitle);
+    public static de.hsos.richwps.mb.entity.QoSTarget spQosTargetToMbEntity(QoSTarget target, KeyTranslator translator) throws RDFException {
+        de.hsos.richwps.mb.entity.QoSTarget qoSTarget = new de.hsos.richwps.mb.entity.QoSTarget();
 
-        Property<String> abstractProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_ABSTRACT);
+        qoSTarget.setTargetTitle(target.getTitle());
+        qoSTarget.setTargetAbstract(target.getAbstract());
+        qoSTarget.setIdeal(target.getIdeal());
+        qoSTarget.setMax(target.getMax());
+        qoSTarget.setMin(target.getMin());
+        qoSTarget.setVariance(target.getVariance());
+
+        EUOM uom = target.getUOM();
+        qoSTarget.setUomTranslated(translator.getTranslation(uom.name()));
+
+        return qoSTarget;
+    }
+
+    public static PropertyGroup<Property> createTargetProperties(de.hsos.richwps.mb.entity.QoSTarget qosTarget) {
+        PropertyGroup<Property> targetGroup = new PropertyGroup<>(qosTarget.getTargetTitle());
+
+        Property<String> abstractProperty = new Property<>(de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_ABSTRACT);
         abstractProperty.setComponentType(Property.COMPONENT_TYPE_TEXTFIELD);
-        abstractProperty.setValue(aAbstract);
+        abstractProperty.setValue(qosTarget.getTargetAbstract());
 
-        Property<Double> minProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_MIN);
+        Property<Double> minProperty = new Property<>(de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_MIN);
         minProperty.setComponentType(Property.COMPONENT_TYPE_DOUBLE);
-        minProperty.setValue(min);
+        minProperty.setValue(qosTarget.getMin());
 
-        Property<Double> maxProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_MAX);
+        Property<Double> maxProperty = new Property<>(de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_MAX);
         maxProperty.setComponentType(Property.COMPONENT_TYPE_DOUBLE);
-        maxProperty.setValue(max);
+        maxProperty.setValue(qosTarget.getMax());
 
-        Property<Double> idealProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_IDEAL);
+        Property<Double> idealProperty = new Property<>(de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_IDEAL);
         idealProperty.setComponentType(Property.COMPONENT_TYPE_DOUBLE);
-        idealProperty.setValue(ideal);
+        idealProperty.setValue(qosTarget.getIdeal());
 
-        Property<Double> varProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_VAR);
+        Property<Double> varProperty = new Property<>(de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_VAR);
         varProperty.setComponentType(Property.COMPONENT_TYPE_DOUBLE);
-        varProperty.setValue(variance);
+        varProperty.setValue(qosTarget.getVariance());
 
-        Property<String> uomProperty = new Property<>(ProcessProviderConfig.QOS_TARGET_UOM);
+        Property<String> uomProperty = new Property<>(de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_UOM);
         uomProperty.setComponentType(Property.COMPONENT_TYPE_NONE);
-        uomProperty.setValue(uomTranslated);
+        uomProperty.setValue(qosTarget.getUomTranslated());
 
         targetGroup.addObject(abstractProperty);
         targetGroup.addObject(minProperty);
@@ -125,12 +134,12 @@ public class QosConverter {
         PostQoSTarget postQoSTarget = new PostQoSTarget();
 
         Object title = group.getPropertiesObjectName();
-        Object aAbstract = getPropertyValue(group, ProcessProviderConfig.QOS_TARGET_ABSTRACT);
-        Object min = getPropertyValue(group, ProcessProviderConfig.QOS_TARGET_MIN);
-        Object max = getPropertyValue(group, ProcessProviderConfig.QOS_TARGET_MAX);
-        Object ideal = getPropertyValue(group, ProcessProviderConfig.QOS_TARGET_IDEAL);
-        Object variance = getPropertyValue(group, ProcessProviderConfig.QOS_TARGET_VAR);
-        Object uom = getPropertyValue(group, ProcessProviderConfig.QOS_TARGET_UOM);
+        Object aAbstract = getPropertyValue(group, de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_ABSTRACT);
+        Object min = getPropertyValue(group, de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_MIN);
+        Object max = getPropertyValue(group, de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_MAX);
+        Object ideal = getPropertyValue(group, de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_IDEAL);
+        Object variance = getPropertyValue(group, de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_VAR);
+        Object uom = getPropertyValue(group, de.hsos.richwps.mb.entity.QoSTarget.PROPERTY_KEY_QOS_TARGET_UOM);
         EUOM spUom = toSpUom((String) uom, translator);
 
         postQoSTarget.setBstract((String) aAbstract);

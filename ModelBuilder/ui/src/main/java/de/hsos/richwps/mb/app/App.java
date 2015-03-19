@@ -1,25 +1,21 @@
 package de.hsos.richwps.mb.app;
 
-import de.hsos.richwps.mb.app.view.semanticProxy.MainTreeViewController;
-import de.hsos.richwps.mb.app.view.semanticProxy.SubTreeViewController;
+import de.hsos.richwps.mb.app.view.treeView.MainTreeViewController;
+import de.hsos.richwps.mb.app.view.treeView.SubTreeViewController;
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.actions.AppActionProvider.APP_ACTIONS;
 import de.hsos.richwps.mb.app.view.AboutDialog;
 import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
-import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionComponents;
 import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
-import de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.infoTabsView.InfoTabs;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.richWPS.boundary.RichWPSProvider;
 import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
-import de.hsos.richwps.mb.ui.ColorBorder;
 import de.hsos.richwps.mb.ui.JLabelWithBackground;
 import de.hsos.richwps.mb.ui.TitledComponent;
 import de.hsos.richwps.mb.app.view.dialogs.ProfileModelDialog;
@@ -27,26 +23,20 @@ import de.hsos.richwps.mb.app.view.dialogs.TestModelDialog;
 import de.hsos.richwps.mb.app.view.dialogs.UndeployDialog;
 import de.hsos.richwps.mb.app.view.dialogs.ExecuteDialog;
 import de.hsos.richwps.mb.app.view.dialogs.ExecuteModelDialog;
+import de.hsos.richwps.mb.app.view.treeView.MainTreeViewPanel;
 import de.hsos.richwps.mb.processProvider.boundary.DatatypeProvider;
-import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
-import layout.TableLayout;
 
 /**
  * ModelBuilder entry point. Creates and connects all components.
@@ -58,24 +48,25 @@ public class App {
 
     private AppActionProvider actionProvider;
 
+    private boolean init = false;
+
     AppFrame frame;
     private ProcessProvider processProvider;
 
     private TreenodeTransferHandler processTransferHandler;
 
-    private MbUndoManager undoManager;
+    private AppUndoManager undoManager;
 
     private String currentModelFilename = null;
 
     private MainTreeViewController mainTreeView;
     private AppGraphView graphView;
-    private PropertiesView propertiesView;
+    private AppPropertiesView propertiesView;
     private JLabel graphDndProxy;
 
     GraphDropTargetAdapter dropTargetAdapter;
     private InfoTabs infoTabs;
-    private AppTreeToolbar treeViewToolbar;
-    private JPanel mainTreeViewPanel;
+    private MainTreeViewPanel mainTreeViewPanel;
     private JPanel subTreeViewPanel;
     private SubTreeViewController subTreeView;
     private AppPreferencesDialog preferencesDialog;
@@ -89,6 +80,8 @@ public class App {
     private DatatypeProvider datatypeProvider;
     private ProcessMetricProvider processMetricProvider;
     private SementicProxySearch semanticProxySearch;
+    private AppActionHandler actionHandler;
+    private AppProperties appProperties;
 
     /**
      * Creates and connects all ModelBuilder components.
@@ -97,7 +90,58 @@ public class App {
      */
     public void setup(String[] args) {
         boolean debugMode = Arrays.asList(args).contains("debug");
+
+        this.frame = new AppFrame(AppConstants.FRAME_TITLE);
+
         AppSetup.setup(this, debugMode);
+    }
+
+    void init() {
+        if (this.init) {
+            return;
+        }
+
+        this.processMetricProvider = new ProcessMetricProvider();
+        this.actionHandler = new AppActionHandler(this);
+        this.undoManager = new AppUndoManager();
+        this.processProvider = new ProcessProvider();
+        this.processTransferHandler = new TreenodeTransferHandler();
+        this.graphDndProxy = new JLabelWithBackground(new Color(0f, 1f, 0f, .1f));
+        this.semanticProxySearch = new SementicProxySearch();
+        this.mainTreeView = new MainTreeViewController();
+        this.mainTreeViewPanel = new MainTreeViewPanel();
+        this.preferencesDialog = new AppPreferencesDialog(this.frame);
+        this.propertiesView = new AppPropertiesView(this);
+        this.appProperties = new AppProperties();
+        this.graphView = new AppGraphView();
+        this.infoTabs = new AppInfoTabs();
+        this.datatypeProvider = new DatatypeProvider();
+
+        if (AppConstants.ENABLE_SUB_TREE_VIEW) {
+            this.subTreeView = new SubTreeViewController();
+        }
+
+        try {
+            this.actionProvider = new AppActionProvider();
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    AppConstants.CREATE_APP_ACTION_FAIL,
+                    AppConstants.CREATE_APP_ACTION_FAIL_TITLE,
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+
+        this.init = true;
+    }
+
+    public AppProperties getAppProperties() {
+        return appProperties;
+    }
+
+    public AppActionHandler getActionHandler() {
+        return actionHandler;
     }
 
     /**
@@ -115,23 +159,6 @@ public class App {
      * @return
      */
     ProcessMetricProvider getProcessMetricProvider() {
-        if (null == processMetricProvider) {
-            try {
-
-                // get URL from config
-                String key = AppConfig.CONFIG_KEYS.MONITOR_S_URL.name();
-                String defUrl = AppConstants.MONITOR_DEFAULT_URL;
-                String confUrl = AppConfig.getConfig().get(key, defUrl);
-
-                processMetricProvider = new ProcessMetricProvider(confUrl);
-
-            } catch (MalformedURLException ex) {
-                showErrorMessage(ex.getMessage());
-            } catch (Exception ex) {
-                showErrorMessage(ex.getMessage());
-            }
-        }
-
         return processMetricProvider;
     }
 
@@ -183,11 +210,7 @@ public class App {
         getUndoManager();
     }
 
-    MbUndoManager getUndoManager() {
-        if (null == undoManager) {
-            undoManager = new AppUndoManager(this);
-        }
-
+    AppUndoManager getUndoManager() {
         return undoManager;
     }
 
@@ -216,16 +239,6 @@ public class App {
      * @return
      */
     ProcessProvider getProcessProvider() {
-        if (null == processProvider) {
-            processProvider = new ProcessProvider();
-            processProvider.setProcessMetricProvider(getProcessMetricProvider());
-
-            for (String[] keyAndValue : AppConstants.PROCESS_PROVIDER_TRANSLATIONS) {
-                processProvider.getTranslator().addTranslation(keyAndValue[0], keyAndValue[1]);
-            }
-
-            AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
-        }
         return processProvider;
     }
 
@@ -234,11 +247,7 @@ public class App {
      *
      * @return
      */
-    protected TreenodeTransferHandler getProcessTransferHandler() {
-        if (null == processTransferHandler) {
-            processTransferHandler = new TreenodeTransferHandler(getProcessProvider());
-        }
-
+    TreenodeTransferHandler getProcessTransferHandler() {
         return processTransferHandler;
     }
 
@@ -268,10 +277,6 @@ public class App {
      * @return
      */
     public Component getGraphDndProxy() {
-        if (null == graphDndProxy) {
-            graphDndProxy = new JLabelWithBackground(new Color(0f, 1f, 0f, .1f));
-            graphDndProxy.setVisible(false);
-        }
         return graphDndProxy;
     }
 
@@ -282,10 +287,6 @@ public class App {
      * @return
      */
     SubTreeViewController getSubTreeView() {
-        if (null == subTreeView) {
-            subTreeView = new SubTreeViewController(createSemanticProxyInteractionComponents());
-        }
-
         return subTreeView;
     }
 
@@ -315,11 +316,6 @@ public class App {
      * Returns the component for searching the semantic proxy.
      */
     SementicProxySearch getSemanticProxySearch() {
-        if (null == semanticProxySearch) {
-            semanticProxySearch = new SementicProxySearch(createSemanticProxyInteractionComponents());
-
-        }
-
         return semanticProxySearch;
     }
 
@@ -339,27 +335,7 @@ public class App {
      * @return
      */
     MainTreeViewController getMainTreeView() {
-        if (null == mainTreeView) {
-            mainTreeView = new MainTreeViewController(getPreferencesDialog(), createSemanticProxyInteractionComponents());
-        }
-
         return mainTreeView;
-    }
-
-    /**
-     * Gets a Layer DTO containing components for interacting with the semantic
-     * proxy.
-     *
-     * @return
-     */
-    private SemanticProxyInteractionComponents createSemanticProxyInteractionComponents() {
-        return new SemanticProxyInteractionComponents(
-                getFrame(),
-                getGraphView(),
-                getProcessProvider(),
-                getGraphDndProxy(),
-                getProcessTransferHandler()
-        );
     }
 
     /**
@@ -368,26 +344,10 @@ public class App {
      * @return
      */
     public JPanel getMainTreeViewGui() {
-        if (null == mainTreeViewPanel) {
+        return mainTreeViewPanel;
+    }
 
-            double f = TableLayout.FILL;
-            double p = TableLayout.PREFERRED;
-            JTree tree = getMainTreeView().getTreeView().getGui();
-
-            mainTreeViewPanel = new JPanel();
-            mainTreeViewPanel.setLayout(new TableLayout(new double[][]{{f}, {p, f}}));
-
-            // add tree toolbar
-            treeViewToolbar = new AppTreeToolbar(getActionProvider());
-            treeViewToolbar.setBorder(new ColorBorder(UIManager.getColor("activeCaptionBorder"), 0, 0, 1, 0));
-            mainTreeViewPanel.add(treeViewToolbar, "0 0");
-
-            // add tree
-            JScrollPane treeScrollPane = new JScrollPane(tree);
-            treeScrollPane.setBorder(null);
-            mainTreeViewPanel.add(treeScrollPane, "0 1");
-        }
-
+    MainTreeViewPanel getMainTreeViewPanel() {
         return mainTreeViewPanel;
     }
 
@@ -397,43 +357,6 @@ public class App {
      * @return
      */
     AppPreferencesDialog getPreferencesDialog() {
-        if (null == preferencesDialog) {
-            preferencesDialog = new AppPreferencesDialog(frame);
-
-            final String[] prePersistedRemotes = getProcessProvider().getPersistedRemotes();
-            final List<String> preRemotesAsList = Arrays.asList(prePersistedRemotes);
-
-            preferencesDialog.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosed(WindowEvent e) {
-                    // get persisted configuration value.
-                    String key = AppConfig.CONFIG_KEYS.MONITOR_S_URL.name();
-                    String defaultValue = AppConstants.MONITOR_DEFAULT_URL;
-                    String confUrl = AppConfig.getConfig().get(key, defaultValue);
-
-                    // get currently used value.
-                    String monitorUrl = getProcessMetricProvider().getMonitorUrl();
-
-                    // update curently used value if the config has changed.
-                    boolean monitorSettingsChanged = !confUrl.equals(monitorUrl);
-                    if (monitorSettingsChanged) {
-                        getProcessMetricProvider().setMonitorUrl(confUrl);
-                    }
-
-                    // check if remotes changed
-                    String[] persistedRemotes = getProcessProvider().getPersistedRemotes();
-                    List<String> remotesAsList = Arrays.asList(persistedRemotes);
-                    boolean remotesChanged = !remotesAsList.containsAll(preRemotesAsList);
-
-                    // force reloading monitor data
-                    if (monitorSettingsChanged || remotesChanged) {
-                        getProcessProvider().resetProcessLoadingStates();
-                        getMainTreeView().fillTree();
-                    }
-                }
-            });
-        }
-
         return preferencesDialog;
     }
 
@@ -451,10 +374,7 @@ public class App {
      *
      * @return
      */
-    protected AppGraphView getGraphView() {
-        if (null == graphView) {
-            graphView = new AppGraphView(this);
-        }
+    AppGraphView getGraphView() {
         return graphView;
     }
 
@@ -550,11 +470,7 @@ public class App {
      *
      * @return
      */
-    protected PropertiesView getPropertiesView() {
-        if (null == propertiesView) {
-            propertiesView = new AppPropertiesView(this);
-        }
-
+    protected AppPropertiesView getPropertiesView() {
         return propertiesView;
     }
 
@@ -582,21 +498,6 @@ public class App {
      * @return
      */
     public AppActionProvider getActionProvider() {
-        if (null == actionProvider) {
-            AppActionHandler actionHandler = new AppActionHandler(this);
-
-            try {
-                actionProvider = new AppActionProvider(actionHandler);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        AppConstants.CREATE_APP_ACTION_FAIL,
-                        AppConstants.CREATE_APP_ACTION_FAIL_TITLE,
-                        JOptionPane.ERROR_MESSAGE);
-                System.exit(1);
-            }
-        }
-
         return actionProvider;
     }
 
@@ -632,9 +533,6 @@ public class App {
      * @return
      */
     private InfoTabs getInfoTabs() {
-        if (null == infoTabs) {
-            infoTabs = new AppInfoTabs();
-        }
         return infoTabs;
     }
 
@@ -846,10 +744,6 @@ public class App {
      * @return
      */
     DatatypeProvider getDatatypeProvider() {
-        if (null == datatypeProvider) {
-            datatypeProvider = new DatatypeProvider(AppConstants.COMPLEX_FORMATS_CSV_FILE, AppConstants.LITERAL_DATATYPES_CSV_FILE);
-        }
-
         return datatypeProvider;
     }
 

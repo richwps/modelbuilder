@@ -261,6 +261,12 @@ public class AppConstants {
      * BG color for a target sub group
      */
     static final Color QOS_TARGET_BG_COLOR = new Color(250, 240, 209);
+    
+    public static final String QOS_MANAGE_TARGETS_DIALOG_TITLE = "Manage QoS Targets";
+    
+    public static final String QOS_MANAGE_TARGETS_BUTTON_TTT = "Manage QoS Targets";
+    
+    public static final String QOS_EDIT_TARGET_DIALOG_TITLE = "Edit QoS Target";
 
     static String FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED = "A process with identifier '%s' is already deployed at '%s'";
 
@@ -313,6 +319,11 @@ public class AppConstants {
      * Message for errors which occur while loading port datatypes.
      */
     public static String LOAD_DATATYPES_ERROR = "Error while loading the port datatypes!\nPossible reason: missing or corrupt datatypes CSV file.";
+    
+    /**
+     * Default divider location.
+     */
+    public static double FRAME_DEFAULT_PROPERTIES_DIVIDER = 0.75;
 
     public enum PREFERENCES_TAB {
 

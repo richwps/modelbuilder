@@ -18,6 +18,7 @@ import java.awt.Cursor;
 import java.awt.Window;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JPanel;
@@ -40,10 +41,10 @@ public class PropertiesView extends TitledComponent {
 
     private final JPanel contentPanel;
 
-    private final Window parentWindow;
+    private Window parentWindow;
 
     private PropertyKeyTranslator translator;
-    
+
     public static enum CARD {
 
         NO_SELECTION, PROCESS_MULTI_SELECTION, OBJECT_WITH_PROPERTIES;
@@ -67,10 +68,9 @@ public class PropertiesView extends TitledComponent {
      */
     protected HashMap<Property, AbstractPropertyComponent> componentCache;
 
-    public PropertiesView(Window parentWindow, String title) {
+    public PropertiesView(String title) {
         super(title, new JPanel());
 
-        this.parentWindow = parentWindow;
         this.propertiesCard = new PropertiesCard(parentWindow, this);
         this.componentCache = new HashMap<>();
         this.translator = new PropertyKeyTranslator();
@@ -83,6 +83,14 @@ public class PropertiesView extends TitledComponent {
         contentPanel.add(propertiesCard, CARD.OBJECT_WITH_PROPERTIES.name());
     }
 
+    public void setParentWindow(Window parentWindow) {
+        this.parentWindow = parentWindow;
+    }
+
+    public Window getParentWindow() {
+        return parentWindow;
+    }
+
     public void showCard(CARD card) {
         getCardLayout().show(getContentPanel(), card.name());
     }
@@ -90,11 +98,16 @@ public class PropertiesView extends TitledComponent {
     public PropertyKeyTranslator getPropertyKeyTranslator() {
         return this.translator;
     }
-    
+
     /**
      * Clears the cache for property components.
      */
     public void clearPropertyCache() {
+        final Collection<AbstractPropertyComponent> components = this.componentCache.values();
+        for (AbstractPropertyComponent component : components) {
+            component.dispose();
+        }
+
         this.componentCache.clear();
     }
 

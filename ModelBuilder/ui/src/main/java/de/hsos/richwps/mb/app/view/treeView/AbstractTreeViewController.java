@@ -1,4 +1,4 @@
-package de.hsos.richwps.mb.app.view.semanticProxy;
+package de.hsos.richwps.mb.app.view.treeView;
 
 import de.hsos.richwps.mb.app.App;
 import de.hsos.richwps.mb.app.AppTreeFactory;
@@ -36,18 +36,31 @@ public abstract class AbstractTreeViewController {
 
     private GraphDropTargetAdapter dropTargetAdapter;
 
-    private final GraphView graphView;
-    private final ProcessProvider processProvider;
-    private final Component graphDndProxy;
-    private final TransferHandler processTransferHandler;
-    private final JFrame parent;
+    private  GraphView graphView;
+    private  ProcessProvider processProvider;
+    private  Component graphDndProxy;
+    private  TransferHandler processTransferHandler;
+    private  JFrame parent;
 
-    public AbstractTreeViewController(SemanticProxyInteractionComponents components) {
-        this.graphView = components.graphView;
-        this.processProvider = components.processProvider;
-        this.graphDndProxy = components.graphDndProxy;
-        this.processTransferHandler = components.processTransferHandler;
-        this.parent = components.parent;
+
+    public void setGraphDndProxy(Component graphDndProxy) {
+        this.graphDndProxy = graphDndProxy;
+    }
+
+    public void setGraphView(GraphView graphView) {
+        this.graphView = graphView;
+    }
+
+    public void setParent(JFrame parent) {
+        this.parent = parent;
+    }
+
+    public void setProcessProvider(ProcessProvider processProvider) {
+        this.processProvider = processProvider;
+    }
+
+    public void setProcessTransferHandler(TransferHandler processTransferHandler) {
+        this.processTransferHandler = processTransferHandler;
     }
 
     /**

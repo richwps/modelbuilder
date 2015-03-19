@@ -1,8 +1,9 @@
-package de.hsos.richwps.mb.app.view.semanticProxy;
+package de.hsos.richwps.mb.app.view.treeView;
 
 import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
+import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionComponents;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.control.ProcessEntityTitleComparator;
@@ -40,13 +41,12 @@ public class MainTreeViewController extends AbstractTreeViewController {
 
     private HashMap<String, MutableTreeNode> remoteNodes = new HashMap<>();
 
-    public MainTreeViewController(AppPreferencesDialog preferencesDialog, SemanticProxyInteractionComponents components) {
-        super(components);
+    private WindowAdapter preferencesListener;
 
-        processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
+    public MainTreeViewController() {
+        super();
 
-        // handle changes of the SP url config
-        preferencesDialog.addWindowListener(new WindowAdapter() {
+        this.preferencesListener = new WindowAdapter() {
 
             private boolean urlHasChanged() {
                 ProcessProvider processProvider = getProcessProvider();
@@ -60,7 +60,13 @@ public class MainTreeViewController extends AbstractTreeViewController {
                     fillTree();
                 }
             }
-        });
+        };
+
+        processesNode = new DefaultMutableTreeNode(AppConstants.TREE_PROCESSES_NAME);
+    }
+
+    public WindowAdapter getPreferencesListener() {
+        return preferencesListener;
     }
 
     /**
@@ -156,15 +162,15 @@ public class MainTreeViewController extends AbstractTreeViewController {
 //        downloadServices.add(new DefaultMutableTreeNode(""));
 //        root.add(downloadServices);
         updateUI();
-        
+
         // show message if an error occured
-        if(loadDatatypesError) {
-                JOptionPane.showMessageDialog(
-                        getParent(),
-                        AppConstants.LOAD_DATATYPES_ERROR,
-                        AppConstants.DIALOG_TITLE_ERROR,
-                        JOptionPane.ERROR_MESSAGE
-                );
+        if (loadDatatypesError) {
+            JOptionPane.showMessageDialog(
+                    getParent(),
+                    AppConstants.LOAD_DATATYPES_ERROR,
+                    AppConstants.DIALOG_TITLE_ERROR,
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

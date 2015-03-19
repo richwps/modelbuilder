@@ -117,5 +117,11 @@ public abstract class AbstractPropertyComponent<C extends Component, E> implemen
     public String getValueForViews() {
         return getValue().toString();
     }
+
+    public void dispose() {
+        if(null != this.property) {
+            this.property.removeChangeListener(changeListener);
+        }
+    }
     
 }

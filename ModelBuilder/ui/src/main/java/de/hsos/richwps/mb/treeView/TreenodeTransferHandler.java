@@ -20,10 +20,8 @@ public class TreenodeTransferHandler extends TransferHandler {
 
     private ProcessProvider processProvider;
 
-    public TreenodeTransferHandler(ProcessProvider processProvider) {
+    public TreenodeTransferHandler() {
         super();
-
-        this.processProvider = processProvider;
     }
 
     @Override
@@ -79,6 +77,10 @@ public class TreenodeTransferHandler extends TransferHandler {
     @Override
     public boolean importData(TransferHandler.TransferSupport info) {
         return info.isDrop();
+    }
+
+    public void setProcessProvider(ProcessProvider processProvider) {
+        this.processProvider = processProvider;
     }
 
 }

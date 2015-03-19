@@ -1,12 +1,10 @@
 package de.hsos.richwps.mb.app.view.properties;
 
 import de.hsos.richwps.mb.app.view.complexDataType.ComplexDataTypeLabel;
-import de.hsos.richwps.mb.Logger;
 import de.hsos.richwps.mb.entity.datatypes.ComplexDataTypeFormat;
 import de.hsos.richwps.mb.entity.datatypes.DataTypeDescriptionComplex;
 import de.hsos.richwps.mb.entity.datatypes.IDataTypeDescriptionChangeListener;
-import de.hsos.richwps.mb.exception.IllegalDefaultFormatException;
-import de.hsos.richwps.mb.processProvider.control.FormatProvider;
+import de.hsos.richwps.mb.entity.ports.ComplexDataInput;
 import de.hsos.richwps.mb.processProvider.exception.LoadDataTypesException;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
@@ -24,11 +22,10 @@ public class PropertyComponentComplexDataType extends AbstractPropertyComponent<
     private ComplexDataTypeLabel component;
 
     public static String PROPERTY_NAME = "Complex datatype format";
-    public static String COMPONENT_TYPE = "Complex datatype format";
 
     
     public PropertyComponentComplexDataType(final Window parent,  List<ComplexDataTypeFormat> datatypeFormats) throws LoadDataTypesException {
-        super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, COMPONENT_TYPE, null));
+        super(new Property<DataTypeDescriptionComplex>(PROPERTY_NAME, ComplexDataInput.COMPONENTTYPE_DATATYPEDESCRIPTION, null));
 
         List<ComplexDataTypeFormat> formats = new LinkedList<>();
         formats.addAll(datatypeFormats);

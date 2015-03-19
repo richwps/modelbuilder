@@ -18,6 +18,13 @@ public interface IObjectWithProperties {
      * @return
      */
     public boolean isTransient();
+    
+    /**
+     * Returns true if the property's name is a translatable key.
+     *
+     * @return
+     */
+    public boolean isTranslatable();
 
     /**
      * Sets the object's property name.

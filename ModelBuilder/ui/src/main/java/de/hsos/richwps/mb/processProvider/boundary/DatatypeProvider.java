@@ -12,24 +12,23 @@ import java.util.List;
  */
 public class DatatypeProvider {
     
-    private final FormatProvider complexFormatsProvider;
-    private final LiteralDatatypeProvider literalDatatypesProvider;
+    private String complexCsvFile;
+    private String literalCsvFile;
+    
+    public void setComplexCsvFile(String complexCsvFile) {
+        this.complexCsvFile = complexCsvFile;
+    }
 
-    public DatatypeProvider(String complexCsvFile, String literalCsvFile) {
-        this.complexFormatsProvider = new FormatProvider(complexCsvFile);
-        this.literalDatatypesProvider = new LiteralDatatypeProvider(literalCsvFile);
-
+    public void setLiteralCsvFile(String literalCsvFile) {
+        this.literalCsvFile = literalCsvFile;
     }
 
     public List<ComplexDataTypeFormat> getComplexDatatypes() throws LoadDataTypesException {
-        return this.complexFormatsProvider.getDataTypes();
+        return new FormatProvider(complexCsvFile).getDataTypes();
     }
 
     public List<String> getLiteralDatatypes() throws LoadDataTypesException {
-        return this.literalDatatypesProvider.getDataTypes();
+        return new LiteralDatatypeProvider(literalCsvFile).getDataTypes();
     }
-    
-    
-    
 
 }

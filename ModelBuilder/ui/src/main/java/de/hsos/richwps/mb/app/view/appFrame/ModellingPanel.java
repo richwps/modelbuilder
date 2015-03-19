@@ -1,6 +1,7 @@
 package de.hsos.richwps.mb.app.view.appFrame;
 
 import de.hsos.richwps.mb.app.App;
+import de.hsos.richwps.mb.app.AppConfig;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
 import de.hsos.richwps.mb.app.view.toolbar.ModellingToolbar;
@@ -20,7 +21,7 @@ public class ModellingPanel extends JPanel {
 
     // Comnponent container
     private JSplitPane mainPanel;
-    
+
     private App app;
     private Component propertiesView;
     private TitledComponent graphViewGui;
@@ -77,7 +78,6 @@ public class ModellingPanel extends JPanel {
         return toolbar;
     }
 
-
     /**
      * A horizontal splitpane containing the center panel (left) and the
      * properties view (right).
@@ -92,7 +92,6 @@ public class ModellingPanel extends JPanel {
             mainPanel.add(getPropertiesView(), JSplitPane.RIGHT);
             // only expand the center panel on resize
             mainPanel.setResizeWeight(1);
-            // TODO Resizing the panel is disabled because of buggy behaviours in SingleProcessCard
         }
 
         return mainPanel;
@@ -110,9 +109,32 @@ public class ModellingPanel extends JPanel {
 
         return graphViewGui;
     }
-    
+
     public void setGraphViewTitleVisible(boolean visible) {
         getGraphViewGui().setTitle(null);
+    }
+
+    void saveConfig() {
+        // properties view divider location
+        double panelWidth = mainPanel.getSize().width;
+        double dividerLocation = mainPanel.getDividerLocation();
+        AppConfig.getConfig().putDouble(AppConfig.CONFIG_KEYS.FRAME_D_PROPERTIES_DIVIDER.name(), dividerLocation / panelWidth);
+    }
+
+    private double getPropertiesDividerLocation() {
+        final String configKey = AppConfig.CONFIG_KEYS.FRAME_D_PROPERTIES_DIVIDER.name();
+        final double defaultValue = AppConstants.FRAME_DEFAULT_PROPERTIES_DIVIDER;
+        double location = AppConfig.getConfig().getDouble(configKey, defaultValue);
+
+        if (0 > location || 1 < location) {
+            location = defaultValue;
+        }
+
+        return location;
+    }
+
+    public void restoreDividerLocation() {
+        mainPanel.setDividerLocation(getPropertiesDividerLocation());
     }
 
 }

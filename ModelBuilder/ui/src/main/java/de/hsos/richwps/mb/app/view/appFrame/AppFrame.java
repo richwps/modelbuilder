@@ -51,10 +51,11 @@ import layout.TableLayout;
  *  | +----------------------------------------------------------------------------------------------+ |
  *  |                                                                                                  |
  *  +--------------------------------------------------------------------------------------------------+</pre>
+ *
  * @author dziegenh
- * @see AppFrame#getMenuBar() 
- * @see AppFrame#getToolbar() 
- * @see AppFrame#getMainPanel() 
+ * @see AppFrame#getMenuBar()
+ * @see AppFrame#getToolbar()
+ * @see AppFrame#getMainPanel()
  */
 public class AppFrame extends JFrame {
 
@@ -109,8 +110,8 @@ public class AppFrame extends JFrame {
 
         // call after component is visible and has a size
         getLeftPanel().setDividerLocation(.5);
-        // TODO restore divider locations from config
 
+        // TODO restore divider locations from config
         this.init = true;
     }
 
@@ -136,6 +137,8 @@ public class AppFrame extends JFrame {
 
         AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONX.name(), getLocation().x);
         AppConfig.getConfig().putInt(AppConfig.CONFIG_KEYS.FRAME_I_POSITIONY.name(), getLocation().y);
+
+        modellingPanel.saveConfig();
     }
 
     /**
@@ -150,11 +153,11 @@ public class AppFrame extends JFrame {
     /**
      * The summary component (south-west of the frame).
      *
-     * @return 
-     *     {@link de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch}
-     * 
+     * @return
+     * {@link de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch}
+     *
      * @see de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch
-     * @see App#getSemanticProxySearchGui() 
+     * @see App#getSemanticProxySearchGui()
      */
     private Component getModellingSummaryView() {
         // TODO mock
@@ -195,17 +198,18 @@ public class AppFrame extends JFrame {
     /**
      * The main panel contains all content panels and components below the
      * toolbar. (Horizontal splitbar)
+     *
      * @return
      *
-     *  <pre>
+     * <pre>
      *  +-----------------------+
      *  |leftPanel | centerPanel|
      *  +-----------------------+
-     *  </pre>
-     * 
+     * </pre>
+     *
      * @see getLeftPanel()
-     * @see getCenterPanel() 
-     * 
+     * @see getCenterPanel()
+     *
      */
     private Component getMainPanel() {
         if (null == mainPanel) {
@@ -220,14 +224,14 @@ public class AppFrame extends JFrame {
     /**
      * Vertical splitbar containing the tree (top component) and the summary
      * panel (bottom component).
-     * @return
-     * <pre>
+     *
+     * @return      <pre>
      * +-----------+
      * |TreeView   |
      * |-----------|
-     * |SummaryView|   
+     * |SummaryView|
      * +-----------+</pre>
-     * 
+     *
      * @see getMainTreeViewGui()
      * @see getModellingSummaryView()
      */
@@ -247,20 +251,21 @@ public class AppFrame extends JFrame {
     /**
      * The center splitpane contains the graph (top component) and tabs (bottom
      * component).
-      @return
-
-     *  <pre>
+     *
+     * @return
+     *
+     * <pre>
      *  +------------------+
      *  |mainModellingPanel|
      *  |------------------|
      *  |InfoTabsView      |
-     *  +------------------+</pre>
-     * "mainModellingPanel" contains DefaultMainPanel and ModellingPanel.
-     * 
+     *  +------------------+</pre> "mainModellingPanel" contains DefaultMainPanel
+     * and ModellingPanel.
+     *
      * @see DefaultMainPanel
      * @see ModellingPanel
      * @see de.hsos.richwps.mb.infoTabsView.InfoTabs
-     * 
+     *
      */
     private Component getCenterPanel() {
         if (null == centerPanel) {
@@ -270,7 +275,7 @@ public class AppFrame extends JFrame {
 
             // remove border => there is already another surrounding splitpane/border
             centerPanel.setBorder(null);
-            
+
             // only expand the graph panel on resize
             centerPanel.setResizeWeight(1);
         }
@@ -306,8 +311,12 @@ public class AppFrame extends JFrame {
         }
 
         modellingLayout.show(mainModellingPanel, card.name());
-        
+
         getAppMenuBar().setModelMenuEnabled(enabled);
+
+        if (enabled) {
+            modellingPanel.restoreDividerLocation();
+        }
     }
 
     private Component getBottomView() {
@@ -330,11 +339,10 @@ public class AppFrame extends JFrame {
         return new Dimension(w, h);
     }
 
-    
     /**
      * The tree component.
-     * @return 
-     * <pre>
+     *
+     * @return      <pre>
      * +----[TiledComponent]---+
      * |+-[mainTreeViewPanel]-+|
      * || AppTreeToolbar      ||
@@ -342,10 +350,10 @@ public class AppFrame extends JFrame {
      * || JTree               ||
      * |+---------------------+|
      * +-----------------------+</pre>
-     * 
+     *
      * @see de.hsos.richwps.mb.app.view.toolbar.AppTreeToolbar
      * @see javax.swing.JTree
-    */
+     */
     private Component getMainTreeViewGui() {
         if (null == treeViewGui) {
             treeViewGui = new TitledComponent(AppConstants.TREE_VIEW_TITLE, app.getMainTreeViewGui());

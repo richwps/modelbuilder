@@ -191,5 +191,9 @@ public abstract class OwsObjectWithProperties implements IObjectWithProperties, 
         }
     }
 
-
+    @Override
+    public boolean isTranslatable() {
+        return false;
+    }
+    
 }

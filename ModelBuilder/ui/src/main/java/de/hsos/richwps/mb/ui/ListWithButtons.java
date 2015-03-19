@@ -42,10 +42,21 @@ public class ListWithButtons<E> extends JPanel {
     public static int BTN_EDIT_ID = 1 << 1;
     public static int BTN_DELETE_ID = 1 << 2;
 
+    /**
+     * Creates a list with add, edit and delete buttons.
+     *
+     * @param parent
+     */
     public ListWithButtons(Window parent) {
         this(parent, BTN_ADD_ID | BTN_EDIT_ID | BTN_DELETE_ID);
     }
 
+    /**
+     * Creates a list with the given buttons.
+     *
+     * @param parent
+     * @param buttonIds
+     */
     public ListWithButtons(Window parent, int buttonIds) {
         super();
         this.parent = parent;
@@ -88,7 +99,7 @@ public class ListWithButtons<E> extends JPanel {
     public void init() {
         this.init(new LinkedList<E>());
     }
-    
+
     public void init(List<E> items) {
         double[][] layoutSize = new double[][]{
             {TableLayout.FILL, TableLayout.PREFERRED},

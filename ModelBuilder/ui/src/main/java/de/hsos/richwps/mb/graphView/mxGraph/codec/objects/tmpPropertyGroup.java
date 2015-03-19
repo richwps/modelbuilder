@@ -66,4 +66,9 @@ public class tmpPropertyGroup implements IObjectWithProperties {
         return this;
     }
 
+    @Override
+    public boolean isTranslatable() {
+        return false;
+    }
+
 }

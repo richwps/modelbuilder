@@ -1,7 +1,8 @@
-package de.hsos.richwps.mb.app.view.semanticProxy;
+package de.hsos.richwps.mb.app.view.treeView;
 
 import com.mxgraph.model.mxCell;
 import de.hsos.richwps.mb.app.App;
+import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionComponents;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
@@ -24,8 +25,8 @@ public class SubTreeViewController extends AbstractTreeViewController {
     private final Color enabledBgColor;
     private  Color disabledBgColor;
 
-    public SubTreeViewController(SemanticProxyInteractionComponents components) {
-        super(components);
+    public SubTreeViewController() {
+        super();
         
         this.enabledBgColor = UIManager.getColor("Tree.background");
         

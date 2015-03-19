@@ -4,8 +4,14 @@ import com.mxgraph.io.mxCodecRegistry;
 import com.mxgraph.io.mxObjectCodec;
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.appFrame.AppFrame;
 import de.hsos.richwps.mb.app.view.AppSplashScreen;
+import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialog;
+import de.hsos.richwps.mb.app.view.preferences.AppPreferencesDialogHandler;
+import de.hsos.richwps.mb.app.view.properties.PropertyComponentQosTargets;
+import de.hsos.richwps.mb.app.view.semanticProxy.SementicProxySearch;
+import de.hsos.richwps.mb.app.view.treeView.MainTreeViewController;
+import de.hsos.richwps.mb.app.view.treeView.MainTreeViewPanel;
+import de.hsos.richwps.mb.app.view.treeView.SubTreeViewController;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.appEvents.IAppEventObserver;
@@ -17,6 +23,8 @@ import de.hsos.richwps.mb.entity.ports.ComplexDataOutput;
 import de.hsos.richwps.mb.entity.ports.LiteralInput;
 import de.hsos.richwps.mb.entity.ports.ProcessInputPort;
 import de.hsos.richwps.mb.graphView.GraphSetup;
+import de.hsos.richwps.mb.graphView.GraphView;
+import de.hsos.richwps.mb.graphView.ModelElementsChangedListener;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.CellCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ComplexDataTypeFormatCodec;
@@ -27,9 +35,14 @@ import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessEntityCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.ProcessPortCodec;
 import de.hsos.richwps.mb.graphView.mxGraph.codec.PropertyGroupCodec;
 import de.hsos.richwps.mb.monitor.boundary.ProcessMetricProvider;
+import de.hsos.richwps.mb.processProvider.boundary.DatatypeProvider;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyKeyTranslator;
+import de.hsos.richwps.mb.treeView.TreenodeTransferHandler;
 import de.hsos.richwps.mb.ui.UiHelper;
+import de.hsos.richwps.mb.undoManager.MbUndoManager;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -38,9 +51,11 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JTree;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
-import org.jaitools.numeric.ApproxMedianProcessor;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.undo.UndoableEdit;
 
 /**
  * Creates the app components and connects them.
@@ -56,7 +71,6 @@ public class AppSetup {
             Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        app.frame = new AppFrame(AppConstants.FRAME_TITLE);
         AppSplashScreen splash = new AppSplashScreen();
 
         splash.showMessageAndProgress("Loading config", 0);
@@ -75,7 +89,7 @@ public class AppSetup {
             }
         }
 
-        splash.showMessageAndProgress("Loading resources", 7);
+        splash.showMessageAndProgress("Loading resources", 5);
         {
             setupUiManager();
 
@@ -95,6 +109,31 @@ public class AppSetup {
             GraphSetup.localOutputBgColor = AppConstants.OUTPUT_PORT_COLOR_STRING;
             addGraphCodecs();
 
+        }
+
+        splash.showMessageAndProgress("Creating components", 10);
+        {
+            app.init();
+            setupProcessMetricProvider(app);
+            setupActionProvider(app);
+            setupUndoManager(app);
+            setupProcessProvider(app);
+            setupTreenodeTransferHandler(app);
+            setupGraphDndProxy(app);
+            setupSubTreeView(app);
+            setupSemanticProxySearch(app);
+            setupMainTreeView(app);
+            setupMainTreeViewPanel(app);
+            setupPreferences(app);
+            setupProperties(app);
+            setupPropertiesView(app);
+            setupGraphView(app);
+            setupDatatypeProvider(app);
+        }
+
+        splash.showMessageAndProgress("Creating actions", 15);
+        {
+
             // Load last used filename
             String lastFilename = AppConfig.getConfig().get(AppConfig.CONFIG_KEYS.MODEL_S_LASTFILE.name(), "");
             File lastFile = new File(lastFilename);
@@ -105,7 +144,7 @@ public class AppSetup {
             }
         }
 
-        splash.showMessageAndProgress("Creating window", 15);
+        splash.showMessageAndProgress("Creating window", 20);
         {
             // Create frame.
             app.getFrame().init(app);
@@ -387,17 +426,179 @@ public class AppSetup {
         translator.addTranslation(ComplexDataOutput.PROPERTY_KEY_MAXMB, "Max MB");
         translator.addTranslation(ComplexDataOutput.PROPERTY_KEY_DATATYPEDESCRIPTION, "Complex datatype");
         translator.addTranslation(BoundingBoxInput.PROPERTY_KEY_DESCRIPTION, "Datatype description bbox");
-    
+
         // model properties
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER, "Identifier");
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_ABSTRACT, "Abstract");
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT, "Endpoint");
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_VERSION, "Version");
         translator.addTranslation(GraphModel.PROPERTIES_KEY_OWS_TITLE, "Title");
-                
+
         // monitor 
         translator.addTranslation(ProcessMetricProvider.PROPERTY_KEY_MONITOR_DATA, "Monitor Data");
         translator.addTranslation(ProcessMetricProvider.PROPERTY_KEY_RESPONCE_METRIC, "Response Metric");
+
+        // QoS overview
+        translator.addTranslation(PropertyComponentQosTargets.PROPERTY_NAME, "Manage Targets");
+
+    }
+
+    private static void setupUndoManager(final App app) {
+        AppUndoManager undoManager = app.getUndoManager();
+
+        undoManager.setGraphView(app.getGraphView());
+        undoManager.setSubTreeView(app.getSubTreeView());
+        undoManager.setPropertiesView(app.getPropertiesView());
+        undoManager.setActionProvider(app.getActionProvider());
+
+        undoManager.init();
+        undoManager.addChangeListener(new MbUndoManager.UndoManagerChangeListener() {
+            @Override
+            public void changed(MbUndoManager.UNDO_MANAGER_CHANGE change, UndoableEdit edit) {
+                app.setChangesSaved(false);
+            }
+        });
+
+    }
+
+    private static void setupActionProvider(App app) {
+        AppActionHandler actionHandler = app.getActionHandler();
+        app.getActionProvider().setActionHandler(actionHandler);
+    }
+
+    private static void setupProcessMetricProvider(App app) {
+        ProcessMetricProvider processMetricProvider = app.getProcessMetricProvider();
+
+        // get URL from config
+        String key = AppConfig.CONFIG_KEYS.MONITOR_S_URL.name();
+        String defUrl = AppConstants.MONITOR_DEFAULT_URL;
+        String confUrl = AppConfig.getConfig().get(key, defUrl);
+
+        processMetricProvider.setMonitorUrl(confUrl);
+    }
+
+    private static void setupTreenodeTransferHandler(App app) {
+        TreenodeTransferHandler treenodeTransferHandler = app.getProcessTransferHandler();
+        treenodeTransferHandler.setProcessProvider(app.getProcessProvider());
+    }
+
+    private static void setupProcessProvider(App app) {
+        ProcessProvider processProvider = app.getProcessProvider();
+        ProcessMetricProvider processMetricProvider = app.getProcessMetricProvider();
+        processProvider.setProcessMetricProvider(processMetricProvider);
+
+        for (String[] keyAndValue : AppConstants.PROCESS_PROVIDER_TRANSLATIONS) {
+            processProvider.getTranslator().addTranslation(keyAndValue[0], keyAndValue[1]);
+        }
+
+        AppEventService.getInstance().addSourceCommand(processProvider, AppConstants.INFOTAB_ID_SEMANTICPROXY);
+    }
+
+    private static void setupGraphDndProxy(App app) {
+        Component graphDndProxy = app.getGraphDndProxy();
+        graphDndProxy.setVisible(false);
+    }
+
+    private static void setupSubTreeView(App app) {
+        SubTreeViewController subTreeView = app.getSubTreeView();
+        if (AppConstants.ENABLE_SUB_TREE_VIEW) {
+
+            subTreeView.setGraphDndProxy(app.getGraphDndProxy());
+            subTreeView.setProcessProvider(app.getProcessProvider());
+            subTreeView.setGraphView(app.getGraphView());
+            subTreeView.setParent(app.getFrame());
+            subTreeView.setProcessTransferHandler(app.getProcessTransferHandler());
+        }
+    }
+
+    private static void setupSemanticProxySearch(App app) {
+        SementicProxySearch semanticProxySearch = app.getSemanticProxySearch();
+        semanticProxySearch.setGraphDndProxy(app.getGraphDndProxy());
+        semanticProxySearch.setProcessProvider(app.getProcessProvider());
+        semanticProxySearch.setGraphView(app.getGraphView());
+        semanticProxySearch.setParent(app.getFrame());
+        semanticProxySearch.setProcessTransferHandler(app.getProcessTransferHandler());
+    }
+
+    private static void setupMainTreeView(App app) {
+        MainTreeViewController mainTreeView = app.getMainTreeView();
+
+        mainTreeView.setGraphDndProxy(app.getGraphDndProxy());
+        mainTreeView.setProcessProvider(app.getProcessProvider());
+        mainTreeView.setGraphView(app.getGraphView());
+        mainTreeView.setParent(app.getFrame());
+        mainTreeView.setProcessTransferHandler(app.getProcessTransferHandler());
+
+        // handle changes of the SP url config
+        AppPreferencesDialog preferencesDialog = app.getPreferencesDialog();
+        preferencesDialog.addWindowListener(mainTreeView.getPreferencesListener());
+    }
+
+    private static void setupMainTreeViewPanel(App app) {
+        JTree tree = app.getMainTreeView().getTreeView().getGui();
+        AppActionProvider actionProvider = app.getActionProvider();
+
+        MainTreeViewPanel mainTreeViewPanel = app.getMainTreeViewPanel();
+        mainTreeViewPanel.init(tree, actionProvider);
+    }
+
+    private static void setupPreferences(App app) {
+        AppPreferencesDialog preferencesDialog = app.getPreferencesDialog();
+        final AppPreferencesDialogHandler handler = new AppPreferencesDialogHandler();
+        handler.setProcessMetricProvider(app.getProcessMetricProvider());
+        handler.setProcessProvider(app.getProcessProvider());
+        preferencesDialog.addWindowListener(handler);
+    }
+
+    private static void setupProperties(App app) {
+        AppProperties appProperties = app.getAppProperties();
+        appProperties.setGraphView(app.getGraphView());
+        appProperties.setPropertiesView(app.getPropertiesView());
+        appProperties.setDatatypeProvider(app.getDatatypeProvider());
+        appProperties.setParentFrame(app.getFrame());
+        appProperties.setActionProvider(app.getActionProvider());
+    }
+
+    private static void setupPropertiesView(App app) {
+        AppPropertiesView propertiesView = app.getPropertiesView();
+
+        propertiesView.setAppProperties(app.getAppProperties());
+
+        propertiesView.setParentFrame(app.getFrame());
+        propertiesView.setUndoManager(app.getUndoManager());
+        propertiesView.setActionProvider(app.getActionProvider());
+        propertiesView.setDatatypeProvider(app.getDatatypeProvider());
+        propertiesView.setGraphView(app.getGraphView());
+
+        // update properties view depending on the graph selection
+        ListSelectionListener selectionListener = propertiesView.getListSelectionListener();
+        app.getGraphView().addSelectionListener(selectionListener);
+    }
+
+    private static void setupGraphView(final App app) {
+        AppGraphView graphView = app.getGraphView();
+        graphView.setParentFrame(app.getFrame());
+        graphView.setUndoManager(app.getUndoManager());
+        graphView.setProcessProvider(app.getProcessProvider());
+        graphView.setActionProvider(app.getActionProvider());
+        graphView.setAppProperties(app.getAppProperties());
+        graphView.setSubTreeView(app.getSubTreeView());
+
+        graphView.addModelElementsChangedListener(new ModelElementsChangedListener() {
+            @Override
+            public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
+                app.updateGraphDependentActions();
+            }
+        });
+    }
+
+    private static void setupDatatypeProvider(App app) {
+        String complexCsv = AppConstants.COMPLEX_FORMATS_CSV_FILE;
+        String literalCsv = AppConstants.LITERAL_DATATYPES_CSV_FILE;
+
+        DatatypeProvider datatypeProvider = app.getDatatypeProvider();
+        datatypeProvider.setComplexCsvFile(complexCsv);
+        datatypeProvider.setLiteralCsvFile(literalCsv);
     }
 
 }

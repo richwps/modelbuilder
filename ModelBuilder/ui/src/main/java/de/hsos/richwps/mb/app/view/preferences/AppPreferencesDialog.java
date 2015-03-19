@@ -37,7 +37,7 @@ public class AppPreferencesDialog extends MbDialog {
         if (!this.init) {
             f = TableLayout.FILL;
             p = TableLayout.PREFERRED;
-            setLayout(new TableLayout(new double[][]{{f}, {f}}));
+            setLayout(new TableLayout(new double[][]{{f}, {p}}));
             setSize(getStartSize());
             setLocation(getStartLocation());
 

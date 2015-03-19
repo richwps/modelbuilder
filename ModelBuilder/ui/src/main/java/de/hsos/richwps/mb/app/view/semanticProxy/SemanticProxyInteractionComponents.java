@@ -12,11 +12,11 @@ import javax.swing.TransferHandler;
  */
 public class SemanticProxyInteractionComponents {
 
-    final TransferHandler processTransferHandler;
-    final Component graphDndProxy;
-    final ProcessProvider processProvider;
-    final GraphView graphView;
-    final JFrame parent;
+    public final TransferHandler processTransferHandler;
+    public final Component graphDndProxy;
+    public final ProcessProvider processProvider;
+    public final GraphView graphView;
+    public final JFrame parent;
 
     public SemanticProxyInteractionComponents(JFrame parent, GraphView graphView, ProcessProvider processProvider, Component graphDndProxy, TransferHandler processTransferHandler) {
         this.parent = parent;

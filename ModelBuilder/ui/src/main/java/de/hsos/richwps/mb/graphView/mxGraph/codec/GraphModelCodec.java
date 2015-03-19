@@ -59,7 +59,7 @@ public class GraphModelCodec extends mxModelCodec {
 
                     // replace old identifier key
                     Iterator<? extends IObjectWithProperties> iterator = tmpGroup.getProperties().iterator();
-                    if (iterator.hasNext()) {
+                    while (iterator.hasNext()) {
                         IObjectWithProperties next = iterator.next();
 
                         if (next instanceof PropertyGroup) {
@@ -91,12 +91,6 @@ public class GraphModelCodec extends mxModelCodec {
         return super.beforeDecode(dec, node, into);
     }
 
-    @Override
-    public Object afterDecode(mxCodec dec, Node node, Object obj) {
-        return super.afterDecode(dec, node, obj); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    
 
     @Override
     protected void encodeObject(mxCodec mxcdc, Object o, Node node) {

@@ -38,7 +38,7 @@ public class AppActionProvider {
         SHOW_ERROR_MSG
     }
 
-    private final IAppActionHandler actionHandler;
+    private IAppActionHandler actionHandler;
 
     private HashMap<APP_ACTIONS, AppAction> actionInstances;
 
@@ -46,8 +46,7 @@ public class AppActionProvider {
 
     private final String THIS_PACKAGE;
 
-    public AppActionProvider(IAppActionHandler actionHandler) throws Exception {
-        this.actionHandler = actionHandler;
+    public AppActionProvider() throws Exception {
         this.actionInstances = new HashMap<>();
         this.actionConfigs = new HashMap<>();
 
@@ -73,6 +72,10 @@ public class AppActionProvider {
                 }
             }
         }
+    }
+
+    public void setActionHandler(IAppActionHandler actionHandler) {
+        this.actionHandler = actionHandler;
     }
 
     /**

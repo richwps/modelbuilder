@@ -1,12 +1,11 @@
 package de.hsos.richwps.mb.app;
 
 import com.mxgraph.model.mxCell;
-import com.mxgraph.model.mxGeometry;
 import com.mxgraph.util.mxEventObject;
 import com.mxgraph.util.mxEventSource;
 import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.dialogs.processReplacer.ProcessReplacer;
+import de.hsos.richwps.mb.app.view.treeView.SubTreeViewController;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.ProcessEntity;
@@ -19,10 +18,10 @@ import de.hsos.richwps.mb.graphView.mxGraph.Graph;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphComponent;
 import de.hsos.richwps.mb.graphView.mxGraph.GraphModel;
 import de.hsos.richwps.mb.processProvider.boundary.ProcessProvider;
-import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.processProvider.boundary.ProcessProviderConfig;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
-import java.awt.Component;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
@@ -30,7 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -42,13 +40,44 @@ import javax.swing.event.ListSelectionListener;
  */
 public class AppGraphView extends GraphView {
 
-    private final App app;
+//    private final App app;
     private boolean init = false;
     private Property endpointProperty;
 
-    public AppGraphView(App app) {
+    private AppProperties appProperties;
+    private ProcessProvider processProvider;
+    private AppActionProvider actionProvider;
+    private AppUndoManager undoManager;
+    private Window parentFrame;
+    private SubTreeViewController subTreeView = null;
+    private PropertyGroup qosProperties;
+
+    public AppGraphView() {
         super();
-        this.app = app;
+    }
+
+    public void setParentFrame(Window parentFrame) {
+        this.parentFrame = parentFrame;
+    }
+
+    public void setUndoManager(AppUndoManager undoManager) {
+        this.undoManager = undoManager;
+    }
+
+    public void setProcessProvider(ProcessProvider processProvider) {
+        this.processProvider = processProvider;
+    }
+
+    public void setActionProvider(AppActionProvider actionProvider) {
+        this.actionProvider = actionProvider;
+    }
+
+    public void setAppProperties(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
+
+    public void setSubTreeView(SubTreeViewController subTreeView) {
+        this.subTreeView = subTreeView;
     }
 
     void init() {
@@ -63,7 +92,7 @@ public class AppGraphView extends GraphView {
                     // Delete
                     case 127:
                         if (hasSelection()) {
-                            int choice = JOptionPane.showConfirmDialog(getApp().getFrame(), AppConstants.CONFIRM_DELETE_CELLS, AppConstants.CONFIRM_DELETE_CELLS_TITLE, JOptionPane.YES_NO_OPTION);
+                            int choice = JOptionPane.showConfirmDialog(parentFrame, AppConstants.CONFIRM_DELETE_CELLS, AppConstants.CONFIRM_DELETE_CELLS_TITLE, JOptionPane.YES_NO_OPTION);
                             if (choice == JOptionPane.YES_OPTION) {
                                 deleteSelectedCells();
                             }
@@ -116,19 +145,18 @@ public class AppGraphView extends GraphView {
         addModelElementsChangedListener(new ModelElementsChangedListener() {
             @Override
             public void modelElementsChanged(Object element, GraphView.ELEMENT_TYPE type, GraphView.ELEMENT_CHANGE_TYPE changeType) {
-                getApp().updateGraphDependentActions();
 
                 if (!type.equals(GraphView.ELEMENT_TYPE.PROCESS)) {
                     return;
                 }
 
-                if (getApp().hasSubTreeView()) {
+                if (null != subTreeView) {
                     switch (changeType) {
                         case ADDED:
-                            getApp().getSubTreeView().addNode(element);
+                            subTreeView.addNode(element);
                             break;
                         case REMOVED:
-                            getApp().getSubTreeView().removeNode(element);
+                            subTreeView.removeNode(element);
                             break;
                     }
                 }
@@ -141,12 +169,12 @@ public class AppGraphView extends GraphView {
                 List<ProcessEntity> selectedProcesses = getSelectedProcesses();
 
                 if (1 == selectedProcesses.size()) {
-                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(true);
-                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REARRANGE_PORTS).setEnabled(true);
+                    actionProvider.getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(true);
+                    actionProvider.getAction(AppActionProvider.APP_ACTIONS.REARRANGE_PORTS).setEnabled(true);
 
                 } else {
-                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
-                    app.getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REARRANGE_PORTS).setEnabled(false);
+                    actionProvider.getAction(AppActionProvider.APP_ACTIONS.REPLACE_PROCESS).setEnabled(false);
+                    actionProvider.getAction(AppActionProvider.APP_ACTIONS.REARRANGE_PORTS).setEnabled(false);
                 }
             }
         });
@@ -157,7 +185,7 @@ public class AppGraphView extends GraphView {
         AppEventService.getInstance().addSourceCommand(this.getGraph(), AppConstants.INFOTAB_ID_EDITOR);
 
         // add property for endpoint selection
-        endpointProperty = createEndpointProperty();
+        endpointProperty = appProperties.createEndpointProperty();
         getGraph().getGraphModel().addProperty(endpointProperty);
 
         init = true;
@@ -165,20 +193,9 @@ public class AppGraphView extends GraphView {
 
     public void newGraph(String remote) {
         Graph graph = super.newGraph();
-        endpointProperty = createEndpointProperty();
+        endpointProperty = appProperties.createEndpointProperty();
         graph.getGraphModel().addProperty(endpointProperty);
         endpointProperty.setValue(remote);
-    }
-
-    protected Property createEndpointProperty() {
-        String propertyEndpointName = GraphModel.PROPERTIES_KEY_OWS_ENDPOINT;
-        String propertyEndpointType = Property.COMPONENT_TYPE_DROPDOWN;
-        Property property = new Property(propertyEndpointName, propertyEndpointType, null, true);
-
-        // don't persist the list of endpoints
-        property.setPossibleValuesTransient(true);
-
-        return property;
     }
 
     /**
@@ -194,16 +211,26 @@ public class AppGraphView extends GraphView {
                     mxUndoableEdit edit = (mxUndoableEdit) editProperty;
 
                     // add graph edit to undo manager
-                    getApp().getUndoManager().addEdit(new AppUndoableEdit(this, edit, "Graph edit"));
-                    getApp().setChangesSaved(false);
+                    undoManager.addEdit(new AppUndoableEdit(this, edit, "Graph edit"));
                 }
             }
         });
 
         GraphModel model = getGraph().getGraphModel();
-        Property loadedEndpointProperty = getModelEndpointProperty(model.getProperties());
-
+        Property loadedEndpointProperty = appProperties.getModelEndpointProperty(model.getProperties());
         updateRemotes();
+
+        // create QoS Property
+        {
+            qosProperties = appProperties.getModelQosProperties(model.getProperties());
+            final String targetsKey = ProcessProviderConfig.PROPERTY_KEY_QOS_TARGETS;
+            if (null == qosProperties) {
+                qosProperties = new PropertyGroup<>(targetsKey);
+                model.setProperty(targetsKey, qosProperties);
+            }
+
+            appProperties.setupQosGroup(qosProperties);
+        }
 
         if (null != loadedEndpointProperty && null != loadedEndpointProperty.getValue()) {
             String loadedValue = loadedEndpointProperty.getValue().toString();
@@ -230,36 +257,14 @@ public class AppGraphView extends GraphView {
         // set correct process instances as cell values
         updateProcessCellInstances();
 
-        app.setChangesSaved(true);
     }
 
-    private Property getModelEndpointProperty(Collection<? extends IObjectWithProperties> modelProperties) {
-        Property foundProperty = null;
-
-        for (IObjectWithProperties p : modelProperties) {
-
-            // property found
-            if (p instanceof Property && p.getPropertiesObjectName().equals(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT)) {
-                foundProperty = (Property) p;
-
-                // current property is a propertygroup -> recursive search
-            } else if (p instanceof PropertyGroup) {
-                Property subProperty = getModelEndpointProperty(p.getProperties());
-                if (null != subProperty) {
-                    foundProperty = subProperty;
-                }
-            }
-        }
-
-        return foundProperty;
+    public PropertyGroup getQosProperties() {
+        return qosProperties;
     }
 
     void updateRemotes() {
-        endpointProperty.setPossibleValues(Arrays.asList(app.getProcessProvider().getAllServers()));
-    }
-
-    private App getApp() {
-        return this.app;
+        endpointProperty.setPossibleValues(Arrays.asList(processProvider.getAllServers()));
     }
 
     /**
@@ -268,7 +273,6 @@ public class AppGraphView extends GraphView {
     private void updateProcessCellInstances() {
         Graph graph = getGraph();
         GraphModel graphModel = graph.getGraphModel();
-        ProcessProvider processProvider = app.getProcessProvider();
 
         boolean mappingError = false;
 
@@ -340,7 +344,7 @@ public class AppGraphView extends GraphView {
         }
 
         if (mappingError) {
-            JOptionPane.showMessageDialog(app.getFrame(), AppConstants.LOAD_MODEL_MAPPING_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parentFrame, AppConstants.LOAD_MODEL_MAPPING_ERROR, "Error", JOptionPane.ERROR_MESSAGE);
 
         } else {
 
@@ -383,15 +387,22 @@ public class AppGraphView extends GraphView {
     }
 
     private void markProcessCellAsErroneus(mxCell cell) {
+        setProcessCellStyle(cell, GraphSetup.STYLENAME_PROCESS_W_ERROR);
+        setCellsSelected(new Object[]{cell});
+    }
+
+    public void resetProcessCellMark(mxCell cell) {
+        setProcessCellStyle(cell, GraphSetup.STYLENAME_PROCESS);
+    }
+
+    private void setProcessCellStyle(mxCell cell, String style) {
         Graph graph = getGraph();
         GraphModel graphModel = graph.getGraphModel();
 
         graphModel.beginUpdate();
-        cell.setStyle(GraphSetup.STYLENAME_PROCESS_W_ERROR);
+        cell.setStyle(style);
         graphModel.endUpdate();
-        
-        setCellsSelected(new Object[]{cell});
-        
+
         // refresh in order to enable the new cell style
         GraphComponent gui = (GraphComponent) getGui();
         gui.refresh();

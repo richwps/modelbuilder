@@ -32,7 +32,7 @@ public class GraphSetup {
     public static final String STYLENAME_ERROR_POSTFIX = "_ERROR";
     static String STYLENAME_GLOBAL_INPUT = "GLOBAL_INPUT";
     static String STYLENAME_GLOBAL_OUTPUT = "GLOBAL_OUTPUT";
-    final static String STYLENAME_PROCESS = "PROCESS";
+    public final static String STYLENAME_PROCESS = "PROCESS";
     public static String STYLENAME_PROCESS_W_ERROR = STYLENAME_PROCESS + STYLENAME_ERROR_POSTFIX;
 
     static String STYLENAME_LOCAL_INPUT = "LOCAL_INPUT";

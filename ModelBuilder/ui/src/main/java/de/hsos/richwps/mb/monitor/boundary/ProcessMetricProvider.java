@@ -33,8 +33,7 @@ public class ProcessMetricProvider {
 
     private String url;
 
-    public ProcessMetricProvider(String url) throws Exception {
-        this.url = url;
+    public ProcessMetricProvider() {
         this.wpss = new HashMap<>();
     }
 
@@ -50,12 +49,17 @@ public class ProcessMetricProvider {
     }
 
     private boolean connect() {
-        if (null != this.client) {
+        if (null != this.client && this.client.isReachable()) {
             return true;
         }
 
         try {
             this.client = new WpsMonitorClientFactory().create(new URL(url));
+
+            if (!this.client.isReachable()) {
+                return false;
+            }
+
             List<WpsResource> allWps = this.client.getAllWps(true);
 
             this.wpss.clear();

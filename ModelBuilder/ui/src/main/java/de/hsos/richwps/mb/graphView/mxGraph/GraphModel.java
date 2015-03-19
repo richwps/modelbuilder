@@ -36,7 +36,6 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
         propertyGroups = new LinkedList<>();
 
-        // TODO move keys here
         PropertyGroup group1 = new PropertyGroup(AppConstants.PROPERTIES_MODELDATA);
         group1.addObject(new Property(PROPERTIES_KEY_OWS_IDENTIFIER, "", true));
         group1.addObject(new Property(PROPERTIES_KEY_OWS_ABSTRACT, "", true));
@@ -137,10 +136,10 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     }
 
     /**
-     * 
+     *
      * @param port
      * @param graph if not null, the model of this graph is used
-     * @return 
+     * @return
      */
     public boolean isOutputPortUsed(Object port, Graph graph) {
         Object parent;
@@ -167,10 +166,10 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
     }
 
     /**
-     * 
+     *
      * @param o
      * @param graph if not null, the model of this graph is used
-     * @return 
+     * @return
      */
     public boolean isInputPortUsed(Object o, Graph graph) {
         Object parent;
@@ -193,7 +192,7 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
                 }
             }
         }
-        
+
         return false;
     }
 
@@ -316,21 +315,32 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
 
     @Override
     public void setProperty(String propertyName, IObjectWithProperties property) {
+        boolean propertyAdded = false;
+
         // find the parent group of the property 
         for (PropertyGroup group : this.propertyGroups) {
 
             // try to find the property inside the group
             for (Object aGroupProperty : group.getProperties()) {
-                if (aGroupProperty instanceof IObjectWithProperties) {
+                if (!propertyAdded && aGroupProperty instanceof IObjectWithProperties) {
                     IObjectWithProperties aProperty = (IObjectWithProperties) aGroupProperty;
 
                     // property in group found: set it to the given parameter
                     if (aProperty.getPropertiesObjectName().equals(propertyName)) {
                         group.setProperty(propertyName, property);
+                        propertyAdded = true;
                     }
 
                 }
 
+            }
+        }
+
+        if (!propertyAdded) {
+            if (property instanceof PropertyGroup) {
+                this.propertyGroups.add((PropertyGroup) property);
+            } else if (property instanceof Property) {
+                addProperty((Property) property);
             }
         }
     }
@@ -369,6 +379,11 @@ public class GraphModel extends mxGraphModel implements IObjectWithProperties {
         }
 
         return inputs;
+    }
+
+    @Override
+    public boolean isTranslatable() {
+        return false;
     }
 
 }

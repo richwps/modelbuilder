@@ -1,5 +1,6 @@
-package de.hsos.richwps.mb.app.view.semanticProxy;
+package de.hsos.richwps.mb.app.view.treeView;
 
+import de.hsos.richwps.mb.app.view.semanticProxy.SemanticProxyInteractionComponents;
 import de.hsos.richwps.mb.entity.ProcessEntity;
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +14,8 @@ public class ProcessesTreeViewController extends AbstractTreeViewController {
 
     private List<ProcessEntity> processes;
 
-    public ProcessesTreeViewController(SemanticProxyInteractionComponents components) {
-        super(components);
+    public ProcessesTreeViewController() {
+        super();
         getTreeView().getGui().setBorder(null);
     }
 
@@ -23,7 +24,7 @@ public class ProcessesTreeViewController extends AbstractTreeViewController {
     }
 
     @Override
-    void fillTree() {
+    public void fillTree() {
 
         if (null == processes) {
             return;

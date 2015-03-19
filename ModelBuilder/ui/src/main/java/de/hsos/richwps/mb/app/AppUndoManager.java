@@ -1,13 +1,15 @@
 package de.hsos.richwps.mb.app;
 
-import com.mxgraph.model.mxGeometry;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxGraphModel.mxChildChange;
 import com.mxgraph.model.mxIGraphModel;
 import com.mxgraph.util.mxUndoableEdit;
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
+import de.hsos.richwps.mb.app.view.treeView.SubTreeViewController;
+import de.hsos.richwps.mb.graphView.GraphView;
 import de.hsos.richwps.mb.properties.IObjectWithProperties;
+import de.hsos.richwps.mb.propertiesView.PropertiesView;
 import de.hsos.richwps.mb.propertiesView.propertyChange.UndoablePropertyChangeAction;
 import de.hsos.richwps.mb.undoManager.MbUndoManager;
 import javax.swing.undo.UndoableEdit;
@@ -20,11 +22,28 @@ import javax.swing.undo.UndoableEdit;
  */
 public class AppUndoManager extends MbUndoManager {
 
-    private final App app;
+    private GraphView graphView;
+    private SubTreeViewController subTreeView;
+    private PropertiesView propertiesView;
+    private AppActionProvider actionProvider;
 
-    public AppUndoManager(App theApp) {
-        this.app = theApp;
+    public void setGraphView(GraphView graphView) {
+        this.graphView = graphView;
+    }
 
+    public void setSubTreeView(SubTreeViewController subTreeView) {
+        this.subTreeView = subTreeView;
+    }
+
+    public void setPropertiesView(PropertiesView propertiesView) {
+        this.propertiesView = propertiesView;
+    }
+
+    public void setActionProvider(AppActionProvider actionProvider) {
+        this.actionProvider = actionProvider;
+    }
+
+    public void init() {
         addChangeListener(new MbUndoManager.UndoManagerChangeListener() {
             @Override
             public void changed(UNDO_MANAGER_CHANGE change, UndoableEdit edit) {
@@ -33,7 +52,7 @@ public class AppUndoManager extends MbUndoManager {
                 if (canUndo()) {
                     undoName = "Undo " + getUndoPresentationName();
                 }
-                AppAction undoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.UNDO);
+                AppAction undoAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.UNDO);
                 undoAction.setName(undoName);
                 undoAction.setEnabled(canUndo());
 
@@ -41,7 +60,7 @@ public class AppUndoManager extends MbUndoManager {
                 if (canRedo()) {
                     redoName = "Redo " + getRedoPresentationName();
                 }
-                AppAction redoAction = getActionProvider().getAction(AppActionProvider.APP_ACTIONS.REDO);
+                AppAction redoAction = actionProvider.getAction(AppActionProvider.APP_ACTIONS.REDO);
                 redoAction.setName(redoName);
                 redoAction.setEnabled(canRedo());
 
@@ -59,7 +78,7 @@ public class AppUndoManager extends MbUndoManager {
                         if (appEdit.getAction() instanceof mxUndoableEdit) {
                             editAction = (mxUndoableEdit) appEdit.getAction();
 
-                            model = app.getGraphView().getGraph().getModel();
+                            model = graphView.getGraph().getModel();
 
                             mxUndoableEdit.mxUndoableChange firstChange = editAction.getChanges().get(0);
                             if (firstChange instanceof mxChildChange) {
@@ -70,11 +89,11 @@ public class AppUndoManager extends MbUndoManager {
 
                             editCellParent = model.getParent(editCell);
 
-                            if (app.hasSubTreeView()) {
+                            if (null != subTreeView) {
                                 if (null == editCellParent) {
-                                    app.getSubTreeView().removeNode(model.getValue(editCell));
+                                    subTreeView.removeNode(model.getValue(editCell));
                                 } else {
-                                    app.getSubTreeView().addNode(model.getValue(editCell));
+                                    subTreeView.addNode(model.getValue(editCell));
                                 }
                             }
 
@@ -83,8 +102,8 @@ public class AppUndoManager extends MbUndoManager {
                             // select the property's parent object in GraphView & PropertiesView
                             UndoablePropertyChangeAction changeAction = (UndoablePropertyChangeAction) appEdit.getAction();
                             IObjectWithProperties parentObject = changeAction.getParentObject();
-                            app.getPropertiesView().setObjectWithProperties(parentObject);
-                            app.getGraphView().selectCellByValue(parentObject);
+                            propertiesView.setObjectWithProperties(parentObject);
+                            graphView.selectCellByValue(parentObject);
                         }
 
                         break;
@@ -92,8 +111,6 @@ public class AppUndoManager extends MbUndoManager {
                     default:
                         break;
                 }
-
-                app.setChangesSaved(false);
             }
         });
     }
@@ -101,10 +118,6 @@ public class AppUndoManager extends MbUndoManager {
     @Override
     public synchronized boolean addEdit(UndoableEdit edit) {
         return super.addEdit((AppUndoableEdit) edit);
-    }
-
-    private AppActionProvider getActionProvider() {
-        return app.getActionProvider();
     }
 
     @Override
