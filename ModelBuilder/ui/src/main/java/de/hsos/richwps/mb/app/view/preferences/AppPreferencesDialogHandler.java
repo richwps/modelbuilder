@@ -31,6 +31,10 @@ public class AppPreferencesDialogHandler extends WindowAdapter {
         this.processProvider = processProvider;
     }
 
+    public void setMainTreeView(MainTreeViewController mainTreeView) {
+        this.mainTreeView = mainTreeView;
+    }
+    
     @Override
     public void windowOpened(WindowEvent e) {
         prePersistedRemotes = processProvider.getPersistedRemotes();

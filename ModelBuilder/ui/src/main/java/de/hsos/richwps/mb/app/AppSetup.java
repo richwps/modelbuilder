@@ -547,6 +547,7 @@ public class AppSetup {
         final AppPreferencesDialogHandler handler = new AppPreferencesDialogHandler();
         handler.setProcessMetricProvider(app.getProcessMetricProvider());
         handler.setProcessProvider(app.getProcessProvider());
+        handler.setMainTreeView(app.getMainTreeView());
         preferencesDialog.addWindowListener(handler);
     }
 
