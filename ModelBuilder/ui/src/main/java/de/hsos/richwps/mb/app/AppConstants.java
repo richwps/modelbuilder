@@ -47,7 +47,7 @@ public class AppConstants {
     /**
      *
      */
-    public static final String RESOURCES_DIR = "src" + FSEP + "main" + FSEP + "resources";
+    public static final String RESOURCES_DIR = "resources";
     /**
      * Full path to icons folder.
      */

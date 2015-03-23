@@ -30,7 +30,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>de.hsos.richwps.mb.App</mainClass>
+                            <mainClass>de.hsos.richwps.mb.ModelBuilder</mainClass>
                         </manifest>
                     </archive>
                     <resources>
@@ -41,6 +41,31 @@
                     </resources>
                 </configuration>
             </plugin>
+            
+            <!--copy resources-->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/resources</outputDirectory>
+                            <resources>          
+                                <resource>
+                                    <directory>resources</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>              
+                        </configuration>            
+                    </execution>
+                </executions>
+            </plugin>
+            
             <!-- package all dependencies -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -54,6 +79,12 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>de.hsos.richwps.mb.ModelBuilder</mainClass>
+                        </manifest>
+                    </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
