@@ -218,6 +218,7 @@ class PropertiesCard extends JScrollPane {
         // label + component
         componentPanel.add(createHeadLabel(propertyCaption), "0 0");
         componentPanel.add(component.getComponent(), "1 0");
+        
         // bottom border(s)
         componentPanel.add(createColumn1Border(), "0 1");
         componentPanel.add(createColumn2Border(), "1 1");
@@ -274,7 +275,6 @@ class PropertiesCard extends JScrollPane {
         label.setBackground(background);
         Border emptyBorder = new EmptyBorder(PropertyCardsConfig.labelInsets);
         label.setBorder(emptyBorder);
-
         return label;
     }
 

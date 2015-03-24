@@ -30,7 +30,7 @@ public class MonitorDataConverter {
         // get metric properties group
         String server = process.getServer();
         String identifier = process.getOwsIdentifier();
-        PropertyGroup processMetric = getMetricProvider().getProcessMetric(server, identifier);
+        PropertyGroup processMetric = getMetricProvider().getProcessMetricsAsProperties(server, identifier);
 
         // add metric properties group to the process
         String metricPropertyName = processMetric.getPropertiesObjectName();

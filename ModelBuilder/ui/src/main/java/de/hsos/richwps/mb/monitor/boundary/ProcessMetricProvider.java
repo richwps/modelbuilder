@@ -88,7 +88,7 @@ public class ProcessMetricProvider {
      * @param identifier
      * @return
      */
-    public PropertyGroup getProcessMetric(String server, String identifier) {
+    public PropertyGroup getProcessMetricsAsProperties(String server, String identifier) {
 
         // create property group containing all metrics
         PropertyGroup<PropertyGroup<Property<String>>> groups = new PropertyGroup<>();
@@ -138,6 +138,69 @@ public class ProcessMetricProvider {
         }
 
         return groups;
+    }
+
+    public HashMap<String, double[]> getProcessMetrics(String server, String identifier) {
+
+        // create property group containing all metrics
+        HashMap<String, double[]> metrics = new HashMap<>();
+
+        // try connect to monitor
+        if ((null == client) && !connect()) {
+            return metrics;
+        }
+
+        try {
+
+            // cancel if the processes' endpoint is not monitored
+            server = new URL(server).toExternalForm();
+            WpsResource wps = this.wpss.get(server);
+            if (null == wps) {
+                return metrics;
+            }
+
+            WpsProcessResource wpsProcess = client.getWpsProcess(wps, identifier);
+
+            // add metrics sub groups
+            for (Map.Entry<String, WpsMetricResource> aMetric : wpsProcess.getMetrics().entrySet()) {
+
+                String key = aMetric.getKey();
+                double[] values = new double[3];
+
+                // add metric values to sub group as properties
+                for (Map.Entry<String, MeasuredValue> aMetricValue : aMetric.getValue().getValues().entrySet()) {
+
+                    String metricValueKey = aMetricValue.getKey();
+
+                    Number value = aMetricValue.getValue().getValue();
+                    double doubleValue = Double.parseDouble(value.toString());
+
+                    switch (metricValueKey) {
+                        case "worst":
+                            values[2] = doubleValue;
+                            break;
+                        case "median":
+                            values[1] = doubleValue;
+                            break;
+                        case "best":
+                            values[0] = doubleValue;
+                            break;
+                    }
+                }
+                metrics.put(key, values);
+            }
+
+        } catch (Exception ex) {
+            // ignore as usually thrown if process is not monitored;
+            // the empty group indicates non-monitored processes.
+            Logger.log("monitor client exception: " + ex);
+
+            // force client recreation
+            client = null;
+
+        }
+
+        return metrics;
     }
 
     /**

@@ -90,12 +90,8 @@ public class ComponentTitle extends JLabel {
         GradientPaint gp = new GradientPaint(0, 0, gradientColor1, 0, h, gradientColor2);
         g2d.setPaint(gp);
         g2d.fillRect(0, 0, w, h);
-        // TODO let developer decide if there should be any top/bottom border.
-        // top border
-//        g2d.setColor(gradientColor1);
-//        g2d.drawLine(0, 0, w, 0);
-        // bottom border
 
+        // bottom border
         g2d.setColor(gradientColor2.darker());
         g2d.drawLine(0, h - 1, w, h - 1);
         

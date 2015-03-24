@@ -24,6 +24,7 @@ public class PropertyComponentQosTargets extends AbstractPropertyComponent<QosTa
         super(property);
         
         component = new QosTargetsPanel(parent, property);
+        property.removeChangeListener(changeListener);
     }
 
     @Override

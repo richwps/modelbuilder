@@ -268,6 +268,8 @@ public class AppConstants {
     
     public static final String QOS_EDIT_TARGET_DIALOG_TITLE = "Edit QoS Target";
 
+    public static final String DEFAULT_QOS_TARGET = "response_metric";
+    
     static String FORMATTED_HINT_PROCESS_ALREADY_DEPLOYED = "A process with identifier '%s' is already deployed at '%s'";
 
     public static final String MONITOR_DEFAULT_URL = "http://localhost:1111";

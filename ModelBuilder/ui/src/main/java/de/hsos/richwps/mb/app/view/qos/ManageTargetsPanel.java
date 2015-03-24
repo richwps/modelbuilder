@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app.view.qos;
 
+import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.view.dialogs.EditQosTargetDialog;
 import de.hsos.richwps.mb.entity.QoSTarget;
 import de.hsos.richwps.mb.ui.ListWithButtons;
@@ -14,6 +15,8 @@ import java.util.List;
  */
 public class ManageTargetsPanel extends ListWithButtons<QoSTarget> {
 
+    private final static String DEFAULT_TARGET_TITLE = AppConstants.DEFAULT_QOS_TARGET;
+
     public ManageTargetsPanel(final Window parent, List<QoSTarget> targets) {
         super(parent);
 
@@ -22,7 +25,22 @@ public class ManageTargetsPanel extends ListWithButtons<QoSTarget> {
         getAddItemButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditQosTargetDialog dialog = new EditQosTargetDialog(parent, null);
+
+                // check if default target exists
+                boolean defaultTargetExists = false;
+                List<QoSTarget> allTargets = getAllItems();
+                for (QoSTarget qoSTarget : allTargets) {
+                    if (qoSTarget.getTargetTitle().equals(DEFAULT_TARGET_TITLE)) {
+                        defaultTargetExists = true;
+                    }
+                }
+
+                QoSTarget newTarget = new QoSTarget();
+                if (!defaultTargetExists) {
+                    newTarget.setTargetTitle(DEFAULT_TARGET_TITLE);
+                }
+
+                EditQosTargetDialog dialog = new EditQosTargetDialog(parent, newTarget);
                 dialog.setVisible(true);
                 dialog.dispose();
                 QoSTarget target = dialog.getTarget();

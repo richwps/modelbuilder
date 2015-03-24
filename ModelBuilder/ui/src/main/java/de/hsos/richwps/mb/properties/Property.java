@@ -26,7 +26,7 @@ public class Property<E> implements IObjectWithProperties, Serializable, Cloneab
     public final static String COMPONENT_TYPE_DROPDOWN = "DROPDOWN";
 
     /**
-     * Used for properties which don't have a component type.
+     * Used for properties without any component type.
      */
     public final static String DEFAULT_COMPONENT_TYPE = COMPONENT_TYPE_TEXTFIELD;
 

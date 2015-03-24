@@ -2,7 +2,7 @@ package de.hsos.richwps.mb.app;
 
 import de.hsos.richwps.mb.app.actions.AppAction;
 import de.hsos.richwps.mb.app.actions.AppActionProvider;
-import de.hsos.richwps.mb.app.view.properties.PropertyComponentQosTarget;
+import de.hsos.richwps.mb.app.view.properties.PropertyComponentQosAnalysis;
 import de.hsos.richwps.mb.app.view.properties.PropertyComponentQosTargets;
 import de.hsos.richwps.mb.appEvents.AppEvent;
 import de.hsos.richwps.mb.appEvents.AppEventService;
@@ -241,8 +241,8 @@ public class AppPropertiesView extends PropertiesView {
             component = new PropertyComponentQosTargets(getParentWindow(), property);
             listenToChanges = false;
 
-        } else if (componentType.equals(PropertyComponentQosTarget.COMPONENT_TYPE)) {
-            component = new PropertyComponentQosTarget(property);
+        } else if (componentType.equals(PropertyComponentQosAnalysis.COMPONENT_TYPE)) {
+            component = new PropertyComponentQosAnalysis(property);
 
         } else {
 

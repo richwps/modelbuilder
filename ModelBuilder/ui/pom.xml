@@ -35,7 +35,7 @@
                     </archive>
                     <resources>
                         <resource>
-                            <directory>src/main/resources</directory>
+                            <directory>resources</directory>
                             <filtering>false</filtering>
                         </resource>
                     </resources>
@@ -65,7 +65,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- package all dependencies -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -90,6 +90,8 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
+            
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -145,6 +147,13 @@
                 </executions>
             </plugin>-->
         </plugins>
+        
+        <resources>
+            <resource>
+                <directory>resources</directory>
+            </resource>
+        </resources>
+        
     </build>
     <dependencies>
         <dependency>

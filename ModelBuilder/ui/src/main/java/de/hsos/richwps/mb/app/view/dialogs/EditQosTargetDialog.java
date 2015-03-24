@@ -3,12 +3,9 @@ package de.hsos.richwps.mb.app.view.dialogs;
 import de.hsos.richwps.mb.app.AppConstants;
 import de.hsos.richwps.mb.app.view.qos.EditTargetPanel;
 import de.hsos.richwps.mb.app.view.qos.InvalidValueException;
-import de.hsos.richwps.mb.appEvents.AppEventService;
 import de.hsos.richwps.mb.entity.QoSTarget;
 import de.hsos.richwps.mb.ui.MbDialog;
 import java.awt.Window;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import layout.TableLayout;
 
@@ -25,7 +22,6 @@ public class EditQosTargetDialog extends MbDialog {
     public EditQosTargetDialog(Window window, QoSTarget target) {
         super(window, AppConstants.QOS_EDIT_TARGET_DIALOG_TITLE, MbDialog.BTN_ID_CANCEL | MbDialog.BTN_ID_OK);
 
-//        double p = TableLayout.PREFERRED;
         double f = TableLayout.FILL;
         setLayout(new TableLayout(new double[][]{{f}, {f}}));
 

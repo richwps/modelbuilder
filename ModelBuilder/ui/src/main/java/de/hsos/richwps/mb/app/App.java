@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.app;
 
+import com.mxgraph.model.mxIGraphModel;
 import de.hsos.richwps.mb.app.view.treeView.MainTreeViewController;
 import de.hsos.richwps.mb.app.view.treeView.SubTreeViewController;
 import de.hsos.richwps.mb.app.actions.AppAction;
@@ -25,11 +26,13 @@ import de.hsos.richwps.mb.app.view.dialogs.ExecuteDialog;
 import de.hsos.richwps.mb.app.view.dialogs.ExecuteModelDialog;
 import de.hsos.richwps.mb.app.view.treeView.MainTreeViewPanel;
 import de.hsos.richwps.mb.processProvider.boundary.DatatypeProvider;
+import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -444,6 +447,13 @@ public class App {
         getActionProvider().getAction(APP_ACTIONS.UNDEPLOY).setEnabled(modelDeployed);
         getActionProvider().getAction(APP_ACTIONS.EXECUTE).setEnabled(modelDeployed);
         getActionProvider().getAction(APP_ACTIONS.PUBLISH).setEnabled(modelDeployed);
+
+        // get monitor data for current model
+        GraphModel model = getGraphView().getGraph().getGraphModel();
+        Object server = model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_ENDPOINT);
+        Object identifier = model.getPropertyValue(GraphModel.PROPERTIES_KEY_OWS_IDENTIFIER);
+        HashMap<String, double[]> processMetrics = getProcessMetricProvider().getProcessMetrics((String) server, (String) identifier);
+        getAppProperties().setMonitorData(processMetrics);
     }
 
     /**
