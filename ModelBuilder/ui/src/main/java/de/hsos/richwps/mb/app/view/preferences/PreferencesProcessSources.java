@@ -54,11 +54,10 @@ public class PreferencesProcessSources extends AbstractPreferencesTab {
         createAndAddComponent(fieldPanel, AppConstants.PREFERENCES_TAB_SP_URL_LABEL, 0);
 
         remotesPanel = new ManagedRemotesPanel(parent);
-        createAndAddComponent(remotesPanel, "Remote Servers", 3);
+        createAndAddComponent(remotesPanel, "Additional WPS Servers", 3);
 
         loadOnStartupBox = new JCheckBox(AppConstants.PREFERENCES_TAB_SP_LOADONSTART_LABEL);
         add(loadOnStartupBox, "0 5");
-//        createAndAddComponent(loadOnStartupBox, "Remote Servers", 4);
     }
 
     @Override

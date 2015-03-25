@@ -95,10 +95,6 @@ public class AppConstants {
     public static final String SELECTREMOTE_DIALOG_BTN_CANCEL = DIALOG_BTN_CANCEL;
     public static final String SELECTREMOTE_DIALOG_BTN_OK = DIALOG_BTN_OK;
 
-    //Add Remote Dialog
-    public static final String MANAGEREMOTES_DIALOG_TITLE = "Manage remote servers";
-    public static final String MANAGEREMOTES_DIALOG_MSG = "Please enter a WPS server to work with.";
-
     //Deployerror Dialog
     public static final String DEPLOY_ERROR_DIALOG_TITLE = "Error while deployment";
     public static final String DEPLOY_ERROR_DIALOG_MSG = "An error occured while deployment. See logs for further information.";
