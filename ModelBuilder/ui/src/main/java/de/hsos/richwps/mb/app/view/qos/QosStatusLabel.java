@@ -52,7 +52,7 @@ public class QosStatusLabel extends MultilineLabel {
                 // STATUS GREEN
                 if (qosData.getBest() >= target.getMin() && qosData.getWorst() <= target.getMax()) {
                     bgColor = Color.GREEN;
-                    text = "QoS target valuesd reached.";
+                    text = "QoS target values reached.";
 
                 } else {
 
