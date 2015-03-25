@@ -1,5 +1,6 @@
 package de.hsos.richwps.mb.ui;
 
+import java.awt.Graphics;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
@@ -21,4 +22,5 @@ public class MultilineLabel extends JTextArea {
         setWrapStyleWord(true);
         setEditable(false);
     }
+    
 }

@@ -3,6 +3,8 @@ package de.hsos.richwps.mb.ui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.DisplayMode;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -250,14 +252,31 @@ public class UiHelper {
 
     /**
      * Returns the given String or, if it is null, an empty String.
+     *
      * @param string the String
      * @return the given String or, if it is null, an empty String.
      */
     public static String avoidNull(String string) {
-        if(null == string)
+        if (null == string) {
             return "";
-        
+        }
+
         return string;
     }
-    
+
+    public static void drawOverlay(Rectangle b, Graphics2D g2d) {
+        final int overlaySize = b.height / 3;
+        final Color overlayColor = new Color(0xeeffffff, true);
+        final Color overlayColor2 = new Color(0x0, true);
+        final Color overlayColor3 = new Color(0x40000000, true);
+
+        g2d.setPaint(new GradientPaint(0, 0, overlayColor, 0, overlaySize, overlayColor2));
+
+        g2d.fillRect(b.x, b.y, b.width, overlaySize);
+
+        final int bottomOverlayY = b.height - overlaySize;
+        g2d.setPaint(new GradientPaint(0, bottomOverlayY, overlayColor2, 0, b.height, overlayColor3));
+        g2d.fillRect(b.x, b.y + bottomOverlayY, b.width, overlaySize);
+    }
+
 }

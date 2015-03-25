@@ -3,10 +3,15 @@ package de.hsos.richwps.mb.app.view.qos;
 import de.hsos.richwps.mb.entity.QoSAnaylsis;
 import de.hsos.richwps.mb.entity.QoSTarget;
 import de.hsos.richwps.mb.ui.MultilineLabel;
+import de.hsos.richwps.mb.ui.UiHelper;
 import java.awt.Color;
-import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import javax.swing.UIManager;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 /**
  *
@@ -16,8 +21,10 @@ public class QosStatusLabel extends MultilineLabel {
 
     public QosStatusLabel() {
         super();
-//        setFont(getFont().deriveFont(Font.ITALIC));
-        setBorder(new EmptyBorder(2, 2, 2, 2));
+
+        final EmptyBorder inner = new EmptyBorder(5, 2, 5, 2);
+        final LineBorder outer = new LineBorder(Color.GRAY, 1);
+        setBorder(new CompoundBorder(outer, inner));
     }
 
     public void update(QoSAnaylsis qosData) {
@@ -29,6 +36,10 @@ public class QosStatusLabel extends MultilineLabel {
         if (target.getMax() < target.getMin()) {
             bgColor = UIManager.getColor("Panel.background");
             text = "Invalid target data.";
+
+        } else if (!qosData.hasMonitorValues()) {
+            bgColor = UIManager.getColor("Panel.background");
+            text = "No monitor data.";
 
         } else {
             // STATUS RED
@@ -47,7 +58,7 @@ public class QosStatusLabel extends MultilineLabel {
 
                     //STATUS YELLOW
                     bgColor = Color.YELLOW;
-                    text = "The median value is inside the target range.\nSome values are outside the range.";
+                    text = "The median value is inside the target range, but some measured values are outside the range.";
                 }
             }
         }
@@ -55,6 +66,16 @@ public class QosStatusLabel extends MultilineLabel {
         setBackground(bgColor);
         setForeground(fgColor);
         setText(text);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Rectangle bounds = getBounds();
+        bounds.x = 0;
+        bounds.y = 0;
+        UiHelper.drawOverlay(bounds, (Graphics2D) g);
     }
 
 }

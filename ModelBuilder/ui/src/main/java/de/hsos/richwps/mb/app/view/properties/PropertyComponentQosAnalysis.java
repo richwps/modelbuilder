@@ -5,6 +5,8 @@ import de.hsos.richwps.mb.app.view.qos.QosStatusLabel;
 import de.hsos.richwps.mb.entity.QoSAnaylsis;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.propertiesView.propertyComponents.AbstractPropertyComponent;
+import de.hsos.richwps.mb.ui.ColorBorder;
+import java.awt.Color;
 import javax.swing.JPanel;
 import layout.TableLayout;
 
@@ -21,7 +23,7 @@ public class PropertyComponentQosAnalysis extends AbstractPropertyComponent<JPan
 
     public static String COMPONENT_TYPE = "QoS Analysis";
 
-    public final double analysisPanelHeight = 20d;
+    public final double analysisPanelHeight = 30d;
     private final QosStatusLabel qosStatus;
 
     public PropertyComponentQosAnalysis(Property<QoSAnaylsis> property) {
@@ -36,7 +38,7 @@ public class PropertyComponentQosAnalysis extends AbstractPropertyComponent<JPan
         componentWrapper = new JPanel();
         double f = TableLayout.FILL,
                 p = TableLayout.PREFERRED;
-        componentWrapper.setLayout(new TableLayout(new double[][]{{220d, f}, {f, analysisPanelHeight, 2d, p, f}}));
+        componentWrapper.setLayout(new TableLayout(new double[][]{{240d, f}, {f, analysisPanelHeight, 2d, p, f}}));
         componentWrapper.add(component, "0 1 1 1");
         componentWrapper.add(qosStatus, "0 3");
     }

@@ -53,4 +53,8 @@ public class QoSAnaylsis {
         this.best = best;
     }
 
+    public boolean hasMonitorValues() {
+        return 0 < getBest() || 0 < getMedian() || 0 < getWorst();
+    }
+
 }
