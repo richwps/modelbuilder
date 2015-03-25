@@ -104,8 +104,7 @@ public class GraphComponent extends mxGraphComponent {
             return null;
         }
 
-        // TODO update init capacity when the length of a typical tooltip is known
-        StringBuilder sb = new StringBuilder(255);
+        StringBuilder sb = new StringBuilder(4000);
 
         if (!tooltipIsEmpty) {
             // remove closing html tag.

@@ -1,6 +1,5 @@
 package de.hsos.richwps.mb.graphView.mxGraph;
 
-import com.google.common.collect.HashBiMap;
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGraphModel;
 import com.mxgraph.model.mxICell;
@@ -11,7 +10,6 @@ import de.hsos.richwps.mb.properties.IObjectWithProperties;
 import de.hsos.richwps.mb.properties.Property;
 import de.hsos.richwps.mb.properties.PropertyGroup;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
